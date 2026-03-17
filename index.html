@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fibromyalgia Daily Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f7;
+      color: #111;
+    }
+    header {
+      background: #3f51b5;
+      color: white;
+      padding: 0.75rem 1rem;
+      text-align: center;
+    }
+    h1 { margin: 0; font-size: 1.25rem; }
+    main {
+      padding: 0.75rem;
+      max-width: 900px;
+      margin: 0 auto 3rem auto;
+    }
+    h2 { margin-top: 1rem; font-size: 1.1rem; }
+    h3 { margin-top: 0; font-size: 1rem; }
+    h4 { margin-bottom: 0.25rem; font-size: 0.95rem; }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 0.75rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="time"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.4rem;
+      margin-top: 0.25rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+    }
+    textarea { resize: vertical; }
+    .time-block {
+      border-top: 1px solid #ddd;
+      padding-top: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    #exerciseDetails { margin-top: 0.5rem; }
+    #tagsContainer label {
+      display: inline-block;
+      margin-right: 0.5rem;
+      margin-bottom: 0.25rem;
+      font-size: 0.85rem;
+    }
+    #tabs {
+      display: flex;
+      margin: 0.75rem 0;
+      gap: 0.5rem;
+    }
+    .tab-button {
+      flex: 1;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 20px;
+      background: #ddd;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .tab-button.active {
+      background: #3f51b5;
+      color: white;
+    }
+    .tab { display: none; }
+    .tab.active { display: block; }
+    .primary {
+      background: #3f51b5;
+      color: white;
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.5; cursor: default; }
+    #historyList {
+      list-style: none;
+      padding-left: 0;
+    }
+    #historyList li {
+      background: white;
+      border-radius: 6px;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      font-size: 0.9rem;
+    }
+    #historyList li button {
+      margin-left: 0.5rem;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.8rem;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Firebase SDKs (v9 compat for simplicity) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+  <script>
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyD75EQyz7w9ZYuK8iDewQDzI5Z2RUzMk1k",
+      authDomain: "fibrosymptomtracker.firebaseapp.com",
+      projectId: "fibrosymptomtracker",
+      storageBucket: "fibrosymptomtracker.firebasestorage.app",
+      messagingSenderId: "729903386531",
+      appId: "1:729903386531:web:b73385c230369ac53b9416",
+      measurementId: "G-N20WEFRW9Y"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+
+  <script>
+    // Simple test: write a document when the page loads
+    db.collection("testCollection").add({
+      createdAt: new Date().toISOString(),
+      note: "Hello from GitHub Pages"
+    }).then((docRef) => {
+      console.log("Test doc written with ID: ", docRef.id);
+    }).catch((error) => {
+      console.error("Error adding test doc: ", error);
+    });
+  </script>
+</head>
+<body>
+  <header>
+    <h1>Fibromyalgia Daily Tracker</h1>
+  </header>
+
+  <main>
+    <nav id="tabs">
+      <button class="tab-button active" data-tab="entry-tab">Daily Entry</button>
+      <button class="tab-button" data-tab="history-tab">History</button>
+      <button class="tab-button" data-tab="trends-tab">Trends</button>
+    </nav>
+
+    <!-- Daily Entry Tab -->
+    <section id="entry-tab" class="tab active">
+      <h2>Daily Entry</h2>
+
+      <div class="card">
+        <h3>Day Info</h3>
+        <label>
+          Date:
+          <input type="date" id="dateInput" />
+        </label>
+        <label>
+          Day title (optional):
+          <input type="text" id="dayTitleInput" placeholder="Flare day, Better day, etc." />
+        </label>
+        <label>
+          Overall notes:
+          <textarea id="overallNotesInput" rows="2" placeholder="Big events, stress, weather, etc."></textarea>
+        </label>
+      </div>
+
+      <div class="card">
+        <h3>Functionality by Time of Day</h3>
+
+        <div class="time-block">
+          <h4>Early morning (5–9 am)</h4>
+          <label>
+            Functionality (1–10):
+            <input type="number" min="1" max="10" id="earlyMorningScore" />
+          </label>
+          <label>
+            What I was doing:
+            <input type="text" id="earlyMorningActivity" />
+          </label>
+          <label>
+            Symptoms / how it felt:
+            <textarea id="earlyMorningSymptoms" rows="2"></textarea>
+          </label>
+        </div>
+
+        <div class="time-block">
+          <h4>Late morning (9–12)</h4>
+          <label>
+            Functionality (1–10):
+            <input type="number" min="1" max="10" id="lateMorningScore" />
+          </label>
+          <label>
+            What I was doing:
+            <input type="text" id="lateMorningActivity" />
+          </label>
+          <label>
+            Symptoms / how it felt:
+            <textarea id="lateMorningSymptoms" rows="2"></textarea>
+          </label>
+        </div>
+
+        <div class="time-block">
+          <h4>Early afternoon (12–3)</h4>
+          <label>
+            Functionality (1–10):
+            <input type="number" min="1" max="10" id="earlyAfternoonScore" />
+          </label>
+          <label>
+            What I was doing:
+            <input type="text" id="earlyAfternoonActivity" />
+          </label>
+          <label>
+            Symptoms / how it felt:
+            <textarea id="earlyAfternoonSymptoms" rows="2"></textarea>
+          </label>
+        </div>
+
+        <div class="time-block">
+          <h4>Late afternoon (3–6)</h4>
+          <label>
+            Functionality (1–10):
+            <input type="number" min="1" max="10" id="lateAfternoonScore" />
+          </label>
+          <label>
+            What I was doing:
+            <input type="text" id="lateAfternoonActivity" />
+          </label>
+          <label>
+            Symptoms / how it felt:
+            <textarea id="lateAfternoonSymptoms" rows="2"></textarea>
+          </label>
+        </div>
+
+        <div class="time-block">
+          <h4>Early evening (6–9)</h4>
+          <label>
+            Functionality (1–10):
+            <input type="number" min="1" max="10" id="earlyEveningScore" />
+          </label>
+          <label>
+            What I was doing:
+            <input type="text" id="earlyEveningActivity" />
+          </label>
+          <label>
+            Symptoms / how it felt:
+            <textarea id="earlyEveningSymptoms" rows="2"></textarea>
+          </label>
+        </div>
+
+        <div class="time-block">
+          <h4>Late evening (9–12)</h4>
+          <label>
+            Functionality (1–10):
+            <input type="number" min="1" max="10" id="lateEveningScore" />
+          </label>
+          <label>
+            What I was doing:
+            <input type="text" id="lateEveningActivity" />
+          </label>
+          <label>
+            Symptoms / how it felt:
+            <textarea id="lateEveningSymptoms" rows="2"></textarea>
+          </label>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Sleep (previous night)</h3>
+        <label>
+          Bedtime:
+          <input type="time" id="bedtimeInput" />
+        </label>
+        <label>
+          Wake time:
+          <input type="time" id="wakeTimeInput" />
+        </label>
+        <label>
+          Total hours slept:
+          <input type="number" step="0.1" id="hoursSleptInput" />
+        </label>
+        <label>
+          Sleep quality (1–10):
+          <input type="number" min="1" max="10" id="sleepQualityInput" />
+        </label>
+        <label>
+          Number of awakenings:
+          <input type="number" min="0" id="awakeningsInput" />
+        </label>
+        <label>
+          Sleep notes:
+          <textarea id="sleepNotesInput" rows="2"></textarea>
+        </label>
+      </div>
+
+      <div class="card">
+        <h3>Exercise / Activity</h3>
+        <label>
+          Did you do planned exercise or notable activity?
+          <select id="didExerciseInput">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </label>
+        <div id="exerciseDetails">
+          <label>
+            Type:
+            <select id="exerciseTypeInput">
+              <option value="">Select...</option>
+              <option value="walk">Walk</option>
+              <option value="stretching">Stretching</option>
+              <option value="pt">Physical therapy</option>
+              <option value="strength">Strength</option>
+              <option value="yoga">Yoga</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+          <label>
+            Duration (minutes):
+            <input type="number" min="0" id="exerciseMinutesInput" />
+          </label>
+          <label>
+            Intensity:
+            <select id="exerciseIntensityInput">
+              <option value="">Select...</option>
+              <option value="gentle">Gentle</option>
+              <option value="moderate">Moderate</option>
+              <option value="overdid">Pushed too hard</option>
+            </select>
+          </label>
+          <label>
+            Timing:
+            <select id="exerciseTimingInput">
+              <option value="">Select...</option>
+              <option value="morning">Morning</option>
+              <option value="afternoon">Afternoon</option>
+              <option value="evening">Evening</option>
+            </select>
+          </label>
+          <label>
+            Exercise notes:
+            <textarea id="exerciseNotesInput" rows="2"></textarea>
+          </label>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Quick tags (optional)</h3>
+        <div id="tagsContainer">
+          <label><input type="checkbox" value="flare" /> Flare</label>
+          <label><input type="checkbox" value="crash" /> Crash / post-exertional</label>
+          <label><input type="checkbox" value="better" /> Better than usual</label>
+          <label><input type="checkbox" value="poor_sleep" /> Poor sleep</label>
+          <label><input type="checkbox" value="high_stress" /> High stress</label>
+          <label><input type="checkbox" value="weather_change" /> Weather change</label>
+        </div>
+      </div>
+
+      <button id="saveCloudButton">Save Day (cloud)</button>
+      <button id="saveDayBtn" class="primary">Save Day (local)</button>
+      <p id="saveStatus"></p>
+    </section>
+
+    <section id="history-tab" class="tab">
+      <h2>History</h2>
+      <p>Recent days (click to load into the form):</p>
+      <ul id="historyList"></ul>
+    </section>
+
+    <section id="trends-tab" class="tab">
+      <h2>Trends</h2>
+      <p>Average daily functionality (all six time blocks combined).</p>
+      <canvas id="functionalityChart" height="200"></canvas>
+    </section>
+  </main>
+
+  <script>
+    // ---- Simple local storage helpers ----
+    const STORAGE_KEY = "fibroDaysLocal";
+
+    function loadAllDays() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      try { return JSON.parse(raw); } catch { return []; }
+    }
+
+    function saveAllDays(days) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(days));
+    }
+
+    function numberOrNull(val) {
+      const n = parseFloat(val);
+      return isNaN(n) ? null : n;
+    }
+
+    // ---- UI setup ----
+    window.onload = () => {
+      setupTabs();
+      setupExerciseToggle();
+      setupSaveDay();
+      loadTodayDate();
+      refreshHistory();
+      refreshTrends();
+    };
+
+    function setupTabs() {
+      const buttons = document.querySelectorAll(".tab-button");
+      const tabs = document.querySelectorAll(".tab");
+
+      buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const target = btn.getAttribute("data-tab");
+          buttons.forEach(b => b.classList.remove("active"));
+          tabs.forEach(t => t.classList.remove("active"));
+          btn.classList.add("active");
+          document.getElementById(target).classList.add("active");
+        });
+      });
+    }
+
+    function setupExerciseToggle() {
+      const didExerciseInput = document.getElementById("didExerciseInput");
+      const exerciseDetails = document.getElementById("exerciseDetails");
+
+      function updateVisibility() {
+        exerciseDetails.style.display = didExerciseInput.value === "yes" ? "block" : "none";
+      }
+      didExerciseInput.addEventListener("change", updateVisibility);
+      updateVisibility();
+    }
+
+    function loadTodayDate() {
+      const dateInput = document.getElementById("dateInput");
+      const today = new Date();
+      dateInput.value = today.toISOString().slice(0, 10);
+    }
+
+    function setupSaveDay() {
+      const saveBtn = document.getElementById("saveDayBtn");
+      const status = document.getElementById("saveStatus");
+
+      saveBtn.addEventListener("click", () => {
+        const dayData = collectFormData();
+        if (!dayData.date) {
+          status.textContent = "Please select a date.";
+          return;
+        }
+
+        status.textContent = "Saving locally...";
+
+        const days = loadAllDays();
+        const existingIndex = days.findIndex(d => d.date === dayData.date);
+        if (existingIndex >= 0) {
+          days[existingIndex] = dayData;
+        } else {
+          days.push(dayData);
+        }
+        saveAllDays(days);
+
+        status.textContent = "Saved locally.";
+        refreshHistory();
+        refreshTrends();
+      });
+    }
+
+    function collectFormData() {
+      const date = document.getElementById("dateInput").value;
+      const dayTitle = document.getElementById("dayTitleInput").value;
+      const overallNotes = document.getElementById("overallNotesInput").value;
+
+      const getBlock = (prefix) => ({
+        score: numberOrNull(document.getElementById(prefix + "Score").value),
+        activity: document.getElementById(prefix + "Activity").value,
+        symptoms: document.getElementById(prefix + "Symptoms").value
+      });
+
+      const functionality = {
+        earlyMorning: getBlock("earlyMorning"),
+        lateMorning: getBlock("lateMorning"),
+        earlyAfternoon: getBlock("earlyAfternoon"),
+        lateAfternoon: getBlock("lateAfternoon"),
+        earlyEvening: getBlock("earlyEvening"),
+        lateEvening: getBlock("lateEvening")
+      };
+
+      const sleep = {
+        bedtime: document.getElementById("bedtimeInput").value,
+        wakeTime: document.getElementById("wakeTimeInput").value,
+        hours: numberOrNull(document.getElementById("hoursSleptInput").value),
+        quality: numberOrNull(document.getElementById("sleepQualityInput").value),
+        awakenings: numberOrNull(document.getElementById("awakeningsInput").value),
+        notes: document.getElementById("sleepNotesInput").value
+      };
+
+      const didExercise = document.getElementById("didExerciseInput").value === "yes";
+      const exercise = didExercise ? {
+        type: document.getElementById("exerciseTypeInput").value,
+        minutes: numberOrNull(document.getElementById("exerciseMinutesInput").value),
+        intensity: document.getElementById("exerciseIntensityInput").value,
+        timing: document.getElementById("exerciseTimingInput").value,
+        notes: document.getElementById("exerciseNotesInput").value
+      } : null;
+
+      const tags = [];
+      document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
+        if (cb.checked) tags.push(cb.value);
+      });
+
+      const scores = Object.values(functionality)
+        .map(b => b.score)
+        .filter(v => typeof v === "number");
+      const avgFunctionality = scores.length
+        ? scores.reduce((a, b) => a + b, 0) / scores.length
+        : null;
+
+      return {
+        date,
+        dayTitle,
+        overallNotes,
+        functionality,
+        sleep,
+        didExercise,
+        exercise,
+        tags,
+        avgFunctionality
+      };
+    }
+
+    // ---- History ----
+    function refreshHistory() {
+      const list = document.getElementById("historyList");
+      const days = loadAllDays().sort((a, b) => a.date.localeCompare(b.date)).reverse();
+      list.innerHTML = "";
+
+      if (!days.length) {
+        list.innerHTML = "<li>No entries yet.</li>";
+        return;
+      }
+
+      days.slice(0, 30).forEach(d => {
+        const li = document.createElement("li");
+        const title = d.dayTitle ? ` – ${d.dayTitle}` : "";
+        const avg = d.avgFunctionality != null ? ` | Avg func: ${d.avgFunctionality.toFixed(1)}` : "";
+        li.textContent = `${d.date}${title}${avg}`;
+
+        const loadBtn = document.createElement("button");
+        loadBtn.textContent = "Load";
+        loadBtn.addEventListener("click", () => {
+          fillFormFromData(d);
+          switchToTab("entry-tab");
+        });
+
+        li.appendChild(loadBtn);
+        list.appendChild(li);
+      });
+    }
+
+    function fillFormFromData(d) {
+      document.getElementById("dateInput").value = d.date || "";
+      document.getElementById("dayTitleInput").value = d.dayTitle || "";
+      document.getElementById("overallNotesInput").value = d.overallNotes || "";
+
+      const setBlock = (prefix, obj = {}) => {
+        document.getElementById(prefix + "Score").value = obj.score ?? "";
+        document.getElementById(prefix + "Activity").value = obj.activity || "";
+        document.getElementById(prefix + "Symptoms").value = obj.symptoms || "";
+      };
+
+      setBlock("earlyMorning", d.functionality?.earlyMorning);
+      setBlock("lateMorning", d.functionality?.lateMorning);
+      setBlock("earlyAfternoon", d.functionality?.earlyAfternoon);
+      setBlock("lateAfternoon", d.functionality?.lateAfternoon);
+      setBlock("earlyEvening", d.functionality?.earlyEvening);
+      setBlock("lateEvening", d.functionality?.lateEvening);
+
+      if (d.sleep) {
+        document.getElementById("bedtimeInput").value = d.sleep.bedtime || "";
+        document.getElementById("wakeTimeInput").value = d.sleep.wakeTime || "";
+        document.getElementById("hoursSleptInput").value = d.sleep.hours ?? "";
+        document.getElementById("sleepQualityInput").value = d.sleep.quality ?? "";
+        document.getElementById("awakeningsInput").value = d.sleep.awakenings ?? "";
+        document.getElementById("sleepNotesInput").value = d.sleep.notes || "";
+      }
+
+      if (d.didExercise && d.exercise) {
+        document.getElementById("didExerciseInput").value = "yes";
+        document.getElementById("exerciseTypeInput").value = d.exercise.type || "";
+        document.getElementById("exerciseMinutesInput").value = d.exercise.minutes ?? "";
+        document.getElementById("exerciseIntensityInput").value = d.exercise.intensity || "";
+        document.getElementById("exerciseTimingInput").value = d.exercise.timing || "";
+        document.getElementById("exerciseNotesInput").value = d.exercise.notes || "";
+      } else {
+        document.getElementById("didExerciseInput").value = "no";
+      }
+      document.getElementById("didExerciseInput").dispatchEvent(new Event("change"));
+
+      const tagsSet = new Set(d.tags || []);
+      document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
+        cb.checked = tagsSet.has(cb.value);
+      });
+    }
+
+    function switchToTab(tabId) {
+      document.querySelectorAll(".tab-button").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-tab") === tabId);
+      });
+      document.querySelectorAll(".tab").forEach(tab => {
+        tab.classList.toggle("active", tab.id === tabId);
+      });
+    }
+
+    // ---- Trends ----
+    let functionalityChart = null;
+
+    function refreshTrends() {
+      const ctx = document.getElementById("functionalityChart").getContext("2d");
+      const days = loadAllDays().sort((a, b) => a.date.localeCompare(b.date));
+
+      const labels = [];
+      const data = [];
+
+      days.forEach(d => {
+        if (d.avgFunctionality != null) {
+          labels.push(d.date);
+          data.push(d.avgFunctionality);
+        }
+      });
+
+      if (functionalityChart) {
+        functionalityChart.destroy();
+      }
+
+      functionalityChart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels,
+          datasets: [{
+            label: "Average daily functionality",
+            data,
+            borderColor: "#3f51b5",
+            backgroundColor: "rgba(63,81,181,0.15)",
+            tension: 0.2
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              suggestedMin: 0,
+              suggestedMax: 10
+            }
+          }
+        }
+      });
+    }
+  </script>
+
+  <script>
+    // Cloud save using existing collectFormData
+    window.addEventListener('DOMContentLoaded', () => {
+      const saveCloudButton = document.getElementById('saveCloudButton');
+      if (!saveCloudButton) {
+        console.error('saveCloudButton not found');
+        return;
+      }
+
+      saveCloudButton.addEventListener('click', async () => {
+        try {
+          const dayData = collectFormData();
+          if (!dayData.date) {
+            alert('Please select a date before saving to cloud.');
+            return;
+          }
+
+          const docRef = await db.collection('days').add({
+            ...dayData,
+            createdAt: new Date().toISOString()
+          });
+          console.log('Cloud day saved with ID: ', docRef.id);
+          alert('Saved to cloud!');
+        } catch (e) {
+          console.error('Error saving to cloud: ', e);
+          alert('Cloud save failed. See console for details.');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
