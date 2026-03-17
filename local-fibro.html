@@ -153,6 +153,36 @@ const firebaseConfig = {
     console.error("Error adding test doc: ", error);
   });
 </script>
+<script>
+  // Adjust these selectors/names to match your existing fields
+  const saveCloudButton = document.getElementById('saveCloudButton');
+
+  saveCloudButton.addEventListener('click', async () => {
+    try {
+      // Example: pull data from your existing form/local object
+      // Replace these with your real variables/fields
+      const dateValue = document.getElementById('date').value;
+      const painValue = document.getElementById('painLevel').value;
+      const fatigueValue = document.getElementById('fatigueLevel').value;
+      const notesValue = document.getElementById('notes').value;
+
+      const dayData = {
+        date: dateValue,
+        pain: painValue,
+        fatigue: fatigueValue,
+        notes: notesValue,
+        createdAt: new Date().toISOString()
+      };
+
+      const docRef = await db.collection('days').add(dayData);  // compat-style add [web:243][web:312]
+      console.log('Cloud day saved with ID: ', docRef.id);
+      alert('Saved to cloud!');
+    } catch (e) {
+      console.error('Error saving to cloud: ', e);
+      alert('Cloud save failed. See console for details.');
+    }
+  });
+</script>
 
   
 </head>
@@ -381,6 +411,8 @@ const firebaseConfig = {
 
       <button id="saveDayBtn" class="primary">Save Day (local)</button>
       <p id="saveStatus"></p>
+      <button id="saveCloudButton">Save Day (cloud)</button>
+
     </section>
 
     <section id="history-tab" class="tab">
