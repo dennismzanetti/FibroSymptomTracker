@@ -172,7 +172,11 @@
         <h3>Day Info</h3>
         <label>
           Date:
-          <input type="date" id="dateInput" />
+          <div style="display:flex; gap:0.25rem; align-items:center;">
+            <button type="button" id="prevDateBtn">&lt;</button>
+            <input type="date" id="dateInput" />
+            <button type="button" id="nextDateBtn">&gt;</button>
+          </div>
         </label>
         <label>
           Day title (optional):
@@ -419,7 +423,7 @@ window.addEventListener("load", () => {
   setupExerciseToggle();
   setupSaveDay();
   loadTodayDate();
-
+  setupDateNavigation();   //forward/back links for date field
   const dateInput = document.getElementById("dateInput");
   loadDayFromCloud(dateInput.value);  // auto‑load initial date
   console.log("dateInput on load:", dateInput); // should NOT be null
@@ -751,6 +755,38 @@ function clearFormFields() {
       document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
         cb.checked = tagsSet.has(cb.value);
       });
+    }
+
+    function changeDateBy(days) {
+      const dateInput = document.getElementById("dateInput");
+      if (!dateInput.value) return;
+
+      const current = new Date(dateInput.value);
+      if (Number.isNaN(current.getTime())) return;
+
+      current.setDate(current.getDate() + days);
+
+      const y = current.getFullYear();
+      const m = String(current.getMonth() + 1).padStart(2, "0");
+      const d = String(current.getDate()).padStart(2, "0");
+      const newValue = `${y}-${m}-${d}`;
+
+      dateInput.value = newValue;
+
+      // reuse your existing behavior: load from cloud for the new date
+      loadDayFromCloud(newValue);
+    }
+
+    function setupDateNavigation() {
+      const prevBtn = document.getElementById("prevDateBtn");
+      const nextBtn = document.getElementById("nextDateBtn");
+
+      if (prevBtn) {
+        prevBtn.addEventListener("click", () => changeDateBy(-1));
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener("click", () => changeDateBy(1));
+      }
     }
 
     function switchToTab(tabId) {
