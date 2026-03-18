@@ -672,12 +672,12 @@
 
   <script>
     // Cloud save using existing collectFormData
-    window.addEventListener('DOMContentLoaded', () => {
-      const saveCloudButton = document.getElementById('saveCloudButton');
-      if (!saveCloudButton) {
-        console.error('saveCloudButton not found');
-        return;
-      }
+window.addEventListener('DOMContentLoaded', () => {
+  console.log('Cloud handler DOMContentLoaded fired');
+  const saveCloudButton = document.getElementById('saveCloudButton');
+  ...
+});
+
 
       saveCloudButton.addEventListener('click', async () => {
         try {
