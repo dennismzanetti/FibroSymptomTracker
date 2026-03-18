@@ -372,8 +372,8 @@
         </div>
       </div>
 
-      <button id="saveCloudButton">Save Day (cloud)</button>
-      <button id="saveDayBtn" class="primary">Save Day (local)</button>
+      <button id="saveCloudButton" class="primary">Save Day</button>
+
       <p id="saveStatus"></p>
     </section>
 
@@ -451,33 +451,54 @@
       dateInput.value = today.toISOString().slice(0, 10);
     }
 
-    function setupSaveDay() {
-      const saveBtn = document.getElementById("saveDayBtn");
-      const status = document.getElementById("saveStatus");
+    import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; // make sure this import exists
+// and you already have: const db = getFirestore(app);
 
-      saveBtn.addEventListener("click", () => {
-        const dayData = collectFormData();
-        if (!dayData.date) {
-          status.textContent = "Please select a date.";
-          return;
-        }
+function setupSaveDay() {
+  const saveBtn = document.getElementById("saveDayBtn");
+  const status = document.getElementById("saveStatus");
 
-        status.textContent = "Saving locally...";
-
-        const days = loadAllDays();
-        const existingIndex = days.findIndex(d => d.date === dayData.date);
-        if (existingIndex >= 0) {
-          days[existingIndex] = dayData;
-        } else {
-          days.push(dayData);
-        }
-        saveAllDays(days);
-
-        status.textContent = "Saved locally.";
-        refreshHistory();
-        refreshTrends();
-      });
+  saveBtn.addEventListener("click", async () => {
+    const dayData = collectFormData();
+    if (!dayData.date) {
+      status.textContent = "Please select a date.";
+      return;
     }
+
+    // 1) Save locally (your existing logic)
+    status.textContent = "Saving locally...";
+
+    const days = loadAllDays();
+    const existingIndex = days.findIndex(d => d.date === dayData.date);
+    if (existingIndex >= 0) {
+      days[existingIndex] = dayData;
+    } else {
+      days.push(dayData);
+    }
+    saveAllDays(days);
+
+    status.textContent = "Saved locally.";
+
+    // 2) Save to Firestore: one document per date
+    try {
+      status.textContent = "Saving to cloud...";
+
+      // use the date string as the document ID
+      const dayRef = doc(db, "days", dayData.date);  // one doc per date [web:412]
+      await setDoc(dayRef, dayData);                 // create or overwrite [web:412][web:420]
+
+      status.textContent = "Saved locally + cloud.";
+      console.log("Saved day to cloud for", dayData.date);
+    } catch (err) {
+      console.error("Error saving to cloud:", err);
+      status.textContent = "Saved locally, but cloud save failed.";
+    }
+
+    refreshHistory();
+    refreshTrends();
+  });
+}
+
 
     function collectFormData() {
       const date = document.getElementById("dateInput").value;
