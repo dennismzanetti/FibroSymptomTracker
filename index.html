@@ -408,11 +408,7 @@
       const n = parseFloat(val);
       return isNaN(n) ? null : n;
     }
-function loadDayFromCloud(date) {
-  const status = document.getElementById("saveStatus");
-  if (!date) {
-    return;
-  }
+
 
   const docRef = db.collection("days").doc(date);
   docRef.get().then((doc) => {
