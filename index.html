@@ -151,8 +151,13 @@
 </head>
 <body>
   <header>
-    <h1>Fibromyalgia Daily Tracker</h1>
-  </header>
+<header>
+  <h1>Fibromyalgia Daily Tracker</h1>
+  <p id="versionInfo" style="font-size: 0.8rem; color: #eee; margin-top: 0.25rem;">
+    Loading version…
+  </p>
+</header>
+
 
   <main>
     <nav id="tabs">
@@ -700,5 +705,19 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     });
   </script>
+  <script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const el = document.getElementById('versionInfo');
+    if (!el) return;
+
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const ts = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} `
+             + `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+    el.textContent = `Page loaded at: ${ts}`;
+  });
+</script>
+
 </body>
 </html>
