@@ -390,7 +390,7 @@
     </section>
   </main>
 
-  <script type="module">
+  <script>
     // ---- Simple local storage helpers ----
     const STORAGE_KEY = "fibroDaysLocal";
 
@@ -409,22 +409,6 @@
       return isNaN(n) ? null : n;
     }
 
-
-  const docRef = db.collection("days").doc(dateInput);
-  docRef.get().then((doc) => {
-    if (doc.exists) {
-      const data = doc.data();
-      fillFormFromData(data);
-      status.textContent = "Loaded from cloud for " + date + ".";
-      console.log("Loaded day from cloud for", date);
-    } else {
-      status.textContent = "No cloud entry for that date.";
-      console.log("No such document for", date);
-    }
-  }).catch((error) => {
-    console.error("Error getting document:", error);
-    status.textContent = "Cloud load failed.";
-  });
 
 // ---- UI setup ----
 window.addEventListener("load", () => {
