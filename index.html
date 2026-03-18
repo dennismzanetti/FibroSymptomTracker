@@ -410,7 +410,7 @@
     }
 
 
-  const docRef = db.collection("days").doc(date);
+  const docRef = db.collection("days").doc(dateInput);
   docRef.get().then((doc) => {
     if (doc.exists) {
       const data = doc.data();
