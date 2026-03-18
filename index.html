@@ -437,14 +437,17 @@ window.addEventListener("load", () => {
 
   // Manual changes (typing or picking from calendar)
   if (dateInput) {
-    dateInput.addEventListener("change", (event) => {
-      const newDate = event.target.value;
-      console.log("date changed to", newDate);
-      if (newDate) {
-        loadDayFromCloud(newDate);
-      }
+    ["change", "input", "blur"].forEach((evt) => {
+      dateInput.addEventListener(evt, (event) => {
+        console.log("date event", evt, "value =", event.target.value);
+        const newDate = event.target.value;
+        if (newDate && evt === "change") {
+          loadDayFromCloud(newDate);
+        }
+      });
     });
   }
+
 
   refreshHistory();
   refreshTrends();
