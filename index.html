@@ -415,6 +415,7 @@
       setupExerciseToggle();
       setupSaveDay();
       loadTodayDate();
+      loadDayFromCloudForCurrentDate();   // ← auto‑load for the date in the field      
       refreshHistory();
       refreshTrends();
     };
@@ -496,6 +497,30 @@ function setupSaveDay() {
   });
 }
 
+function loadDayFromCloudForCurrentDate() {
+  const status = document.getElementById("saveStatus");
+  const date = document.getElementById("dateInput").value;
+  if (!date) {
+    return; // nothing to load yet
+  }
+
+  const docRef = db.collection("days").doc(date);  // compat get by ID [web:312]
+  docRef.get().then((doc) => {
+    if (doc.exists) {
+      const data = doc.data();
+      fillFormFromData(data);                      // reuse your existing helper
+      status.textContent = "Loaded from cloud for " + date + ".";
+      console.log("Auto‑loaded day from cloud for", date);
+    } else {
+      // optional: clear message if no cloud doc
+      status.textContent = "";
+      console.log("No cloud document for", date);
+    }
+  }).catch((error) => {
+    console.error("Error auto‑loading document:", error);
+    status.textContent = "Cloud auto‑load failed.";
+  });
+}
 
 
     function collectFormData() {
