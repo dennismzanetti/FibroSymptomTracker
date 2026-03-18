@@ -434,9 +434,10 @@ window.addEventListener("load", () => {
   loadTodayDate();
 
   const dateInput = document.getElementById("dateInput");
+  loadDayFromCloud(dateInput.value);  // auto‑load initial date
   console.log("dateInput on load:", dateInput); // should NOT be null
 
- // loadDayFromCloud(dateInput.value);  // auto‑load initial date
+
 
   dateInput.addEventListener("change", (e) => {
     console.log("date changed to", e.target.value);
