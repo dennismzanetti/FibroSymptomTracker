@@ -415,7 +415,15 @@
       setupExerciseToggle();
       setupSaveDay();
       loadTodayDate();
-      loadDayFromCloudForCurrentDate();   // ← auto‑load for the date in the field      
+  // auto‑load for the initial date
+  const dateInput = document.getElementById("dateInput");
+  loadDayFromCloud(dateInput.value);
+
+  // auto‑load whenever the date changes
+  dateInput.addEventListener("change", (e) => {
+    loadDayFromCloud(e.target.value);      // [web:513]
+  });
+
       refreshHistory();
       refreshTrends();
     };
@@ -519,6 +527,28 @@ function loadDayFromCloudForCurrentDate() {
   }).catch((error) => {
     console.error("Error auto‑loading document:", error);
     status.textContent = "Cloud auto‑load failed.";
+  });
+}
+function loadDayFromCloud(date) {
+  const status = document.getElementById("saveStatus");
+  if (!date) {
+    return;
+  }
+
+  const docRef = db.collection("days").doc(date);
+  docRef.get().then((doc) => {
+    if (doc.exists) {
+      const data = doc.data();
+      fillFormFromData(data);
+      status.textContent = "Loaded from cloud for " + date + ".";
+      console.log("Loaded day from cloud for", date);
+    } else {
+      status.textContent = "No cloud entry for that date.";
+      console.log("No such document for", date);
+    }
+  }).catch((error) => {
+    console.error("Error getting document:", error);
+    status.textContent = "Cloud load failed.";
   });
 }
 
