@@ -390,7 +390,11 @@
     </section>
   </main>
 
-  <script>
+  <script type="module">
+
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+      import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
     // ---- Simple local storage helpers ----
     const STORAGE_KEY = "fibroDaysLocal";
 
@@ -454,8 +458,6 @@
 
 
 function setupSaveDay() {
-      import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; // make sure this import exists
-
   const saveBtn = document.getElementById("saveDayBtn");
   const status = document.getElementById("saveStatus");
 
