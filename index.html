@@ -530,23 +530,24 @@ function loadDayFromCloud(date) {
   const status = document.getElementById("saveStatus");
   if (!date) return;
 
-const docRef = db.collection("days").doc(date);
-docRef.get().then((doc) => {
-  if (doc.exists) {
-    const data = doc.data();
-    fillFormFromData(data);
-    status.textContent = "Loaded from cloud for " + date + ".";
-    console.log("Loaded day from cloud for", date);
-  } else {
-    clearFormFieldsExceptDate();  // ← clear all fields but keep the date
-    status.textContent = "No cloud entry for that date. Form cleared.";
-    console.log("No such document for", date);
-  }
-}).catch((error) => {
-  console.error("Error getting document:", error);
-  status.textContent = "Cloud load failed.";
-});
+  const docRef = db.collection("days").doc(date);
+  docRef.get().then((doc) => {
+    if (doc.exists) {
+      const data = doc.data();
+      fillFormFromData(data);
+      status.textContent = "Loaded from cloud for " + date + ".";
+      console.log("Loaded day from cloud for", date);
+    } else {
+      clearFormFieldsExceptDate();
+      status.textContent = "No cloud entry for that date. Form cleared.";
+      console.log("No such document for", date);
+    }
+  }).catch((error) => {
+    console.error("Error getting document:", error);
+    status.textContent = "Cloud load failed.";
+  });
 }
+
 
 function clearFormFields() {
 
