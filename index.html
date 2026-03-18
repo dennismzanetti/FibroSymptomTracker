@@ -773,35 +773,50 @@ function clearFormFields() {
       });
     }
 
-    function changeDateBy(days) {
-      const dateInput = document.getElementById("dateInput");
-      if (!dateInput.value) return;
+function changeDateBy(days) {
+  const dateInput = document.getElementById("dateInput");
+  if (!dateInput || !dateInput.value) {
+    console.log("changeDateBy: no date value yet");
+    return;
+  }
 
-      const current = new Date(dateInput.value);
-      if (Number.isNaN(current.getTime())) return;
+  const current = new Date(dateInput.value);
+  if (Number.isNaN(current.getTime())) {
+    console.log("changeDateBy: invalid current date", dateInput.value);
+    return;
+  }
 
-      current.setDate(current.getDate() + days);
+  console.log("changeDateBy called with days =", days, "current =", current.toISOString().slice(0, 10));
 
-      const y = current.getFullYear();
-      const m = String(current.getMonth() + 1).padStart(2, "0");
-      const d = String(current.getDate()).padStart(2, "0");
-      const newValue = `${y}-${m}-${d}`;
+  // Force exactly 1‑day steps in UTC to avoid timezone jumps
+  current.setUTCDate(current.getUTCDate() + days);
 
-      dateInput.value = newValue;
+  const y = current.getUTCFullYear();
+  const m = String(current.getUTCMonth() + 1).padStart(2, "0");
+  const d = String(current.getUTCDate()).padStart(2, "0");
+  const newValue = `${y}-${m}-${d}`;
 
-      // reuse your existing behavior: load from cloud for the new date
-      loadDayFromCloud(newValue);
-    }
+  console.log("new date =", newValue);
+
+  dateInput.value = newValue;
+  loadDayFromCloud(newValue);
+}
+
 
     function setupDateNavigation() {
       const prevBtn = document.getElementById("prevDateBtn");
       const nextBtn = document.getElementById("nextDateBtn");
 
+      console.log("setupDateNavigation:", { prevBtn, nextBtn });
+
+
       if (prevBtn) {
         prevBtn.addEventListener("click", () => changeDateBy(-1));
+        console.log("Prev button clicked");
       }
       if (nextBtn) {
         nextBtn.addEventListener("click", () => changeDateBy(1));
+        console.log("Next button clicked");
       }
     }
 
