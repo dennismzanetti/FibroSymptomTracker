@@ -430,8 +430,8 @@ function loadDayFromCloud(date) {
     status.textContent = "Cloud load failed.";
   });
 }
-    // ---- UI setup ----
-window.onload = () => {
+// ---- UI setup ----
+window.addEventListener("load", () => {
   setupTabs();
   setupExerciseToggle();
   setupSaveDay();
@@ -449,7 +449,8 @@ window.onload = () => {
 
   refreshHistory();
   refreshTrends();
-};
+});
+
 
 
     function setupTabs() {
