@@ -464,7 +464,6 @@ function setupSaveDay() {
       return;
     }
 
-    // 1) Save locally (your existing logic)
     status.textContent = "Saving locally...";
 
     const days = loadAllDays();
@@ -478,14 +477,12 @@ function setupSaveDay() {
 
     status.textContent = "Saved locally.";
 
-    // 2) Save to Firestore: one document per date
     try {
       status.textContent = "Saving to cloud...";
 
-      // use the date string as the document ID
-      const dayRef = db.collection("days").doc(dayData.date);        // one doc per date [web:412]
-      await dayRef.set(dayData, { merge: false });                   // overwrite that doc [web:412]
-         // create or overwrite [web:412]
+      // IMPORTANT: use db.collection("days").doc(...)
+      const dayRef = db.collection("days").doc(dayData.date);   // [web:412]
+      await dayRef.set(dayData, { merge: false });              // [web:412]
 
       status.textContent = "Saved locally + cloud.";
       console.log("Saved day to cloud for", dayData.date);
@@ -498,6 +495,7 @@ function setupSaveDay() {
     refreshTrends();
   });
 }
+
 
 
     function collectFormData() {
