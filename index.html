@@ -451,10 +451,11 @@
       dateInput.value = today.toISOString().slice(0, 10);
     }
 
-    import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; // make sure this import exists
-// and you already have: const db = getFirestore(app);
+
 
 function setupSaveDay() {
+      import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; // make sure this import exists
+
   const saveBtn = document.getElementById("saveDayBtn");
   const status = document.getElementById("saveStatus");
 
