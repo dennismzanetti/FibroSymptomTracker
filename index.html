@@ -694,35 +694,6 @@ function setupSaveDay() {
     }
   </script>
 
-  <script>
-    // Cloud save using existing collectFormData
-    window.addEventListener('DOMContentLoaded', () => {
-      const saveCloudButton = document.getElementById('saveCloudButton');
-      if (!saveCloudButton) {
-        console.error('saveCloudButton not found');
-        return;
-      }
 
-      saveCloudButton.addEventListener('click', async () => {
-        try {
-          const dayData = collectFormData();
-          if (!dayData.date) {
-            alert('Please select a date before saving to cloud.');
-            return;
-          }
-
-          const docRef = await db.collection('days').add({
-            ...dayData,
-            createdAt: new Date().toISOString()
-          });
-          console.log('Cloud day saved with ID: ', docRef.id);
-          alert('Saved to cloud!');
-        } catch (e) {
-          console.error('Error saving to cloud: ', e);
-          alert('Cloud save failed. See console for details.');
-        }
-      });
-    });
-  </script>
 </body>
 </html>
