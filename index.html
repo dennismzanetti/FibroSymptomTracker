@@ -410,23 +410,26 @@
     }
 
     // ---- UI setup ----
-    window.onload = () => {
-      setupTabs();
-      setupExerciseToggle();
-      setupSaveDay();
-      loadTodayDate();
-  // auto‑load for the initial date
-  const dateInput = document.getElementById("dateInput");
-  loadDayFromCloud(dateInput.value);
+window.onload = () => {
+  setupTabs();
+  setupExerciseToggle();
+  setupSaveDay();
+  loadTodayDate();
 
-  // auto‑load whenever the date changes
+  const dateInput = document.getElementById("dateInput");
+  console.log("dateInput on load:", dateInput); // should NOT be null
+
+  loadDayFromCloud(dateInput.value);  // auto‑load initial date
+
   dateInput.addEventListener("change", (e) => {
-    loadDayFromCloud(e.target.value);      // [web:513]
+    console.log("date changed to", e.target.value);
+    loadDayFromCloud(e.target.value);
   });
 
-      refreshHistory();
-      refreshTrends();
-    };
+  refreshHistory();
+  refreshTrends();
+};
+
 
     function setupTabs() {
       const buttons = document.querySelectorAll(".tab-button");
