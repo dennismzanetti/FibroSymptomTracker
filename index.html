@@ -514,6 +514,43 @@ function setupSaveDay() {
   });
 }
 
+function clearFormFieldsExceptDate() {
+  document.getElementById("dayTitleInput").value = "";
+  document.getElementById("overallNotesInput").value = "";
+
+  const clearBlock = (prefix) => {
+    document.getElementById(prefix + "Score").value = "";
+    document.getElementById(prefix + "Activity").value = "";
+    document.getElementById(prefix + "Symptoms").value = "";
+  };
+
+  clearBlock("earlyMorning");
+  clearBlock("lateMorning");
+  clearBlock("earlyAfternoon");
+  clearBlock("lateAfternoon");
+  clearBlock("earlyEvening");
+  clearBlock("lateEvening");
+
+  document.getElementById("bedtimeInput").value = "";
+  document.getElementById("wakeTimeInput").value = "";
+  document.getElementById("hoursSleptInput").value = "";
+  document.getElementById("sleepQualityInput").value = "";
+  document.getElementById("awakeningsInput").value = "";
+  document.getElementById("sleepNotesInput").value = "";
+
+  document.getElementById("didExerciseInput").value = "no";
+  document.getElementById("didExerciseInput").dispatchEvent(new Event("change"));
+  document.getElementById("exerciseTypeInput").value = "";
+  document.getElementById("exerciseMinutesInput").value = "";
+  document.getElementById("exerciseIntensityInput").value = "";
+  document.getElementById("exerciseTimingInput").value = "";
+  document.getElementById("exerciseNotesInput").value = "";
+
+  document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
+    cb.checked = false;
+  });
+}
+
 function loadDayFromCloud(date) {
   const status = document.getElementById("saveStatus");
   if (!date) return;
