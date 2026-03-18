@@ -156,10 +156,11 @@
 
   <main>
     <nav id="tabs">
+      <button id="saveDayBtn" class="primary">Save Day</button>
       <button class="tab-button active" data-tab="entry-tab">Daily Entry</button>
       <button class="tab-button" data-tab="history-tab">History</button>
       <button class="tab-button" data-tab="trends-tab">Trends</button>
-      <button id="saveDayBtn" class="primary">Save Day</button>
+  
     </nav>
       <p id="saveStatus"></p>
 
@@ -531,7 +532,9 @@ function loadDayFromCloud(date) {
     }
   }).catch((error) => {
     console.error("Error getting document:", error);
+    clearFormFieldsExceptDate();
     status.textContent = "Cloud load failed.";
+
   });
 }
 
