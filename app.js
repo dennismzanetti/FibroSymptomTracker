@@ -536,7 +536,6 @@ async function refreshTrends() {
       }
     });
 
-    const snapshot = await db
   .collection("days")
   .orderBy(firebase.firestore.FieldPath.documentId())
   .get();
