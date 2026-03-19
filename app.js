@@ -1,4 +1,4 @@
-// ---- Firebase init (only once) ----
+// ---- Firebase init (only once) -----
 const firebaseConfig = {
   apiKey: "AIzaSyD75EQyz7w9ZYuK8iDewQDzI5Z2RUzMk1k",
   authDomain: "fibrosymptomtracker.firebaseapp.com",
