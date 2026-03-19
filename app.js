@@ -323,7 +323,6 @@ function collectFormData() {
   };
 }
 
-// ---- History ----
 // ---- History from Firestore ----
 async function refreshHistory() {
   const list = document.getElementById("historyList");
@@ -363,22 +362,47 @@ async function refreshHistory() {
       return;
     }
 
-    days.slice(0, 30).forEach(d => {
-      const li = document.createElement("li");
-      const title = d.dayTitle ? ` – ${d.dayTitle}` : "";
-      const avg = d.avgFunctionality != null ? ` | Avg func: ${d.avgFunctionality.toFixed(1)}` : "";
-      li.textContent = `${d.date}${title}${avg}`;
+days.slice(0, 30).forEach(d => {
+  const li = document.createElement("li");
+  const title = d.dayTitle ? ` – ${d.dayTitle}` : "";
+  const avg = d.avgFunctionality != null ? ` | Avg func: ${d.avgFunctionality.toFixed(1)}` : "";
 
-      const loadBtn = document.createElement("button");
-      loadBtn.textContent = "Load";
-      loadBtn.addEventListener("click", () => {
-        fillFormFromData(d);
-        switchToTab("entry-tab");
-      });
+  const textSpan = document.createElement("span");
+  textSpan.textContent = `${d.date}${title}${avg}`;
+  li.appendChild(textSpan);
 
-      li.appendChild(loadBtn);
-      list.appendChild(li);
-    });
+  // Load button
+  const loadBtn = document.createElement("button");
+  loadBtn.textContent = "Load";
+  loadBtn.addEventListener("click", () => {
+    fillFormFromData(d);
+    switchToTab("entry-tab");
+  });
+  li.appendChild(loadBtn);
+
+  // Delete button
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "Delete";
+  deleteBtn.classList.add("danger"); // optional styling
+  deleteBtn.addEventListener("click", async () => {
+    const confirmed = window.confirm(`Delete entry for ${d.date}?`);
+    if (!confirmed) return;
+
+    try {
+      await db.collection("days").doc(d.date).delete();  // delete Firestore doc[web:758][web:760]
+      console.log("Deleted day", d.date);
+      refreshHistory(); // reload list
+      refreshTrends();  // keep chart in sync
+    } catch (err) {
+      console.error("Error deleting day:", err);
+      alert("Failed to delete this entry from the cloud.");
+    }
+  });
+  li.appendChild(deleteBtn);
+
+  list.appendChild(li);
+});
+
   } catch (err) {
     console.error("Error loading history from cloud:", err);
     list.innerHTML = "<li>Cloud history load failed.</li>";
