@@ -106,10 +106,11 @@ function loadTodayDate() {
 }
 
 function setupSaveDay() {
-  const saveBtn = document.getElementById("saveDayBtn");
+  const topBtn = document.getElementById("saveDayTop");
+  const bottomBtn = document.getElementById("saveDayBottom");
   const status = document.getElementById("saveStatus");
 
-  saveBtn.addEventListener("click", async () => {
+  const handleSaveClick = async () => {
     const dayData = collectFormData();
     if (!dayData.date) {
       status.textContent = "Please select a date.";
@@ -141,11 +142,14 @@ function setupSaveDay() {
       console.error("Error saving to cloud:", err);
       status.textContent = "Saved locally, but cloud save failed.";
     }
+  };
+
+  topBtn?.addEventListener("click", handleSaveClick);
+  bottomBtn?.addEventListener("click", handleSaveClick);
 
     refreshHistory();
     refreshTrends();
-  });
-}
+  };
 
 function clearFormFieldsExceptDate() {
   document.getElementById("dayTitleInput").value = "";
