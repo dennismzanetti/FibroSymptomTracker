@@ -80,13 +80,25 @@ function setupTabs() {
   buttons.forEach(btn => {
     btn.addEventListener("click", () => {
       const target = btn.getAttribute("data-tab");
+
       buttons.forEach(b => b.classList.remove("active"));
       tabs.forEach(t => t.classList.remove("active"));
       btn.classList.add("active");
       document.getElementById(target).classList.add("active");
+
+      // Extra: refresh when History tab is opened
+      if (target === "history-tab") {
+        refreshHistory();
+      }
+
+      // Optional: refresh trends when Trends tab opened
+      if (target === "trends-tab") {
+        refreshTrends();
+      }
     });
   });
 }
+
 
 function setupExerciseToggle() {
   const didExerciseInput = document.getElementById("didExerciseInput");
