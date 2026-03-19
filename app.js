@@ -154,14 +154,16 @@ function setupSaveDay() {
       console.error("Error saving to cloud:", err);
       status.textContent = "Saved locally, but cloud save failed.";
     }
+
+    // refresh after a successful save
+    refreshHistory();
+    refreshTrends();
   };
 
   topBtn?.addEventListener("click", handleSaveClick);
   bottomBtn?.addEventListener("click", handleSaveClick);
+}
 
-    refreshHistory();
-    refreshTrends();
-  };
 
 function clearFormFieldsExceptDate() {
   document.getElementById("dayTitleInput").value = "";
@@ -509,6 +511,8 @@ function switchToTab(tabId) {
 // ---- Trends ----
 let functionalityChart = null;
 
+let functionalityChart = null;
+
 async function refreshTrends() {
   const canvas = document.getElementById("functionalityChart");
   if (!canvas) return;
@@ -516,11 +520,12 @@ async function refreshTrends() {
   const ctx = canvas.getContext("2d");
 
   try {
-    // Get all days ordered by document ID (your YYYY-MM-DD date string)
     const snapshot = await db
       .collection("days")
-      .orderBy(firebase.firestore.FieldPath.documentId())  // [web:731][web:743]
-      .get();                                              // [web:733][web:734]
+      .orderBy(firebase.firestore.FieldPath.documentId())
+      .get();
+
+    console.log("Trends snapshot size:", snapshot.size);
 
     const labels = [];
     const data = [];
@@ -530,34 +535,13 @@ async function refreshTrends() {
       const date = d.date || doc.id;
       const avg = d.avgFunctionality;
 
+      console.log("Trend doc:", doc.id, "avgFunctionality:", avg);
+
       if (typeof avg === "number") {
         labels.push(date);
         data.push(avg);
       }
     });
-
-  .collection("days")
-  .orderBy(firebase.firestore.FieldPath.documentId())
-  .get();
-
-console.log("Trends snapshot size:", snapshot.size);
-
-const labels = [];
-const data = [];
-
-snapshot.forEach(doc => {
-  const d = doc.data();
-  const date = d.date || doc.id;
-  const avg = d.avgFunctionality;
-
-  console.log("Trend doc:", doc.id, "avgFunctionality:", avg);
-
-  if (typeof avg === "number") {
-    labels.push(date);
-    data.push(avg);
-  }
-});
-
 
     if (functionalityChart) {
       functionalityChart.destroy();
