@@ -312,33 +312,67 @@ function collectFormData() {
 }
 
 // ---- History ----
-function refreshHistory() {
+// ---- History from Firestore ----
+async function refreshHistory() {
   const list = document.getElementById("historyList");
-  const days = loadAllDays().sort((a, b) => a.date.localeCompare(b.date)).reverse();
-  list.innerHTML = "";
+  if (!list) return;
 
-  if (!days.length) {
-    list.innerHTML = "<li>No entries yet.</li>";
-    return;
-  }
+  list.innerHTML = "<li>Loading...</li>";
 
-  days.slice(0, 30).forEach(d => {
-    const li = document.createElement("li");
-    const title = d.dayTitle ? ` – ${d.dayTitle}` : "";
-    const avg = d.avgFunctionality != null ? ` | Avg func: ${d.avgFunctionality.toFixed(1)}` : "";
-    li.textContent = `${d.date}${title}${avg}`;
+  try {
+    const snapshot = await db
+      .collection("days")
+      .orderBy(firebase.firestore.FieldPath.documentId()) // order by date string (doc id)
+      .get();                                            // [web:731][web:733][web:734]
 
-    const loadBtn = document.createElement("button");
-    loadBtn.textContent = "Load";
-    loadBtn.addEventListener("click", () => {
-      fillFormFromData(d);
-      switchToTab("entry-tab");
+    const days = [];
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      days.push({
+        // ensure we always have a date field; doc.id is your YYYY-MM-DD
+        date: data.date || doc.id,
+        dayTitle: data.dayTitle || "",
+        avgFunctionality: data.avgFunctionality ?? null,
+        functionality: data.functionality || null,
+        sleep: data.sleep || null,
+        didExercise: data.didExercise || false,
+        exercise: data.exercise || null,
+        tags: data.tags || []
+      });
     });
 
-    li.appendChild(loadBtn);
-    list.appendChild(li);
-  });
+    // newest first
+    days.sort((a, b) => a.date.localeCompare(b.date)).reverse();
+
+    list.innerHTML = "";
+
+    if (!days.length) {
+      list.innerHTML = "<li>No entries yet.</li>";
+      return;
+    }
+
+    days.slice(0, 30).forEach(d => {
+      const li = document.createElement("li");
+      const title = d.dayTitle ? ` – ${d.dayTitle}` : "";
+      const avg = d.avgFunctionality != null ? ` | Avg func: ${d.avgFunctionality.toFixed(1)}` : "";
+      li.textContent = `${d.date}${title}${avg}`;
+
+      const loadBtn = document.createElement("button");
+      loadBtn.textContent = "Load";
+      loadBtn.addEventListener("click", () => {
+        fillFormFromData(d);
+        switchToTab("entry-tab");
+      });
+
+      li.appendChild(loadBtn);
+      list.appendChild(li);
+    });
+  } catch (err) {
+    console.error("Error loading history from cloud:", err);
+    list.innerHTML = "<li>Cloud history load failed.</li>";
+  }
 }
+
 
 function fillFormFromData(d) {
   document.getElementById("dateInput").value = d.date || "";
