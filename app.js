@@ -485,43 +485,60 @@ function switchToTab(tabId) {
 // ---- Trends ----
 let functionalityChart = null;
 
-function refreshTrends() {
-  const ctx = document.getElementById("functionalityChart").getContext("2d");
-  const days = loadAllDays().sort((a, b) => a.date.localeCompare(b.date));
+async function refreshTrends() {
+  const canvas = document.getElementById("functionalityChart");
+  if (!canvas) return;
 
-  const labels = [];
-  const data = [];
+  const ctx = canvas.getContext("2d");
 
-  days.forEach(d => {
-    if (d.avgFunctionality != null) {
-      labels.push(d.date);
-      data.push(d.avgFunctionality);
+  try {
+    // Get all days ordered by document ID (your YYYY-MM-DD date string)
+    const snapshot = await db
+      .collection("days")
+      .orderBy(firebase.firestore.FieldPath.documentId())  // [web:731][web:743]
+      .get();                                              // [web:733][web:734]
+
+    const labels = [];
+    const data = [];
+
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      const date = d.date || doc.id;
+      const avg = d.avgFunctionality;
+
+      if (typeof avg === "number") {
+        labels.push(date);
+        data.push(avg);
+      }
+    });
+
+    if (functionalityChart) {
+      functionalityChart.destroy();
     }
-  });
 
-  if (functionalityChart) {
-    functionalityChart.destroy();
-  }
-
-  functionalityChart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels,
-      datasets: [{
-        label: "Average daily functionality",
-        data,
-        borderColor: "#3f51b5",
-        backgroundColor: "rgba(63,81,181,0.15)",
-        tension: 0.2
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          suggestedMin: 0,
-          suggestedMax: 10
+    functionalityChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: "Average daily functionality",
+          data,
+          borderColor: "#3f51b5",
+          backgroundColor: "rgba(63,81,181,0.15)",
+          tension: 0.2
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            suggestedMin: 0,
+            suggestedMax: 10
+          }
         }
       }
-    }
-  });
+    });
+  } catch (err) {
+    console.error("Error loading trends from cloud:", err);
+  }
 }
+
