@@ -512,6 +512,30 @@ async function refreshTrends() {
       }
     });
 
+    const snapshot = await db
+  .collection("days")
+  .orderBy(firebase.firestore.FieldPath.documentId())
+  .get();
+
+console.log("Trends snapshot size:", snapshot.size);
+
+const labels = [];
+const data = [];
+
+snapshot.forEach(doc => {
+  const d = doc.data();
+  const date = d.date || doc.id;
+  const avg = d.avgFunctionality;
+
+  console.log("Trend doc:", doc.id, "avgFunctionality:", avg);
+
+  if (typeof avg === "number") {
+    labels.push(date);
+    data.push(avg);
+  }
+});
+
+
     if (functionalityChart) {
       functionalityChart.destroy();
     }
