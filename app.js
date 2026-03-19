@@ -511,8 +511,6 @@ function switchToTab(tabId) {
 // ---- Trends ----
 let functionalityChart = null;
 
-let functionalityChart = null;
-
 async function refreshTrends() {
   const canvas = document.getElementById("functionalityChart");
   if (!canvas) return;
