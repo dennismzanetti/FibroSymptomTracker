@@ -131,4 +131,6 @@
     .header-date-controls button,
     .header-date-controls input[type="date"] {
     min-height: 36px;
+    width: 8rem;  
     }
+
