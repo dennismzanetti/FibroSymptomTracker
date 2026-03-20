@@ -197,6 +197,11 @@ function clearFormFieldsExceptDate() {
   document.getElementById("exerciseTimingInput").value = "";
   document.getElementById("exerciseNotesInput").value = "";
 
+  document.getElementById("exerciseNotesInput").value = "";
+
+  document.getElementById("moodScoreInput").value = "";
+  document.getElementById("moodNotesInput").value = "";
+
   document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
     cb.checked = false;
   });
@@ -256,6 +261,9 @@ function clearFormFields() {
   document.getElementById("exerciseIntensityInput").value = "";
   document.getElementById("exerciseTimingInput").value = "";
   document.getElementById("exerciseNotesInput").value = "";
+
+  document.getElementById("moodScoreInput").value = "";
+  document.getElementById("moodNotesInput").value = "";
 
   document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
     cb.checked = false;
@@ -459,13 +467,15 @@ function fillFormFromData(d) {
   }
   document.getElementById("didExerciseInput").dispatchEvent(new Event("change"));
   
-  if (d.mood) {
+    // Mood (handle older docs with no mood)
+    if (d.mood && (d.mood.score != null || d.mood.notes)) {
     document.getElementById("moodScoreInput").value = d.mood.score ?? "";
     document.getElementById("moodNotesInput").value = d.mood.notes || "";
-  } else {
+    } else {
     document.getElementById("moodScoreInput").value = "";
     document.getElementById("moodNotesInput").value = "";
-  }
+    }
+
 }
   const tagsSet = new Set(d.tags || []);
   document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
