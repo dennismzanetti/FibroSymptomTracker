@@ -481,7 +481,7 @@ function fillFormFromData(d) {
   document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
     cb.checked = tagsSet.has(cb.value);
   });
-}
+
 
 function changeDateBy(days) {
   const dateInput = document.getElementById("dateInput");
