@@ -312,6 +312,9 @@ function collectFormData() {
     ? scores.reduce((a, b) => a + b, 0) / scores.length
     : null;
 
+  const moodScore = numberOrNull(document.getElementById("moodScoreInput").value);
+  const moodNotes = document.getElementById("moodNotesInput").value;
+
   return {
     date,
     dayTitle,
@@ -321,9 +324,14 @@ function collectFormData() {
     didExercise,
     exercise,
     tags,
-    avgFunctionality
+    avgFunctionality,
+    mood: {
+      score: moodScore,
+      notes: moodNotes
+    }
   };
 }
+
 
 // ---- History from Firestore ----
 async function refreshHistory() {
@@ -450,7 +458,15 @@ function fillFormFromData(d) {
     document.getElementById("didExerciseInput").value = "no";
   }
   document.getElementById("didExerciseInput").dispatchEvent(new Event("change"));
-
+  
+  if (d.mood) {
+    document.getElementById("moodScoreInput").value = d.mood.score ?? "";
+    document.getElementById("moodNotesInput").value = d.mood.notes || "";
+  } else {
+    document.getElementById("moodScoreInput").value = "";
+    document.getElementById("moodNotesInput").value = "";
+  }
+}
   const tagsSet = new Set(d.tags || []);
   document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
     cb.checked = tagsSet.has(cb.value);
