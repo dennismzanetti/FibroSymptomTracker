@@ -527,14 +527,14 @@ function setupDateNavigation() {
   }
 
   dateInput.addEventListener("change", async () => {
-    if (typeof loadDayByDate === "function") {
+    if (typeof loadDayFromCloud === "function") {
       await loadDayFromCloud(dateInput.value);
     }
   });
 
   if (prevDayBtn) {
     prevDayBtn.addEventListener("click", async () => {
-      changeDay(-1);
+      changeDateBy(-1);
       if (typeof loadDayFromCloud === "function") {
         await loadDayFromCloud(dateInput.value);
       }
@@ -543,12 +543,13 @@ function setupDateNavigation() {
 
   if (nextDayBtn) {
     nextDayBtn.addEventListener("click", async () => {
-      changeDay(1);
+      changeDateBy(1);
       if (typeof loadDayFromCloud === "function") {
         await loadDayFromCloud(dateInput.value);
       }
     });
   }
+}
 
   function changeDay(offset) {
     if (!dateInput.value) {
