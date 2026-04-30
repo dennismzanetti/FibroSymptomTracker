@@ -498,10 +498,7 @@ function fillFormFromData(d) {
     }
 
 }
-  const tagsSet = new Set(d.tags || []);
-  document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
-    cb.checked = tagsSet.has(cb.value);
-  });
+
  
   
 
