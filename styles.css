@@ -114,73 +114,58 @@ textarea {
   justify-content: center;
   gap: 0.75rem;
   flex-wrap: nowrap;
-  margin: 0 auto 1rem auto;
-  position: relative;
+  margin: 0.35rem auto 0 auto;
+  padding: 0.2rem 0;
 }
 
 .date-display {
-  min-width: 170px;
+  min-width: 190px;
   text-align: center;
   font-size: 1rem;
-  font-weight: 600;
-  color: #2d3142;
-  background: #fbfcff;
-  border: 1px solid #cfd5e3;
-  border-radius: 10px;
-  padding: 0.65rem 0.9rem;
+  font-weight: 700;
+  color: #24304f;
+  background: #ffffff;
+  border: 1px solid #dfe5f2;
+  border-radius: 14px;
+  padding: 0.8rem 1rem;
   line-height: 1.2;
-}
-
-.date-row input[type="date"] {
-  width: 165px !important;
-  min-width: 165px;
-  max-width: 165px;
-  flex: 0 0 165px;
-  flex-grow: 0;
-  flex-shrink: 0;
-  margin-top: 0;
+  box-shadow: 0 8px 20px rgba(18, 24, 40, 0.12);
+  letter-spacing: -0.01em;
 }
 
 .date-nav-btn {
   border: none;
-  background: #eef2ff;
+  background: rgba(255, 255, 255, 0.92);
   color: #32408f;
   border-radius: 999px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(18, 24, 40, 0.10);
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
 
-.date-nav-btn.icon-btn {
-  width: 42px;
-  height: 42px;
-  min-width: 42px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  line-height: 1;
-}
-
+.date-nav-btn.icon-btn,
 .icon-btn {
-  width: 42px;
-  height: 42px;
-  min-width: 42px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
   padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   line-height: 1;
 }
 
 .date-nav-btn:hover {
-  background: #dfe6ff;
+  background: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(18, 24, 40, 0.14);
 }
 
 .date-nav-btn:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
+  box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.18);
 }
 
 @media (max-width: 640px) {
@@ -192,12 +177,13 @@ textarea {
     text-align: left;
   }
 
-  .date-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-  }
+.date-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.55rem;
+}
 
   .date-row input[type="date"] {
     width: 165px !important;
