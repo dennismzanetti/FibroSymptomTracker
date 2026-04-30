@@ -2,168 +2,164 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Fibromyalgia Daily Tracker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="styles.css">
+  <title>Fibromyalgia Daily Tracker</title>
 
-  <!-- these scripts are here so they run before any code runs -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script type="module" src="app.js" defer></script>
-  
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="app.js" defer></script>
 </head>
 <body>
-
-<header class="app-header">
-  <h1>Fibromyalgia Daily Tracker</h1>
-
-    <div class="header-date-controls">
-      <button type="button" id="prevDateBtn" aria-label="Previous day">
-        &#x25C0;
-      </button>
-      <input type="date" id="dateInput" />
-      <button type="button" id="nextDateBtn" aria-label="Next day">
-        &#x25B6;
-      </button>
-    </div>
-
-</header>
-
-
+  <header>
+    <h1>Fibromyalgia Daily Tracker</h1>
+  </header>
 
   <main>
-    <nav id="tabs">
-      <button id="saveDayTop" class="primary">Save Day</button>
-      <button class="tab-button active" data-tab="entry-tab">Daily Entry</button>
-      <button class="tab-button" data-tab="history-tab">History</button>
-      <button class="tab-button" data-tab="trends-tab">Trends</button>
-  
-    </nav>
-      <p id="saveStatus"></p>
+    <section id="user-section">
+      <h2>User</h2>
+      <label>
+        User ID (any unique name or email)
+        <input
+          type="text"
+          id="userIdInput"
+          placeholder="example: myemail@gmail.com"
+        />
+      </label>
+      <button id="setUserBtn" type="button">Set User</button>
+      <p id="userStatus"></p>
+    </section>
 
-    <!-- Daily Entry Tab -->
+    <nav id="tabs">
+      <button class="tab-button active" data-tab="entry-tab" type="button">Daily Entry</button>
+      <button class="tab-button" data-tab="history-tab" type="button">History</button>
+      <button class="tab-button" data-tab="trends-tab" type="button">Trends</button>
+    </nav>
+
     <section id="entry-tab" class="tab active">
       <h2>Daily Entry</h2>
 
       <div class="card">
         <h3>Day Info</h3>
-          Day title (optional):
-          <input type="text" id="dayTitleInput" placeholder="Flare day, Better day, etc." />
-        </label>
+
         <label>
-          Overall notes:
-          <textarea id="overallNotesInput" rows="2" placeholder="Big events, stress, weather, etc."></textarea>
+          Date
+          <input type="date" id="dateInput" />
+        </label>
+
+        <label>
+          Day title (optional)
+          <input
+            type="text"
+            id="dayTitleInput"
+            placeholder="Flare day, Better day, etc."
+          />
+        </label>
+
+        <label>
+          Overall notes
+          <textarea
+            id="overallNotesInput"
+            rows="2"
+            placeholder="Big events, stress, weather, etc."
+          ></textarea>
         </label>
       </div>
 
-      <!-- Mood -->
-      <div class="card">
-        <h3>Mood</h3>
-        <label>
-          Overall mood (0–10):
-          <input type="number" id="moodScoreInput" min="0" max="10" step="1" />
-        </label>
-        <label>
-          Mood notes:
-          <textarea id="moodNotesInput" rows="2" placeholder="Anxious, low, ok, calm, etc."></textarea>
-        </label>
-      </div>
-
-      <!-- Functionality by time of day -->
       <div class="card">
         <h3>Functionality by Time of Day</h3>
 
-        <div class="time-block">
+        <div class="time-block" data-block="earlyMorning">
           <h4>Early morning (5–9 am)</h4>
           <label>
-            Functionality (1–10):
+            Functionality (1–10)
             <input type="number" min="1" max="10" id="earlyMorningScore" />
           </label>
           <label>
-            What I was doing:
+            What I was doing
             <input type="text" id="earlyMorningActivity" />
           </label>
           <label>
-            Symptoms / how it felt:
+            Symptoms / how it felt
             <textarea id="earlyMorningSymptoms" rows="2"></textarea>
           </label>
         </div>
 
-        <div class="time-block">
+        <div class="time-block" data-block="lateMorning">
           <h4>Late morning (9–12)</h4>
           <label>
-            Functionality (1–10):
+            Functionality (1–10)
             <input type="number" min="1" max="10" id="lateMorningScore" />
           </label>
           <label>
-            What I was doing:
+            What I was doing
             <input type="text" id="lateMorningActivity" />
           </label>
           <label>
-            Symptoms / how it felt:
+            Symptoms / how it felt
             <textarea id="lateMorningSymptoms" rows="2"></textarea>
           </label>
         </div>
 
-        <div class="time-block">
+        <div class="time-block" data-block="earlyAfternoon">
           <h4>Early afternoon (12–3)</h4>
           <label>
-            Functionality (1–10):
+            Functionality (1–10)
             <input type="number" min="1" max="10" id="earlyAfternoonScore" />
           </label>
           <label>
-            What I was doing:
+            What I was doing
             <input type="text" id="earlyAfternoonActivity" />
           </label>
           <label>
-            Symptoms / how it felt:
+            Symptoms / how it felt
             <textarea id="earlyAfternoonSymptoms" rows="2"></textarea>
           </label>
         </div>
 
-        <div class="time-block">
+        <div class="time-block" data-block="lateAfternoon">
           <h4>Late afternoon (3–6)</h4>
           <label>
-            Functionality (1–10):
+            Functionality (1–10)
             <input type="number" min="1" max="10" id="lateAfternoonScore" />
           </label>
           <label>
-            What I was doing:
+            What I was doing
             <input type="text" id="lateAfternoonActivity" />
           </label>
           <label>
-            Symptoms / how it felt:
+            Symptoms / how it felt
             <textarea id="lateAfternoonSymptoms" rows="2"></textarea>
           </label>
         </div>
 
-        <div class="time-block">
+        <div class="time-block" data-block="earlyEvening">
           <h4>Early evening (6–9)</h4>
           <label>
-            Functionality (1–10):
+            Functionality (1–10)
             <input type="number" min="1" max="10" id="earlyEveningScore" />
           </label>
           <label>
-            What I was doing:
+            What I was doing
             <input type="text" id="earlyEveningActivity" />
           </label>
           <label>
-            Symptoms / how it felt:
+            Symptoms / how it felt
             <textarea id="earlyEveningSymptoms" rows="2"></textarea>
           </label>
         </div>
 
-        <div class="time-block">
+        <div class="time-block" data-block="lateEvening">
           <h4>Late evening (9–12)</h4>
           <label>
-            Functionality (1–10):
+            Functionality (1–10)
             <input type="number" min="1" max="10" id="lateEveningScore" />
           </label>
           <label>
-            What I was doing:
+            What I was doing
             <input type="text" id="lateEveningActivity" />
           </label>
           <label>
-            Symptoms / how it felt:
+            Symptoms / how it felt
             <textarea id="lateEveningSymptoms" rows="2"></textarea>
           </label>
         </div>
@@ -171,34 +167,41 @@
 
       <div class="card">
         <h3>Sleep (previous night)</h3>
+
         <label>
-          Bedtime:
+          Bedtime
           <input type="time" id="bedtimeInput" />
         </label>
+
         <label>
-          Wake time:
+          Wake time
           <input type="time" id="wakeTimeInput" />
         </label>
+
         <label>
-          Total hours slept:
+          Total hours slept
           <input type="number" step="0.1" id="hoursSleptInput" />
         </label>
+
         <label>
-          Sleep quality (1–10):
+          Sleep quality (1–10)
           <input type="number" min="1" max="10" id="sleepQualityInput" />
         </label>
+
         <label>
-          Number of awakenings:
+          Number of awakenings
           <input type="number" min="0" id="awakeningsInput" />
         </label>
+
         <label>
-          Sleep notes:
+          Sleep notes
           <textarea id="sleepNotesInput" rows="2"></textarea>
         </label>
       </div>
 
       <div class="card">
         <h3>Exercise / Activity</h3>
+
         <label>
           Did you do planned exercise or notable activity?
           <select id="didExerciseInput">
@@ -206,9 +209,10 @@
             <option value="yes">Yes</option>
           </select>
         </label>
+
         <div id="exerciseDetails">
           <label>
-            Type:
+            Type
             <select id="exerciseTypeInput">
               <option value="">Select...</option>
               <option value="walk">Walk</option>
@@ -219,12 +223,14 @@
               <option value="other">Other</option>
             </select>
           </label>
+
           <label>
-            Duration (minutes):
+            Duration (minutes)
             <input type="number" min="0" id="exerciseMinutesInput" />
           </label>
+
           <label>
-            Intensity:
+            Intensity
             <select id="exerciseIntensityInput">
               <option value="">Select...</option>
               <option value="gentle">Gentle</option>
@@ -232,8 +238,9 @@
               <option value="overdid">Pushed too hard</option>
             </select>
           </label>
+
           <label>
-            Timing:
+            Timing
             <select id="exerciseTimingInput">
               <option value="">Select...</option>
               <option value="morning">Morning</option>
@@ -241,8 +248,9 @@
               <option value="evening">Evening</option>
             </select>
           </label>
+
           <label>
-            Exercise notes:
+            Exercise notes
             <textarea id="exerciseNotesInput" rows="2"></textarea>
           </label>
         </div>
@@ -254,14 +262,13 @@
           <label><input type="checkbox" value="flare" /> Flare</label>
           <label><input type="checkbox" value="crash" /> Crash / post-exertional</label>
           <label><input type="checkbox" value="better" /> Better than usual</label>
-          <label><input type="checkbox" value="poor_sleep" /> Poor sleep</label>
-          <label><input type="checkbox" value="high_stress" /> High stress</label>
-          <label><input type="checkbox" value="weather_change" /> Weather change</label>
+          <label><input type="checkbox" value="poorsleep" /> Poor sleep</label>
+          <label><input type="checkbox" value="highstress" /> High stress</label>
+          <label><input type="checkbox" value="weatherchange" /> Weather change</label>
         </div>
       </div>
 
-      <button id="saveDayBottom" class="primary">Save Day</button>
-
+      <button id="saveDayBtn" class="primary" type="button">Save Day</button>
       <p id="saveStatus"></p>
     </section>
 
@@ -277,8 +284,5 @@
       <canvas id="functionalityChart" height="200"></canvas>
     </section>
   </main>
-
-  <script src="app.js"></script>
-
 </body>
 </html>
