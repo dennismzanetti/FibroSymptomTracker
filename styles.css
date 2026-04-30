@@ -104,8 +104,8 @@ textarea {
 }
 
 .date-row input[type="date"] {
-  flex: 1;
-  min-width: 0;
+  flex: 0 0 165px;
+  width: 165px;
 }
 
 .date-nav-btn {
