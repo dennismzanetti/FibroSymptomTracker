@@ -127,20 +127,33 @@ textarea {
 }
 
 .date-nav-btn {
-  min-width: 110px;
   border: none;
   background: #eef2ff;
   color: #32408f;
-  padding: 0.7rem 0.9rem;
   border-radius: 10px;
-  font-size: 0.92rem;
   font-weight: 600;
-  text-align: center;
-  white-space: nowrap;
+  cursor: pointer;
+}
+
+.icon-btn {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  line-height: 1;
 }
 
 .date-nav-btn:hover {
   background: #dfe6ff;
+}
+
+.date-nav-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
 }
 
 @media (max-width: 640px) {
@@ -154,15 +167,15 @@ textarea {
 
   .date-row {
     display: flex;
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
   }
 
-  .date-row input[type="date"],
-  .date-nav-btn {
-    width: 100% !important;
-    min-width: 0;
-    max-width: none;
+  .date-row input[type="date"] {
+    width: 165px !important;
+    min-width: 165px;
+    max-width: 165px;
   }
 }
 
