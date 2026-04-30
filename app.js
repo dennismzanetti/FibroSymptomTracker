@@ -573,7 +573,6 @@ function setupDateNavigation() {
 
     dateInput.value = `${newYear}-${newMonth}-${newDay}`;
   }
-}
 
 function switchToTab(tabId) {
   document.querySelectorAll(".tab-button").forEach(btn => {
