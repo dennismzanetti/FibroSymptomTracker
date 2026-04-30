@@ -512,6 +512,9 @@ function changeDateBy(days) {
   loadDayFromCloud(newValue);
 }
 
+
+// SETUP DATE NAVIGATION
+
 function setupDateNavigation() {
   const dateInput = document.getElementById("dateInput");
   const prevDayBtn = document.getElementById("prevDayBtn");
