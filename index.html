@@ -32,12 +32,7 @@
     &#8249;
   </button>
 
-  <input
-    type="date"
-    id="dateInput"
-    aria-label="Entry date"
-    readonly
-  >
+  <span id="dateDisplay" class="date-display" aria-live="polite"></span>
 
   <button
     type="button"
@@ -58,6 +53,13 @@
   >
     &#8250;
   </button>
+
+  <input
+    type="date"
+    id="dateInput"
+    aria-label="Entry date"
+    class="sr-date-input"
+  >
 </div>
 
 </header>

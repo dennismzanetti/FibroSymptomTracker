@@ -115,6 +115,20 @@ textarea {
   gap: 0.75rem;
   flex-wrap: nowrap;
   margin: 0 auto 1rem auto;
+  position: relative;
+}
+
+.date-display {
+  min-width: 170px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2d3142;
+  background: #fbfcff;
+  border: 1px solid #cfd5e3;
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  line-height: 1.2;
 }
 
 .date-row input[type="date"] {
