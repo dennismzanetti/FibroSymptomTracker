@@ -99,15 +99,17 @@ textarea {
 .date-row {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.75rem;
   flex-wrap: nowrap;
 }
 
 .date-row input[type="date"] {
-  flex: 0 0 165px;
-  width: 165px;
+  width: 165px !important;
   min-width: 165px;
   max-width: 165px;
+  flex: 0 0 165px;
+  flex-grow: 0;
   flex-shrink: 0;
 }
 
