@@ -70,7 +70,6 @@ window.addEventListener("load", () => {
   }
 
   const openDatePickerBtn = document.getElementById("openDatePickerBtn");
-  const dateInput = document.getElementById("dateInput");
 
   if (openDatePickerBtn && dateInput) {
     openDatePickerBtn.addEventListener("click", () => {
