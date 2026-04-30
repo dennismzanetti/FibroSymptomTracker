@@ -21,12 +21,15 @@
 <header class="app-header">
   <h1>Fibromyalgia Daily Tracker</h1>
 
-<label for="dateInput">Date</label>
-<div class="date-row">
-  <button type="button" id="prevDayBtn" class="date-nav-btn">← Previous</button>
-  <input type="date" id="dateInput" />
-  <button type="button" id="nextDayBtn" class="date-nav-btn">Next →</button>
-</div>
+    <div class="header-date-controls">
+      <button type="button" id="prevDateBtn" aria-label="Previous day">
+        &#x25C0;
+      </button>
+      <input type="date" id="dateInput" />
+      <button type="button" id="nextDateBtn" aria-label="Next day">
+        &#x25B6;
+      </button>
+    </div>
 
 </header>
 
