@@ -100,9 +100,10 @@ textarea {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 1rem;
 }
 
-.date-control-group label {
+.date-label {
   margin-bottom: 0.5rem;
   text-align: center;
 }
@@ -122,9 +123,11 @@ textarea {
   flex: 0 0 165px;
   flex-grow: 0;
   flex-shrink: 0;
+  margin-top: 0;
 }
 
 .date-nav-btn {
+  min-width: 110px;
   border: none;
   background: #eef2ff;
   color: #32408f;
@@ -132,6 +135,7 @@ textarea {
   border-radius: 10px;
   font-size: 0.92rem;
   font-weight: 600;
+  text-align: center;
   white-space: nowrap;
 }
 
@@ -140,13 +144,25 @@ textarea {
 }
 
 @media (max-width: 640px) {
+  .date-control-group {
+    align-items: stretch;
+  }
+
+  .date-label {
+    text-align: left;
+  }
+
   .date-row {
+    display: flex;
     flex-direction: column;
     align-items: stretch;
   }
 
+  .date-row input[type="date"],
   .date-nav-btn {
-    width: 100%;
+    width: 100% !important;
+    min-width: 0;
+    max-width: none;
   }
 }
 

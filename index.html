@@ -22,11 +22,28 @@
   <h1>Fibromyalgia Daily Tracker</h1>
 
 <div class="date-control-group">
-  <label for="dateInput">Date</label>
+  <label for="dateInput" class="date-label">Date</label>
+
   <div class="date-row">
-    <button type="button" id="prevDayBtn" class="date-nav-btn">← Previous</button>
+    <button
+      type="button"
+      id="prevDayBtn"
+      class="date-nav-btn"
+      aria-label="Previous day"
+    >
+      ← Previous
+    </button>
+
     <input type="date" id="dateInput" />
-    <button type="button" id="nextDayBtn" class="date-nav-btn">Next →</button>
+
+    <button
+      type="button"
+      id="nextDayBtn"
+      class="date-nav-btn"
+      aria-label="Next day"
+    >
+      Next →
+    </button>
   </div>
 </div>
 
