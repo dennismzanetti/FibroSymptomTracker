@@ -513,16 +513,64 @@ function changeDateBy(days) {
 }
 
 function setupDateNavigation() {
-  const prevBtn = document.getElementById("prevDateBtn");
-  const nextBtn = document.getElementById("nextDateBtn");
+  const dateInput = document.getElementById("dateInput");
+  const prevDayBtn = document.getElementById("prevDayBtn");
+  const nextDayBtn = document.getElementById("nextDayBtn");
 
-  console.log("setupDateNavigation:", { prevBtn, nextBtn });
+  console.log("dateInput:", dateInput);
+  console.log("prevDayBtn:", prevDayBtn);
+  console.log("nextDayBtn:", nextDayBtn);
 
-  if (prevBtn) {
-    prevBtn.addEventListener("click", () => changeDateBy(-1));
+  if (!dateInput) {
+    console.warn("dateInput not found.");
+    return;
   }
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => changeDateBy(1));
+
+  dateInput.addEventListener("change", async () => {
+    if (typeof loadDayByDate === "function") {
+      await loadDayFromCloud(dateInput.value);
+    }
+  });
+
+  if (prevDayBtn) {
+    prevDayBtn.addEventListener("click", async () => {
+      changeDay(-1);
+      if (typeof loadDayFromCloud === "function") {
+        await loadDayFromCloud(dateInput.value);
+      }
+    });
+  }
+
+  if (nextDayBtn) {
+    nextDayBtn.addEventListener("click", async () => {
+      changeDay(1);
+      if (typeof loadDayFromCloud === "function") {
+        await loadDayFromCloud(dateInput.value);
+      }
+    });
+  }
+
+  function changeDay(offset) {
+    if (!dateInput.value) {
+      const today = new Date();
+      dateInput.value = today.toISOString().slice(0, 10);
+    }
+
+    const parts = dateInput.value.split("-");
+    if (parts.length !== 3) return;
+
+    const year = Number(parts[0]);
+    const month = Number(parts[1]) - 1;
+    const day = Number(parts[2]);
+
+    const dt = new Date(year, month, day);
+    dt.setDate(dt.getDate() + offset);
+
+    const newYear = dt.getFullYear();
+    const newMonth = String(dt.getMonth() + 1).padStart(2, "0");
+    const newDay = String(dt.getDate()).padStart(2, "0");
+
+    dateInput.value = `${newYear}-${newMonth}-${newDay}`;
   }
 }
 
