@@ -169,6 +169,11 @@ function setupDateNavigation() {
   const prevDayBtn = document.getElementById("prevDayBtn");
   const nextDayBtn = document.getElementById("nextDayBtn");
 
+if (!dateInput || !prevDayBtn || !nextDayBtn) {
+    console.warn("Date navigation controls not found in HTML.");
+    return;
+}
+
   function shiftDate(days) {
     if (!dateInput.value) return;
 
