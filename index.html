@@ -15,20 +15,6 @@
   </header>
 
   <main>
-    <section id="user-section">
-      <h2>User</h2>
-      <label>
-        User ID (any unique name or email)
-        <input
-          type="text"
-          id="userIdInput"
-          placeholder="example: myemail@gmail.com"
-        />
-      </label>
-      <button id="setUserBtn" type="button">Set User</button>
-      <p id="userStatus"></p>
-    </section>
-
     <nav id="tabs">
       <button class="tab-button active" data-tab="entry-tab" type="button">Daily Entry</button>
       <button class="tab-button" data-tab="history-tab" type="button">History</button>
@@ -68,7 +54,7 @@
       <div class="card">
         <h3>Functionality by Time of Day</h3>
 
-        <div class="time-block" data-block="earlyMorning">
+        <div class="time-block">
           <h4>Early morning (5–9 am)</h4>
           <label>
             Functionality (1–10)
@@ -84,7 +70,7 @@
           </label>
         </div>
 
-        <div class="time-block" data-block="lateMorning">
+        <div class="time-block">
           <h4>Late morning (9–12)</h4>
           <label>
             Functionality (1–10)
@@ -100,7 +86,7 @@
           </label>
         </div>
 
-        <div class="time-block" data-block="earlyAfternoon">
+        <div class="time-block">
           <h4>Early afternoon (12–3)</h4>
           <label>
             Functionality (1–10)
@@ -116,7 +102,7 @@
           </label>
         </div>
 
-        <div class="time-block" data-block="lateAfternoon">
+        <div class="time-block">
           <h4>Late afternoon (3–6)</h4>
           <label>
             Functionality (1–10)
@@ -132,7 +118,7 @@
           </label>
         </div>
 
-        <div class="time-block" data-block="earlyEvening">
+        <div class="time-block">
           <h4>Early evening (6–9)</h4>
           <label>
             Functionality (1–10)
@@ -148,7 +134,7 @@
           </label>
         </div>
 
-        <div class="time-block" data-block="lateEvening">
+        <div class="time-block">
           <h4>Late evening (9–12)</h4>
           <label>
             Functionality (1–10)

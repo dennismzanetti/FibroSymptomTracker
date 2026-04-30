@@ -23,46 +23,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-let currentUserId = null;
+const currentUserId = "personal-fibro-journal";
 let functionalityChart = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-  setupUserSection();
   setupTabs();
   setupExerciseToggle();
   setupSaveDay();
   loadTodayDate();
+  loadHistory();
+  loadTrends();
 });
-
-function setupUserSection() {
-  const userInput = document.getElementById("userIdInput");
-  const setUserBtn = document.getElementById("setUserBtn");
-  const userStatus = document.getElementById("userStatus");
-
-  const savedUser = localStorage.getItem("fibroTrackerUserId");
-  if (savedUser) {
-    userInput.value = savedUser;
-    currentUserId = savedUser;
-    userStatus.textContent = `Current user: ${savedUser}`;
-    loadHistory();
-    loadTrends();
-  }
-
-  setUserBtn.addEventListener("click", () => {
-    const val = (userInput.value || "").trim();
-
-    if (!val) {
-      userStatus.textContent = "Please enter a user ID.";
-      return;
-    }
-
-    currentUserId = val;
-    localStorage.setItem("fibroTrackerUserId", val);
-    userStatus.textContent = `Current user: ${val}`;
-    loadHistory();
-    loadTrends();
-  });
-}
 
 function setupTabs() {
   const buttons = document.querySelectorAll(".tab-button");
@@ -96,8 +67,10 @@ function setupExerciseToggle() {
 
 function loadTodayDate() {
   const dateInput = document.getElementById("dateInput");
-  const today = new Date();
-  dateInput.value = today.toISOString().slice(0, 10);
+  if (!dateInput.value) {
+    const today = new Date();
+    dateInput.value = today.toISOString().slice(0, 10);
+  }
 }
 
 function setupSaveDay() {
@@ -105,11 +78,6 @@ function setupSaveDay() {
   const status = document.getElementById("saveStatus");
 
   saveBtn.addEventListener("click", async () => {
-    if (!currentUserId) {
-      status.textContent = "Set a user ID first.";
-      return;
-    }
-
     const dayData = collectFormData();
 
     if (!dayData.date) {
@@ -211,8 +179,6 @@ function numberOrNull(val) {
 }
 
 async function loadHistory() {
-  if (!currentUserId) return;
-
   const list = document.getElementById("historyList");
   list.innerHTML = "Loading...";
 
@@ -246,6 +212,7 @@ async function loadHistory() {
 
       const loadBtn = document.createElement("button");
       loadBtn.textContent = "Load";
+      loadBtn.type = "button";
       loadBtn.addEventListener("click", () => {
         fillFormFromData(d);
         switchToTab("entry-tab");
@@ -319,8 +286,6 @@ function fillFormFromData(d) {
 }
 
 async function loadTrends() {
-  if (!currentUserId) return;
-
   const canvas = document.getElementById("functionalityChart");
   if (!canvas) return;
 
