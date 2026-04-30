@@ -164,6 +164,27 @@ function setupSaveDay() {
   bottomBtn?.addEventListener("click", handleSaveClick);
 }
 
+function setupDateNavigation() {
+  const dateInput = document.getElementById("dateInput");
+  const prevDayBtn = document.getElementById("prevDayBtn");
+  const nextDayBtn = document.getElementById("nextDayBtn");
+
+  function shiftDate(days) {
+    if (!dateInput.value) return;
+
+    const current = new Date(dateInput.value + "T12:00:00");
+    current.setDate(current.getDate() + days);
+
+    const year = current.getFullYear();
+    const month = String(current.getMonth() + 1).padStart(2, "0");
+    const day = String(current.getDate()).padStart(2, "0");
+
+    dateInput.value = `${year}-${month}-${day}`;
+  }
+
+  prevDayBtn.addEventListener("click", () => shiftDate(-1));
+  nextDayBtn.addEventListener("click", () => shiftDate(1));
+}
 
 function clearFormFieldsExceptDate() {
   document.getElementById("dayTitleInput").value = "";
