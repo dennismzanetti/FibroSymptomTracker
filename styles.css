@@ -130,9 +130,22 @@ textarea {
   border: none;
   background: #eef2ff;
   color: #32408f;
-  border-radius: 10px;
+  border-radius: 999px;
   font-weight: 600;
   cursor: pointer;
+}
+
+.date-nav-btn.icon-btn {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-size: 1.4rem;
+  line-height: 1;
 }
 
 .icon-btn {
