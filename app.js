@@ -164,31 +164,70 @@ function setupSaveDay() {
   bottomBtn?.addEventListener("click", handleSaveClick);
 }
 
-function setupDateNavigation() {
-  const dateInput = document.getElementById("dateInput");
-  const prevDayBtn = document.getElementById("prevDayBtn");
-  const nextDayBtn = document.getElementById("nextDayBtn");
 
-if (!dateInput || !prevDayBtn || !nextDayBtn) {
-    console.warn("Date navigation controls not found in HTML.");
-    return;
+function clearFormFieldsExceptDate() {
+  document.getElementById("dayTitleInput").value = "";
+  document.getElementById("overallNotesInput").value = "";
+
+  const clearBlock = (prefix) => {
+    document.getElementById(prefix + "Score").value = "";
+    document.getElementById(prefix + "Activity").value = "";
+    document.getElementById(prefix + "Symptoms").value = "";
+  };
+
+  clearBlock("earlyMorning");
+  clearBlock("lateMorning");
+  clearBlock("earlyAfternoon");
+  clearBlock("lateAfternoon");
+  clearBlock("earlyEvening");
+  clearBlock("lateEvening");
+
+  document.getElementById("bedtimeInput").value = "";
+  document.getElementById("wakeTimeInput").value = "";
+  document.getElementById("hoursSleptInput").value = "";
+  document.getElementById("sleepQualityInput").value = "";
+  document.getElementById("awakeningsInput").value = "";
+  document.getElementById("sleepNotesInput").value = "";
+
+  document.getElementById("didExerciseInput").value = "no";
+  document.getElementById("didExerciseInput").dispatchEvent(new Event("change"));
+  document.getElementById("exerciseTypeInput").value = "";
+  document.getElementById("exerciseMinutesInput").value = "";
+  document.getElementById("exerciseIntensityInput").value = "";
+  document.getElementById("exerciseTimingInput").value = "";
+  document.getElementById("exerciseNotesInput").value = "";
+
+  document.getElementById("exerciseNotesInput").value = "";
+
+  document.getElementById("moodScoreInput").value = "";
+  document.getElementById("moodNotesInput").value = "";
+
+  document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
+    cb.checked = false;
+  });
 }
 
-  function shiftDate(days) {
-    if (!dateInput.value) return;
+function loadDayFromCloud(date) {
+  const status = document.getElementById("saveStatus");
+  if (!date) return;
 
-    const current = new Date(dateInput.value + "T12:00:00");
-    current.setDate(current.getDate() + days);
-
-    const year = current.getFullYear();
-    const month = String(current.getMonth() + 1).padStart(2, "0");
-    const day = String(current.getDate()).padStart(2, "0");
-
-    dateInput.value = `${year}-${month}-${day}`;
-  }
-
-  prevDayBtn.addEventListener("click", () => shiftDate(-1));
-  nextDayBtn.addEventListener("click", () => shiftDate(1));
+  const docRef = db.collection("days").doc(date);
+  docRef.get().then((doc) => {
+    if (doc.exists) {
+      const data = doc.data();
+      fillFormFromData(data);
+      status.textContent = "Loaded from cloud for " + date + ".";
+      console.log("Loaded day from cloud for", date);
+    } else {
+      clearFormFieldsExceptDate();
+      status.textContent = "No cloud entry for that date. Form cleared.";
+      console.log("No such document for", date);
+    }
+  }).catch((error) => {
+    console.error("Error getting document:", error);
+    clearFormFieldsExceptDate();
+    status.textContent = "Cloud load failed.";
+  });
 }
 
 function clearFormFields() {
@@ -228,29 +267,6 @@ function clearFormFields() {
 
   document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
     cb.checked = false;
-  });
-}
-
-function loadDayFromCloud(date) {
-  const status = document.getElementById("saveStatus");
-  if (!date) return;
-
-  const docRef = db.collection("days").doc(date);
-  docRef.get().then((doc) => {
-    if (doc.exists) {
-      const data = doc.data();
-      fillFormFromData(data);
-      status.textContent = "Loaded from cloud for " + date + ".";
-      console.log("Loaded day from cloud for", date);
-    } else {
-      clearFormFieldsExceptDate();
-      status.textContent = "No cloud entry for that date. Form cleared.";
-      console.log("No such document for", date);
-    }
-  }).catch((error) => {
-    console.error("Error getting document:", error);
-    clearFormFieldsExceptDate();
-    status.textContent = "Cloud load failed.";
   });
 }
 
@@ -460,6 +476,54 @@ function fillFormFromData(d) {
     document.getElementById("moodNotesInput").value = "";
     }
 
+}
+  const tagsSet = new Set(d.tags || []);
+  document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
+    cb.checked = tagsSet.has(cb.value);
+  });
+ 
+  
+
+function changeDateBy(days) {
+  const dateInput = document.getElementById("dateInput");
+  if (!dateInput || !dateInput.value) {
+    console.log("changeDateBy: no date value yet");
+    return;
+  }
+
+  const current = new Date(dateInput.value);
+  if (Number.isNaN(current.getTime())) {
+    console.log("changeDateBy: invalid current date", dateInput.value);
+    return;
+  }
+
+  console.log("changeDateBy called with days =", days, "current =", current.toISOString().slice(0, 10));
+
+  current.setUTCDate(current.getUTCDate() + days);
+
+  const y = current.getUTCFullYear();
+  const m = String(current.getUTCMonth() + 1).padStart(2, "0");
+  const d = String(current.getUTCDate()).padStart(2, "0");
+  const newValue = `${y}-${m}-${d}`;
+
+  console.log("new date =", newValue);
+
+  dateInput.value = newValue;
+  loadDayFromCloud(newValue);
+}
+
+function setupDateNavigation() {
+  const prevBtn = document.getElementById("prevDateBtn");
+  const nextBtn = document.getElementById("nextDateBtn");
+
+  console.log("setupDateNavigation:", { prevBtn, nextBtn });
+
+  if (prevBtn) {
+    prevBtn.addEventListener("click", () => changeDateBy(-1));
+  }
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => changeDateBy(1));
+  }
 }
 
 function switchToTab(tabId) {
