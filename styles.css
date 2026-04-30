@@ -114,6 +114,7 @@ textarea {
   justify-content: center;
   gap: 0.75rem;
   flex-wrap: nowrap;
+  margin: 0 auto 1rem auto;
 }
 
 .date-row input[type="date"] {
@@ -143,8 +144,7 @@ textarea {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 999px;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   line-height: 1;
 }
 
