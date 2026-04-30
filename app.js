@@ -529,53 +529,28 @@ function setupDateNavigation() {
     return;
   }
 
+  // When user picks a date from the calendar
   dateInput.addEventListener("change", async () => {
-    if (typeof loadDayFromCloud === "function") {
-      await loadDayFromCloud(dateInput.value);
-    }
+    console.log("date changed to", dateInput.value);
+    await loadDayFromCloud(dateInput.value);
   });
 
+  // Previous day button
   if (prevDayBtn) {
     prevDayBtn.addEventListener("click", async () => {
       changeDateBy(-1);
-      if (typeof loadDayFromCloud === "function") {
-        await loadDayFromCloud(dateInput.value);
-      }
+      await loadDayFromCloud(dateInput.value);
     });
   }
 
+  // Next day button
   if (nextDayBtn) {
     nextDayBtn.addEventListener("click", async () => {
       changeDateBy(1);
-      if (typeof loadDayFromCloud === "function") {
-        await loadDayFromCloud(dateInput.value);
-      }
+      await loadDayFromCloud(dateInput.value);
     });
   }
 }
-
-  function changeDay(offset) {
-    if (!dateInput.value) {
-      const today = new Date();
-      dateInput.value = today.toISOString().slice(0, 10);
-    }
-
-    const parts = dateInput.value.split("-");
-    if (parts.length !== 3) return;
-
-    const year = Number(parts[0]);
-    const month = Number(parts[1]) - 1;
-    const day = Number(parts[2]);
-
-    const dt = new Date(year, month, day);
-    dt.setDate(dt.getDate() + offset);
-
-    const newYear = dt.getFullYear();
-    const newMonth = String(dt.getMonth() + 1).padStart(2, "0");
-    const newDay = String(dt.getDate()).padStart(2, "0");
-
-    dateInput.value = `${newYear}-${newMonth}-${newDay}`;
-  }
 
 function switchToTab(tabId) {
   document.querySelectorAll(".tab-button").forEach(btn => {
