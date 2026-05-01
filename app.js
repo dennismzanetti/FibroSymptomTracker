@@ -689,6 +689,7 @@ function renderJournal() {
   if (!container) return;
 
   const days = loadAllDays()
+    console.log(loadAllDays());
     .slice()
     .sort((a, b) => (a.date < b.date ? 1 : -1));
 
