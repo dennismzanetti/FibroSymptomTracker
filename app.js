@@ -721,7 +721,7 @@ async function renderJournal() {
     }
 
     container.innerHTML = days.map((data) => {
-      const title = data.dayTitle?.trim() || "Daily journal entry";
+      const title = data.dayTitle?.trim() || "HEADER";
       const avgFunctionality = typeof data.avgFunctionality === "number"
         ? `${data.avgFunctionality.toFixed(1)}/10`
         : "Not recorded";
