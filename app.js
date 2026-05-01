@@ -703,13 +703,13 @@ async function renderJournal() {
         date: data.date || doc.id,
         dayTitle: data.dayTitle || "",
         overallNotes: data.overallNotes || "",
-        functionality: data.functionality || null,
-        sleep: data.sleep || null,
+        functionality: data.functionality || {},
+        sleep: data.sleep || {},
         didExercise: data.didExercise || false,
         exercise: data.exercise || null,
         tags: data.tags || [],
         avgFunctionality: data.avgFunctionality ?? null,
-        mood: data.mood || null
+        mood: data.mood || {}
       });
     });
 
@@ -722,64 +722,148 @@ async function renderJournal() {
 
     container.innerHTML = days.map((data) => {
       const title = data.dayTitle?.trim() || "Daily journal entry";
-      const moodScore = typeof data.mood?.score === "number" ? `${data.mood.score}/10` : "not recorded";
-      const sleepHours = typeof data.sleep?.hours === "number" ? `${data.sleep.hours} hours` : "not recorded";
-      const sleepQuality = typeof data.sleep?.quality === "number" ? `${data.sleep.quality}/10` : "not recorded";
-      const awakenings = typeof data.sleep?.awakenings === "number" ? data.sleep.awakenings : "not recorded";
       const avgFunctionality = typeof data.avgFunctionality === "number"
         ? `${data.avgFunctionality.toFixed(1)}/10`
-        : "not recorded";
+        : "Not recorded";
+
+      const moodScore = typeof data.mood?.score === "number"
+        ? `${data.mood.score}/10`
+        : "Not recorded";
+
+      const sleepHours = typeof data.sleep?.hours === "number"
+        ? `${data.sleep.hours} hours`
+        : "Not recorded";
+
+      const sleepQuality = typeof data.sleep?.quality === "number"
+        ? `${data.sleep.quality}/10`
+        : "Not recorded";
+
+      const awakenings = typeof data.sleep?.awakenings === "number"
+        ? data.sleep.awakenings
+        : "Not recorded";
 
       const tagsHtml = data.tags?.length
         ? `<div class="journal-tags">${data.tags.map(tag => `<span class="journal-tag">${tag}</span>`).join("")}</div>`
         : `<p class="journal-muted">No tags recorded.</p>`;
 
+      const exerciseHtml = data.didExercise && data.exercise
+        ? `
+          <p><span class="journal-label">Type:</span> ${formatText(data.exercise.type, "not recorded")}</p>
+          <p><span class="journal-label">Minutes:</span> ${data.exercise.minutes ?? "not recorded"}</p>
+          <p><span class="journal-label">Intensity:</span> ${formatText(data.exercise.intensity, "not recorded")}</p>
+          <p><span class="journal-label">Timing:</span> ${formatText(data.exercise.timing, "not recorded")}</p>
+          <p>${formatText(data.exercise.notes, "No exercise notes recorded.")}</p>
+        `
+        : `<p>No exercise recorded.</p>`;
+
       return `
         <article class="journal-entry">
-          <header class="journal-header">
-            <p class="journal-date">${formatText(data.date, "No date recorded")}</p>
-            <h3>${title}</h3>
+          <header class="journal-day-header">
+            <div>
+              <p class="journal-date">${formatText(data.date, "No date recorded")}</p>
+              <h3>${title}</h3>
+            </div>
+            <div class="journal-score-pill">
+              <span class="journal-score-label">Avg function</span>
+              <strong>${avgFunctionality}</strong>
+            </div>
           </header>
 
           <section class="journal-section">
             <h4>Mood</h4>
-            <p>Mood score: ${moodScore}.</p>
+            <p><span class="journal-label">Score:</span> ${moodScore}</p>
             <p>${formatText(data.mood?.notes, "No mood notes recorded.")}</p>
           </section>
 
           <section class="journal-section">
-            <h4>Sleep</h4>
-            <p>Bedtime: ${formatText(data.sleep?.bedtime, "not recorded")}.</p>
-            <p>Wake time: ${formatText(data.sleep?.wakeTime, "not recorded")}.</p>
-            <p>Total sleep: ${sleepHours}.</p>
-            <p>Sleep quality: ${sleepQuality}; awakenings: ${awakenings}.</p>
-            <p>${formatText(data.sleep?.notes, "No sleep notes recorded.")}</p>
+            <h4>Sleep summary</h4>
+            <div class="sleep-summary">
+              <div class="sleep-stat">
+                <span class="journal-label">Bedtime</span>
+                <strong>${formatText(data.sleep?.bedtime, "not recorded")}</strong>
+              </div>
+              <div class="sleep-stat">
+                <span class="journal-label">Wake time</span>
+                <strong>${formatText(data.sleep?.wakeTime, "not recorded")}</strong>
+              </div>
+              <div class="sleep-stat">
+                <span class="journal-label">Hours slept</span>
+                <strong>${sleepHours}</strong>
+              </div>
+              <div class="sleep-stat">
+                <span class="journal-label">Sleep quality</span>
+                <strong>${sleepQuality}</strong>
+              </div>
+              <div class="sleep-stat">
+                <span class="journal-label">Awakenings</span>
+                <strong>${awakenings}</strong>
+              </div>
+            </div>
+            <p class="sleep-notes">${formatText(data.sleep?.notes, "No sleep notes recorded.")}</p>
           </section>
 
           <section class="journal-section">
-            <h4>Functionality</h4>
-            <p>Average functionality: ${avgFunctionality}.</p>
-            <ul class="journal-list">
-              <li><strong>Early morning:</strong> score ${formatScore(data.functionality?.earlyMorning?.score)}, activity: ${formatText(data.functionality?.earlyMorning?.activity, "none recorded")}, symptoms: ${formatText(data.functionality?.earlyMorning?.symptoms, "none recorded")}.</li>
-              <li><strong>Late morning:</strong> score ${formatScore(data.functionality?.lateMorning?.score)}, activity: ${formatText(data.functionality?.lateMorning?.activity, "none recorded")}, symptoms: ${formatText(data.functionality?.lateMorning?.symptoms, "none recorded")}.</li>
-              <li><strong>Early afternoon:</strong> score ${formatScore(data.functionality?.earlyAfternoon?.score)}, activity: ${formatText(data.functionality?.earlyAfternoon?.activity, "none recorded")}, symptoms: ${formatText(data.functionality?.earlyAfternoon?.symptoms, "none recorded")}.</li>
-              <li><strong>Late afternoon:</strong> score ${formatScore(data.functionality?.lateAfternoon?.score)}, activity: ${formatText(data.functionality?.lateAfternoon?.activity, "none recorded")}, symptoms: ${formatText(data.functionality?.lateAfternoon?.symptoms, "none recorded")}.</li>
-              <li><strong>Early evening:</strong> score ${formatScore(data.functionality?.earlyEvening?.score)}, activity: ${formatText(data.functionality?.earlyEvening?.activity, "none recorded")}, symptoms: ${formatText(data.functionality?.earlyEvening?.symptoms, "none recorded")}.</li>
-              <li><strong>Late evening:</strong> score ${formatScore(data.functionality?.lateEvening?.score)}, activity: ${formatText(data.functionality?.lateEvening?.activity, "none recorded")}, symptoms: ${formatText(data.functionality?.lateEvening?.symptoms, "none recorded")}.</li>
-            </ul>
+            <h4>Functionality through the day</h4>
+            <div class="function-grid">
+              <div class="function-card">
+                <div class="function-card-head">
+                  <span>Early morning</span>
+                  <strong>${formatScore(data.functionality?.earlyMorning?.score)}</strong>
+                </div>
+                <p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.earlyMorning?.activity, "none recorded")}</p>
+                <p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.earlyMorning?.symptoms, "none recorded")}</p>
+              </div>
+
+              <div class="function-card">
+                <div class="function-card-head">
+                  <span>Late morning</span>
+                  <strong>${formatScore(data.functionality?.lateMorning?.score)}</strong>
+                </div>
+                <p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.lateMorning?.activity, "none recorded")}</p>
+                <p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.lateMorning?.symptoms, "none recorded")}</p>
+              </div>
+
+              <div class="function-card">
+                <div class="function-card-head">
+                  <span>Early afternoon</span>
+                  <strong>${formatScore(data.functionality?.earlyAfternoon?.score)}</strong>
+                </div>
+                <p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.earlyAfternoon?.activity, "none recorded")}</p>
+                <p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.earlyAfternoon?.symptoms, "none recorded")}</p>
+              </div>
+
+              <div class="function-card">
+                <div class="function-card-head">
+                  <span>Late afternoon</span>
+                  <strong>${formatScore(data.functionality?.lateAfternoon?.score)}</strong>
+                </div>
+                <p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.lateAfternoon?.activity, "none recorded")}</p>
+                <p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.lateAfternoon?.symptoms, "none recorded")}</p>
+              </div>
+
+              <div class="function-card">
+                <div class="function-card-head">
+                  <span>Early evening</span>
+                  <strong>${formatScore(data.functionality?.earlyEvening?.score)}</strong>
+                </div>
+                <p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.earlyEvening?.activity, "none recorded")}</p>
+                <p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.earlyEvening?.symptoms, "none recorded")}</p>
+              </div>
+
+              <div class="function-card">
+                <div class="function-card-head">
+                  <span>Late evening</span>
+                  <strong>${formatScore(data.functionality?.lateEvening?.score)}</strong>
+                </div>
+                <p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.lateEvening?.activity, "none recorded")}</p>
+                <p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.lateEvening?.symptoms, "none recorded")}</p>
+              </div>
+            </div>
           </section>
 
           <section class="journal-section">
             <h4>Exercise</h4>
-            ${
-              data.didExercise && data.exercise
-                ? `
-                  <p>Type: ${formatText(data.exercise.type, "not recorded")}.</p>
-                  <p>Minutes: ${data.exercise.minutes ?? "not recorded"}; intensity: ${formatText(data.exercise.intensity, "not recorded")}; timing: ${formatText(data.exercise.timing, "not recorded")}.</p>
-                  <p>${formatText(data.exercise.notes, "No exercise notes recorded.")}</p>
-                `
-                : `<p>No exercise recorded.</p>`
-            }
+            ${exerciseHtml}
           </section>
 
           <section class="journal-section">

@@ -463,29 +463,10 @@ button:disabled {
 
 /* Journal */
 .journal-output {
-  line-height: 1.7;
-  color: #27314d;
-}
-
-.journal-entry {
   display: grid;
   gap: 1rem;
-}
-
-.journal-header h3 {
-  margin: 0.2rem 0 0 0;
-  border-bottom: none;
-  padding-bottom: 0;
-  color: #24304f;
-}
-
-.journal-date {
-  margin: 0;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #5c6783;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+  line-height: 1.6;
+  color: #27314d;
 }
 
 .journal-intro,
@@ -493,7 +474,71 @@ button:disabled {
   color: #677089;
 }
 
+.journal-entry {
+  background: #ffffff;
+  border: 1px solid #e3e8f2;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.journal-day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid #e3e8f2;
+}
+
+.journal-date {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #66708d;
+}
+
+.journal-day-header h3 {
+  margin: 0;
+  padding: 0;
+  border: none;
+  font-size: 1.1rem;
+  color: #24304f;
+}
+
+.journal-score-pill {
+  min-width: 118px;
+  background: #eef2ff;
+  border: 1px solid #d8e0fb;
+  border-radius: 14px;
+  padding: 0.75rem 0.9rem;
+  text-align: center;
+  color: #2f3c8f;
+  flex-shrink: 0;
+}
+
+.journal-score-label {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #62709b;
+  margin-bottom: 0.25rem;
+}
+
+.journal-score-pill strong {
+  display: block;
+  font-size: 1.15rem;
+  line-height: 1.1;
+  color: #25347d;
+}
+
 .journal-section {
+  margin-top: 0.9rem;
   padding: 0.95rem 1rem;
   border: 1px solid #e1e7f2;
   border-radius: 12px;
@@ -501,21 +546,84 @@ button:disabled {
 }
 
 .journal-section h4 {
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.65rem 0;
   color: #32408f;
+  font-size: 0.98rem;
 }
 
 .journal-section p {
   margin: 0.35rem 0;
 }
 
-.journal-list {
-  margin: 0.5rem 0 0 1.1rem;
-  padding: 0;
+.journal-label {
+  font-weight: 700;
+  color: #5b6686;
 }
 
-.journal-list li {
-  margin-bottom: 0.45rem;
+.function-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.function-card {
+  background: #f8faff;
+  border: 1px solid #e1e7f2;
+  border-radius: 12px;
+  padding: 0.9rem;
+}
+
+.function-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+
+.function-card-head span {
+  font-weight: 700;
+  color: #2f3550;
+}
+
+.function-card-head strong {
+  font-size: 1rem;
+  color: #32408f;
+  background: #eef2ff;
+  border-radius: 999px;
+  padding: 0.22rem 0.6rem;
+}
+
+.function-card p {
+  margin: 0.32rem 0;
+  font-size: 0.93rem;
+}
+
+.sleep-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.sleep-stat {
+  background: #f8faff;
+  border: 1px solid #e1e7f2;
+  border-radius: 12px;
+  padding: 0.8rem;
+}
+
+.sleep-stat strong {
+  display: block;
+  margin-top: 0.28rem;
+  font-size: 1rem;
+  color: #27314d;
+  line-height: 1.25;
+}
+
+.sleep-notes {
+  margin-top: 0.35rem;
 }
 
 .journal-tags {
@@ -534,6 +642,45 @@ button:disabled {
   color: #32408f;
   font-size: 0.88rem;
   font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .sleep-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .journal-entry {
+    padding: 0.9rem;
+  }
+
+  .journal-day-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .journal-score-pill {
+    width: 100%;
+  }
+
+  .function-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sleep-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .journal-section {
+    padding: 0.85rem;
+  }
+
+  .sleep-summary {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* History list */
