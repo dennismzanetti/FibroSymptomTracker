@@ -83,36 +83,10 @@
       <!-- Mood -->
       <div class="card">
         <h3>Mood</h3>
-      <label>
-        Mood score (1–10)
-        <div class="number-stepper" data-min="1" data-max="10">
-          <button
-            type="button"
-            class="stepper-btn"
-            data-step="-1"
-            aria-label="Decrease mood score"
-          >
-            −
-          </button>
-
-          <input
-            type="number"
-            min="1"
-            max="10"
-            id="moodScoreInput"
-            inputmode="numeric"
-          />
-
-          <button
-            type="button"
-            class="stepper-btn"
-            data-step="1"
-            aria-label="Increase mood score"
-          >
-            +
-          </button>
-        </div>
-      </label>
+        <label>
+          Overall mood (0–10):
+          <input type="number" id="moodScoreInput" min="0" max="10" step="1" />
+        </label>
         <label>
           Mood notes:
           <textarea id="moodNotesInput" rows="2" placeholder="Anxious, low, ok, calm, etc."></textarea>
