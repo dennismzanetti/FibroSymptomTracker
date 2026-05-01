@@ -219,6 +219,9 @@ function updateSleepDuration() {
 }
 
 function setupSleepCalculation() {
+  
+  // calculate sleep duration whenever bedtime or wake time changes
+
   const bedtimeInput = document.getElementById("bedtimeInput");
   const wakeTimeInput = document.getElementById("wakeTimeInput");
 
