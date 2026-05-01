@@ -236,30 +236,6 @@ function updateSleepDuration() {
   }
 }
 
-function fuckYou() {
-}
-
-
-  const [bedHour, bedMinute] = bedtime.split(":").map(Number);
-  const [wakeHour, wakeMinute] = wakeTime.split(":").map(Number);
-
-  let bedtimeMinutes = bedHour * 60 + bedMinute;
-  let wakeTimeMinutes = wakeHour * 60 + wakeMinute;
-
-  if (wakeTimeMinutes <= bedtimeMinutes) {
-    wakeTimeMinutes += 24 * 60;
-  }
-
-  const totalMinutes = wakeTimeMinutes - bedtimeMinutes;
-  const totalHours = Math.round((totalMinutes / 60) * 10) / 10;
-
-  hoursSleptInput.value = totalHours;
-
-  if (hoursSleptDisplay) {
-    hoursSleptDisplay.textContent = `${totalHours.toFixed(1)} hours`;
-  }
-
-
 function clearFormFieldsExceptDate() {
   document.getElementById("dayTitleInput").value = "";
   document.getElementById("overallNotesInput").value = "";
