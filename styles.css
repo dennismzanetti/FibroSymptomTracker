@@ -1,3 +1,14 @@
+input[type="text"],
+input[type="number"],
+input[type="time"],
+input[type="date"],
+select,
+textarea {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   margin: 0;
