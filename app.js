@@ -179,6 +179,24 @@ function setupSaveDay() {
   bottomBtn?.addEventListener("click", handleSaveClick);
 }
 
+
+function setupSleepCalculation() {
+
+  // calculate sleep duration whenever bedtime or wake time changes
+
+  const bedtimeInput = document.getElementById("bedtimeInput");
+  const wakeTimeInput = document.getElementById("wakeTimeInput");
+
+  if (!bedtimeInput || !wakeTimeInput) return;
+
+  bedtimeInput.addEventListener("input", updateSleepDuration);
+  wakeTimeInput.addEventListener("input", updateSleepDuration);
+  bedtimeInput.addEventListener("change", updateSleepDuration);
+  wakeTimeInput.addEventListener("change", updateSleepDuration);
+
+  updateSleepDuration();
+}
+
 function updateSleepDuration() {
   const bedtimeInput = document.getElementById("bedtimeInput");
   const wakeTimeInput = document.getElementById("wakeTimeInput");
@@ -218,23 +236,9 @@ function updateSleepDuration() {
   }
 }
 
-function setupSleepCalculation() {
-
-  // calculate sleep duration whenever bedtime or wake time changes
-  // why does this think it has an extra bracket?
-
-  const bedtimeInput = document.getElementById("bedtimeInput");
-  const wakeTimeInput = document.getElementById("wakeTimeInput");
-
-  if (!bedtimeInput || !wakeTimeInput) return;
-
-  bedtimeInput.addEventListener("input", updateSleepDuration);
-  wakeTimeInput.addEventListener("input", updateSleepDuration);
-  bedtimeInput.addEventListener("change", updateSleepDuration);
-  wakeTimeInput.addEventListener("change", updateSleepDuration);
-
-  updateSleepDuration();
+function fuckYou() {
 }
+
 
   const [bedHour, bedMinute] = bedtime.split(":").map(Number);
   const [wakeHour, wakeMinute] = wakeTime.split(":").map(Number);
