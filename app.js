@@ -219,8 +219,9 @@ function updateSleepDuration() {
 }
 
 function setupSleepCalculation() {
-  
+
   // calculate sleep duration whenever bedtime or wake time changes
+  // why does this think it has an extra bracket?
 
   const bedtimeInput = document.getElementById("bedtimeInput");
   const wakeTimeInput = document.getElementById("wakeTimeInput");
