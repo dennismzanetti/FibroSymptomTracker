@@ -179,20 +179,6 @@ function setupSaveDay() {
   bottomBtn?.addEventListener("click", handleSaveClick);
 }
 
-function setupSleepCalculation() {
-  const bedtimeInput = document.getElementById("bedtimeInput");
-  const wakeTimeInput = document.getElementById("wakeTimeInput");
-
-  if (!bedtimeInput || !wakeTimeInput) return;
-
-  bedtimeInput.addEventListener("input", updateSleepDuration);
-  wakeTimeInput.addEventListener("input", updateSleepDuration);
-  bedtimeInput.addEventListener("change", updateSleepDuration);
-  wakeTimeInput.addEventListener("change", updateSleepDuration);
-
-  updateSleepDuration();
-}
-
 function updateSleepDuration() {
   const bedtimeInput = document.getElementById("bedtimeInput");
   const wakeTimeInput = document.getElementById("wakeTimeInput");
@@ -211,6 +197,20 @@ function updateSleepDuration() {
     }
     return;
   }
+
+function setupSleepCalculation() {
+  const bedtimeInput = document.getElementById("bedtimeInput");
+  const wakeTimeInput = document.getElementById("wakeTimeInput");
+
+  if (!bedtimeInput || !wakeTimeInput) return;
+
+  bedtimeInput.addEventListener("input", updateSleepDuration);
+  wakeTimeInput.addEventListener("input", updateSleepDuration);
+  bedtimeInput.addEventListener("change", updateSleepDuration);
+  wakeTimeInput.addEventListener("change", updateSleepDuration);
+
+  updateSleepDuration();
+}
 
   const [bedHour, bedMinute] = bedtime.split(":").map(Number);
   const [wakeHour, wakeMinute] = wakeTime.split(":").map(Number);
@@ -522,7 +522,7 @@ function fillFormFromData(d) {
     document.getElementById("sleepQualityInput").value = d.sleep.quality ?? "";
     document.getElementById("awakeningsInput").value = d.sleep.awakenings ?? "";
     document.getElementById("sleepNotesInput").value = d.sleep.notes || "";
-    updateSleepDuration();
+
   }
 
   if (d.didExercise && d.exercise) {
@@ -546,7 +546,7 @@ function fillFormFromData(d) {
     document.getElementById("moodNotesInput").value = "";
     }
 
-
+    updateSleepDuration();
 
   const tagsSet = new Set(d.tags || []);
   document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
