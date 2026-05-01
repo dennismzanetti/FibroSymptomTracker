@@ -498,7 +498,7 @@ button:disabled {
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #66708d;
+  color: #ffffff;
 }
 
 .journal-day-header h3 {
@@ -506,7 +506,7 @@ button:disabled {
   padding: 0;
   border: none;
   font-size: 1.1rem;
-  color: #24304f;
+  color: #ffffff;
 }
 
 .journal-score-pill {
