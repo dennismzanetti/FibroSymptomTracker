@@ -50,6 +50,7 @@ window.addEventListener("load", () => {
   loadTodayDate();
   setupDateNavigation();
   setupSleepCalculation();
+  setupNumberSteppers();
 
   const dateInput = document.getElementById("dateInput");
   console.log("dateInput on load:", dateInput);
@@ -177,6 +178,33 @@ function setupSaveDay() {
 
   topBtn?.addEventListener("click", handleSaveClick);
   bottomBtn?.addEventListener("click", handleSaveClick);
+}
+
+function setupNumberSteppers() {
+  document.querySelectorAll(".number-stepper").forEach((stepper) => {
+    const input = stepper.querySelector('input[type="number"]');
+    const buttons = stepper.querySelectorAll(".stepper-btn");
+
+    if (!input) return;
+
+    const min = input.min !== "" ? Number(input.min) : null;
+    const max = input.max !== "" ? Number(input.max) : null;
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const step = Number(button.dataset.step || 0);
+        let current = input.value === "" ? min ?? 0 : Number(input.value);
+        let next = current + step;
+
+        if (min !== null && next < min) next = min;
+        if (max !== null && next > max) next = max;
+
+        input.value = next;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      });
+    });
+  });
 }
 
 
