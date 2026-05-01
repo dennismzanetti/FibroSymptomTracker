@@ -397,15 +397,67 @@
     <input type="hidden" id="hoursSleptInput" />
   </div>
 
-  <label>
-    Sleep quality (1–10)
-    <input type="number" min="1" max="10" id="sleepQualityInput" />
-  </label>
+    <label>
+      Sleep Quality(1–10)
+      <div class="number-stepper" data-min="1" data-max="10">
+        <button
+          type="button"
+          class="stepper-btn"
+          data-step="-1"
+          aria-label="Decrease sleep quality score"
+        >
+          −
+        </button>
 
-  <label>
-    Number of awakenings
-    <input type="number" min="0" id="awakeningsInput" />
-  </label>
+        <input
+          type="number"
+          min="1"
+          max="10"
+          id="sleepQualityInput"
+          inputmode="numeric"
+        />
+
+        <button
+          type="button"
+          class="stepper-btn"
+          data-step="1"
+          aria-label="Increase sleep quality score"
+        >
+          +
+        </button>
+      </div>
+    </label>
+
+             <label>
+              Number of awakenings
+              <div class="number-stepper" data-min="1" data-max="10">
+                <button
+                  type="button"
+                  class="stepper-btn"
+                  data-step="-1"
+                  aria-label="Decrease number of awakenings"
+                >
+                  −
+                </button>
+
+                <input
+                  type="number"
+                  min="1"
+                  max="10"
+                  id="awakeningsInput"
+                  inputmode="numeric"
+                />
+
+                <button
+                  type="button"
+                  class="stepper-btn"
+                  data-step="1"
+                  aria-label="Increase number of awakenings"
+                >
+                  +
+                </button>
+              </div>
+            </label>
 
   <label>
     Sleep notes
