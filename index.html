@@ -194,17 +194,19 @@
         </div>
       </div>
 
-     <div class="card">
+  <div class="card">
   <h3>Sleep (previous night)</h3>
 
-  <div class="sleep-time-row">
-    <label>
-      Bedtime
+  <div class="sleep-time-grid">
+    <label class="time-widget">
+      <span class="time-widget-label">Bedtime</span>
+      <span class="time-widget-hint">When you tried to sleep</span>
       <input type="time" id="bedtimeInput" />
     </label>
 
-    <label>
-      Wake time
+    <label class="time-widget">
+      <span class="time-widget-label">Wake time</span>
+      <span class="time-widget-hint">When you got up for the day</span>
       <input type="time" id="wakeTimeInput" />
     </label>
   </div>
@@ -216,7 +218,7 @@
   </div>
 
   <label>
-    Sleep quality (1-10)
+    Sleep quality (1–10)
     <input type="number" min="1" max="10" id="sleepQualityInput" />
   </label>
 
