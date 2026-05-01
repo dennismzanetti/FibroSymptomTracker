@@ -70,7 +70,8 @@
 
       <div class="card">
         <h3>Day Info</h3>
-          Day title (optional):
+          <label>
+            Day title (optional):
           <input type="text" id="dayTitleInput" placeholder="Flare day, Better day, etc." />
         </label>
         <label>
@@ -193,33 +194,42 @@
         </div>
       </div>
 
-      <div class="card">
-        <h3>Sleep (previous night)</h3>
-        <label>
-          Bedtime:
-          <input type="time" id="bedtimeInput" />
-        </label>
-        <label>
-          Wake time:
-          <input type="time" id="wakeTimeInput" />
-        </label>
-        <label>
-          Total hours slept:
-          <input type="number" step="0.1" id="hoursSleptInput" />
-        </label>
-        <label>
-          Sleep quality (1–10):
-          <input type="number" min="1" max="10" id="sleepQualityInput" />
-        </label>
-        <label>
-          Number of awakenings:
-          <input type="number" min="0" id="awakeningsInput" />
-        </label>
-        <label>
-          Sleep notes:
-          <textarea id="sleepNotesInput" rows="2"></textarea>
-        </label>
-      </div>
+     <div class="card">
+  <h3>Sleep (previous night)</h3>
+
+  <div class="sleep-time-row">
+    <label>
+      Bedtime
+      <input type="time" id="bedtimeInput" />
+    </label>
+
+    <label>
+      Wake time
+      <input type="time" id="wakeTimeInput" />
+    </label>
+  </div>
+
+  <div class="sleep-total-display" aria-live="polite">
+    <span class="sleep-total-label">Total hours slept</span>
+    <span id="hoursSleptDisplay" class="sleep-total-value">—</span>
+    <input type="hidden" id="hoursSleptInput" />
+  </div>
+
+  <label>
+    Sleep quality (1-10)
+    <input type="number" min="1" max="10" id="sleepQualityInput" />
+  </label>
+
+  <label>
+    Number of awakenings
+    <input type="number" min="0" id="awakeningsInput" />
+  </label>
+
+  <label>
+    Sleep notes
+    <textarea id="sleepNotesInput" rows="2"></textarea>
+  </label>
+</div>
 
       <div class="card">
         <h3>Exercise / Activity</h3>

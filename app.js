@@ -49,6 +49,7 @@ window.addEventListener("load", () => {
   setupSaveDay();
   loadTodayDate();
   setupDateNavigation();
+  setupSleepCalculation();
 
   const dateInput = document.getElementById("dateInput");
   console.log("dateInput on load:", dateInput);
@@ -178,6 +179,58 @@ function setupSaveDay() {
   bottomBtn?.addEventListener("click", handleSaveClick);
 }
 
+function setupSleepCalculation() {
+  const bedtimeInput = document.getElementById("bedtimeInput");
+  const wakeTimeInput = document.getElementById("wakeTimeInput");
+
+  if (!bedtimeInput || !wakeTimeInput) return;
+
+  bedtimeInput.addEventListener("input", updateSleepDuration);
+  wakeTimeInput.addEventListener("input", updateSleepDuration);
+  bedtimeInput.addEventListener("change", updateSleepDuration);
+  wakeTimeInput.addEventListener("change", updateSleepDuration);
+
+  updateSleepDuration();
+}
+
+function updateSleepDuration() {
+  const bedtimeInput = document.getElementById("bedtimeInput");
+  const wakeTimeInput = document.getElementById("wakeTimeInput");
+  const hoursSleptInput = document.getElementById("hoursSleptInput");
+  const hoursSleptDisplay = document.getElementById("hoursSleptDisplay");
+
+  if (!bedtimeInput || !wakeTimeInput || !hoursSleptInput) return;
+
+  const bedtime = bedtimeInput.value;
+  const wakeTime = wakeTimeInput.value;
+
+  if (!bedtime || !wakeTime) {
+    hoursSleptInput.value = "";
+    if (hoursSleptDisplay) {
+      hoursSleptDisplay.textContent = "—";
+    }
+    return;
+  }
+
+  const [bedHour, bedMinute] = bedtime.split(":").map(Number);
+  const [wakeHour, wakeMinute] = wakeTime.split(":").map(Number);
+
+  let bedtimeMinutes = bedHour * 60 + bedMinute;
+  let wakeTimeMinutes = wakeHour * 60 + wakeMinute;
+
+  if (wakeTimeMinutes <= bedtimeMinutes) {
+    wakeTimeMinutes += 24 * 60;
+  }
+
+  const totalMinutes = wakeTimeMinutes - bedtimeMinutes;
+  const totalHours = Math.round((totalMinutes / 60) * 10) / 10;
+
+  hoursSleptInput.value = totalHours;
+
+  if (hoursSleptDisplay) {
+    hoursSleptDisplay.textContent = `${totalHours.toFixed(1)} hours`;
+  }
+}
 
 function clearFormFieldsExceptDate() {
   document.getElementById("dayTitleInput").value = "";
@@ -202,6 +255,8 @@ function clearFormFieldsExceptDate() {
   document.getElementById("sleepQualityInput").value = "";
   document.getElementById("awakeningsInput").value = "";
   document.getElementById("sleepNotesInput").value = "";
+  updateSleepDuration();
+
 
   document.getElementById("didExerciseInput").value = "no";
   document.getElementById("didExerciseInput").dispatchEvent(new Event("change"));
@@ -467,6 +522,7 @@ function fillFormFromData(d) {
     document.getElementById("sleepQualityInput").value = d.sleep.quality ?? "";
     document.getElementById("awakeningsInput").value = d.sleep.awakenings ?? "";
     document.getElementById("sleepNotesInput").value = d.sleep.notes || "";
+    updateSleepDuration();
   }
 
   if (d.didExercise && d.exercise) {
@@ -491,7 +547,7 @@ function fillFormFromData(d) {
     }
 
 
-    
+
   const tagsSet = new Set(d.tags || []);
   document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
     cb.checked = tagsSet.has(cb.value);

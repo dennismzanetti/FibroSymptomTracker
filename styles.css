@@ -298,6 +298,41 @@ button:disabled {
   cursor: default;
 }
 
+.sleep-time-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.sleep-total-display {
+  margin-top: 0.25rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  background: #f7f9fe;
+  border: 1px solid #dfe5f2;
+}
+
+.sleep-total-label {
+  display: block;
+  font-size: 0.85rem;
+  color: #5a647f;
+  margin-bottom: 0.2rem;
+}
+
+#hoursSleptDisplay {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #24304f;
+}
+
+@media (max-width: 640px) {
+  .sleep-time-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
 /* History list */
 #historyList {
   list-style: none;
