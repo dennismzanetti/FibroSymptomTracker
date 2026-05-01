@@ -58,6 +58,7 @@
     <nav id="tabs">
       <button id="saveDayTop" class="primary">Save Day</button>
       <button class="tab-button active" data-tab="entry-tab">Daily Entry</button>
+      <button class="tab-button" data-tab="journal-tab">Journal</button>
       <button class="tab-button" data-tab="history-tab">History</button>
       <button class="tab-button" data-tab="trends-tab">Trends</button>
   
@@ -531,6 +532,18 @@
       <button id="saveDayBottom" class="primary">Save Day</button>
 
       <p id="saveStatus"></p>
+    </section>
+
+    <section id="journal-tab" class="tab">
+      <div class="card">
+        <h2>Journal View</h2>
+        <p class="journal-intro">
+          A readable version of the current day’s entry.
+        </p>
+        <div id="journalOutput" class="journal-output">
+          No journal entry yet.
+        </div>
+      </div>
     </section>
 
     <section id="history-tab" class="tab">
