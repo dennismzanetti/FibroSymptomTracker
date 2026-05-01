@@ -250,7 +250,7 @@ function setupSleepCalculation() {
   if (hoursSleptDisplay) {
     hoursSleptDisplay.textContent = `${totalHours.toFixed(1)} hours`;
   }
-}
+
 
 function clearFormFieldsExceptDate() {
   document.getElementById("dayTitleInput").value = "";
