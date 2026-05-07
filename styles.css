@@ -744,10 +744,6 @@ canvas {
    MEDICATIONS TAB — SEGMENTED PILL CONTROL
    ============================================= */
 
-/*
-  Outer track: a rounded pill-shaped tray that holds all three buttons.
-  The track is a soft indigo-tinted gray, like a pressed-in groove.
-*/
 .med-sub-tabs {
   display: flex;
   align-items: stretch;
@@ -759,10 +755,6 @@ canvas {
   box-shadow: inset 0 1px 3px rgba(30, 40, 90, 0.10);
 }
 
-/*
-  Each button fills its segment equally.
-  Default (inactive): fully transparent so the track shows through.
-*/
 .med-sub-tab-btn {
   flex: 1;
   padding: 0.55rem 0.75rem;
@@ -781,16 +773,11 @@ canvas {
   z-index: 0;
 }
 
-/* Hover: lighten slightly to hint interactivity */
 .med-sub-tab-btn:hover:not(.active) {
   background: rgba(255, 255, 255, 0.45);
   color: #2e3a7a;
 }
 
-/*
-  Active pill: white raised tile that floats above the track.
-  Uses a shadow to create the lifted look instead of a border.
-*/
 .med-sub-tab-btn.active {
   background: #ffffff;
   color: #3f51b5;
@@ -802,13 +789,11 @@ canvas {
   z-index: 1;
 }
 
-/* Focus ring for keyboard nav */
 .med-sub-tab-btn:focus-visible {
   outline: 2px solid #3f51b5;
   outline-offset: 2px;
 }
 
-/* Responsive: stack to two rows on narrow screens */
 @media (max-width: 420px) {
   .med-sub-tabs {
     border-radius: 18px;
@@ -1046,6 +1031,29 @@ canvas {
   margin-bottom: 0.2rem;
 }
 
+/* Type badge */
+.med-history-type {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.med-type-med {
+  background: #eef2ff;
+  color: #32408f;
+  border: 1px solid #c5d0f5;
+}
+
+.med-type-supp {
+  background: #f0faf4;
+  color: #2e7d52;
+  border: 1px solid #b3e6c8;
+}
+
 @media (max-width: 540px) {
   .med-item {
     flex-direction: column;
@@ -1110,6 +1118,15 @@ canvas {
   margin: 0;
   font-size: 0.9rem;
   color: #5b6686;
+}
+
+/* Section headings in print sheet */
+.print-section-heading {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.05rem;
+  color: #2f3c8f;
+  border-bottom: 1px solid #e3e6f0;
+  padding-bottom: 0.5rem;
 }
 
 /* The table */
@@ -1208,11 +1225,12 @@ canvas {
    ============================================= */
 
 @media print {
-  /* Hide everything except the print sheet */
+  /* Hide all top-level body children */
   body > * {
     display: none !important;
   }
 
+  /* Show main */
   body > main {
     display: block !important;
     padding: 0 !important;
@@ -1220,26 +1238,42 @@ canvas {
     max-width: 100% !important;
   }
 
-  /* Hide all tabs except the print tab */
-  main > *:not(#med-print-tab) {
+  /* Hide everything inside main except the medications tab */
+  main > *:not(#medications-tab) {
     display: none !important;
   }
 
-  #med-print-tab {
+  /* Show the medications tab */
+  #medications-tab {
     display: block !important;
   }
 
-  /* Hide the on-screen toolbar */
+  /* Hide the sub-tab nav bar and the h2 heading */
+  #medications-tab .med-sub-tabs,
+  #medications-tab > h2 {
+    display: none !important;
+  }
+
+  /* Hide all med views except the print view */
+  #medications-tab .med-view {
+    display: none !important;
+  }
+
+  #medPrintView {
+    display: block !important;
+  }
+
+  /* Hide the on-screen Print button toolbar */
   .no-print {
     display: none !important;
   }
 
-  /* Show print-only elements */
+  /* Show print-only elements (doc header, footer) */
   .print-only {
     display: block !important;
   }
 
-  /* Remove screen chrome from sheet */
+  /* Remove screen chrome from the sheet */
   .med-print-sheet {
     border: none !important;
     box-shadow: none !important;
@@ -1281,6 +1315,17 @@ canvas {
 
   .med-table tbody tr {
     page-break-inside: avoid;
+  }
+
+  /* Section headings */
+  .print-section-heading {
+    font-size: 12pt;
+    color: #2f3c8f !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    border-bottom: 1pt solid #d0d5e8 !important;
+    margin-top: 16pt;
+    padding-bottom: 4pt;
   }
 
   /* Document header */
