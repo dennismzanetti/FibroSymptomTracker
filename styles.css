@@ -753,6 +753,8 @@ canvas {
   gap: 3px;
   margin-bottom: 1.5rem;
   box-shadow: inset 0 1px 3px rgba(30, 40, 90, 0.10);
+  /* Allow wrapping on small screens */
+  flex-wrap: wrap;
 }
 
 .med-sub-tab-btn {
@@ -765,8 +767,11 @@ canvas {
   font-size: 0.92rem;
   font-weight: 600;
   cursor: pointer;
-  white-space: nowrap;
+  /* Allow text to wrap — removed white-space: nowrap so wrapping works */
+  white-space: normal;
+  word-break: break-word;
   text-align: center;
+  line-height: 1.25;
   transition: background 0.2s ease, color 0.2s ease,
               box-shadow 0.2s ease, transform 0.15s ease;
   position: relative;
@@ -794,18 +799,16 @@ canvas {
   outline-offset: 2px;
 }
 
-/* --- Mobile: 2×2 grid of sub-tabs at 540px and below --- */
+/* Mobile: 2×2 grid of sub-tabs at 540px and below */
 @media (max-width: 540px) {
   .med-sub-tabs {
     border-radius: 18px;
-    flex-wrap: wrap;
   }
   .med-sub-tab-btn {
-    flex: 1 1 calc(50% - 3px);
-    font-size: 0.88rem;
-    padding: 0.6rem 0.5rem;
-    white-space: normal;
-    line-height: 1.2;
+    /* Each button takes ~half the row minus gap */
+    flex: 1 1 calc(50% - 6px);
+    font-size: 0.85rem;
+    padding: 0.6rem 0.4rem;
   }
 }
 
@@ -1136,37 +1139,40 @@ canvas {
   background: #ffffff;
   border: 1px solid #e3e6f0;
   border-radius: 12px;
+  /* Constrain width so it never causes page zoom */
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
   padding: 1.75rem 2rem;
   box-shadow: 0 4px 18px rgba(0,0,0,0.07);
 }
 
-/* Reduce print sheet padding and enable table scroll on phones */
 @media (max-width: 540px) {
   .med-print-sheet {
     padding: 1rem 0.75rem;
     border-radius: 8px;
   }
+}
 
-  /* Wrap each table in a scrollable container */
-  .med-table {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    white-space: nowrap;
-  }
+/* Scroll wrapper for wide tables on mobile */
+.table-scroll-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  /* Subtle scroll hint shadow on right edge */
+  background:
+    linear-gradient(to right, #ffffff 30%, transparent),
+    linear-gradient(to left, #e3e6f0 0%, transparent 30%) 100% 0;
+  background-attachment: local, scroll;
+  background-size: 40px 100%, 12px 100%;
+  background-repeat: no-repeat;
+  border-radius: 8px;
+  margin-bottom: 0;
+}
 
-  .med-table thead,
-  .med-table tbody,
-  .med-table tr {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-  }
-
-  .med-table-notes {
-    white-space: normal;
-    max-width: 160px;
-  }
+/* Ensure the table inside stays natural width but won't force page zoom */
+.table-scroll-wrap .med-table {
+  min-width: 480px;
 }
 
 /* Document header — only shows when printing */
@@ -1252,12 +1258,12 @@ canvas {
 .med-table-name {
   font-weight: 700;
   color: #1f2b4d;
-  min-width: 140px;
+  min-width: 120px;
 }
 
 .med-table-center {
   text-align: left;
-  min-width: 90px;
+  min-width: 80px;
   color: #32408f;
   font-weight: 600;
 }
@@ -1265,7 +1271,9 @@ canvas {
 .med-table-notes {
   color: #5b6686;
   font-style: italic;
-  max-width: 260px;
+  max-width: 200px;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .med-table-empty {
@@ -1348,12 +1356,20 @@ canvas {
     box-shadow: none !important;
     padding: 0 !important;
     border-radius: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Unwrap scroll container for print */
+  .table-scroll-wrap {
+    overflow: visible !important;
+    background: none !important;
   }
 
   /* Table print styles */
   .med-table {
     font-size: 10pt;
     width: 100%;
+    min-width: 0 !important;
     display: table;
     overflow-x: visible;
     white-space: normal;
@@ -1369,6 +1385,7 @@ canvas {
   .med-table thead th {
     padding: 6pt 8pt;
     font-size: 8pt;
+    white-space: normal;
   }
 
   .med-table tbody td {
@@ -1387,6 +1404,10 @@ canvas {
 
   .med-table tbody tr {
     page-break-inside: avoid;
+  }
+
+  .med-table-notes {
+    max-width: none;
   }
 
   /* Section headings */
