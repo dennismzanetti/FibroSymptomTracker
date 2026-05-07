@@ -73,7 +73,6 @@ window.addEventListener("load", () => {
 
   const openDatePickerBtn = document.getElementById("openDatePickerBtn");
 
-
   if (openDatePickerBtn && dateInput) {
     openDatePickerBtn.addEventListener("click", () => {
       if (typeof dateInput.showPicker === "function") {
@@ -175,7 +174,7 @@ function setupSaveDay() {
 
     // refresh after a successful save
     refreshHistory();
-    refreshJournal();
+    renderJournal();
     refreshTrends();
   };
 
@@ -267,6 +266,8 @@ function updateSleepDuration() {
   }
 }
 
+// ---- Clear form helpers ----
+// clearFormFieldsExceptDate: clears everything except the date picker
 function clearFormFieldsExceptDate() {
   document.getElementById("dayTitleInput").value = "";
   document.getElementById("overallNotesInput").value = "";
@@ -292,7 +293,6 @@ function clearFormFieldsExceptDate() {
   document.getElementById("sleepNotesInput").value = "";
   updateSleepDuration();
 
-
   document.getElementById("didExerciseInput").value = "no";
   document.getElementById("didExerciseInput").dispatchEvent(new Event("change"));
   document.getElementById("exerciseTypeInput").value = "";
@@ -301,14 +301,18 @@ function clearFormFieldsExceptDate() {
   document.getElementById("exerciseTimingInput").value = "";
   document.getElementById("exerciseNotesInput").value = "";
 
-  document.getElementById("exerciseNotesInput").value = "";
-
   document.getElementById("moodScoreInput").value = "";
   document.getElementById("moodNotesInput").value = "";
 
   document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
     cb.checked = false;
   });
+}
+
+// clearFormFields: clears all fields including the date picker
+function clearFormFields() {
+  document.getElementById("dateInput").value = "";
+  clearFormFieldsExceptDate();
 }
 
 function loadDayFromCloud(date) {
@@ -331,46 +335,6 @@ function loadDayFromCloud(date) {
     console.error("Error getting document:", error);
     clearFormFieldsExceptDate();
     status.textContent = "Cloud load failed.";
-  });
-}
-
-function clearFormFields() {
-  document.getElementById("dayTitleInput").value = "";
-  document.getElementById("overallNotesInput").value = "";
-
-  const clearBlock = (prefix) => {
-    document.getElementById(prefix + "Score").value = "";
-    document.getElementById(prefix + "Activity").value = "";
-    document.getElementById(prefix + "Symptoms").value = "";
-  };
-
-  clearBlock("earlyMorning");
-  clearBlock("lateMorning");
-  clearBlock("earlyAfternoon");
-  clearBlock("lateAfternoon");
-  clearBlock("earlyEvening");
-  clearBlock("lateEvening");
-
-  document.getElementById("bedtimeInput").value = "";
-  document.getElementById("wakeTimeInput").value = "";
-  document.getElementById("hoursSleptInput").value = "";
-  document.getElementById("sleepQualityInput").value = "";
-  document.getElementById("awakeningsInput").value = "";
-  document.getElementById("sleepNotesInput").value = "";
-
-  document.getElementById("didExerciseInput").value = "no";
-  document.getElementById("didExerciseInput").dispatchEvent(new Event("change"));
-  document.getElementById("exerciseTypeInput").value = "";
-  document.getElementById("exerciseMinutesInput").value = "";
-  document.getElementById("exerciseIntensityInput").value = "";
-  document.getElementById("exerciseTimingInput").value = "";
-  document.getElementById("exerciseNotesInput").value = "";
-
-  document.getElementById("moodScoreInput").value = "";
-  document.getElementById("moodNotesInput").value = "";
-
-  document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
-    cb.checked = false;
   });
 }
 
@@ -456,7 +420,7 @@ async function refreshHistory() {
     const snapshot = await db
       .collection("days")
       .orderBy(firebase.firestore.FieldPath.documentId()) // order by date string (doc id)
-      .get();                                            // [web:731][web:733][web:734]
+      .get();
 
     const days = [];
     snapshot.forEach(doc => {
@@ -484,46 +448,46 @@ async function refreshHistory() {
       return;
     }
 
-days.slice(0, 30).forEach(d => {
-  const li = document.createElement("li");
-  const title = d.dayTitle ? ` – ${d.dayTitle}` : "";
-  const avg = d.avgFunctionality != null ? ` | Avg func: ${d.avgFunctionality.toFixed(1)}` : "";
+    days.slice(0, 30).forEach(d => {
+      const li = document.createElement("li");
+      const title = d.dayTitle ? ` – ${d.dayTitle}` : "";
+      const avg = d.avgFunctionality != null ? ` | Avg func: ${d.avgFunctionality.toFixed(1)}` : "";
 
-  const textSpan = document.createElement("span");
-  textSpan.textContent = `${d.date}${title}${avg}`;
-  li.appendChild(textSpan);
+      const textSpan = document.createElement("span");
+      textSpan.textContent = `${d.date}${title}${avg}`;
+      li.appendChild(textSpan);
 
-  // Load button
-  const loadBtn = document.createElement("button");
-  loadBtn.textContent = "Load";
-  loadBtn.addEventListener("click", () => {
-    fillFormFromData(d);
-    switchToTab("entry-tab");
-  });
-  li.appendChild(loadBtn);
+      // Load button
+      const loadBtn = document.createElement("button");
+      loadBtn.textContent = "Load";
+      loadBtn.addEventListener("click", () => {
+        fillFormFromData(d);
+        switchToTab("entry-tab");
+      });
+      li.appendChild(loadBtn);
 
-  // Delete button
-  const deleteBtn = document.createElement("button");
-  deleteBtn.textContent = "Delete";
-  deleteBtn.classList.add("danger"); // optional styling
-  deleteBtn.addEventListener("click", async () => {
-    const confirmed = window.confirm(`Delete entry for ${d.date}?`);
-    if (!confirmed) return;
+      // Delete button
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "Delete";
+      deleteBtn.classList.add("danger");
+      deleteBtn.addEventListener("click", async () => {
+        const confirmed = window.confirm(`Delete entry for ${d.date}?`);
+        if (!confirmed) return;
 
-    try {
-      await db.collection("days").doc(d.date).delete();  // delete Firestore doc[web:758][web:760]
-      console.log("Deleted day", d.date);
-      refreshHistory(); // reload list
-      refreshTrends();  // keep chart in sync
-    } catch (err) {
-      console.error("Error deleting day:", err);
-      alert("Failed to delete this entry from the cloud.");
-    }
-  });
-  li.appendChild(deleteBtn);
+        try {
+          await db.collection("days").doc(d.date).delete();
+          console.log("Deleted day", d.date);
+          refreshHistory();
+          refreshTrends();
+        } catch (err) {
+          console.error("Error deleting day:", err);
+          alert("Failed to delete this entry from the cloud.");
+        }
+      });
+      li.appendChild(deleteBtn);
 
-  list.appendChild(li);
-});
+      list.appendChild(li);
+    });
 
   } catch (err) {
     console.error("Error loading history from cloud:", err);
@@ -557,7 +521,6 @@ function fillFormFromData(d) {
     document.getElementById("sleepQualityInput").value = d.sleep.quality ?? "";
     document.getElementById("awakeningsInput").value = d.sleep.awakenings ?? "";
     document.getElementById("sleepNotesInput").value = d.sleep.notes || "";
-
   }
 
   if (d.didExercise && d.exercise) {
@@ -571,25 +534,25 @@ function fillFormFromData(d) {
     document.getElementById("didExerciseInput").value = "no";
   }
   document.getElementById("didExerciseInput").dispatchEvent(new Event("change"));
-  
-    // Mood (handle older docs with no mood)
-    if (d.mood && (d.mood.score != null || d.mood.notes)) {
+
+  // Mood (handle older docs with no mood)
+  if (d.mood && (d.mood.score != null || d.mood.notes)) {
     document.getElementById("moodScoreInput").value = d.mood.score ?? "";
     document.getElementById("moodNotesInput").value = d.mood.notes || "";
-    } else {
+  } else {
     document.getElementById("moodScoreInput").value = "";
     document.getElementById("moodNotesInput").value = "";
-    }
+  }
 
-    updateSleepDuration();
-    renderJournal();
+  updateSleepDuration();
+  renderJournal();
 
   const tagsSet = new Set(d.tags || []);
   document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => {
     cb.checked = tagsSet.has(cb.value);
   });
- }
-  
+}
+
 
 function changeDateBy(days) {
   const dateInput = document.getElementById("dateInput");
@@ -668,14 +631,7 @@ function switchToTab(tabId) {
   });
 }
 
-function formatScore(value) {
-  return typeof value === "number" ? value : "not recorded";
-}
-
-function formatText(value, fallback = "Not recorded.") {
-  return value && String(value).trim() ? value : fallback;
-}
-
+// ---- Formatting helpers ----
 function formatScore(value) {
   return typeof value === "number" ? value : "not recorded";
 }
@@ -946,4 +902,3 @@ async function refreshTrends() {
     console.error("Error loading trends from cloud:", err);
   }
 }
-
