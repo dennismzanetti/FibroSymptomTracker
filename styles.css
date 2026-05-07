@@ -306,6 +306,7 @@ textarea {
 /* Tabs */
 #tabs {
   display: flex;
+  flex-wrap: wrap;
   margin: 1rem 0 1.25rem 0;
   gap: 0.6rem;
 }
@@ -363,6 +364,20 @@ button {
 button:disabled {
   opacity: 0.55;
   cursor: default;
+}
+
+button.danger {
+  background: #fff0f0;
+  color: #c0392b;
+  border: 1px solid #f5c6c2;
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+button.danger:hover {
+  background: #ffe0de;
 }
 
 .sleep-time-row {
@@ -725,4 +740,253 @@ canvas {
   border: 1px solid #e5e8f0;
 }
 
-@media (max-w
+/* =============================================
+   MEDICATIONS TAB
+   ============================================= */
+
+.med-view-toggle {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.med-toggle-btn {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  border: 2px solid #dbe1ef;
+  border-radius: 999px;
+  background: #f5f7fc;
+  color: #4a5278;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+
+.med-toggle-btn:hover {
+  background: #eef2ff;
+  border-color: #b0bcee;
+}
+
+.med-toggle-btn.active {
+  background: #3f51b5;
+  color: #ffffff;
+  border-color: #3f51b5;
+}
+
+/* Form */
+.med-form {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.med-form textarea {
+  min-height: 70px;
+}
+
+.med-form-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.med-form-actions #cancelMedEditBtn {
+  padding: 0.65rem 1.1rem;
+  border: 1px solid #cfd5e3;
+  border-radius: 999px;
+  background: #f5f7fc;
+  color: #2d3142;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.med-form-actions #cancelMedEditBtn:hover {
+  background: #e8ebf5;
+}
+
+/* Medication list */
+.med-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.med-empty {
+  color: #8892b0;
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+.med-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  background: #f8faff;
+  border: 1px solid #e1e7f2;
+  border-radius: 12px;
+}
+
+.med-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.med-name {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1f2b4d;
+  margin-bottom: 0.2rem;
+}
+
+.med-dose {
+  display: inline-block;
+  background: #eef2ff;
+  color: #32408f;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.83rem;
+  font-weight: 700;
+  margin-right: 0.4rem;
+}
+
+.med-freq {
+  display: inline-block;
+  background: #f0faf4;
+  color: #2e7d52;
+  border: 1px solid #c3e6d0;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+
+.med-detail {
+  margin: 0.3rem 0 0 0;
+  font-size: 0.88rem;
+  color: #5b6686;
+}
+
+.med-notes-text {
+  font-style: italic;
+}
+
+.med-item-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.med-edit-btn {
+  padding: 0.35rem 0.8rem;
+  border: 1px solid #b0bcee;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #32408f;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.med-edit-btn:hover {
+  background: #dce3fb;
+}
+
+/* Change history list */
+.med-history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.med-history-item {
+  padding: 0.9rem 1rem;
+  background: #fafbff;
+  border: 1px solid #e1e7f2;
+  border-radius: 12px;
+}
+
+.med-history-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.med-history-action {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.med-action-added {
+  background: #e6f9f0;
+  color: #1e7a4e;
+  border: 1px solid #b3e8cf;
+}
+
+.med-action-edited {
+  background: #fff8e6;
+  color: #7a5c00;
+  border: 1px solid #f0d98a;
+}
+
+.med-action-deleted {
+  background: #fff0f0;
+  color: #b93232;
+  border: 1px solid #f5c6c2;
+}
+
+.med-history-name {
+  font-size: 0.97rem;
+  color: #1f2b4d;
+}
+
+.med-history-date {
+  font-size: 0.83rem;
+  color: #8892b0;
+  margin-left: auto;
+}
+
+.med-history-changes {
+  margin: 0.35rem 0 0 0;
+  padding-left: 1.25rem;
+  font-size: 0.88rem;
+  color: #4a5278;
+}
+
+.med-history-changes li {
+  margin-bottom: 0.2rem;
+}
+
+@media (max-width: 540px) {
+  .med-item {
+    flex-direction: column;
+  }
+
+  .med-item-actions {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .med-item-actions button {
+    flex: 1;
+    text-align: center;
+  }
+
+  .med-history-date {
+    margin-left: 0;
+    width: 100%;
+  }
+}
