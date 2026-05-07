@@ -12,16 +12,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// Simple test: write a document when the page loads
-db.collection("testCollection").add({
-  createdAt: new Date().toISOString(),
-  note: "Hello from GitHub Pages"
-}).then((docRef) => {
-  console.log("Test doc written with ID: ", docRef.id);
-}).catch((error) => {
-  console.error("Error adding test doc: ", error);
-});
-
 // ---- Simple local storage helpers ----
 const STORAGE_KEY = "fibroDaysLocal";
 
