@@ -71,6 +71,7 @@ window.addEventListener("load", () => {
   setupSleepCalculation();
   setupNumberSteppers();
   setupMedicationsTab();
+  setupPrint();
 
   const dateInput = document.getElementById("dateInput");
   if (dateInput && dateInput.value) loadDayFromCloud(dateInput.value);
@@ -86,6 +87,91 @@ window.addEventListener("load", () => {
   refreshHistory();
   refreshTrends();
 });
+
+// ---- Print support ----
+// Tracks elements whose display/visibility we temporarily override for print.
+const _printOverrides = [];
+
+function _setDisplay(el, value) {
+  if (!el) return;
+  _printOverrides.push({ el, prev: el.style.display });
+  el.style.display = value;
+}
+
+function setupPrint() {
+  // Replace the inline onclick on the print button with a proper handler
+  // so we can prep the DOM before the print dialog opens.
+  const printBtn = document.getElementById("printMedBtn");
+  if (printBtn) {
+    printBtn.removeAttribute("onclick");
+    printBtn.addEventListener("click", () => {
+      window.print();
+    });
+  }
+
+  window.addEventListener("beforeprint", onBeforePrint);
+  window.addEventListener("afterprint", onAfterPrint);
+}
+
+function onBeforePrint() {
+  // 1. Make sure <main> is visible (auth hides it via inline style)
+  const main = document.querySelector("main");
+  if (main && main.style.display === "none") {
+    _setDisplay(main, "");
+  }
+
+  // 2. Hide header and auth overlay
+  const header = document.querySelector("header");
+  const authOverlayEl = document.getElementById("authOverlay");
+  _setDisplay(header, "none");
+  _setDisplay(authOverlayEl, "none");
+
+  // 3. Hide all top-level tabs except medications-tab
+  document.querySelectorAll(".tab").forEach(tab => {
+    if (tab.id !== "medications-tab") {
+      _setDisplay(tab, "none");
+    } else {
+      _setDisplay(tab, "block");
+    }
+  });
+
+  // 4. Hide the main tab nav bar and saveStatus
+  const tabNav = document.getElementById("tabs");
+  const saveStatus = document.getElementById("saveStatus");
+  _setDisplay(tabNav, "none");
+  _setDisplay(saveStatus, "none");
+
+  // 5. Hide the med sub-tabs nav
+  const medSubTabs = document.querySelector(".med-sub-tabs");
+  _setDisplay(medSubTabs, "none");
+
+  // 6. Hide all med views except medPrintView
+  document.querySelectorAll(".med-view").forEach(view => {
+    if (view.id !== "medPrintView") {
+      _setDisplay(view, "none");
+    } else {
+      _setDisplay(view, "block");
+    }
+  });
+
+  // 7. Show print-only elements
+  document.querySelectorAll(".print-only").forEach(el => {
+    _setDisplay(el, "block");
+  });
+
+  // 8. Hide no-print elements
+  document.querySelectorAll(".no-print").forEach(el => {
+    _setDisplay(el, "none");
+  });
+}
+
+function onAfterPrint() {
+  // Restore all overridden elements in reverse order
+  while (_printOverrides.length) {
+    const { el, prev } = _printOverrides.pop();
+    el.style.display = prev;
+  }
+}
 
 function setupTabs() {
   const buttons = document.querySelectorAll(".tab-button");
