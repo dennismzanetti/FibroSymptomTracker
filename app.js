@@ -89,87 +89,108 @@ window.addEventListener("load", () => {
 });
 
 // ---- Print support ----
-// Tracks elements whose display/visibility we temporarily override for print.
-const _printOverrides = [];
 
-function _setDisplay(el, value) {
-  if (!el) return;
-  _printOverrides.push({ el, prev: el.style.display });
-  el.style.display = value;
-}
+const FREQ_LABELS = {
+  daily: "Daily",
+  twice_daily: "Twice daily",
+  three_times_daily: "Three times daily",
+  as_needed: "As needed (PRN)",
+  weekly: "Weekly",
+  other: "Other"
+};
 
 function setupPrint() {
-  // Replace the inline onclick on the print button with a proper handler
-  // so we can prep the DOM before the print dialog opens.
   const printBtn = document.getElementById("printMedBtn");
   if (printBtn) {
     printBtn.removeAttribute("onclick");
-    printBtn.addEventListener("click", () => {
-      window.print();
-    });
+    printBtn.addEventListener("click", printMedList);
   }
-
-  window.addEventListener("beforeprint", onBeforePrint);
-  window.addEventListener("afterprint", onAfterPrint);
 }
 
-function onBeforePrint() {
-  // 1. Make sure <main> is visible (auth hides it via inline style)
-  const main = document.querySelector("main");
-  if (main && main.style.display === "none") {
-    _setDisplay(main, "");
-  }
+async function printMedList() {
+  const printBtn = document.getElementById("printMedBtn");
+  if (printBtn) { printBtn.disabled = true; printBtn.textContent = "Loading…"; }
 
-  // 2. Hide header and auth overlay
-  const header = document.querySelector("header");
-  const authOverlayEl = document.getElementById("authOverlay");
-  _setDisplay(header, "none");
-  _setDisplay(authOverlayEl, "none");
+  try {
+    // Fetch medications and supplements in parallel
+    const [medSnap, suppSnap] = await Promise.all([
+      db.collection("medications").orderBy("name").get(),
+      db.collection("supplements").orderBy("name").get()
+    ]);
 
-  // 3. Hide all top-level tabs except medications-tab
-  document.querySelectorAll(".tab").forEach(tab => {
-    if (tab.id !== "medications-tab") {
-      _setDisplay(tab, "none");
-    } else {
-      _setDisplay(tab, "block");
+    const dateStr = new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+
+    function buildRows(snapshot, extraLabel) {
+      if (snapshot.empty) return `<tr><td colspan="5" style="padding:12px;color:#666;font-style:italic;">None on file.</td></tr>`;
+      let html = "";
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        html += `<tr>
+          <td style="padding:8px 10px;border-bottom:1px solid #ddd;font-weight:600;">${d.name || ""}</td>
+          <td style="padding:8px 10px;border-bottom:1px solid #ddd;text-align:center;">${d.dose || "—"}</td>
+          <td style="padding:8px 10px;border-bottom:1px solid #ddd;text-align:center;">${FREQ_LABELS[d.frequency] || d.frequency || "—"}</td>
+          <td style="padding:8px 10px;border-bottom:1px solid #ddd;">${d[extraLabel] || "—"}</td>
+          <td style="padding:8px 10px;border-bottom:1px solid #ddd;color:#555;font-size:0.9em;">${d.notes || ""}</td>
+        </tr>`;
+      });
+      return html;
     }
-  });
 
-  // 4. Hide the main tab nav bar and saveStatus
-  const tabNav = document.getElementById("tabs");
-  const saveStatus = document.getElementById("saveStatus");
-  _setDisplay(tabNav, "none");
-  _setDisplay(saveStatus, "none");
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Medication &amp; Supplement List</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 32px; color: #222; }
+    h1 { font-size: 1.4em; margin-bottom: 4px; }
+    .subtitle { color: #666; font-size: 0.9em; margin-bottom: 28px; }
+    h2 { font-size: 1.1em; margin: 24px 0 8px; border-bottom: 2px solid #3f51b5; padding-bottom: 4px; color: #3f51b5; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.92em; }
+    thead th { background: #3f51b5; color: #fff; padding: 9px 10px; text-align: left; }
+    thead th:nth-child(2), thead th:nth-child(3) { text-align: center; }
+    tbody tr:nth-child(even) { background: #f5f5f5; }
+    @media print { body { margin: 16px; } }
+  </style>
+</head>
+<body>
+  <h1>Medication &amp; Supplement List</h1>
+  <p class="subtitle">Printed: ${dateStr}</p>
 
-  // 5. Hide the med sub-tabs nav
-  const medSubTabs = document.querySelector(".med-sub-tabs");
-  _setDisplay(medSubTabs, "none");
+  <h2>Medications</h2>
+  <table>
+    <thead><tr>
+      <th>Name</th><th>Dose</th><th>Frequency</th><th>Prescribing Doctor</th><th>Notes</th>
+    </tr></thead>
+    <tbody>${buildRows(medSnap, "doctor")}</tbody>
+  </table>
 
-  // 6. Hide all med views except medPrintView
-  document.querySelectorAll(".med-view").forEach(view => {
-    if (view.id !== "medPrintView") {
-      _setDisplay(view, "none");
-    } else {
-      _setDisplay(view, "block");
+  <h2>Supplements</h2>
+  <table>
+    <thead><tr>
+      <th>Name</th><th>Dose</th><th>Frequency</th><th>Brand</th><th>Notes</th>
+    </tr></thead>
+    <tbody>${buildRows(suppSnap, "brand")}</tbody>
+  </table>
+
+  <script>window.onload = function(){ window.print(); window.onafterprint = function(){ window.close(); }; };<\/script>
+</body>
+</html>`;
+
+    const win = window.open("", "_blank");
+    if (!win) {
+      alert("Pop-up was blocked. Please allow pop-ups for this site and try again.");
+      return;
     }
-  });
+    win.document.open();
+    win.document.write(html);
+    win.document.close();
 
-  // 7. Show print-only elements
-  document.querySelectorAll(".print-only").forEach(el => {
-    _setDisplay(el, "block");
-  });
-
-  // 8. Hide no-print elements
-  document.querySelectorAll(".no-print").forEach(el => {
-    _setDisplay(el, "none");
-  });
-}
-
-function onAfterPrint() {
-  // Restore all overridden elements in reverse order
-  while (_printOverrides.length) {
-    const { el, prev } = _printOverrides.pop();
-    el.style.display = prev;
+  } catch (err) {
+    console.error("Print error:", err);
+    alert("Failed to load data for printing. Please try again.");
+  } finally {
+    if (printBtn) { printBtn.disabled = false; printBtn.textContent = "Print / Save PDF"; }
   }
 }
 
@@ -862,16 +883,7 @@ async function refreshMedHistory() {
   }
 }
 
-// ---- Print Tables ----
-
-const FREQ_LABELS = {
-  daily: "Daily",
-  twice_daily: "Twice daily",
-  three_times_daily: "Three times daily",
-  as_needed: "As needed (PRN)",
-  weekly: "Weekly",
-  other: "Other"
-};
+// ---- Print Tables (on-page view, kept for the Print sub-tab UI) ----
 
 async function refreshMedPrintTable() {
   const tbody = document.getElementById("medPrintTableBody");
