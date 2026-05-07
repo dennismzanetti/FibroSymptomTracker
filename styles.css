@@ -794,13 +794,18 @@ canvas {
   outline-offset: 2px;
 }
 
-@media (max-width: 420px) {
+/* --- Mobile: 2×2 grid of sub-tabs at 540px and below --- */
+@media (max-width: 540px) {
   .med-sub-tabs {
     border-radius: 18px;
     flex-wrap: wrap;
   }
   .med-sub-tab-btn {
     flex: 1 1 calc(50% - 3px);
+    font-size: 0.88rem;
+    padding: 0.6rem 0.5rem;
+    white-space: normal;
+    line-height: 1.2;
   }
 }
 
@@ -852,7 +857,8 @@ canvas {
   margin-top: 0.5rem;
 }
 
-.med-form-actions #cancelMedEditBtn {
+.med-form-actions #cancelMedEditBtn,
+.med-form-actions #cancelSuppEditBtn {
   padding: 0.65rem 1.1rem;
   border: 1px solid #cfd5e3;
   border-radius: 999px;
@@ -862,8 +868,24 @@ canvas {
   font-weight: 600;
 }
 
-.med-form-actions #cancelMedEditBtn:hover {
+.med-form-actions #cancelMedEditBtn:hover,
+.med-form-actions #cancelSuppEditBtn:hover {
   background: #e8ebf5;
+}
+
+/* Stack form action buttons full-width on small phones */
+@media (max-width: 480px) {
+  .med-form-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .med-form-actions .primary,
+  .med-form-actions #cancelMedEditBtn,
+  .med-form-actions #cancelSuppEditBtn {
+    width: 100%;
+    text-align: center;
+    padding: 0.85rem 1rem;
+  }
 }
 
 /* Medication list */
@@ -956,6 +978,31 @@ canvas {
 
 .med-edit-btn:hover {
   background: #dce3fb;
+}
+
+/* Stack med item at ≤540px — full-width action row */
+@media (max-width: 540px) {
+  .med-item {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .med-item-actions {
+    flex-direction: row;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .med-item-actions button {
+    flex: 1;
+    text-align: center;
+    min-height: 44px;
+  }
+
+  .med-history-date {
+    margin-left: 0;
+    width: 100%;
+  }
 }
 
 /* Change history list */
@@ -1054,27 +1101,6 @@ canvas {
   border: 1px solid #b3e6c8;
 }
 
-@media (max-width: 540px) {
-  .med-item {
-    flex-direction: column;
-  }
-
-  .med-item-actions {
-    flex-direction: row;
-    width: 100%;
-  }
-
-  .med-item-actions button {
-    flex: 1;
-    text-align: center;
-  }
-
-  .med-history-date {
-    margin-left: 0;
-    width: 100%;
-  }
-}
-
 /* =============================================
    MED PRINT TAB — SCREEN STYLES
    ============================================= */
@@ -1092,12 +1118,55 @@ canvas {
   box-shadow: 0 4px 14px rgba(0,0,0,0.05);
 }
 
+/* Stack print header on phone */
+@media (max-width: 540px) {
+  .med-print-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+  .med-print-header .primary {
+    width: 100%;
+    text-align: center;
+  }
+}
+
 .med-print-sheet {
   background: #ffffff;
   border: 1px solid #e3e6f0;
   border-radius: 12px;
   padding: 1.75rem 2rem;
   box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+}
+
+/* Reduce print sheet padding and enable table scroll on phones */
+@media (max-width: 540px) {
+  .med-print-sheet {
+    padding: 1rem 0.75rem;
+    border-radius: 8px;
+  }
+
+  /* Wrap each table in a scrollable container */
+  .med-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  .med-table thead,
+  .med-table tbody,
+  .med-table tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .med-table-notes {
+    white-space: normal;
+    max-width: 160px;
+  }
 }
 
 /* Document header — only shows when printing */
@@ -1285,6 +1354,9 @@ canvas {
   .med-table {
     font-size: 10pt;
     width: 100%;
+    display: table;
+    overflow-x: visible;
+    white-space: normal;
   }
 
   .med-table thead tr {
