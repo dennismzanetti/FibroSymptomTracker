@@ -12,6 +12,45 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+// ---- Auth ----
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
+
+const authOverlay = document.getElementById("authOverlay");
+const googleSignInBtn = document.getElementById("googleSignInBtn");
+const signOutBtn = document.getElementById("signOutBtn");
+const appMain = document.querySelector("main");
+
+// Hide app until auth state is known
+if (appMain) appMain.style.display = "none";
+
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    // Signed in — show app, hide overlay
+    if (authOverlay) authOverlay.style.display = "none";
+    if (appMain) appMain.style.display = "";
+    if (signOutBtn) signOutBtn.style.display = "inline-block";
+    console.log("Signed in as", user.displayName, "UID:", user.uid);
+  } else {
+    // Signed out — show overlay, hide app
+    if (authOverlay) authOverlay.style.display = "flex";
+    if (appMain) appMain.style.display = "none";
+    if (signOutBtn) signOutBtn.style.display = "none";
+  }
+});
+
+googleSignInBtn?.addEventListener("click", () => {
+  const authError = document.getElementById("authError");
+  auth.signInWithPopup(provider).catch((err) => {
+    console.error("Sign-in error:", err);
+    if (authError) authError.textContent = "Sign-in failed. Please try again.";
+  });
+});
+
+signOutBtn?.addEventListener("click", () => {
+  auth.signOut();
+});
+
 // ---- Simple local storage helpers ----
 const STORAGE_KEY = "fibroDaysLocal";
 
