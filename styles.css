@@ -990,3 +990,244 @@ canvas {
     width: 100%;
   }
 }
+
+/* =============================================
+   MED PRINT TAB — SCREEN STYLES
+   ============================================= */
+
+.med-print-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: #ffffff;
+  border: 1px solid #e7eaf3;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+}
+
+.med-print-sheet {
+  background: #ffffff;
+  border: 1px solid #e3e6f0;
+  border-radius: 12px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+}
+
+/* Document header — only shows when printing */
+.med-print-doc-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #3f51b5;
+}
+
+.med-print-doc-header h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1c1d22;
+  margin: 0 0 0.25rem 0;
+}
+
+.med-print-doc-header p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #5b6686;
+}
+
+/* The table */
+.med-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.93rem;
+  color: #1c1d22;
+}
+
+.med-table thead tr {
+  background: #3f51b5;
+  color: #ffffff;
+}
+
+.med-table thead th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: none;
+  white-space: nowrap;
+}
+
+.med-table thead th:first-child {
+  border-radius: 8px 0 0 0;
+}
+
+.med-table thead th:last-child {
+  border-radius: 0 8px 0 0;
+}
+
+.med-table tbody tr {
+  border-bottom: 1px solid #e7eaf3;
+  transition: background 0.15s;
+}
+
+.med-table tbody tr:nth-child(even) {
+  background: #f8faff;
+}
+
+.med-table tbody tr:hover {
+  background: #eef2ff;
+}
+
+.med-table tbody td {
+  padding: 0.85rem 1rem;
+  vertical-align: top;
+  line-height: 1.45;
+}
+
+.med-table-name {
+  font-weight: 700;
+  color: #1f2b4d;
+  min-width: 140px;
+}
+
+.med-table-center {
+  text-align: left;
+  min-width: 90px;
+  color: #32408f;
+  font-weight: 600;
+}
+
+.med-table-notes {
+  color: #5b6686;
+  font-style: italic;
+  max-width: 260px;
+}
+
+.med-table-empty {
+  text-align: center;
+  color: #8892b0;
+  font-style: italic;
+  padding: 2rem 1rem;
+}
+
+/* Print footer — only shows when printing */
+.med-print-footer {
+  margin-top: 1.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #d0d5e8;
+  font-size: 0.8rem;
+  color: #8892b0;
+}
+
+/* Helpers */
+.print-only {
+  display: none;
+}
+
+/* =============================================
+   @MEDIA PRINT — clean single-page output
+   ============================================= */
+
+@media print {
+  /* Hide everything except the print sheet */
+  body > * {
+    display: none !important;
+  }
+
+  body > main {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Hide all tabs except the print tab */
+  main > *:not(#med-print-tab) {
+    display: none !important;
+  }
+
+  #med-print-tab {
+    display: block !important;
+  }
+
+  /* Hide the on-screen toolbar */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Show print-only elements */
+  .print-only {
+    display: block !important;
+  }
+
+  /* Remove screen chrome from sheet */
+  .med-print-sheet {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  /* Table print styles */
+  .med-table {
+    font-size: 10pt;
+    width: 100%;
+  }
+
+  .med-table thead tr {
+    background: #3f51b5 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color: #ffffff !important;
+  }
+
+  .med-table thead th {
+    padding: 6pt 8pt;
+    font-size: 8pt;
+  }
+
+  .med-table tbody td {
+    padding: 6pt 8pt;
+  }
+
+  .med-table tbody tr:nth-child(even) {
+    background: #f2f4fb !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .med-table tbody tr:hover {
+    background: transparent !important;
+  }
+
+  .med-table tbody tr {
+    page-break-inside: avoid;
+  }
+
+  /* Document header */
+  .med-print-doc-header {
+    border-bottom: 2pt solid #3f51b5 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    margin-bottom: 12pt;
+    padding-bottom: 8pt;
+  }
+
+  .med-print-doc-header h1 {
+    font-size: 16pt;
+  }
+
+  /* Footer */
+  .med-print-footer {
+    margin-top: 12pt;
+    font-size: 8pt;
+  }
+
+  @page {
+    margin: 0.75in 0.85in;
+    size: letter portrait;
+  }
+}
