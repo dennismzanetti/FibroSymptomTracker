@@ -741,39 +741,82 @@ canvas {
 }
 
 /* =============================================
-   MEDICATIONS TAB
+   MEDICATIONS TAB — SEGMENTED PILL CONTROL
    ============================================= */
 
-/* Sub-tab navigation bar */
+/*
+  Outer track: a rounded pill-shaped tray that holds all three buttons.
+  The track is a soft indigo-tinted gray, like a pressed-in groove.
+*/
 .med-sub-tabs {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1.25rem;
-  flex-wrap: wrap;
+  align-items: stretch;
+  background: #e2e6f4;
+  border-radius: 999px;
+  padding: 4px;
+  gap: 3px;
+  margin-bottom: 1.5rem;
+  box-shadow: inset 0 1px 3px rgba(30, 40, 90, 0.10);
 }
 
+/*
+  Each button fills its segment equally.
+  Default (inactive): fully transparent so the track shows through.
+*/
 .med-sub-tab-btn {
   flex: 1;
-  padding: 0.65rem 1rem;
-  border: 2px solid #dbe1ef;
+  padding: 0.55rem 0.75rem;
+  border: none;
   border-radius: 999px;
-  background: #f5f7fc;
+  background: transparent;
   color: #4a5278;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.18s, color 0.18s, border-color 0.18s;
+  white-space: nowrap;
+  text-align: center;
+  transition: background 0.2s ease, color 0.2s ease,
+              box-shadow 0.2s ease, transform 0.15s ease;
+  position: relative;
+  z-index: 0;
 }
 
-.med-sub-tab-btn:hover {
-  background: #eef2ff;
-  border-color: #b0bcee;
+/* Hover: lighten slightly to hint interactivity */
+.med-sub-tab-btn:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.45);
+  color: #2e3a7a;
 }
 
+/*
+  Active pill: white raised tile that floats above the track.
+  Uses a shadow to create the lifted look instead of a border.
+*/
 .med-sub-tab-btn.active {
-  background: #3f51b5;
-  color: #ffffff;
-  border-color: #3f51b5;
+  background: #ffffff;
+  color: #3f51b5;
+  font-weight: 700;
+  box-shadow:
+    0 1px 3px rgba(30, 40, 90, 0.14),
+    0 3px 8px rgba(30, 40, 90, 0.10);
+  transform: translateY(-1px);
+  z-index: 1;
+}
+
+/* Focus ring for keyboard nav */
+.med-sub-tab-btn:focus-visible {
+  outline: 2px solid #3f51b5;
+  outline-offset: 2px;
+}
+
+/* Responsive: stack to two rows on narrow screens */
+@media (max-width: 420px) {
+  .med-sub-tabs {
+    border-radius: 18px;
+    flex-wrap: wrap;
+  }
+  .med-sub-tab-btn {
+    flex: 1 1 calc(50% - 3px);
+  }
 }
 
 /* Keep old toggle classes for backward compat */
