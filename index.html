@@ -206,11 +206,12 @@
 
   <!-- Medications Tab -->
   <section id="medications-tab" class="tab">
-    <h2>Medications</h2>
+    <h2>Medications &amp; Supplements</h2>
 
-    <!-- Sub-tab navigation -->
+    <!-- Sub-tab navigation — now 4 tabs -->
     <nav class="med-sub-tabs">
-      <button class="med-sub-tab-btn active" data-med-view="medListView">Medication List</button>
+      <button class="med-sub-tab-btn active" data-med-view="medListView">Medications</button>
+      <button class="med-sub-tab-btn" data-med-view="suppListView">Supplements</button>
       <button class="med-sub-tab-btn" data-med-view="medHistoryView">Change History</button>
       <button class="med-sub-tab-btn" data-med-view="medPrintView">Print List</button>
     </nav>
@@ -249,10 +250,44 @@
       </div>
     </div>
 
+    <!-- Supplements List / Edit View -->
+    <div id="suppListView" class="med-view" style="display:none;">
+      <div class="card supp-card">
+        <h3 id="suppFormTitle">Add Supplement</h3>
+        <div class="med-form">
+          <label>Name: <input type="text" id="suppNameInput" placeholder="e.g. Magnesium Glycinate" /></label>
+          <label>Dose: <input type="text" id="suppDoseInput" placeholder="e.g. 400mg" /></label>
+          <label>Frequency:
+            <select id="suppFrequencyInput">
+              <option value="">Select...</option>
+              <option value="daily">Daily</option>
+              <option value="twice_daily">Twice daily</option>
+              <option value="three_times_daily">Three times daily</option>
+              <option value="as_needed">As needed</option>
+              <option value="weekly">Weekly</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+          <label>Brand (optional): <input type="text" id="suppBrandInput" placeholder="e.g. Nature Made" /></label>
+          <label>Purpose / notes: <textarea id="suppNotesInput" rows="2" placeholder="Why you take it, how it helps, etc."></textarea></label>
+          <input type="hidden" id="suppEditingId" />
+          <div class="med-form-actions">
+            <button class="primary supp-primary" id="saveSuppBtn">Add Supplement</button>
+            <button id="cancelSuppEditBtn" style="display:none;">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card supp-card">
+        <h3>Current Supplements</h3>
+        <ul id="suppList" class="med-list"><li class="med-empty">No supplements added yet.</li></ul>
+      </div>
+    </div>
+
     <!-- Change History View -->
     <div id="medHistoryView" class="med-view" style="display:none;">
       <div class="card">
-        <h3>Medication Change History</h3>
+        <h3>Medication &amp; Supplement Change History</h3>
         <ul id="medHistoryList" class="med-history-list"><li class="med-empty">No history yet.</li></ul>
       </div>
     </div>
@@ -268,12 +303,14 @@
       </div>
 
       <div class="med-print-sheet" id="medPrintSheet">
-        <!-- Print header -- visible only when printing -->
+        <!-- Print header — visible only when printing -->
         <div class="print-only med-print-doc-header">
-          <h1>Medication List</h1>
+          <h1>Medications &amp; Supplements</h1>
           <p id="medPrintPatientLine">Printed: <span id="medPrintDate"></span></p>
         </div>
 
+        <!-- Medications table -->
+        <h3 class="med-print-section-heading">Medications</h3>
         <table class="med-table" id="medPrintTable">
           <thead>
             <tr>
@@ -285,6 +322,23 @@
             </tr>
           </thead>
           <tbody id="medPrintTableBody">
+            <tr><td colspan="5" class="med-table-empty">Loading&#8230;</td></tr>
+          </tbody>
+        </table>
+
+        <!-- Supplements table -->
+        <h3 class="med-print-section-heading supp-section-heading">Supplements</h3>
+        <table class="med-table supp-table" id="suppPrintTable">
+          <thead>
+            <tr>
+              <th>Supplement</th>
+              <th>Dose</th>
+              <th>Frequency</th>
+              <th>Brand</th>
+              <th>Purpose / Notes</th>
+            </tr>
+          </thead>
+          <tbody id="suppPrintTableBody">
             <tr><td colspan="5" class="med-table-empty">Loading&#8230;</td></tr>
           </tbody>
         </table>
