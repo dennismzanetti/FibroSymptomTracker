@@ -44,7 +44,6 @@
     <button class="tab-button" data-tab="history-tab">History</button>
     <button class="tab-button" data-tab="trends-tab">Trends</button>
     <button class="tab-button" data-tab="medications-tab">Medications</button>
-    <button class="tab-button" data-tab="med-print-tab">Med List</button>
   </nav>
   <p id="saveStatus"></p>
 
@@ -212,6 +211,7 @@
     <div class="med-view-toggle">
       <button class="med-toggle-btn active" id="showMedListBtn">Medication List</button>
       <button class="med-toggle-btn" id="showMedHistoryBtn">Change History</button>
+      <button class="med-toggle-btn" id="showMedPrintBtn">&#128438; Print List</button>
     </div>
 
     <!-- Medication List / Edit View -->
@@ -255,44 +255,45 @@
         <ul id="medHistoryList" class="med-history-list"><li class="med-empty">No history yet.</li></ul>
       </div>
     </div>
-  </section>
 
-  <!-- Med List Print Tab -->
-  <section id="med-print-tab" class="tab">
-    <div class="med-print-header no-print">
-      <div>
-        <h2 style="margin:0;">Medication List</h2>
-        <p style="margin:0.25rem 0 0 0; color:#5b6686; font-size:0.92rem;">Clean view — optimized for printing</p>
+    <!-- Print List View -->
+    <div id="medPrintView" style="display:none;">
+      <div class="med-print-header no-print">
+        <div>
+          <h3 style="margin:0; padding:0; border:none;">Print / Save PDF</h3>
+          <p style="margin:0.25rem 0 0 0; color:#5b6686; font-size:0.92rem;">Clean view optimized for printing</p>
+        </div>
+        <button class="primary" id="printMedBtn" onclick="window.print()">&#128438; Print / Save PDF</button>
       </div>
-      <button class="primary" id="printMedBtn" onclick="window.print()">&#128438; Print / Save PDF</button>
+
+      <div class="med-print-sheet" id="medPrintSheet">
+        <!-- Print header — visible only when printing -->
+        <div class="print-only med-print-doc-header">
+          <h1>Medication List</h1>
+          <p id="medPrintPatientLine">Printed: <span id="medPrintDate"></span></p>
+        </div>
+
+        <table class="med-table" id="medPrintTable">
+          <thead>
+            <tr>
+              <th>Medication</th>
+              <th>Dose</th>
+              <th>Frequency</th>
+              <th>Prescribing Doctor</th>
+              <th>Purpose / Notes</th>
+            </tr>
+          </thead>
+          <tbody id="medPrintTableBody">
+            <tr><td colspan="5" class="med-table-empty">Loading…</td></tr>
+          </tbody>
+        </table>
+
+        <div class="med-print-footer print-only">
+          <p>This list was generated from my Fibromyalgia Symptom Tracker.</p>
+        </div>
+      </div>
     </div>
 
-    <div class="med-print-sheet" id="medPrintSheet">
-      <!-- Print header (visible only when printing) -->
-      <div class="print-only med-print-doc-header">
-        <h1>Medication List</h1>
-        <p id="medPrintPatientLine">Printed: <span id="medPrintDate"></span></p>
-      </div>
-
-      <table class="med-table" id="medPrintTable">
-        <thead>
-          <tr>
-            <th>Medication</th>
-            <th>Dose</th>
-            <th>Frequency</th>
-            <th>Prescribing Doctor</th>
-            <th>Purpose / Notes</th>
-          </tr>
-        </thead>
-        <tbody id="medPrintTableBody">
-          <tr><td colspan="5" class="med-table-empty">Loading…</td></tr>
-        </tbody>
-      </table>
-
-      <div class="med-print-footer print-only">
-        <p>This list was generated from my Fibromyalgia Symptom Tracker.</p>
-      </div>
-    </div>
   </section>
 
 </main>

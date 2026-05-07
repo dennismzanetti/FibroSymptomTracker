@@ -101,7 +101,6 @@ function setupTabs() {
       if (target === "journal-tab") renderJournal();
       if (target === "trends-tab") refreshTrends();
       if (target === "medications-tab") refreshMedList();
-      if (target === "med-print-tab") refreshMedPrintTable();
     });
   });
 }
@@ -477,23 +476,34 @@ async function refreshTrends() {
 function setupMedicationsTab() {
   const showListBtn = document.getElementById("showMedListBtn");
   const showHistoryBtn = document.getElementById("showMedHistoryBtn");
+  const showPrintBtn = document.getElementById("showMedPrintBtn");
   const medListView = document.getElementById("medListView");
   const medHistoryView = document.getElementById("medHistoryView");
+  const medPrintView = document.getElementById("medPrintView");
+
+  function setMedView(active) {
+    // Toggle buttons
+    [showListBtn, showHistoryBtn, showPrintBtn].forEach(btn => btn?.classList.remove("active"));
+    active.btn?.classList.add("active");
+    // Toggle views
+    if (medListView)    medListView.style.display    = active.view === "list"    ? "" : "none";
+    if (medHistoryView) medHistoryView.style.display = active.view === "history" ? "" : "none";
+    if (medPrintView)   medPrintView.style.display   = active.view === "print"   ? "" : "none";
+  }
 
   showListBtn?.addEventListener("click", () => {
-    showListBtn.classList.add("active");
-    showHistoryBtn.classList.remove("active");
-    medListView.style.display = "";
-    medHistoryView.style.display = "none";
+    setMedView({ btn: showListBtn, view: "list" });
     refreshMedList();
   });
 
   showHistoryBtn?.addEventListener("click", () => {
-    showHistoryBtn.classList.add("active");
-    showListBtn.classList.remove("active");
-    medHistoryView.style.display = "";
-    medListView.style.display = "none";
+    setMedView({ btn: showHistoryBtn, view: "history" });
     refreshMedHistory();
+  });
+
+  showPrintBtn?.addEventListener("click", () => {
+    setMedView({ btn: showPrintBtn, view: "print" });
+    refreshMedPrintTable();
   });
 
   document.getElementById("saveMedBtn")?.addEventListener("click", saveMedication);
@@ -651,7 +661,7 @@ async function refreshMedHistory() {
 }
 
 // ============================================================
-// MED LIST PRINT TAB
+// MED PRINT TABLE
 // ============================================================
 
 const FREQ_LABELS = {
@@ -668,7 +678,6 @@ async function refreshMedPrintTable() {
   const dateEl = document.getElementById("medPrintDate");
   if (!tbody) return;
 
-  // Set print date
   if (dateEl) dateEl.textContent = new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
 
   tbody.innerHTML = `<tr><td colspan="5" class="med-table-empty">Loading…</td></tr>`;
@@ -679,7 +688,7 @@ async function refreshMedPrintTable() {
       return;
     }
     tbody.innerHTML = "";
-    snapshot.forEach((doc, idx) => {
+    snapshot.forEach((doc) => {
       const med = doc.data();
       const tr = document.createElement("tr");
       tr.innerHTML = `
