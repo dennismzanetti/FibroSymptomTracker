@@ -5,10 +5,7 @@
   <title>Fibromyalgia Daily Tracker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="styles.css">
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
@@ -19,16 +16,13 @@
 <div id="authOverlay" style="position:fixed; inset:0; background:#f7f6f2; z-index:1000; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem;">
   <h2 style="font-size:1.5rem; margin-bottom:0.5rem;">Fibromyalgia Tracker</h2>
   <p style="color:#666;">Sign in to access your data.</p>
-  <button id="googleSignInBtn" style="padding:0.75rem 1.5rem; font-size:1rem; background:#4285F4; color:white; border:none; border-radius:6px; cursor:pointer;">
-    Sign in with Google
-  </button>
+  <button id="googleSignInBtn" style="padding:0.75rem 1.5rem; font-size:1rem; background:#4285F4; color:white; border:none; border-radius:6px; cursor:pointer;">Sign in with Google</button>
   <p id="authError" style="color:red; font-size:0.875rem;"></p>
 </div>
 
 <header class="app-header">
   <h1>Fibromyalgia Daily Tracker</h1>
   <button id="signOutBtn" style="display:none; float:right; padding:0.4rem 0.9rem; font-size:0.875rem; background:#eee; border:1px solid #ccc; border-radius:4px; cursor:pointer;">Sign Out</button>
-
   <div class="date-row">
     <button type="button" id="prevDayBtn" class="date-nav-btn icon-btn" aria-label="Previous day" title="Previous day">&#8249;</button>
     <button type="button" id="nextDayBtn" class="date-nav-btn icon-btn" aria-label="Next day" title="Next day">&#8250;</button>
@@ -59,7 +53,6 @@
         <textarea id="overallNotesInput" rows="2" placeholder="Big events, stress, weather, etc."></textarea>
       </label>
     </div>
-
     <div class="card">
       <h3>Mood</h3>
       <label>Mood score (1&#8211;10)
@@ -73,59 +66,15 @@
         <textarea id="moodNotesInput" rows="2" placeholder="Anxious, low, ok, calm, etc."></textarea>
       </label>
     </div>
-
     <div class="card">
       <h3>Functionality by Time of Day</h3>
-      <div class="time-block">
-        <h4>Early morning (5&#8211;9 am)</h4>
-        <label>Functionality score (1&#8211;10)
-          <div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early morning functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyMorningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early morning functionality score">+</button></div>
-        </label>
-        <label>What I was doing: <input type="text" id="earlyMorningActivity" /></label>
-        <label>Symptoms / how it felt: <textarea id="earlyMorningSymptoms" rows="2"></textarea></label>
-      </div>
-      <div class="time-block">
-        <h4>Late morning (9&#8211;12)</h4>
-        <label>Functionality score (1&#8211;10)
-          <div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late morning functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateMorningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late morning functionality score">+</button></div>
-        </label>
-        <label>What I was doing: <input type="text" id="lateMorningActivity" /></label>
-        <label>Symptoms / how it felt: <textarea id="lateMorningSymptoms" rows="2"></textarea></label>
-      </div>
-      <div class="time-block">
-        <h4>Early afternoon (12&#8211;3)</h4>
-        <label>Functionality score (1&#8211;10)
-          <div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early afternoon functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyAfternoonScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early afternoon functionality score">+</button></div>
-        </label>
-        <label>What I was doing: <input type="text" id="earlyAfternoonActivity" /></label>
-        <label>Symptoms / how it felt: <textarea id="earlyAfternoonSymptoms" rows="2"></textarea></label>
-      </div>
-      <div class="time-block">
-        <h4>Late afternoon (3&#8211;6)</h4>
-        <label>Functionality score (1&#8211;10)
-          <div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late afternoon functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateAfternoonScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late afternoon functionality score">+</button></div>
-        </label>
-        <label>What I was doing: <input type="text" id="lateAfternoonActivity" /></label>
-        <label>Symptoms / how it felt: <textarea id="lateAfternoonSymptoms" rows="2"></textarea></label>
-      </div>
-      <div class="time-block">
-        <h4>Early evening (6&#8211;9)</h4>
-        <label>Functionality score (1&#8211;10)
-          <div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early evening functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyEveningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early evening functionality score">+</button></div>
-        </label>
-        <label>What I was doing: <input type="text" id="earlyEveningActivity" /></label>
-        <label>Symptoms / how it felt: <textarea id="earlyEveningSymptoms" rows="2"></textarea></label>
-      </div>
-      <div class="time-block">
-        <h4>Late evening (9&#8211;12)</h4>
-        <label>Functionality score (1&#8211;10)
-          <div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late evening functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateEveningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late evening functionality score">+</button></div>
-        </label>
-        <label>What I was doing: <input type="text" id="lateEveningActivity" /></label>
-        <label>Symptoms / how it felt: <textarea id="lateEveningSymptoms" rows="2"></textarea></label>
-      </div>
+      <div class="time-block"><h4>Early morning (5&#8211;9 am)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early morning functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyMorningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early morning functionality score">+</button></div></label><label>What I was doing: <input type="text" id="earlyMorningActivity" /></label><label>Symptoms / how it felt: <textarea id="earlyMorningSymptoms" rows="2"></textarea></label></div>
+      <div class="time-block"><h4>Late morning (9&#8211;12)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late morning functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateMorningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late morning functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateMorningActivity" /></label><label>Symptoms / how it felt: <textarea id="lateMorningSymptoms" rows="2"></textarea></label></div>
+      <div class="time-block"><h4>Early afternoon (12&#8211;3)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early afternoon functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyAfternoonScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early afternoon functionality score">+</button></div></label><label>What I was doing: <input type="text" id="earlyAfternoonActivity" /></label><label>Symptoms / how it felt: <textarea id="earlyAfternoonSymptoms" rows="2"></textarea></label></div>
+      <div class="time-block"><h4>Late afternoon (3&#8211;6)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late afternoon functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateAfternoonScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late afternoon functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateAfternoonActivity" /></label><label>Symptoms / how it felt: <textarea id="lateAfternoonSymptoms" rows="2"></textarea></label></div>
+      <div class="time-block"><h4>Early evening (6&#8211;9)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early evening functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyEveningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early evening functionality score">+</button></div></label><label>What I was doing: <input type="text" id="earlyEveningActivity" /></label><label>Symptoms / how it felt: <textarea id="earlyEveningSymptoms" rows="2"></textarea></label></div>
+      <div class="time-block"><h4>Late evening (9&#8211;12)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late evening functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateEveningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late evening functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateEveningActivity" /></label><label>Symptoms / how it felt: <textarea id="lateEveningSymptoms" rows="2"></textarea></label></div>
     </div>
-
     <div class="card">
       <h3>Sleep (previous night)</h3>
       <div class="sleep-time-grid">
@@ -137,35 +86,23 @@
         <span id="hoursSleptDisplay" class="sleep-total-value">&#8212;</span>
         <input type="hidden" id="hoursSleptInput" />
       </div>
-      <label>Sleep Quality (1&#8211;10)
-        <div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease sleep quality score">&#8722;</button><input type="number" min="1" max="10" id="sleepQualityInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase sleep quality score">+</button></div>
-      </label>
-      <label>Number of awakenings
-        <div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease number of awakenings">&#8722;</button><input type="number" min="0" max="20" id="awakeningsInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase number of awakenings">+</button></div>
-      </label>
+      <label>Sleep Quality (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease sleep quality score">&#8722;</button><input type="number" min="1" max="10" id="sleepQualityInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase sleep quality score">+</button></div></label>
+      <label>Number of awakenings<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease number of awakenings">&#8722;</button><input type="number" min="0" max="20" id="awakeningsInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase number of awakenings">+</button></div></label>
       <label>Sleep notes <textarea id="sleepNotesInput" rows="2"></textarea></label>
     </div>
-
     <div class="card">
       <h3>Exercise / Activity</h3>
       <label>Did you do planned exercise or notable activity?
         <select id="didExerciseInput"><option value="no">No</option><option value="yes">Yes</option></select>
       </label>
       <div id="exerciseDetails">
-        <label>Type:
-          <select id="exerciseTypeInput"><option value="">Select...</option><option value="walk">Walk</option><option value="stretching">Stretching</option><option value="pt">Physical therapy</option><option value="strength">Strength</option><option value="yoga">Yoga</option><option value="other">Other</option></select>
-        </label>
+        <label>Type:<select id="exerciseTypeInput"><option value="">Select...</option><option value="walk">Walk</option><option value="stretching">Stretching</option><option value="pt">Physical therapy</option><option value="strength">Strength</option><option value="yoga">Yoga</option><option value="other">Other</option></select></label>
         <label>Duration (minutes): <input type="number" min="0" id="exerciseMinutesInput" /></label>
-        <label>Intensity:
-          <select id="exerciseIntensityInput"><option value="">Select...</option><option value="gentle">Gentle</option><option value="moderate">Moderate</option><option value="overdid">Pushed too hard</option></select>
-        </label>
-        <label>Timing:
-          <select id="exerciseTimingInput"><option value="">Select...</option><option value="morning">Morning</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option></select>
-        </label>
+        <label>Intensity:<select id="exerciseIntensityInput"><option value="">Select...</option><option value="gentle">Gentle</option><option value="moderate">Moderate</option><option value="overdid">Pushed too hard</option></select></label>
+        <label>Timing:<select id="exerciseTimingInput"><option value="">Select...</option><option value="morning">Morning</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option></select></label>
         <label>Exercise notes: <textarea id="exerciseNotesInput" rows="2"></textarea></label>
       </div>
     </div>
-
     <div class="card">
       <h3>Quick tags (optional)</h3>
       <div id="tagsContainer">
@@ -177,7 +114,6 @@
         <label><input type="checkbox" value="weather_change" /> Weather change</label>
       </div>
     </div>
-
     <button id="saveDayBottom" class="primary">Save Day</button>
     <p id="saveStatus"></p>
   </section>
@@ -208,7 +144,7 @@
   <section id="medications-tab" class="tab">
     <h2>Medications &amp; Supplements</h2>
 
-    <!-- Sub-tab navigation — now 4 tabs -->
+    <!-- Sub-tab navigation: now 4 tabs -->
     <nav class="med-sub-tabs">
       <button class="med-sub-tab-btn active" data-med-view="medListView">Medications</button>
       <button class="med-sub-tab-btn" data-med-view="suppListView">Supplements</button>
@@ -243,7 +179,6 @@
           </div>
         </div>
       </div>
-
       <div class="card">
         <h3>Current Medications</h3>
         <ul id="medList" class="med-list"><li class="med-empty">No medications added yet.</li></ul>
@@ -256,7 +191,7 @@
         <h3 id="suppFormTitle">Add Supplement</h3>
         <div class="med-form">
           <label>Name: <input type="text" id="suppNameInput" placeholder="e.g. Magnesium Glycinate" /></label>
-          <label>Dose: <input type="text" id="suppDoseInput" placeholder="e.g. 400mg" /></label>
+          <label>Dose / Amount: <input type="text" id="suppDoseInput" placeholder="e.g. 400mg" /></label>
           <label>Frequency:
             <select id="suppFrequencyInput">
               <option value="">Select...</option>
@@ -268,8 +203,8 @@
               <option value="other">Other</option>
             </select>
           </label>
-          <label>Brand (optional): <input type="text" id="suppBrandInput" placeholder="e.g. Nature Made" /></label>
-          <label>Purpose / notes: <textarea id="suppNotesInput" rows="2" placeholder="Why you take it, how it helps, etc."></textarea></label>
+          <label>Brand (optional): <input type="text" id="suppBrandInput" placeholder="e.g. Pure Encapsulations" /></label>
+          <label>Purpose / notes: <textarea id="suppNotesInput" rows="2" placeholder="Why you take it, any observations, etc."></textarea></label>
           <input type="hidden" id="suppEditingId" />
           <div class="med-form-actions">
             <button class="primary supp-primary" id="saveSuppBtn">Add Supplement</button>
@@ -277,8 +212,7 @@
           </div>
         </div>
       </div>
-
-      <div class="card supp-card">
+      <div class="card">
         <h3>Current Supplements</h3>
         <ul id="suppList" class="med-list"><li class="med-empty">No supplements added yet.</li></ul>
       </div>
@@ -303,14 +237,14 @@
       </div>
 
       <div class="med-print-sheet" id="medPrintSheet">
-        <!-- Print header — visible only when printing -->
+        <!-- Print header: visible only when printing -->
         <div class="print-only med-print-doc-header">
           <h1>Medications &amp; Supplements</h1>
-          <p id="medPrintPatientLine">Printed: <span id="medPrintDate"></span></p>
+          <p>Printed: <span id="medPrintDate"></span></p>
         </div>
 
         <!-- Medications table -->
-        <h3 class="med-print-section-heading">Medications</h3>
+        <h3 class="print-section-heading">Medications</h3>
         <table class="med-table" id="medPrintTable">
           <thead>
             <tr>
@@ -327,7 +261,7 @@
         </table>
 
         <!-- Supplements table -->
-        <h3 class="med-print-section-heading supp-section-heading">Supplements</h3>
+        <h3 class="print-section-heading supp-heading" style="margin-top:2rem;">Supplements</h3>
         <table class="med-table supp-table" id="suppPrintTable">
           <thead>
             <tr>
