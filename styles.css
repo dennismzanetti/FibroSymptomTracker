@@ -744,6 +744,39 @@ canvas {
    MEDICATIONS TAB
    ============================================= */
 
+/* Sub-tab navigation bar */
+.med-sub-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.med-sub-tab-btn {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  border: 2px solid #dbe1ef;
+  border-radius: 999px;
+  background: #f5f7fc;
+  color: #4a5278;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+
+.med-sub-tab-btn:hover {
+  background: #eef2ff;
+  border-color: #b0bcee;
+}
+
+.med-sub-tab-btn.active {
+  background: #3f51b5;
+  color: #ffffff;
+  border-color: #3f51b5;
+}
+
+/* Keep old toggle classes for backward compat */
 .med-view-toggle {
   display: flex;
   gap: 0.5rem;
