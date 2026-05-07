@@ -101,6 +101,7 @@ function setupTabs() {
       if (target === "journal-tab") renderJournal();
       if (target === "trends-tab") refreshTrends();
       if (target === "medications-tab") refreshMedList();
+      if (target === "med-print-tab") refreshMedPrintTable();
     });
   });
 }
@@ -529,38 +530,26 @@ async function saveMedication() {
   const now = new Date().toISOString();
 
   if (editingId) {
-    // Fetch old data for history diff
     const oldDoc = await db.collection("medications").doc(editingId).get();
     const oldData = oldDoc.exists ? oldDoc.data() : {};
-
     await db.collection("medications").doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
-
-    // Build a readable summary of what changed
     const changes = [];
     if (oldData.name !== data.name) changes.push(`Name: "${oldData.name}" → "${data.name}"`);
     if (oldData.dose !== data.dose) changes.push(`Dose: "${oldData.dose}" → "${data.dose}"`);
     if (oldData.frequency !== data.frequency) changes.push(`Frequency: "${oldData.frequency}" → "${data.frequency}"`);
     if (oldData.doctor !== data.doctor) changes.push(`Doctor: "${oldData.doctor}" → "${data.doctor}"`);
     if (oldData.notes !== data.notes) changes.push(`Notes updated`);
-
     await db.collection("medicationHistory").add({
-      action: "edited",
-      medicationId: editingId,
-      medicationName: data.name,
+      action: "edited", medicationId: editingId, medicationName: data.name,
       changes: changes.length ? changes : ["No field changes detected"],
-      snapshot: { ...data },
-      timestamp: now
+      snapshot: { ...data }, timestamp: now
     });
   } else {
     const docRef = await db.collection("medications").add({ ...data, createdAt: now, updatedAt: now });
-
     await db.collection("medicationHistory").add({
-      action: "added",
-      medicationId: docRef.id,
-      medicationName: data.name,
+      action: "added", medicationId: docRef.id, medicationName: data.name,
       changes: [`Added: ${data.name}${data.dose ? ` ${data.dose}` : ""}`],
-      snapshot: { ...data },
-      timestamp: now
+      snapshot: { ...data }, timestamp: now
     });
   }
 
@@ -570,22 +559,15 @@ async function saveMedication() {
 
 async function deleteMedication(id, name) {
   if (!window.confirm(`Delete "${name}" from your medication list?\n\nThis will be recorded in the change history.`)) return;
-
   const now = new Date().toISOString();
   const oldDoc = await db.collection("medications").doc(id).get();
   const oldData = oldDoc.exists ? oldDoc.data() : {};
-
   await db.collection("medications").doc(id).delete();
-
   await db.collection("medicationHistory").add({
-    action: "deleted",
-    medicationId: id,
-    medicationName: name,
+    action: "deleted", medicationId: id, medicationName: name,
     changes: [`Deleted: ${name}${oldData.dose ? ` ${oldData.dose}` : ""}`],
-    snapshot: { ...oldData },
-    timestamp: now
+    snapshot: { ...oldData }, timestamp: now
   });
-
   refreshMedList();
 }
 
@@ -610,13 +592,11 @@ async function refreshMedList() {
     const snapshot = await db.collection("medications").orderBy("name").get();
     if (snapshot.empty) { list.innerHTML = "<li class='med-empty'>No medications added yet.</li>"; return; }
     list.innerHTML = "";
+    const freqLabels = { daily: "Daily", twice_daily: "Twice daily", three_times_daily: "Three times daily", as_needed: "As needed", weekly: "Weekly", other: "Other" };
     snapshot.forEach(doc => {
       const med = doc.data();
       const li = document.createElement("li");
       li.className = "med-item";
-
-      const freqLabels = { daily: "Daily", twice_daily: "Twice daily", three_times_daily: "Three times daily", as_needed: "As needed", weekly: "Weekly", other: "Other" };
-
       li.innerHTML = `
         <div class="med-item-info">
           <strong class="med-name">${med.name}</strong>
@@ -628,8 +608,7 @@ async function refreshMedList() {
         <div class="med-item-actions">
           <button class="med-edit-btn">Edit</button>
           <button class="med-delete-btn danger">Delete</button>
-        </div>
-      `;
+        </div>`;
       li.querySelector(".med-edit-btn").addEventListener("click", () => startEditMedication(doc.id, med));
       li.querySelector(".med-delete-btn").addEventListener("click", () => deleteMedication(doc.id, med.name));
       list.appendChild(li);
@@ -652,24 +631,68 @@ async function refreshMedHistory() {
       const h = doc.data();
       const li = document.createElement("li");
       li.className = "med-history-item";
-
       const actionLabels = { added: "➕ Added", edited: "✏️ Edited", deleted: "🗑️ Deleted" };
       const actionLabel = actionLabels[h.action] || h.action;
       const dateStr = h.timestamp ? new Date(h.timestamp).toLocaleString() : "Unknown time";
       const changesHtml = (h.changes || []).map(c => `<li>${c}</li>`).join("");
-
       li.innerHTML = `
         <div class="med-history-header">
           <span class="med-history-action med-action-${h.action}">${actionLabel}</span>
           <strong class="med-history-name">${h.medicationName || "Unknown"}</strong>
           <span class="med-history-date">${dateStr}</span>
         </div>
-        ${changesHtml ? `<ul class="med-history-changes">${changesHtml}</ul>` : ""}
-      `;
+        ${changesHtml ? `<ul class="med-history-changes">${changesHtml}</ul>` : ""}`;
       list.appendChild(li);
     });
   } catch (err) {
     console.error("Error loading med history:", err);
     list.innerHTML = "<li class='med-empty'>Failed to load history.</li>";
+  }
+}
+
+// ============================================================
+// MED LIST PRINT TAB
+// ============================================================
+
+const FREQ_LABELS = {
+  daily: "Daily",
+  twice_daily: "Twice daily",
+  three_times_daily: "Three times daily",
+  as_needed: "As needed (PRN)",
+  weekly: "Weekly",
+  other: "Other"
+};
+
+async function refreshMedPrintTable() {
+  const tbody = document.getElementById("medPrintTableBody");
+  const dateEl = document.getElementById("medPrintDate");
+  if (!tbody) return;
+
+  // Set print date
+  if (dateEl) dateEl.textContent = new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+
+  tbody.innerHTML = `<tr><td colspan="5" class="med-table-empty">Loading…</td></tr>`;
+  try {
+    const snapshot = await db.collection("medications").orderBy("name").get();
+    if (snapshot.empty) {
+      tbody.innerHTML = `<tr><td colspan="5" class="med-table-empty">No medications on file.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = "";
+    snapshot.forEach((doc, idx) => {
+      const med = doc.data();
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="med-table-name">${med.name || ""}</td>
+        <td class="med-table-center">${med.dose || "—"}</td>
+        <td class="med-table-center">${FREQ_LABELS[med.frequency] || med.frequency || "—"}</td>
+        <td>${med.doctor || "—"}</td>
+        <td class="med-table-notes">${med.notes || ""}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch (err) {
+    console.error("Error loading med print table:", err);
+    tbody.innerHTML = `<tr><td colspan="5" class="med-table-empty">Failed to load medications.</td></tr>`;
   }
 }
