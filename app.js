@@ -100,7 +100,7 @@ function setupTabs() {
       if (target === "history-tab") refreshHistory();
       if (target === "journal-tab") renderJournal();
       if (target === "trends-tab") refreshTrends();
-      if (target === "medications-tab") refreshMedList();
+      if (target === "medications-tab") refreshAllMedSections();
     });
   });
 }
@@ -196,7 +196,7 @@ function updateSleepDuration() {
   const wakeTime = wakeTimeInput.value;
   if (!bedtime || !wakeTime) {
     hoursSleptInput.value = "";
-    if (hoursSleptDisplay) hoursSleptDisplay.textContent = "—";
+    if (hoursSleptDisplay) hoursSleptDisplay.textContent = "\u2014";
     return;
   }
   const [bedHour, bedMinute] = bedtime.split(":").map(Number);
@@ -314,7 +314,7 @@ async function refreshHistory() {
     if (!days.length) { list.innerHTML = "<li>No entries yet.</li>"; return; }
     days.slice(0, 30).forEach(d => {
       const li = document.createElement("li");
-      const title = d.dayTitle ? ` – ${d.dayTitle}` : "";
+      const title = d.dayTitle ? ` \u2013 ${d.dayTitle}` : "";
       const avg = d.avgFunctionality != null ? ` | Avg func: ${d.avgFunctionality.toFixed(1)}` : "";
       const textSpan = document.createElement("span");
       textSpan.textContent = `${d.date}${title}${avg}`;
@@ -474,40 +474,15 @@ async function refreshTrends() {
 // ============================================================
 
 function setupMedicationsTab() {
-  const showListBtn = document.getElementById("showMedListBtn");
-  const showHistoryBtn = document.getElementById("showMedHistoryBtn");
-  const showPrintBtn = document.getElementById("showMedPrintBtn");
-  const medListView = document.getElementById("medListView");
-  const medHistoryView = document.getElementById("medHistoryView");
-  const medPrintView = document.getElementById("medPrintView");
-
-  function setMedView(active) {
-    // Toggle buttons
-    [showListBtn, showHistoryBtn, showPrintBtn].forEach(btn => btn?.classList.remove("active"));
-    active.btn?.classList.add("active");
-    // Toggle views
-    if (medListView)    medListView.style.display    = active.view === "list"    ? "" : "none";
-    if (medHistoryView) medHistoryView.style.display = active.view === "history" ? "" : "none";
-    if (medPrintView)   medPrintView.style.display   = active.view === "print"   ? "" : "none";
-  }
-
-  showListBtn?.addEventListener("click", () => {
-    setMedView({ btn: showListBtn, view: "list" });
-    refreshMedList();
-  });
-
-  showHistoryBtn?.addEventListener("click", () => {
-    setMedView({ btn: showHistoryBtn, view: "history" });
-    refreshMedHistory();
-  });
-
-  showPrintBtn?.addEventListener("click", () => {
-    setMedView({ btn: showPrintBtn, view: "print" });
-    refreshMedPrintTable();
-  });
-
   document.getElementById("saveMedBtn")?.addEventListener("click", saveMedication);
   document.getElementById("cancelMedEditBtn")?.addEventListener("click", resetMedForm);
+}
+
+// Refresh all three medication sections at once
+function refreshAllMedSections() {
+  refreshMedList();
+  refreshMedHistory();
+  refreshMedPrintTable();
 }
 
 function getMedFormData() {
@@ -544,10 +519,10 @@ async function saveMedication() {
     const oldData = oldDoc.exists ? oldDoc.data() : {};
     await db.collection("medications").doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
     const changes = [];
-    if (oldData.name !== data.name) changes.push(`Name: "${oldData.name}" → "${data.name}"`);
-    if (oldData.dose !== data.dose) changes.push(`Dose: "${oldData.dose}" → "${data.dose}"`);
-    if (oldData.frequency !== data.frequency) changes.push(`Frequency: "${oldData.frequency}" → "${data.frequency}"`);
-    if (oldData.doctor !== data.doctor) changes.push(`Doctor: "${oldData.doctor}" → "${data.doctor}"`);
+    if (oldData.name !== data.name) changes.push(`Name: "${oldData.name}" \u2192 "${data.name}"`);
+    if (oldData.dose !== data.dose) changes.push(`Dose: "${oldData.dose}" \u2192 "${data.dose}"`);
+    if (oldData.frequency !== data.frequency) changes.push(`Frequency: "${oldData.frequency}" \u2192 "${data.frequency}"`);
+    if (oldData.doctor !== data.doctor) changes.push(`Doctor: "${oldData.doctor}" \u2192 "${data.doctor}"`);
     if (oldData.notes !== data.notes) changes.push(`Notes updated`);
     await db.collection("medicationHistory").add({
       action: "edited", medicationId: editingId, medicationName: data.name,
@@ -564,7 +539,7 @@ async function saveMedication() {
   }
 
   resetMedForm();
-  refreshMedList();
+  refreshAllMedSections();
 }
 
 async function deleteMedication(id, name) {
@@ -578,7 +553,7 @@ async function deleteMedication(id, name) {
     changes: [`Deleted: ${name}${oldData.dose ? ` ${oldData.dose}` : ""}`],
     snapshot: { ...oldData }, timestamp: now
   });
-  refreshMedList();
+  refreshAllMedSections();
 }
 
 function startEditMedication(id, med) {
@@ -641,7 +616,7 @@ async function refreshMedHistory() {
       const h = doc.data();
       const li = document.createElement("li");
       li.className = "med-history-item";
-      const actionLabels = { added: "➕ Added", edited: "✏️ Edited", deleted: "🗑️ Deleted" };
+      const actionLabels = { added: "\u2795 Added", edited: "\u270f\ufe0f Edited", deleted: "\u{1f5d1}\ufe0f Deleted" };
       const actionLabel = actionLabels[h.action] || h.action;
       const dateStr = h.timestamp ? new Date(h.timestamp).toLocaleString() : "Unknown time";
       const changesHtml = (h.changes || []).map(c => `<li>${c}</li>`).join("");
@@ -680,7 +655,7 @@ async function refreshMedPrintTable() {
 
   if (dateEl) dateEl.textContent = new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
 
-  tbody.innerHTML = `<tr><td colspan="5" class="med-table-empty">Loading…</td></tr>`;
+  tbody.innerHTML = `<tr><td colspan="5" class="med-table-empty">Loading\u2026</td></tr>`;
   try {
     const snapshot = await db.collection("medications").orderBy("name").get();
     if (snapshot.empty) {
@@ -693,9 +668,9 @@ async function refreshMedPrintTable() {
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td class="med-table-name">${med.name || ""}</td>
-        <td class="med-table-center">${med.dose || "—"}</td>
-        <td class="med-table-center">${FREQ_LABELS[med.frequency] || med.frequency || "—"}</td>
-        <td>${med.doctor || "—"}</td>
+        <td class="med-table-center">${med.dose || "\u2014"}</td>
+        <td class="med-table-center">${FREQ_LABELS[med.frequency] || med.frequency || "\u2014"}</td>
+        <td>${med.doctor || "\u2014"}</td>
         <td class="med-table-notes">${med.notes || ""}</td>
       `;
       tbody.appendChild(tr);
