@@ -92,9 +92,9 @@ window.addEventListener("load", () => {
 
 const FREQ_LABELS = {
   daily: "Daily",
-  twice_daily: "Twice daily",
-  three_times_daily: "Three times daily",
-  as_needed: "As needed (PRN)",
+  twice_daily: "2×/day",
+  three_times_daily: "3×/day",
+  as_needed: "PRN",
   weekly: "Weekly",
   other: "Other"
 };
@@ -109,28 +109,32 @@ function setupPrint() {
 
 async function printMedList() {
   const printBtn = document.getElementById("printMedBtn");
-  if (printBtn) { printBtn.disabled = true; printBtn.textContent = "Loading…"; }
+  if (printBtn) { printBtn.disabled = true; printBtn.textContent = "Loading\u2026"; }
 
   try {
-    // Fetch medications and supplements in parallel
     const [medSnap, suppSnap] = await Promise.all([
       db.collection("medications").orderBy("name").get(),
       db.collection("supplements").orderBy("name").get()
     ]);
 
     const dateStr = new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+    const user = auth.currentUser;
+    const userName = user?.displayName || "";
 
     function buildRows(snapshot, extraLabel) {
-      if (snapshot.empty) return `<tr><td colspan="5" style="padding:12px;color:#666;font-style:italic;">None on file.</td></tr>`;
+      if (snapshot.empty) {
+        return `<tr><td colspan="5" style="padding:6px 8px;color:#888;font-style:italic;text-align:center;">None on file.</td></tr>`;
+      }
       let html = "";
       snapshot.forEach(doc => {
         const d = doc.data();
+        const freq = FREQ_LABELS[d.frequency] || d.frequency || "\u2014";
         html += `<tr>
-          <td style="padding:8px 10px;border-bottom:1px solid #ddd;font-weight:600;">${d.name || ""}</td>
-          <td style="padding:8px 10px;border-bottom:1px solid #ddd;text-align:center;">${d.dose || "—"}</td>
-          <td style="padding:8px 10px;border-bottom:1px solid #ddd;text-align:center;">${FREQ_LABELS[d.frequency] || d.frequency || "—"}</td>
-          <td style="padding:8px 10px;border-bottom:1px solid #ddd;">${d[extraLabel] || "—"}</td>
-          <td style="padding:8px 10px;border-bottom:1px solid #ddd;color:#555;font-size:0.9em;">${d.notes || ""}</td>
+          <td>${escHtml(d.name || "")}</td>
+          <td class="c">${escHtml(d.dose || "\u2014")}</td>
+          <td class="c">${escHtml(freq)}</td>
+          <td>${escHtml(d[extraLabel] || "\u2014")}</td>
+          <td class="notes">${escHtml(d.notes || "")}</td>
         </tr>`;
       });
       return html;
@@ -140,27 +144,98 @@ async function printMedList() {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Medication &amp; Supplement List</title>
+  <title>Medications &amp; Supplements</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 32px; color: #222; }
-    h1 { font-size: 1.4em; margin-bottom: 4px; }
-    .subtitle { color: #666; font-size: 0.9em; margin-bottom: 28px; }
-    h2 { font-size: 1.1em; margin: 24px 0 8px; border-bottom: 2px solid #3f51b5; padding-bottom: 4px; color: #3f51b5; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.92em; }
-    thead th { background: #3f51b5; color: #fff; padding: 9px 10px; text-align: left; }
-    thead th:nth-child(2), thead th:nth-child(3) { text-align: center; }
-    tbody tr:nth-child(even) { background: #f5f5f5; }
-    @media print { body { margin: 16px; } }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 10pt;
+      color: #111;
+      padding: 0.5in 0.6in;
+    }
+    .doc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 2px solid #3f51b5;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+    }
+    .doc-header h1 {
+      font-size: 14pt;
+      font-weight: 800;
+      color: #1c1d22;
+    }
+    .doc-header .meta {
+      font-size: 8.5pt;
+      color: #555;
+      text-align: right;
+      line-height: 1.5;
+    }
+    h2 {
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: #3f51b5;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 14px 0 5px;
+    }
+    h2:first-of-type { margin-top: 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9pt;
+    }
+    thead th {
+      background: #3f51b5;
+      color: #fff;
+      padding: 5px 7px;
+      text-align: left;
+      font-size: 8pt;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    thead th.c { text-align: center; }
+    tbody td {
+      padding: 4px 7px;
+      border-bottom: 1px solid #e0e0e0;
+      vertical-align: top;
+      line-height: 1.35;
+    }
+    tbody td.c { text-align: center; }
+    tbody td.notes { color: #555; font-style: italic; }
+    tbody tr:nth-child(even) td { background: #f5f7ff; }
+    .footer {
+      margin-top: 14px;
+      font-size: 7.5pt;
+      color: #999;
+      border-top: 1px solid #ddd;
+      padding-top: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+    @media print {
+      body { padding: 0; }
+      @page { margin: 0.5in 0.6in; size: letter portrait; }
+    }
   </style>
 </head>
 <body>
-  <h1>Medication &amp; Supplement List</h1>
-  <p class="subtitle">Printed: ${dateStr}</p>
+  <div class="doc-header">
+    <h1>Medication &amp; Supplement List</h1>
+    <div class="meta">${userName ? escHtml(userName) + "<br>" : ""}Printed: ${escHtml(dateStr)}</div>
+  </div>
 
   <h2>Medications</h2>
   <table>
     <thead><tr>
-      <th>Name</th><th>Dose</th><th>Frequency</th><th>Prescribing Doctor</th><th>Notes</th>
+      <th>Name</th>
+      <th class="c">Dose</th>
+      <th class="c">Frequency</th>
+      <th>Prescribing Doctor</th>
+      <th>Notes</th>
     </tr></thead>
     <tbody>${buildRows(medSnap, "doctor")}</tbody>
   </table>
@@ -168,12 +243,21 @@ async function printMedList() {
   <h2>Supplements</h2>
   <table>
     <thead><tr>
-      <th>Name</th><th>Dose</th><th>Frequency</th><th>Brand</th><th>Notes</th>
+      <th>Name</th>
+      <th class="c">Dose</th>
+      <th class="c">Frequency</th>
+      <th>Brand</th>
+      <th>Notes</th>
     </tr></thead>
     <tbody>${buildRows(suppSnap, "brand")}</tbody>
   </table>
 
-  <script>window.onload = function(){ window.print(); window.onafterprint = function(){ window.close(); }; };<\/script>
+  <div class="footer">
+    <span>Fibromyalgia Symptom Tracker</span>
+    <span>Bring this list to all medical appointments.</span>
+  </div>
+
+  <script>window.onload=function(){window.print();window.onafterprint=function(){window.close();};};<\/script>
 </body>
 </html>`;
 
@@ -192,6 +276,15 @@ async function printMedList() {
   } finally {
     if (printBtn) { printBtn.disabled = false; printBtn.textContent = "Print / Save PDF"; }
   }
+}
+
+/** Escape HTML special chars for safe inline insertion */
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function setupTabs() {
