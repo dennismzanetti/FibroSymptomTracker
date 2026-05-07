@@ -100,7 +100,11 @@ function setupTabs() {
       if (target === "history-tab") refreshHistory();
       if (target === "journal-tab") renderJournal();
       if (target === "trends-tab") refreshTrends();
-      if (target === "medications-tab") refreshAllMedSections();
+      if (target === "medications-tab") {
+        // Refresh whichever med view is currently active
+        const activeView = document.querySelector(".med-view:not([style*='display:none']):not([style*='display: none'])");
+        if (activeView) refreshMedView(activeView.id);
+      }
     });
   });
 }
@@ -474,15 +478,38 @@ async function refreshTrends() {
 // ============================================================
 
 function setupMedicationsTab() {
+  // Wire up Save / Cancel buttons
   document.getElementById("saveMedBtn")?.addEventListener("click", saveMedication);
   document.getElementById("cancelMedEditBtn")?.addEventListener("click", resetMedForm);
+
+  // Wire up the three sub-tab buttons
+  document.querySelectorAll(".med-sub-tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const targetViewId = btn.getAttribute("data-med-view");
+
+      // Update active button styling
+      document.querySelectorAll(".med-sub-tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      // Show the selected view, hide the others
+      document.querySelectorAll(".med-view").forEach(view => {
+        view.style.display = view.id === targetViewId ? "" : "none";
+      });
+
+      // Refresh the data for the newly visible view
+      refreshMedView(targetViewId);
+    });
+  });
+
+  // Load data for the default view (Medication List)
+  refreshMedList();
 }
 
-// Refresh all three medication sections at once
-function refreshAllMedSections() {
-  refreshMedList();
-  refreshMedHistory();
-  refreshMedPrintTable();
+// Refresh only the data relevant to a given view
+function refreshMedView(viewId) {
+  if (viewId === "medListView") refreshMedList();
+  else if (viewId === "medHistoryView") refreshMedHistory();
+  else if (viewId === "medPrintView") refreshMedPrintTable();
 }
 
 function getMedFormData() {
@@ -539,7 +566,7 @@ async function saveMedication() {
   }
 
   resetMedForm();
-  refreshAllMedSections();
+  refreshMedList();
 }
 
 async function deleteMedication(id, name) {
@@ -553,7 +580,7 @@ async function deleteMedication(id, name) {
     changes: [`Deleted: ${name}${oldData.dose ? ` ${oldData.dose}` : ""}`],
     snapshot: { ...oldData }, timestamp: now
   });
-  refreshAllMedSections();
+  refreshMedList();
 }
 
 function startEditMedication(id, med) {
