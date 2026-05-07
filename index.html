@@ -208,12 +208,6 @@
   <section id="medications-tab" class="tab">
     <h2>Medications</h2>
 
-    <div class="med-view-toggle">
-      <button class="med-toggle-btn active" id="showMedListBtn">Medication List</button>
-      <button class="med-toggle-btn" id="showMedHistoryBtn">Change History</button>
-      <button class="med-toggle-btn" id="showMedPrintBtn">&#128438; Print List</button>
-    </div>
-
     <!-- Medication List / Edit View -->
     <div id="medListView">
       <div class="card">
@@ -249,7 +243,7 @@
     </div>
 
     <!-- Change History View -->
-    <div id="medHistoryView" style="display:none;">
+    <div id="medHistoryView">
       <div class="card">
         <h3>Medication Change History</h3>
         <ul id="medHistoryList" class="med-history-list"><li class="med-empty">No history yet.</li></ul>
@@ -257,7 +251,7 @@
     </div>
 
     <!-- Print List View -->
-    <div id="medPrintView" style="display:none;">
+    <div id="medPrintView">
       <div class="med-print-header no-print">
         <div>
           <h3 style="margin:0; padding:0; border:none;">Print / Save PDF</h3>
