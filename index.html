@@ -79,16 +79,43 @@
     <div class="card">
       <h3>Sleep (previous night)</h3>
       <div class="sleep-time-grid">
-        <label class="time-widget">
+
+        <!-- Bedtime — custom 15-min picker -->
+        <div class="time-widget">
           <span class="time-widget-label">Bedtime</span>
-          <span class="time-widget-hint">15-min increments</span>
-          <input type="time" id="bedtimeInput" step="900" />
-        </label>
-        <label class="time-widget">
+          <div class="time-select-row">
+            <select id="bedtimeHour" class="time-select-hour" aria-label="Bedtime hour"></select>
+            <span class="time-select-sep">:</span>
+            <select id="bedtimeMinute" class="time-select-min" aria-label="Bedtime minute">
+              <option value="">--</option>
+              <option value="00">00</option>
+              <option value="15">15</option>
+              <option value="30">30</option>
+              <option value="45">45</option>
+            </select>
+          </div>
+          <!-- Hidden input keeps the HH:MM value app.js expects -->
+          <input type="hidden" id="bedtimeInput" />
+        </div>
+
+        <!-- Wake time — custom 15-min picker -->
+        <div class="time-widget">
           <span class="time-widget-label">Wake time</span>
-          <span class="time-widget-hint">15-min increments</span>
-          <input type="time" id="wakeTimeInput" step="900" />
-        </label>
+          <div class="time-select-row">
+            <select id="wakeTimeHour" class="time-select-hour" aria-label="Wake time hour"></select>
+            <span class="time-select-sep">:</span>
+            <select id="wakeTimeMinute" class="time-select-min" aria-label="Wake time minute">
+              <option value="">--</option>
+              <option value="00">00</option>
+              <option value="15">15</option>
+              <option value="30">30</option>
+              <option value="45">45</option>
+            </select>
+          </div>
+          <!-- Hidden input keeps the HH:MM value app.js expects -->
+          <input type="hidden" id="wakeTimeInput" />
+        </div>
+
       </div>
       <div class="sleep-total-display" aria-live="polite">
         <span class="sleep-total-label">Total hours slept</span>
@@ -153,7 +180,6 @@
   <section id="medications-tab" class="tab">
     <h2>Medications &amp; Supplements</h2>
 
-    <!-- Sub-tab navigation: now 4 tabs -->
     <nav class="med-sub-tabs">
       <button class="med-sub-tab-btn active" data-med-view="medListView">Medications</button>
       <button class="med-sub-tab-btn" data-med-view="suppListView">Supplements</button>
@@ -161,7 +187,6 @@
       <button class="med-sub-tab-btn" data-med-view="medPrintView">Print List</button>
     </nav>
 
-    <!-- Medication List / Edit View -->
     <div id="medListView" class="med-view">
       <div class="card">
         <h3 id="medFormTitle">Add Medication</h3>
@@ -194,7 +219,6 @@
       </div>
     </div>
 
-    <!-- Supplements List / Edit View -->
     <div id="suppListView" class="med-view" style="display:none;">
       <div class="card supp-card">
         <h3 id="suppFormTitle">Add Supplement</h3>
@@ -227,7 +251,6 @@
       </div>
     </div>
 
-    <!-- Change History View -->
     <div id="medHistoryView" class="med-view" style="display:none;">
       <div class="card">
         <h3>Medication &amp; Supplement Change History</h3>
@@ -235,7 +258,6 @@
       </div>
     </div>
 
-    <!-- Print List View -->
     <div id="medPrintView" class="med-view" style="display:none;">
       <div class="med-print-header no-print">
         <div>
@@ -244,52 +266,25 @@
         </div>
         <button class="primary" id="printMedBtn">&#128438; Print / Save PDF</button>
       </div>
-
       <div class="med-print-sheet" id="medPrintSheet">
-        <!-- Print header: visible only when printing -->
         <div class="print-only med-print-doc-header">
           <h1>Medications &amp; Supplements</h1>
           <p>Printed: <span id="medPrintDate"></span></p>
         </div>
-
-        <!-- Medications table -->
         <h3 class="print-section-heading">Medications</h3>
         <div class="table-scroll-wrap">
           <table class="med-table" id="medPrintTable">
-            <thead>
-              <tr>
-                <th>Medication</th>
-                <th>Dose</th>
-                <th>Frequency</th>
-                <th>Prescribing Doctor</th>
-                <th>Purpose / Notes</th>
-              </tr>
-            </thead>
-            <tbody id="medPrintTableBody">
-              <tr><td colspan="5" class="med-table-empty">Loading&#8230;</td></tr>
-            </tbody>
+            <thead><tr><th>Medication</th><th>Dose</th><th>Frequency</th><th>Prescribing Doctor</th><th>Purpose / Notes</th></tr></thead>
+            <tbody id="medPrintTableBody"><tr><td colspan="5" class="med-table-empty">Loading&#8230;</td></tr></tbody>
           </table>
         </div>
-
-        <!-- Supplements table -->
         <h3 class="print-section-heading supp-heading" style="margin-top:2rem;">Supplements</h3>
         <div class="table-scroll-wrap">
           <table class="med-table supp-table" id="suppPrintTable">
-            <thead>
-              <tr>
-                <th>Supplement</th>
-                <th>Dose</th>
-                <th>Frequency</th>
-                <th>Brand</th>
-                <th>Purpose / Notes</th>
-              </tr>
-            </thead>
-            <tbody id="suppPrintTableBody">
-              <tr><td colspan="5" class="med-table-empty">Loading&#8230;</td></tr>
-            </tbody>
+            <thead><tr><th>Supplement</th><th>Dose</th><th>Frequency</th><th>Brand</th><th>Purpose / Notes</th></tr></thead>
+            <tbody id="suppPrintTableBody"><tr><td colspan="5" class="med-table-empty">Loading&#8230;</td></tr></tbody>
           </table>
         </div>
-
         <div class="med-print-footer print-only">
           <p>This list was generated from my Fibromyalgia Symptom Tracker.</p>
         </div>
@@ -312,26 +307,72 @@
 
 <script src="app.js"></script>
 
-<!-- Snap Bedtime & Wake time to nearest 15-minute increment -->
+<!-- ============================================================
+     15-minute time picker logic
+     Populates hour selects, syncs to hidden HH:MM inputs,
+     and exposes getTimeValue(id) / setTimeValue(id, 'HH:MM')
+     so app.js can read/write the fields as before.
+     ============================================================ -->
 <script>
 (function () {
-  function snapTo15(input) {
-    if (!input || !input.value) return;
-    var parts = input.value.split(':');
-    var h = parseInt(parts[0], 10);
-    var m = parseInt(parts[1], 10);
-    var snapped = Math.round(m / 15) * 15;
-    if (snapped === 60) { snapped = 0; h = (h + 1) % 24; }
-    input.value = String(h).padStart(2, '0') + ':' + String(snapped).padStart(2, '0');
-    // Trigger change so the hours-slept calculation updates
-    input.dispatchEvent(new Event('change', { bubbles: true }));
+
+  /* ── Build hour options (12-hour AM/PM display) ── */
+  function buildHourOptions(selectEl) {
+    var opt = document.createElement('option');
+    opt.value = ''; opt.textContent = '--';
+    selectEl.appendChild(opt);
+    for (var h = 0; h < 24; h++) {
+      var ampm = h < 12 ? 'AM' : 'PM';
+      var h12  = h % 12 === 0 ? 12 : h % 12;
+      var o = document.createElement('option');
+      o.value = String(h).padStart(2, '0');
+      o.textContent = h12 + ' ' + ampm;
+      selectEl.appendChild(o);
+    }
   }
 
-  ['bedtimeInput', 'wakeTimeInput'].forEach(function (id) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener('blur', function () { snapTo15(el); });
+  /* ── Sync selects → hidden input + fire change ── */
+  function syncHidden(prefix) {
+    var h = document.getElementById(prefix + 'Hour').value;
+    var m = document.getElementById(prefix + 'Minute').value;
+    var hidden = document.getElementById(prefix + 'Input');
+    hidden.value = (h && m) ? h + ':' + m : '';
+    hidden.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  /* ── Public helpers so app.js can get/set values ── */
+  window.getTimeValue = function (hiddenId) {
+    return document.getElementById(hiddenId).value; // e.g. "22:30"
+  };
+
+  window.setTimeValue = function (hiddenId, val) {
+    // val expected as "HH:MM" or ""
+    var prefix = hiddenId.replace('Input', '');
+    var hSel = document.getElementById(prefix + 'Hour');
+    var mSel = document.getElementById(prefix + 'Minute');
+    if (!val) {
+      hSel.value = ''; mSel.value = '';
+    } else {
+      var parts = val.split(':');
+      var h = parts[0];
+      // snap minutes to nearest 15
+      var rawM = parseInt(parts[1], 10) || 0;
+      var snappedM = String(Math.round(rawM / 15) * 15 % 60).padStart(2, '0');
+      hSel.value = h;
+      mSel.value = snappedM;
+    }
+    syncHidden(prefix);
+  };
+
+  /* ── Init both pickers ── */
+  ['bedtime', 'wakeTime'].forEach(function (prefix) {
+    var hSel = document.getElementById(prefix + 'Hour');
+    var mSel = document.getElementById(prefix + 'Minute');
+    buildHourOptions(hSel);
+    hSel.addEventListener('change', function () { syncHidden(prefix); });
+    mSel.addEventListener('change', function () { syncHidden(prefix); });
   });
+
 }());
 </script>
 
@@ -347,21 +388,14 @@
       var sha     = data.sha.slice(0, 7);
       var msg     = data.commit.message.split('\n')[0];
       var isoDate = data.commit.author.date;
-
       var d = new Date(isoDate);
       var formatted = d.toLocaleString(undefined, {
-        year:   'numeric',
-        month:  'short',
-        day:    'numeric',
-        hour:   '2-digit',
-        minute: '2-digit',
-        timeZoneName: 'short'
+        year: 'numeric', month: 'short', day: 'numeric',
+        hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
       });
-
       var shaEl  = document.getElementById('buildSha');
       var msgEl  = document.getElementById('buildMsg');
       var dateEl = document.getElementById('buildDate');
-
       shaEl.textContent = sha;
       shaEl.href = 'https://github.com/' + REPO + '/commit/' + data.sha;
       msgEl.textContent = msg;
