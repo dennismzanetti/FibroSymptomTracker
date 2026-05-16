@@ -509,19 +509,19 @@ button.danger:hover {
 
 .journal-date {
   margin: 0 0 0.25rem 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #1f2b4d;
+  letter-spacing: 0.01em;
 }
 
 .journal-day-header h3 {
   margin: 0;
   padding: 0;
   border: none;
-  font-size: 1.1rem;
-  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #5b6686;
 }
 
 .journal-score-pill {
@@ -797,7 +797,7 @@ canvas {
   outline-offset: 2px;
 }
 
-/* Mobile: 2×2 grid of sub-tabs at 540px and below */
+/* Mobile: 2x2 grid of sub-tabs at 540px and below */
 @media (max-width: 540px) {
   .med-sub-tabs {
     border-radius: 18px;
@@ -1002,7 +1002,7 @@ canvas {
   background: #dce3fb;
 }
 
-/* Stack the entire med-item vertically at ≤540px */
+/* Stack the entire med-item vertically at <=540px */
 @media (max-width: 540px) {
   .med-item {
     grid-template-columns: 1fr;
