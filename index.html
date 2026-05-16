@@ -292,6 +292,56 @@
 
 </main>
 
+<!-- Build info footer -->
+<footer class="build-footer" id="buildFooter" aria-label="Build information">
+  <span class="build-footer-label">Build:</span>
+  <a class="build-footer-sha" id="buildSha" href="#" target="_blank" rel="noopener noreferrer" title="View commit on GitHub">loading&hellip;</a>
+  <span class="build-footer-sep" aria-hidden="true">&mdash;</span>
+  <span class="build-footer-msg" id="buildMsg"></span>
+  <span class="build-footer-sep" aria-hidden="true">&mdash;</span>
+  <time class="build-footer-date" id="buildDate"></time>
+</footer>
+
 <script src="app.js"></script>
+<script>
+(function () {
+  const REPO = 'dennismzanetti/FibroSymptomTracker';
+  const API  = 'https://api.github.com/repos/' + REPO + '/commits/main';
+
+  fetch(API, { headers: { Accept: 'application/vnd.github.v3+json' } })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function (data) {
+      var sha     = data.sha.slice(0, 7);
+      var msg     = data.commit.message.split('\n')[0];   // first line only
+      var isoDate = data.commit.author.date;               // e.g. "2026-05-16T13:18:43Z"
+
+      // Format date/time in the user's local timezone
+      var d = new Date(isoDate);
+      var formatted = d.toLocaleString(undefined, {
+        year:   'numeric',
+        month:  'short',
+        day:    'numeric',
+        hour:   '2-digit',
+        minute: '2-digit',
+        timeZoneName: 'short'
+      });
+
+      var shaEl  = document.getElementById('buildSha');
+      var msgEl  = document.getElementById('buildMsg');
+      var dateEl = document.getElementById('buildDate');
+
+      shaEl.textContent = sha;
+      shaEl.href = 'https://github.com/' + REPO + '/commit/' + data.sha;
+      msgEl.textContent = msg;
+      dateEl.textContent = formatted;
+      dateEl.setAttribute('datetime', isoDate);
+    })
+    .catch(function () {
+      // Silently hide the footer if the API call fails (e.g. rate-limited)
+      var footer = document.getElementById('buildFooter');
+      if (footer) footer.style.display = 'none';
+    });
+}());
+</script>
 </body>
 </html>

@@ -1311,6 +1311,78 @@ canvas {
 }
 
 /* =============================================
+   BUILD INFO FOOTER
+   ============================================= */
+
+.build-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+  padding: 0.45rem 1rem;
+  background: rgba(30, 36, 60, 0.93);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.55);
+  z-index: 500;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  line-height: 1.4;
+}
+
+.build-footer-label {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.68rem;
+}
+
+.build-footer-sha {
+  color: #7eb8f7;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+
+.build-footer-sha:hover {
+  color: #aed4ff;
+  text-decoration: underline;
+}
+
+.build-footer-sep {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.build-footer-msg {
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 420px;
+}
+
+.build-footer-date {
+  color: rgba(255, 255, 255, 0.45);
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .build-footer {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.75rem;
+  }
+  .build-footer-msg {
+    max-width: 180px;
+  }
+}
+
+/* =============================================
    @MEDIA PRINT — clean single-page output
    ============================================= */
 
@@ -1353,6 +1425,10 @@ canvas {
 
   .print-only {
     display: block !important;
+  }
+
+  .build-footer {
+    display: none !important;
   }
 
   .med-print-sheet {
