@@ -500,93 +500,114 @@ button.danger:hover {
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
 }
 
-/* ---- Journal entry header — blue banner with white text ---- */
+/* ---- Journal entry header — compact single-row banner ---- */
 
 .journal-day-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
-  padding: 0.9rem 1.1rem;
-  background: linear-gradient(135deg, #3f51b5 0%, #303f9f 100%);
-  border-bottom: none;
-  margin-bottom: 0;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  background: #3f51b5;
 }
 
-/* Day-of-week: small uppercase label, light white/translucent */
+/* Left: day-of-week · date on one line, optional title below */
+.journal-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+  min-width: 0;
+}
+
+/* Single line: "Saturday · May 16, 2026" */
+.journal-header-dateline {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  min-width: 0;
+}
+
+/* Day-of-week: muted, medium weight */
 .journal-dow {
-  margin: 0 0 0.2rem 0;
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.72);
-  line-height: 1;
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.68);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-/* Full date: large, bold, pure white */
+/* Separator dot */
+.journal-dow::after {
+  content: "\00B7";
+  margin: 0 0.38rem;
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 400;
+}
+
+/* Full date: bold white */
 .journal-date {
-  margin: 0 0 0.15rem 0;
-  font-size: 1.3rem;
+  margin: 0;
+  font-size: 0.97rem;
   font-weight: 800;
   color: #ffffff;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Optional day title: italic, soft white */
+/* Optional day title: small italic subtitle */
 .journal-title {
-  margin: 0.15rem 0 0 0;
-  font-size: 0.85rem;
+  margin: 0;
+  font-size: 0.77rem;
   font-weight: 500;
   font-style: italic;
-  color: rgba(255, 255, 255, 0.75);
-  letter-spacing: 0;
-  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.58);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 360px;
 }
 
+/* Right: compact inline score pill */
+.journal-score-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  padding: 0.28rem 0.7rem;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.journal-score-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.62);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.journal-score-pill strong {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+/* Legacy selectors kept for backward compat */
 .journal-day-header h3 {
   margin: 0;
   padding: 0;
   border: none;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.68);
 }
 
-/* Score pill: sits on the blue header, inverted colours */
-.journal-score-pill {
-  min-width: 110px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 14px;
-  padding: 0.65rem 0.85rem;
-  text-align: center;
-  color: #ffffff;
-  flex-shrink: 0;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-}
-
-.journal-score-label {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: rgba(255, 255, 255, 0.65);
-  margin-bottom: 0.22rem;
-}
-
-.journal-score-pill strong {
-  display: block;
-  font-size: 1.1rem;
-  line-height: 1.1;
-  color: #ffffff;
-  font-weight: 800;
-}
-
-/* Body content area gets padding (was on .journal-entry before) */
+/* Body content sections */
 .journal-entry > .journal-section,
 .journal-entry > section {
   padding-left: 1rem;
@@ -721,19 +742,14 @@ button.danger:hover {
 }
 
 @media (max-width: 760px) {
-  .journal-entry {
-    /* padding removed — header has its own padding now */
-  }
-
   .journal-day-header {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 0.85rem 1rem;
+    flex-wrap: wrap;
+    padding: 0.6rem 0.85rem;
+    gap: 0.45rem;
   }
 
   .journal-score-pill {
-    width: 100%;
-    text-align: center;
+    margin-left: auto;
   }
 
   .function-grid {
@@ -752,6 +768,10 @@ button.danger:hover {
 
   .sleep-summary {
     grid-template-columns: 1fr;
+  }
+
+  .journal-title {
+    max-width: 200px;
   }
 }
 
@@ -947,8 +967,6 @@ canvas {
 
 /* =============================================
    MEDICATION / SUPPLEMENT LIST ITEMS
-   Use CSS Grid so the info column and actions
-   column can never overlap each other.
    ============================================= */
 
 .med-list {
@@ -966,8 +984,6 @@ canvas {
 }
 
 .med-item {
-  /* Grid: info column takes all remaining space;
-     actions column is sized to its content and never squished */
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: start;
@@ -979,7 +995,6 @@ canvas {
 }
 
 .med-item-info {
-  /* Grid child: will never exceed its column, so text wraps naturally */
   min-width: 0;
   word-break: break-word;
   overflow-wrap: break-word;
@@ -1039,7 +1054,6 @@ canvas {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  /* Actions column: size to content, never grow */
   flex-shrink: 0;
   align-self: start;
 }
@@ -1059,7 +1073,6 @@ canvas {
   background: #dce3fb;
 }
 
-/* Stack the entire med-item vertically at <=540px */
 @media (max-width: 540px) {
   .med-item {
     grid-template-columns: 1fr;
@@ -1158,7 +1171,6 @@ canvas {
   margin-bottom: 0.2rem;
 }
 
-/* Type badge */
 .med-history-type {
   display: inline-block;
   border-radius: 999px;
@@ -1198,7 +1210,6 @@ canvas {
   box-shadow: 0 4px 14px rgba(0,0,0,0.05);
 }
 
-/* Stack print header on phone */
 @media (max-width: 540px) {
   .med-print-header {
     flex-direction: column;
@@ -1230,7 +1241,6 @@ canvas {
   }
 }
 
-/* Scroll wrapper for wide tables on mobile */
 .table-scroll-wrap {
   width: 100%;
   overflow-x: auto;
@@ -1249,7 +1259,6 @@ canvas {
   min-width: 480px;
 }
 
-/* Document header — only shows when printing */
 .med-print-doc-header {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
