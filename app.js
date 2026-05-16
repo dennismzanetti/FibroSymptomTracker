@@ -61,6 +61,25 @@ function numberOrNull(val) {
   return isNaN(n) ? null : n;
 }
 
+// ---- Day-of-week display ----
+function updateDayOfWeek() {
+  const dateInput = document.getElementById("dateInput");
+  const display = document.getElementById("dayOfWeekDisplay");
+  if (!display) return;
+  if (!dateInput || !dateInput.value) {
+    display.textContent = "";
+    return;
+  }
+  // Parse as UTC to avoid timezone-shift issues with YYYY-MM-DD strings
+  const [year, month, day] = dateInput.value.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  if (isNaN(date.getTime())) {
+    display.textContent = "";
+    return;
+  }
+  display.textContent = date.toLocaleDateString(undefined, { weekday: "long" });
+}
+
 // ---- UI setup ----
 window.addEventListener("load", () => {
   setupTabs();
@@ -80,6 +99,7 @@ window.addEventListener("load", () => {
     ["change", "input", "blur"].forEach((evt) => {
       dateInput.addEventListener(evt, (event) => {
         if (event.target.value && evt === "change") loadDayFromCloud(event.target.value);
+        updateDayOfWeek();
       });
     });
   }
@@ -337,6 +357,7 @@ function loadTodayDate() {
   const dateInput = document.getElementById("dateInput");
   const today = new Date();
   dateInput.value = today.toISOString().slice(0, 10);
+  updateDayOfWeek();
 }
 
 function setupSaveDay() {
@@ -560,6 +581,7 @@ async function refreshHistory() {
 
 function fillFormFromData(d) {
   document.getElementById("dateInput").value = d.date || "";
+  updateDayOfWeek();
   document.getElementById("dayTitleInput").value = d.dayTitle || "";
   document.getElementById("overallNotesInput").value = d.overallNotes || "";
   const setBlock = (prefix, obj = {}) => {
@@ -615,6 +637,7 @@ function changeDateBy(days) {
   const m = String(current.getUTCMonth() + 1).padStart(2, "0");
   const d = String(current.getUTCDate()).padStart(2, "0");
   dateInput.value = `${y}-${m}-${d}`;
+  updateDayOfWeek();
   loadDayFromCloud(dateInput.value);
 }
 
@@ -623,7 +646,7 @@ function setupDateNavigation() {
   const prevDayBtn = document.getElementById("prevDayBtn");
   const nextDayBtn = document.getElementById("nextDayBtn");
   if (!dateInput) return;
-  dateInput.addEventListener("change", async () => loadDayFromCloud(dateInput.value));
+  dateInput.addEventListener("change", async () => { loadDayFromCloud(dateInput.value); updateDayOfWeek(); });
   prevDayBtn?.addEventListener("click", () => changeDateBy(-1));
   nextDayBtn?.addEventListener("click", () => changeDateBy(1));
 }
