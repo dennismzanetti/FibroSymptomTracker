@@ -79,8 +79,16 @@
     <div class="card">
       <h3>Sleep (previous night)</h3>
       <div class="sleep-time-grid">
-        <label class="time-widget"><span class="time-widget-label">Bedtime</span><input type="time" id="bedtimeInput" /></label>
-        <label class="time-widget"><span class="time-widget-label">Wake time</span><input type="time" id="wakeTimeInput" /></label>
+        <label class="time-widget">
+          <span class="time-widget-label">Bedtime</span>
+          <span class="time-widget-hint">15-min increments</span>
+          <input type="time" id="bedtimeInput" step="900" />
+        </label>
+        <label class="time-widget">
+          <span class="time-widget-label">Wake time</span>
+          <span class="time-widget-hint">15-min increments</span>
+          <input type="time" id="wakeTimeInput" step="900" />
+        </label>
       </div>
       <div class="sleep-total-display" aria-live="polite">
         <span class="sleep-total-label">Total hours slept</span>
@@ -303,19 +311,43 @@
 </footer>
 
 <script src="app.js"></script>
+
+<!-- Snap Bedtime & Wake time to nearest 15-minute increment -->
 <script>
 (function () {
-  const REPO = 'dennismzanetti/FibroSymptomTracker';
-  const API  = 'https://api.github.com/repos/' + REPO + '/commits/main';
+  function snapTo15(input) {
+    if (!input || !input.value) return;
+    var parts = input.value.split(':');
+    var h = parseInt(parts[0], 10);
+    var m = parseInt(parts[1], 10);
+    var snapped = Math.round(m / 15) * 15;
+    if (snapped === 60) { snapped = 0; h = (h + 1) % 24; }
+    input.value = String(h).padStart(2, '0') + ':' + String(snapped).padStart(2, '0');
+    // Trigger change so the hours-slept calculation updates
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  ['bedtimeInput', 'wakeTimeInput'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('blur', function () { snapTo15(el); });
+  });
+}());
+</script>
+
+<!-- Build info footer script -->
+<script>
+(function () {
+  var REPO = 'dennismzanetti/FibroSymptomTracker';
+  var API  = 'https://api.github.com/repos/' + REPO + '/commits/main';
 
   fetch(API, { headers: { Accept: 'application/vnd.github.v3+json' } })
     .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
     .then(function (data) {
       var sha     = data.sha.slice(0, 7);
-      var msg     = data.commit.message.split('\n')[0];   // first line only
-      var isoDate = data.commit.author.date;               // e.g. "2026-05-16T13:18:43Z"
+      var msg     = data.commit.message.split('\n')[0];
+      var isoDate = data.commit.author.date;
 
-      // Format date/time in the user's local timezone
       var d = new Date(isoDate);
       var formatted = d.toLocaleString(undefined, {
         year:   'numeric',
@@ -337,7 +369,6 @@
       dateEl.setAttribute('datetime', isoDate);
     })
     .catch(function () {
-      // Silently hide the footer if the API call fails (e.g. rate-limited)
       var footer = document.getElementById('buildFooter');
       if (footer) footer.style.display = 'none';
     });
