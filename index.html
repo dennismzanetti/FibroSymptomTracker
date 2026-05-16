@@ -80,41 +80,17 @@
       <h3>Sleep (previous night)</h3>
       <div class="sleep-time-grid">
 
-        <!-- Bedtime — custom 15-min picker -->
-        <div class="time-widget">
+        <!-- Bedtime — single time input, 15-min steps -->
+        <label class="time-widget-label-wrap">
           <span class="time-widget-label">Bedtime</span>
-          <div class="time-select-row">
-            <select id="bedtimeHour" class="time-select-hour" aria-label="Bedtime hour"></select>
-            <span class="time-select-sep">:</span>
-            <select id="bedtimeMinute" class="time-select-min" aria-label="Bedtime minute">
-              <option value="">--</option>
-              <option value="00">00</option>
-              <option value="15">15</option>
-              <option value="30">30</option>
-              <option value="45">45</option>
-            </select>
-          </div>
-          <!-- Hidden input keeps the HH:MM value app.js expects -->
-          <input type="hidden" id="bedtimeInput" />
-        </div>
+          <input type="time" id="bedtimeInput" step="900" class="time-input-single" aria-label="Bedtime" />
+        </label>
 
-        <!-- Wake time — custom 15-min picker -->
-        <div class="time-widget">
+        <!-- Wake time — single time input, 15-min steps -->
+        <label class="time-widget-label-wrap">
           <span class="time-widget-label">Wake time</span>
-          <div class="time-select-row">
-            <select id="wakeTimeHour" class="time-select-hour" aria-label="Wake time hour"></select>
-            <span class="time-select-sep">:</span>
-            <select id="wakeTimeMinute" class="time-select-min" aria-label="Wake time minute">
-              <option value="">--</option>
-              <option value="00">00</option>
-              <option value="15">15</option>
-              <option value="30">30</option>
-              <option value="45">45</option>
-            </select>
-          </div>
-          <!-- Hidden input keeps the HH:MM value app.js expects -->
-          <input type="hidden" id="wakeTimeInput" />
-        </div>
+          <input type="time" id="wakeTimeInput" step="900" class="time-input-single" aria-label="Wake time" />
+        </label>
 
       </div>
       <div class="sleep-total-display" aria-live="polite">
@@ -306,75 +282,6 @@
 </footer>
 
 <script src="app.js"></script>
-
-<!-- ============================================================
-     15-minute time picker logic
-     Populates hour selects, syncs to hidden HH:MM inputs,
-     and exposes getTimeValue(id) / setTimeValue(id, 'HH:MM')
-     so app.js can read/write the fields as before.
-     ============================================================ -->
-<script>
-(function () {
-
-  /* ── Build hour options (12-hour AM/PM display) ── */
-  function buildHourOptions(selectEl) {
-    var opt = document.createElement('option');
-    opt.value = ''; opt.textContent = '--';
-    selectEl.appendChild(opt);
-    for (var h = 0; h < 24; h++) {
-      var ampm = h < 12 ? 'AM' : 'PM';
-      var h12  = h % 12 === 0 ? 12 : h % 12;
-      var o = document.createElement('option');
-      o.value = String(h).padStart(2, '0');
-      o.textContent = h12 + ' ' + ampm;
-      selectEl.appendChild(o);
-    }
-  }
-
-  /* ── Sync selects → hidden input + fire change ── */
-  function syncHidden(prefix) {
-    var h = document.getElementById(prefix + 'Hour').value;
-    var m = document.getElementById(prefix + 'Minute').value;
-    var hidden = document.getElementById(prefix + 'Input');
-    hidden.value = (h && m) ? h + ':' + m : '';
-    hidden.dispatchEvent(new Event('change', { bubbles: true }));
-  }
-
-  /* ── Public helpers so app.js can get/set values ── */
-  window.getTimeValue = function (hiddenId) {
-    return document.getElementById(hiddenId).value; // e.g. "22:30"
-  };
-
-  window.setTimeValue = function (hiddenId, val) {
-    // val expected as "HH:MM" or ""
-    var prefix = hiddenId.replace('Input', '');
-    var hSel = document.getElementById(prefix + 'Hour');
-    var mSel = document.getElementById(prefix + 'Minute');
-    if (!val) {
-      hSel.value = ''; mSel.value = '';
-    } else {
-      var parts = val.split(':');
-      var h = parts[0];
-      // snap minutes to nearest 15
-      var rawM = parseInt(parts[1], 10) || 0;
-      var snappedM = String(Math.round(rawM / 15) * 15 % 60).padStart(2, '0');
-      hSel.value = h;
-      mSel.value = snappedM;
-    }
-    syncHidden(prefix);
-  };
-
-  /* ── Init both pickers ── */
-  ['bedtime', 'wakeTime'].forEach(function (prefix) {
-    var hSel = document.getElementById(prefix + 'Hour');
-    var mSel = document.getElementById(prefix + 'Minute');
-    buildHourOptions(hSel);
-    hSel.addEventListener('change', function () { syncHidden(prefix); });
-    mSel.addEventListener('change', function () { syncHidden(prefix); });
-  });
-
-}());
-</script>
 
 <!-- Build info footer script -->
 <script>
