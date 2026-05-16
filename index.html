@@ -80,17 +80,39 @@
       <h3>Sleep (previous night)</h3>
       <div class="sleep-time-grid">
 
-        <!-- Bedtime — single time input, 15-min steps -->
-        <label class="time-widget-label-wrap">
+        <!-- Bedtime: hour + minute selects, hidden HH:MM field for app.js -->
+        <div class="time-widget">
           <span class="time-widget-label">Bedtime</span>
-          <input type="time" id="bedtimeInput" step="900" class="time-input-single" aria-label="Bedtime" />
-        </label>
+          <div class="time-select-row" role="group" aria-label="Bedtime">
+            <select id="bedtimeHour" class="time-select-hour" aria-label="Bedtime hour"></select>
+            <span class="time-select-sep" aria-hidden="true">:</span>
+            <select id="bedtimeMinute" class="time-select-min" aria-label="Bedtime minute">
+              <option value="">--</option>
+              <option value="00">00</option>
+              <option value="15">15</option>
+              <option value="30">30</option>
+              <option value="45">45</option>
+            </select>
+          </div>
+          <input type="hidden" id="bedtimeInput" />
+        </div>
 
-        <!-- Wake time — single time input, 15-min steps -->
-        <label class="time-widget-label-wrap">
+        <!-- Wake time: hour + minute selects, hidden HH:MM field for app.js -->
+        <div class="time-widget">
           <span class="time-widget-label">Wake time</span>
-          <input type="time" id="wakeTimeInput" step="900" class="time-input-single" aria-label="Wake time" />
-        </label>
+          <div class="time-select-row" role="group" aria-label="Wake time">
+            <select id="wakeTimeHour" class="time-select-hour" aria-label="Wake time hour"></select>
+            <span class="time-select-sep" aria-hidden="true">:</span>
+            <select id="wakeTimeMinute" class="time-select-min" aria-label="Wake time minute">
+              <option value="">--</option>
+              <option value="00">00</option>
+              <option value="15">15</option>
+              <option value="30">30</option>
+              <option value="45">45</option>
+            </select>
+          </div>
+          <input type="hidden" id="wakeTimeInput" />
+        </div>
 
       </div>
       <div class="sleep-total-display" aria-live="polite">
@@ -284,34 +306,77 @@
 <script src="app.js"></script>
 
 <!-- ============================================================
-     Snap time inputs to nearest 15-minute boundary.
-     Runs on 'change' so it catches both spinner clicks and
-     manual keyboard entry. If the user types 10:23, it snaps
-     to 10:15 on blur/change. Works on all browsers that
-     support <input type="time">.
+     Time picker initialisation.
+     Builds the 12-hour hour options (12 AM, 1 AM … 11 PM)
+     and syncs each pair of selects into the hidden HH:MM
+     field that app.js reads.
      ============================================================ -->
 <script>
 (function () {
-  function snapTo15(input) {
-    if (!input || !input.value) return;
-    var parts = input.value.split(':');
-    var h = parseInt(parts[0], 10);
-    var m = parseInt(parts[1], 10);
-    var snapped = Math.round(m / 15) * 15;
-    if (snapped === 60) { snapped = 0; h = (h + 1) % 24; }
-    input.value = String(h).padStart(2, '0') + ':' + String(snapped).padStart(2, '0');
-    // Re-fire change so app.js updateSleepDuration() recalculates
-    input.dispatchEvent(new Event('change', { bubbles: true }));
+  // Build hour options in 12-hour format with AM/PM label.
+  function buildHourOptions(selectEl) {
+    var opt = document.createElement('option');
+    opt.value = ''; opt.textContent = '--';
+    selectEl.appendChild(opt);
+    for (var h = 0; h < 24; h++) {
+      var ampm  = h < 12 ? 'AM' : 'PM';
+      var label = (h % 12 === 0 ? 12 : h % 12) + ' ' + ampm;
+      var o = document.createElement('option');
+      o.value = String(h).padStart(2, '0');
+      o.textContent = label;
+      selectEl.appendChild(o);
+    }
   }
 
-  ['bedtimeInput', 'wakeTimeInput'].forEach(function (id) {
+  // When either select changes, sync the hidden input and fire
+  // a 'change' event so app.js updateSleepDuration() picks it up.
+  function syncHidden(hourSel, minSel, hiddenInput) {
+    var h = hourSel.value;
+    var m = minSel.value;
+    if (h !== '' && m !== '') {
+      hiddenInput.value = h + ':' + m;
+    } else {
+      hiddenInput.value = '';
+    }
+    hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  // Wire up one time picker.
+  function initPicker(hourId, minId, hiddenId) {
+    var hourSel    = document.getElementById(hourId);
+    var minSel     = document.getElementById(minId);
+    var hiddenInput = document.getElementById(hiddenId);
+    if (!hourSel || !minSel || !hiddenInput) return;
+
+    buildHourOptions(hourSel);
+
+    hourSel.addEventListener('change', function () { syncHidden(hourSel, minSel, hiddenInput); });
+    minSel.addEventListener('change',  function () { syncHidden(hourSel, minSel, hiddenInput); });
+
+    // Expose a setter so app.js can populate the selects when loading a saved day.
+    // Usage: window.setTimePicker('bedtime', '22:30')
+    hiddenInput._setTime = function (hhmm) {
+      if (!hhmm) {
+        hourSel.value = ''; minSel.value = ''; hiddenInput.value = ''; return;
+      }
+      var parts = hhmm.split(':');
+      hourSel.value = parts[0];
+      minSel.value  = parts[1];
+      hiddenInput.value = hhmm;
+    };
+  }
+
+  initPicker('bedtimeHour',  'bedtimeMinute',  'bedtimeInput');
+  initPicker('wakeTimeHour', 'wakeTimeMinute', 'wakeTimeInput');
+
+  // Global helper app.js can call to set the pickers after loading saved data:
+  //   window.setTimePicker('bedtime',  '22:30');
+  //   window.setTimePicker('wakeTime', '07:00');
+  window.setTimePicker = function (which, hhmm) {
+    var id = which === 'bedtime' ? 'bedtimeInput' : 'wakeTimeInput';
     var el = document.getElementById(id);
-    if (!el) return;
-    // 'change' fires when the user leaves the field or picks via spinner/clock
-    el.addEventListener('change', function () { snapTo15(this); });
-    // 'blur' catches keyboard entry on browsers that don't fire change until blur
-    el.addEventListener('blur',   function () { snapTo15(this); });
-  });
+    if (el && el._setTime) el._setTime(hhmm);
+  };
 }());
 </script>
 
