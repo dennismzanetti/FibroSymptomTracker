@@ -283,6 +283,38 @@
 
 <script src="app.js"></script>
 
+<!-- ============================================================
+     Snap time inputs to nearest 15-minute boundary.
+     Runs on 'change' so it catches both spinner clicks and
+     manual keyboard entry. If the user types 10:23, it snaps
+     to 10:15 on blur/change. Works on all browsers that
+     support <input type="time">.
+     ============================================================ -->
+<script>
+(function () {
+  function snapTo15(input) {
+    if (!input || !input.value) return;
+    var parts = input.value.split(':');
+    var h = parseInt(parts[0], 10);
+    var m = parseInt(parts[1], 10);
+    var snapped = Math.round(m / 15) * 15;
+    if (snapped === 60) { snapped = 0; h = (h + 1) % 24; }
+    input.value = String(h).padStart(2, '0') + ':' + String(snapped).padStart(2, '0');
+    // Re-fire change so app.js updateSleepDuration() recalculates
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  ['bedtimeInput', 'wakeTimeInput'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    // 'change' fires when the user leaves the field or picks via spinner/clock
+    el.addEventListener('change', function () { snapTo15(this); });
+    // 'blur' catches keyboard entry on browsers that don't fire change until blur
+    el.addEventListener('blur',   function () { snapTo15(this); });
+  });
+}());
+</script>
+
 <!-- Build info footer script -->
 <script>
 (function () {
