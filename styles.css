@@ -420,7 +420,7 @@ button.danger:hover {
   font-size: 0.95rem;
   font-weight: 700;
   color: #263252;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.55rem;
 }
 
 .time-widget-hint {
@@ -430,6 +430,65 @@ button.danger:hover {
   font-weight: 500;
   margin-bottom: 0.7rem;
 }
+
+/* =============================================
+   15-MINUTE TIME PICKER — hour + minute selects
+   ============================================= */
+
+.time-select-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.2rem;
+}
+
+.time-select-sep {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #32408f;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-bottom: 2px; /* optical alignment with select text */
+}
+
+.time-select-hour,
+.time-select-min {
+  /* Reset the global width:100% rule for these selects */
+  width: auto !important;
+  flex: 1;
+  min-width: 0;
+  margin-top: 0 !important;
+  padding: 0.7rem 0.5rem;
+  min-height: 48px;
+  border-radius: 10px;
+  border: 1px solid #cdd6e8;
+  background: #ffffff;
+  color: #1f2740;
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  -webkit-appearance: auto;
+  appearance: auto;
+}
+
+.time-select-hour:focus,
+.time-select-min:focus {
+  outline: none;
+  border-color: #3f51b5;
+  box-shadow: 0 0 0 4px rgba(63, 81, 181, 0.14);
+}
+
+/* On mobile, ensure the two selects don't overflow the card */
+@media (max-width: 480px) {
+  .time-select-hour,
+  .time-select-min {
+    font-size: 0.95rem;
+    padding: 0.65rem 0.35rem;
+  }
+}
+
+/* ============================================= */
 
 .time-widget input[type="time"] {
   width: 100%;
