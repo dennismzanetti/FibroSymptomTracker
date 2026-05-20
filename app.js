@@ -4,1067 +4,895 @@ const firebaseConfig = {
   authDomain: "fibrosymptomtracker.firebaseapp.com",
   projectId: "fibrosymptomtracker",
   storageBucket: "fibrosymptomtracker.firebasestorage.app",
-  messagingSenderId: "729903386531",
-  appId: "1:729903386531:web:b73385c230369ac53b9416",
-  measurementId: "G-N20WEFRW9Y"
+  messagingSenderId: "407087512984",
+  appId: "1:407087512984:web:3f82b25e70ae5da5d4d7c0"
 };
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// ---- Auth ----
-const auth = firebase.auth();
-const provider = new firebase.auth.GoogleAuthProvider();
+// ============================================================
+// STATE
+// ============================================================
+let selectedDate = todayStr();
 
-const authOverlay = document.getElementById("authOverlay");
-const googleSignInBtn = document.getElementById("googleSignInBtn");
-const signOutBtn = document.getElementById("signOutBtn");
-const appMain = document.querySelector("main");
-
-if (appMain) appMain.style.display = "none";
-
-auth.onAuthStateChanged((user) => {
-  if (user) {
-    if (authOverlay) authOverlay.style.display = "none";
-    if (appMain) appMain.style.display = "";
-    if (signOutBtn) signOutBtn.style.display = "inline-block";
-    console.log("Signed in as", user.displayName, "UID:", user.uid);
-  } else {
-    if (authOverlay) authOverlay.style.display = "flex";
-    if (appMain) appMain.style.display = "none";
-    if (signOutBtn) signOutBtn.style.display = "none";
-  }
-});
-
-googleSignInBtn?.addEventListener("click", () => {
-  const authError = document.getElementById("authError");
-  auth.signInWithPopup(provider).catch((err) => {
-    console.error("Sign-in error:", err);
-    if (authError) authError.textContent = "Sign-in failed. Please try again.";
-  });
-});
-
-signOutBtn?.addEventListener("click", () => auth.signOut());
-
-// ---- Local storage helpers ----
-const STORAGE_KEY = "fibroDaysLocal";
-function loadAllDays() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) return [];
-  try { return JSON.parse(raw); } catch { return []; }
-}
-function saveAllDays(days) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(days));
-}
-function numberOrNull(val) {
-  const n = parseFloat(val);
-  return isNaN(n) ? null : n;
+function todayStr() {
+  return new Date().toISOString().split("T")[0];
 }
 
-// ---- Day-of-week display (entry tab header) ----
-function updateDayOfWeek() {
-  const dateInput = document.getElementById("dateInput");
-  const display = document.getElementById("dayOfWeekDisplay");
-  if (!display) return;
-  if (!dateInput || !dateInput.value) {
-    display.textContent = "";
-    return;
-  }
-  const [year, month, day] = dateInput.value.split("-").map(Number);
-  const date = new Date(year, month - 1, day);
-  if (isNaN(date.getTime())) {
-    display.textContent = "";
-    return;
-  }
-  display.textContent = date.toLocaleDateString(undefined, { weekday: "long" });
-}
-
-// ---- Date helpers for journal headers ----
-function getJournalDayOfWeek(dateStr) {
-  if (!dateStr) return "";
-  const [year, month, day] = dateStr.split("-").map(Number);
-  const date = new Date(year, month - 1, day);
-  if (isNaN(date.getTime())) return "";
-  return date.toLocaleDateString(undefined, { weekday: "long" });
-}
-
-function getJournalDateLine(dateStr) {
-  if (!dateStr) return "No date recorded";
-  const [year, month, day] = dateStr.split("-").map(Number);
-  const date = new Date(year, month - 1, day);
-  if (isNaN(date.getTime())) return dateStr;
-  return date.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
-}
-
-// ---- UI setup ----
-window.addEventListener("load", () => {
+// ============================================================
+// DOM READY
+// ============================================================
+document.addEventListener("DOMContentLoaded", () => {
+  initDatePicker();
   setupTabs();
-  setupExerciseToggle();
-  setupSaveDay();
-  loadTodayDate();
-  setupDateNavigation();
-  setupSleepCalculation();
-  setupNumberSteppers();
+  loadDay(selectedDate);
+  setupDailyEntryForm();
+  setupJournalTab();
+  setupHistoryTab();
   setupMedicationsTab();
-  setupPrint();
-
-  const dateInput = document.getElementById("dateInput");
-  if (dateInput && dateInput.value) loadDayFromCloud(dateInput.value);
-
-  if (dateInput) {
-    ["change", "input", "blur"].forEach((evt) => {
-      dateInput.addEventListener(evt, (event) => {
-        if (event.target.value && evt === "change") loadDayFromCloud(event.target.value);
-        updateDayOfWeek();
-      });
-    });
-  }
-
-  refreshHistory();
-  refreshTrends();
+  setupBuildFooter();
 });
 
-// ---- Print support ----
+// ============================================================
+// DATE PICKER
+// ============================================================
+function initDatePicker() {
+  const input = document.getElementById("datePicker");
+  const dow   = document.getElementById("dayOfWeekDisplay");
+  const prevBtn = document.getElementById("prevDayBtn");
+  const nextBtn = document.getElementById("nextDayBtn");
 
-const FREQ_LABELS = {
-  daily: "Daily",
-  twice_daily: "2×/day",
-  three_times_daily: "3×/day",
-  as_needed: "PRN",
-  weekly: "Weekly",
-  other: "Other"
-};
+  if (!input) return;
+  input.value = selectedDate;
+  updateDOW(selectedDate, dow);
 
-function setupPrint() {
-  const printBtn = document.getElementById("printMedBtn");
-  if (printBtn) {
-    printBtn.removeAttribute("onclick");
-    printBtn.addEventListener("click", printMedList);
-  }
+  input.addEventListener("change", () => {
+    selectedDate = input.value;
+    updateDOW(selectedDate, dow);
+    loadDay(selectedDate);
+  });
+
+  prevBtn && prevBtn.addEventListener("click", () => shiftDate(-1, input, dow));
+  nextBtn && nextBtn.addEventListener("click", () => shiftDate(+1, input, dow));
 }
 
-async function printMedList() {
-  const printBtn = document.getElementById("printMedBtn");
-  if (printBtn) { printBtn.disabled = true; printBtn.textContent = "Loading\u2026"; }
-
-  try {
-    const [medSnap, suppSnap] = await Promise.all([
-      db.collection("medications").orderBy("name").get(),
-      db.collection("supplements").orderBy("name").get()
-    ]);
-
-    const dateStr = new Date().toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
-    const user = auth.currentUser;
-    const userName = user?.displayName || "";
-
-    function buildRows(snapshot, extraLabel) {
-      if (snapshot.empty) {
-        return `<tr><td colspan="5" class="empty">None on file.</td></tr>`;
-      }
-      let html = "";
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        const freq = FREQ_LABELS[d.frequency] || d.frequency || "\u2014";
-        html += `<tr>
-          <td>${escHtml(d.name || "")}</td>
-          <td class="c">${escHtml(d.dose || "\u2014")}</td>
-          <td class="c">${escHtml(freq)}</td>
-          <td>${escHtml(d[extraLabel] || "\u2014")}</td>
-          <td class="notes">${escHtml(d.notes || "")}</td>
-        </tr>`;
-      });
-      return html;
-    }
-
-    const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Meds &amp; Supplements</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: Arial, sans-serif;
-      font-size: 8pt;
-      color: #111;
-    }
-    .page {
-      padding: 0.35in 0.4in 0.3in;
-    }
-    .doc-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      border-bottom: 1.5px solid #3f51b5;
-      padding-bottom: 4px;
-      margin-bottom: 8px;
-    }
-    .doc-header h1 {
-      font-size: 11pt;
-      font-weight: 800;
-      color: #1c1d22;
-    }
-    .doc-header .meta {
-      font-size: 7pt;
-      color: #555;
-      text-align: right;
-      line-height: 1.4;
-    }
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    h2 {
-      font-size: 7.5pt;
-      font-weight: 700;
-      color: #3f51b5;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 3px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 7.5pt;
-    }
-    thead th {
-      background: #3f51b5;
-      color: #fff;
-      padding: 3px 5px;
-      text-align: left;
-      font-size: 6.5pt;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-    thead th.c { text-align: center; }
-    tbody td {
-      padding: 2px 5px;
-      border-bottom: 1px solid #e8e8e8;
-      vertical-align: top;
-      line-height: 1.3;
-    }
-    tbody td.c { text-align: center; }
-    tbody td.notes { color: #555; font-style: italic; max-width: 90px; }
-    tbody td.empty { text-align: center; color: #888; font-style: italic; padding: 6px; }
-    tbody tr:nth-child(even) td { background: #f5f7ff; }
-    .footer {
-      margin-top: 8px;
-      font-size: 6.5pt;
-      color: #aaa;
-      border-top: 1px solid #e0e0e0;
-      padding-top: 4px;
-      display: flex;
-      justify-content: space-between;
-    }
-    @media print {
-      body { font-size: 8pt; }
-      @page { margin: 0.35in 0.4in; size: letter portrait; }
-      .page { padding: 0; }
-    }
-  </style>
-</head>
-<body>
-  <div class="page">
-    <div class="doc-header">
-      <h1>Medication &amp; Supplement List</h1>
-      <div class="meta">${userName ? escHtml(userName) + "<br>" : ""}${escHtml(dateStr)}</div>
-    </div>
-
-    <div class="two-col">
-      <div>
-        <h2>Medications</h2>
-        <table>
-          <thead><tr>
-            <th>Name</th>
-            <th class="c">Dose</th>
-            <th class="c">Freq</th>
-            <th>Doctor</th>
-            <th>Notes</th>
-          </tr></thead>
-          <tbody>${buildRows(medSnap, "doctor")}</tbody>
-        </table>
-      </div>
-      <div>
-        <h2>Supplements</h2>
-        <table>
-          <thead><tr>
-            <th>Name</th>
-            <th class="c">Dose</th>
-            <th class="c">Freq</th>
-            <th>Brand</th>
-            <th>Notes</th>
-          </tr></thead>
-          <tbody>${buildRows(suppSnap, "brand")}</tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="footer">
-      <span>Fibromyalgia Symptom Tracker</span>
-      <span>Bring this list to all medical appointments.</span>
-    </div>
-  </div>
-
-  <script>window.onload=function(){window.print();window.onafterprint=function(){window.close();};};<\/script>
-</body>
-</html>`;
-
-    const win = window.open("", "_blank");
-    if (!win) {
-      alert("Pop-up was blocked. Please allow pop-ups for this site and try again.");
-      return;
-    }
-    win.document.open();
-    win.document.write(html);
-    win.document.close();
-
-  } catch (err) {
-    console.error("Print error:", err);
-    alert("Failed to load data for printing. Please try again.");
-  } finally {
-    if (printBtn) { printBtn.disabled = false; printBtn.textContent = "Print / Save PDF"; }
-  }
+function shiftDate(delta, input, dow) {
+  const d = new Date(selectedDate + "T12:00:00");
+  d.setDate(d.getDate() + delta);
+  selectedDate = d.toISOString().split("T")[0];
+  input.value  = selectedDate;
+  updateDOW(selectedDate, dow);
+  loadDay(selectedDate);
 }
 
-/** Escape HTML special chars for safe inline insertion */
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+function updateDOW(dateStr, el) {
+  if (!el) return;
+  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  el.textContent = days[new Date(dateStr + "T12:00:00").getDay()];
 }
 
+// ============================================================
+// TABS
+// ============================================================
 function setupTabs() {
   const buttons = document.querySelectorAll(".tab-button");
-  const tabs = document.querySelectorAll(".tab");
+  const sections = document.querySelectorAll(".tab");
+
   buttons.forEach(btn => {
     btn.addEventListener("click", () => {
-      const target = btn.getAttribute("data-tab");
       buttons.forEach(b => b.classList.remove("active"));
-      tabs.forEach(t => t.classList.remove("active"));
+      sections.forEach(s => s.classList.remove("active"));
       btn.classList.add("active");
-      document.getElementById(target).classList.add("active");
-      if (target === "history-tab") refreshHistory();
-      if (target === "journal-tab") renderJournal();
-      if (target === "trends-tab") refreshTrends();
-      if (target === "medications-tab") {
-        const activeView = document.querySelector(".med-view:not([style*='display:none']):not([style*='display: none'])");
-        if (activeView) refreshMedView(activeView.id);
-      }
+      const target = btn.dataset.tab;
+      const section = document.getElementById(target);
+      if (section) section.classList.add("active");
+
+      if (target === "journal-tab")     refreshJournal();
+      if (target === "history-tab")     refreshHistory();
+      if (target === "medications-tab") refreshMedTab();
     });
   });
 }
 
-function setupExerciseToggle() {
-  const didExerciseInput = document.getElementById("didExerciseInput");
-  const exerciseDetails = document.getElementById("exerciseDetails");
-  function updateVisibility() {
-    exerciseDetails.style.display = didExerciseInput.value === "yes" ? "block" : "none";
+// ============================================================
+// LOAD / SAVE DAY
+// ============================================================
+async function loadDay(dateStr) {
+  try {
+    const doc = await db.collection("days").doc(dateStr).get();
+    const data = doc.exists ? doc.data() : {};
+    populateForm(data);
+  } catch (err) {
+    console.error("loadDay error:", err);
   }
-  didExerciseInput.addEventListener("change", updateVisibility);
-  updateVisibility();
 }
 
-function loadTodayDate() {
-  const dateInput = document.getElementById("dateInput");
-  const today = new Date();
-  dateInput.value = today.toISOString().slice(0, 10);
-  updateDayOfWeek();
+async function saveDay(dateStr, data) {
+  await db.collection("days").doc(dateStr).set(data, { merge: true });
 }
 
-function setupSaveDay() {
-  const topBtn = document.getElementById("saveDayTop");
-  const bottomBtn = document.getElementById("saveDayBottom");
-  const status = document.getElementById("saveStatus");
+// ============================================================
+// DAILY ENTRY FORM
+// ============================================================
+function setupDailyEntryForm() {
+  const saveBtn = document.getElementById("saveBtn");
+  if (saveBtn) {
+    saveBtn.addEventListener("click", handleSave);
+  }
 
-  const handleSaveClick = async () => {
-    const dayData = collectFormData();
-    if (!dayData.date) { status.textContent = "Please select a date."; return; }
-    status.textContent = "Saving locally...";
-    const days = loadAllDays();
-    const existingIndex = days.findIndex(d => d.date === dayData.date);
-    if (existingIndex >= 0) days[existingIndex] = dayData;
-    else days.push(dayData);
-    saveAllDays(days);
-    status.textContent = "Saved locally.";
-    try {
-      status.textContent = "Saving to cloud...";
-      await db.collection("days").doc(dayData.date).set(dayData, { merge: false });
-      status.textContent = "Saved locally + cloud.";
-    } catch (err) {
-      console.error("Error saving to cloud:", err);
-      status.textContent = "Saved locally, but cloud save failed.";
-    }
-    refreshHistory();
-    renderJournal();
-    refreshTrends();
-  };
-
-  topBtn?.addEventListener("click", handleSaveClick);
-  bottomBtn?.addEventListener("click", handleSaveClick);
-}
-
-function setupNumberSteppers() {
-  document.querySelectorAll(".number-stepper").forEach((stepper) => {
-    const input = stepper.querySelector('input[type="number"]');
-    const buttons = stepper.querySelectorAll(".stepper-btn");
-    if (!input) return;
-    const min = input.min !== "" ? Number(input.min) : null;
-    const max = input.max !== "" ? Number(input.max) : null;
-    buttons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const step = Number(button.dataset.step || 0);
-        let current = input.value === "" ? min ?? 0 : Number(input.value);
-        let next = current + step;
-        if (min !== null && next < min) next = min;
-        if (max !== null && next > max) next = max;
-        input.value = next;
-        input.dispatchEvent(new Event("input", { bubbles: true }));
-        input.dispatchEvent(new Event("change", { bubbles: true }));
-      });
+  // Steppers
+  document.querySelectorAll(".stepper-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const targetId = btn.dataset.target;
+      const input    = document.getElementById(targetId);
+      if (!input) return;
+      const delta = parseInt(btn.dataset.delta, 10);
+      const min   = parseFloat(input.min ?? -Infinity);
+      const max   = parseFloat(input.max ?? Infinity);
+      const step  = parseFloat(input.step || 1);
+      let val = parseFloat(input.value || 0) + delta * step;
+      val = Math.min(max, Math.max(min, val));
+      input.value = Number.isInteger(val) ? val : val.toFixed(1);
+      input.dispatchEvent(new Event("change"));
     });
   });
-}
 
-function setupSleepCalculation() {
-  const bedtimeInput = document.getElementById("bedtimeInput");
-  const wakeTimeInput = document.getElementById("wakeTimeInput");
-  if (!bedtimeInput || !wakeTimeInput) return;
-  bedtimeInput.addEventListener("input", updateSleepDuration);
-  wakeTimeInput.addEventListener("input", updateSleepDuration);
-  bedtimeInput.addEventListener("change", updateSleepDuration);
-  wakeTimeInput.addEventListener("change", updateSleepDuration);
-  updateSleepDuration();
-}
+  // Sleep time inputs → compute duration
+  const bedInput  = document.getElementById("bedtime");
+  const wakeInput = document.getElementById("wakeTime");
+  if (bedInput && wakeInput) {
+    const update = () => updateSleepDuration(bedInput.value, wakeInput.value);
+    bedInput.addEventListener("change", update);
+    wakeInput.addEventListener("change", update);
 
-function updateSleepDuration() {
-  const bedtimeInput = document.getElementById("bedtimeInput");
-  const wakeTimeInput = document.getElementById("wakeTimeInput");
-  const hoursSleptInput = document.getElementById("hoursSleptInput");
-  const hoursSleptDisplay = document.getElementById("hoursSleptDisplay");
-  if (!bedtimeInput || !wakeTimeInput || !hoursSleptInput) return;
-  const bedtime = bedtimeInput.value;
-  const wakeTime = wakeTimeInput.value;
-  if (!bedtime || !wakeTime) {
-    hoursSleptInput.value = "";
-    if (hoursSleptDisplay) hoursSleptDisplay.textContent = "\u2014";
-    return;
+    // Snap to nearest 15-min on blur as well
+    [bedInput, wakeInput].forEach(inp => {
+      inp.addEventListener("change", () => snapTo15(inp));
+    });
   }
-  const [bedHour, bedMinute] = bedtime.split(":").map(Number);
-  const [wakeHour, wakeMinute] = wakeTime.split(":").map(Number);
-  let bedtimeMinutes = bedHour * 60 + bedMinute;
-  let wakeTimeMinutes = wakeHour * 60 + wakeMinute;
-  if (wakeTimeMinutes <= bedtimeMinutes) wakeTimeMinutes += 24 * 60;
-  const totalMinutes = wakeTimeMinutes - bedtimeMinutes;
-  const totalHours = Math.round((totalMinutes / 60) * 10) / 10;
-  hoursSleptInput.value = totalHours;
-  if (hoursSleptDisplay) hoursSleptDisplay.textContent = `${totalHours.toFixed(1)} hours`;
 }
 
-function clearFormFieldsExceptDate() {
-  document.getElementById("dayTitleInput").value = "";
-  document.getElementById("overallNotesInput").value = "";
-  const clearBlock = (prefix) => {
-    document.getElementById(prefix + "Score").value = "";
-    document.getElementById(prefix + "Activity").value = "";
-    document.getElementById(prefix + "Symptoms").value = "";
+function snapTo15(input) {
+  if (!input.value) return;
+  const [h, m] = input.value.split(":").map(Number);
+  const snapped = Math.round(m / 15) * 15;
+  const finalM  = snapped === 60 ? 0 : snapped;
+  const finalH  = snapped === 60 ? (h + 1) % 24 : h;
+  input.value   = `${String(finalH).padStart(2,"0")}:${String(finalM).padStart(2,"0")}`;
+}
+
+function updateSleepDuration(bedVal, wakeVal) {
+  const display = document.getElementById("sleepDurationDisplay");
+  if (!display) return;
+  if (!bedVal || !wakeVal) { display.textContent = "—"; return; }
+
+  const [bh, bm] = bedVal.split(":").map(Number);
+  const [wh, wm] = wakeVal.split(":").map(Number);
+  let bedMins  = bh * 60 + bm;
+  let wakeMins = wh * 60 + wm;
+  if (wakeMins <= bedMins) wakeMins += 24 * 60;
+  const diff = wakeMins - bedMins;
+  const hours = Math.floor(diff / 60);
+  const mins  = diff % 60;
+  display.textContent = mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+}
+
+function populateForm(data) {
+  // ---- Sleep ----
+  setVal("bedtime",  data.sleep?.bedtime  || "");
+  setVal("wakeTime", data.sleep?.wakeTime || "");
+  updateSleepDuration(data.sleep?.bedtime || "", data.sleep?.wakeTime || "");
+  setVal("sleepQuality", data.sleep?.quality ?? "");
+  setVal("sleepNotes",   data.sleep?.notes   || "");
+
+  // ---- Symptoms (morning) ----
+  setVal("mPain",      data.morning?.pain      ?? "");
+  setVal("mFatigue",   data.morning?.fatigue   ?? "");
+  setVal("mFogScore",  data.morning?.fogScore  ?? "");
+  setVal("mStiffness", data.morning?.stiffness ?? "");
+  setVal("mNotes",     data.morning?.notes     || "");
+  setChecks("mSymptoms", data.morning?.symptoms || []);
+
+  // ---- Symptoms (afternoon) ----
+  setVal("aPain",      data.afternoon?.pain      ?? "");
+  setVal("aFatigue",   data.afternoon?.fatigue   ?? "");
+  setVal("aFogScore",  data.afternoon?.fogScore  ?? "");
+  setVal("aStiffness", data.afternoon?.stiffness ?? "");
+  setVal("aNotes",     data.afternoon?.notes     || "");
+  setChecks("aSymptoms", data.afternoon?.symptoms || []);
+
+  // ---- Symptoms (evening) ----
+  setVal("ePain",      data.evening?.pain      ?? "");
+  setVal("eFatigue",   data.evening?.fatigue   ?? "");
+  setVal("eFogScore",  data.evening?.fogScore  ?? "");
+  setVal("eStiffness", data.evening?.stiffness ?? "");
+  setVal("eNotes",     data.evening?.notes     || "");
+  setChecks("eSymptoms", data.evening?.symptoms || []);
+
+  // ---- Mood ----
+  setVal("moodScore", data.mood?.score ?? "");
+  setVal("moodNotes", data.mood?.notes || "");
+
+  // ---- Triggers & Activity ----
+  setChecks("triggers", data.triggers || []);
+  setVal("activityType",     data.activity?.type     || "");
+  setVal("activityDuration", data.activity?.duration ?? "");
+  setVal("activityIntensity",data.activity?.intensity ?? "");
+  setVal("activityNotes",    data.activity?.notes    || "");
+
+  // ---- Medications ----
+  setVal("medsNotes", data.medsNotes || "");
+
+  // ---- Day Notes ----
+  setVal("dayNotes", data.dayNotes || "");
+}
+
+function setVal(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.value = value;
+}
+
+function setChecks(groupName, checked) {
+  document.querySelectorAll(`input[name="${groupName}"]`).forEach(cb => {
+    cb.checked = checked.includes(cb.value);
+  });
+}
+
+function getChecks(groupName) {
+  return [...document.querySelectorAll(`input[name="${groupName}"]:checked`)]
+    .map(cb => cb.value);
+}
+
+function getNum(id) {
+  const v = document.getElementById(id)?.value;
+  return v === "" || v === undefined ? null : Number(v);
+}
+
+function getStr(id) {
+  return document.getElementById(id)?.value?.trim() || "";
+}
+
+async function handleSave() {
+  const statusEl = document.getElementById("saveStatus");
+  if (statusEl) { statusEl.textContent = "Saving…"; statusEl.style.color = "#5c6bc0"; }
+
+  const data = {
+    sleep: {
+      bedtime:  getStr("bedtime"),
+      wakeTime: getStr("wakeTime"),
+      quality:  getNum("sleepQuality"),
+      notes:    getStr("sleepNotes")
+    },
+    morning: {
+      pain:      getNum("mPain"),
+      fatigue:   getNum("mFatigue"),
+      fogScore:  getNum("mFogScore"),
+      stiffness: getNum("mStiffness"),
+      notes:     getStr("mNotes"),
+      symptoms:  getChecks("mSymptoms")
+    },
+    afternoon: {
+      pain:      getNum("aPain"),
+      fatigue:   getNum("aFatigue"),
+      fogScore:  getNum("aFogScore"),
+      stiffness: getNum("aStiffness"),
+      notes:     getStr("aNotes"),
+      symptoms:  getChecks("aSymptoms")
+    },
+    evening: {
+      pain:      getNum("ePain"),
+      fatigue:   getNum("eFatigue"),
+      fogScore:  getNum("eFogScore"),
+      stiffness: getNum("eStiffness"),
+      notes:     getStr("eNotes"),
+      symptoms:  getChecks("eSymptoms")
+    },
+    mood: {
+      score: getNum("moodScore"),
+      notes: getStr("moodNotes")
+    },
+    triggers: getChecks("triggers"),
+    activity: {
+      type:      getStr("activityType"),
+      duration:  getNum("activityDuration"),
+      intensity: getNum("activityIntensity"),
+      notes:     getStr("activityNotes")
+    },
+    medsNotes: getStr("medsNotes"),
+    dayNotes:  getStr("dayNotes")
   };
-  ["earlyMorning","lateMorning","earlyAfternoon","lateAfternoon","earlyEvening","lateEvening"].forEach(clearBlock);
-  document.getElementById("bedtimeInput").value = "";
-  document.getElementById("wakeTimeInput").value = "";
-  document.getElementById("hoursSleptInput").value = "";
-  document.getElementById("sleepQualityInput").value = "";
-  document.getElementById("awakeningsInput").value = "";
-  document.getElementById("sleepNotesInput").value = "";
-  updateSleepDuration();
-  document.getElementById("didExerciseInput").value = "no";
-  document.getElementById("didExerciseInput").dispatchEvent(new Event("change"));
-  document.getElementById("exerciseTypeInput").value = "";
-  document.getElementById("exerciseMinutesInput").value = "";
-  document.getElementById("exerciseIntensityInput").value = "";
-  document.getElementById("exerciseTimingInput").value = "";
-  document.getElementById("exerciseNotesInput").value = "";
-  document.getElementById("moodScoreInput").value = "";
-  document.getElementById("moodNotesInput").value = "";
-  document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => cb.checked = false);
-}
 
-function loadDayFromCloud(date) {
-  const status = document.getElementById("saveStatus");
-  if (!date) return;
-  db.collection("days").doc(date).get().then((doc) => {
-    if (doc.exists) {
-      fillFormFromData(doc.data());
-      status.textContent = "Loaded from cloud for " + date + ".";
-    } else {
-      clearFormFieldsExceptDate();
-      status.textContent = "No cloud entry for that date. Form cleared.";
+  try {
+    await saveDay(selectedDate, data);
+    if (statusEl) {
+      statusEl.textContent = "✓ Saved";
+      statusEl.style.color = "#2e7d32";
+      setTimeout(() => { statusEl.textContent = ""; }, 2500);
     }
-  }).catch((error) => {
-    console.error("Error getting document:", error);
-    clearFormFieldsExceptDate();
-    status.textContent = "Cloud load failed.";
-  });
+  } catch (err) {
+    console.error("Save error:", err);
+    if (statusEl) { statusEl.textContent = "Error saving."; statusEl.style.color = "#c62828"; }
+  }
 }
 
-function collectFormData() {
-  const date = document.getElementById("dateInput").value;
-  const dayTitle = document.getElementById("dayTitleInput").value;
-  const overallNotes = document.getElementById("overallNotesInput").value;
-  const getBlock = (prefix) => ({
-    score: numberOrNull(document.getElementById(prefix + "Score").value),
-    activity: document.getElementById(prefix + "Activity").value,
-    symptoms: document.getElementById(prefix + "Symptoms").value
-  });
-  const functionality = {
-    earlyMorning: getBlock("earlyMorning"),
-    lateMorning: getBlock("lateMorning"),
-    earlyAfternoon: getBlock("earlyAfternoon"),
-    lateAfternoon: getBlock("lateAfternoon"),
-    earlyEvening: getBlock("earlyEvening"),
-    lateEvening: getBlock("lateEvening")
-  };
-  const sleep = {
-    bedtime: document.getElementById("bedtimeInput").value,
-    wakeTime: document.getElementById("wakeTimeInput").value,
-    hours: numberOrNull(document.getElementById("hoursSleptInput").value),
-    quality: numberOrNull(document.getElementById("sleepQualityInput").value),
-    awakenings: numberOrNull(document.getElementById("awakeningsInput").value),
-    notes: document.getElementById("sleepNotesInput").value
-  };
-  const didExercise = document.getElementById("didExerciseInput").value === "yes";
-  const exercise = didExercise ? {
-    type: document.getElementById("exerciseTypeInput").value,
-    minutes: numberOrNull(document.getElementById("exerciseMinutesInput").value),
-    intensity: document.getElementById("exerciseIntensityInput").value,
-    timing: document.getElementById("exerciseTimingInput").value,
-    notes: document.getElementById("exerciseNotesInput").value
-  } : null;
-  const tags = [];
-  document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => { if (cb.checked) tags.push(cb.value); });
-  const scores = Object.values(functionality).map(b => b.score).filter(v => typeof v === "number");
-  const avgFunctionality = scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
-  const moodScore = numberOrNull(document.getElementById("moodScoreInput").value);
-  const moodNotes = document.getElementById("moodNotesInput").value;
-  return { date, dayTitle, overallNotes, functionality, sleep, didExercise, exercise, tags, avgFunctionality, mood: { score: moodScore, notes: moodNotes } };
+// ============================================================
+// JOURNAL TAB
+// ============================================================
+function setupJournalTab() {
+  const btn = document.getElementById("refreshJournalBtn");
+  if (btn) btn.addEventListener("click", refreshJournal);
+}
+
+async function refreshJournal() {
+  const output = document.getElementById("journalOutput");
+  if (!output) return;
+  output.innerHTML = "<p>Loading…</p>";
+
+  try {
+    const snap = await db.collection("days")
+      .orderBy(firebase.firestore.FieldPath.documentId(), "desc")
+      .limit(30)
+      .get();
+
+    if (snap.empty) { output.innerHTML = "<p>No entries yet.</p>"; return; }
+
+    const DOW   = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const MONTH = ["January","February","March","April","May","June",
+                   "July","August","September","October","November","December"];
+
+    let html = "";
+    snap.forEach(doc => {
+      const d    = doc.data();
+      const date = new Date(doc.id + "T12:00:00");
+      const dow  = DOW[date.getDay()];
+      const dateLabel = `${MONTH[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+
+      html += `
+        <div class="journal-output" style="margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid #e8eaf6">
+          <div class="journal-date-header">
+            <span class="journal-day-of-week">${dow}</span>
+            <span class="journal-date-line">${dateLabel}</span>
+          </div>
+
+          ${journalSleepBlock(d.sleep)}
+          ${journalTimeBlock("Morning",   d.morning)}
+          ${journalTimeBlock("Afternoon", d.afternoon)}
+          ${journalTimeBlock("Evening",   d.evening)}
+          ${journalMoodBlock(d.mood)}
+          ${journalTriggersBlock(d.triggers)}
+          ${journalActivityBlock(d.activity)}
+          ${journalNotesBlock("Day Notes", d.dayNotes)}
+        </div>`;
+    });
+    output.innerHTML = html;
+  } catch (err) {
+    console.error("Journal error:", err);
+    output.innerHTML = "<p>Error loading journal.</p>";
+  }
+}
+
+function journalSleepBlock(sleep) {
+  if (!sleep) return "";
+  const parts = [];
+  if (sleep.bedtime && sleep.wakeTime) parts.push(`Bed: ${sleep.bedtime} → Wake: ${sleep.wakeTime}`);
+  if (sleep.quality != null) parts.push(`Quality: ${sleep.quality}/10`);
+  if (sleep.notes) parts.push(sleep.notes);
+  if (!parts.length) return "";
+  return `<div class="journal-section"><h4>Sleep</h4>${parts.map(p => `<div class="journal-block">${p}</div>`).join("")}</div>`;
+}
+
+function journalTimeBlock(label, block) {
+  if (!block) return "";
+  const scores = [];
+  if (block.pain      != null) scores.push(`Pain ${block.pain}`);
+  if (block.fatigue   != null) scores.push(`Fatigue ${block.fatigue}`);
+  if (block.fogScore  != null) scores.push(`Fog ${block.fogScore}`);
+  if (block.stiffness != null) scores.push(`Stiffness ${block.stiffness}`);
+  const hasSymptoms = block.symptoms?.length;
+  const hasNotes    = block.notes;
+  if (!scores.length && !hasSymptoms && !hasNotes) return "";
+
+  let html = `<div class="journal-section"><h4>${label}</h4>`;
+  if (scores.length) html += `<div class="journal-block">${scores.join(" · ")}</div>`;
+  if (hasSymptoms)   html += `<div class="journal-tags">${block.symptoms.map(s => `<span class="tag">${s}</span>`).join("")}</div>`;
+  if (hasNotes)      html += `<div class="journal-block">${block.notes}</div>`;
+  html += "</div>";
+  return html;
+}
+
+function journalMoodBlock(mood) {
+  if (!mood) return "";
+  const parts = [];
+  if (mood.score != null) parts.push(`Mood: ${mood.score}/10`);
+  if (mood.notes) parts.push(mood.notes);
+  if (!parts.length) return "";
+  return `<div class="journal-section"><h4>Mood</h4>${parts.map(p => `<div class="journal-block">${p}</div>`).join("")}</div>`;
+}
+
+function journalTriggersBlock(triggers) {
+  if (!triggers?.length) return "";
+  return `<div class="journal-section"><h4>Triggers</h4><div class="journal-tags">${triggers.map(t => `<span class="tag">${t}</span>`).join("")}</div></div>`;
+}
+
+function journalActivityBlock(act) {
+  if (!act) return "";
+  const parts = [];
+  if (act.type)      parts.push(act.type);
+  if (act.duration)  parts.push(`${act.duration} min`);
+  if (act.intensity) parts.push(`Intensity: ${act.intensity}`);
+  if (act.notes)     parts.push(act.notes);
+  if (!parts.length) return "";
+  return `<div class="journal-section"><h4>Activity</h4><div class="journal-block">${parts.join(" · ")}</div></div>`;
+}
+
+function journalNotesBlock(label, notes) {
+  if (!notes) return "";
+  return `<div class="journal-section"><h4>${label}</h4><div class="journal-block">${notes}</div></div>`;
+}
+
+// ============================================================
+// HISTORY TAB
+// ============================================================
+function setupHistoryTab() {
+  const btn = document.getElementById("loadHistoryBtn");
+  if (btn) btn.addEventListener("click", refreshHistory);
 }
 
 async function refreshHistory() {
   const list = document.getElementById("historyList");
   if (!list) return;
-  list.innerHTML = "<li>Loading...</li>";
+  list.innerHTML = "<li>Loading…</li>";
+
   try {
-    const snapshot = await db.collection("days").orderBy(firebase.firestore.FieldPath.documentId()).get();
-    const days = [];
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      days.push({ date: data.date || doc.id, dayTitle: data.dayTitle || "", avgFunctionality: data.avgFunctionality ?? null, functionality: data.functionality || null, sleep: data.sleep || null, didExercise: data.didExercise || false, exercise: data.exercise || null, tags: data.tags || [] });
-    });
-    days.sort((a, b) => a.date.localeCompare(b.date)).reverse();
+    const snap = await db.collection("days")
+      .orderBy(firebase.firestore.FieldPath.documentId(), "desc")
+      .limit(60)
+      .get();
+
+    if (snap.empty) { list.innerHTML = "<li>No entries found.</li>"; return; }
+
+    const MONTH = ["Jan","Feb","Mar","Apr","May","Jun",
+                   "Jul","Aug","Sep","Oct","Nov","Dec"];
     list.innerHTML = "";
-    if (!days.length) { list.innerHTML = "<li>No entries yet.</li>"; return; }
-    days.slice(0, 30).forEach(d => {
+    snap.forEach(doc => {
+      const d    = doc.data();
+      const date = new Date(doc.id + "T12:00:00");
+      const label = `${MONTH[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+
+      const avgPain = avgScore([d.morning?.pain, d.afternoon?.pain, d.evening?.pain]);
+      const avgFat  = avgScore([d.morning?.fatigue, d.afternoon?.fatigue, d.evening?.fatigue]);
+      const mood    = d.mood?.score != null ? `Mood ${d.mood.score}` : "";
+      const sleep   = d.sleep?.bedtime ? `Sleep ${d.sleep.bedtime}→${d.sleep.wakeTime || "?"}` : "";
+
+      const parts = [
+        avgPain != null ? `Pain ${avgPain}` : null,
+        avgFat  != null ? `Fatigue ${avgFat}` : null,
+        mood  || null,
+        sleep || null
+      ].filter(Boolean).join(" · ");
+
       const li = document.createElement("li");
-      const title = d.dayTitle ? ` \u2013 ${d.dayTitle}` : "";
-      const avg = d.avgFunctionality != null ? ` | Avg func: ${d.avgFunctionality.toFixed(1)}` : "";
-      const textSpan = document.createElement("span");
-      textSpan.textContent = `${d.date}${title}${avg}`;
-      li.appendChild(textSpan);
-      const loadBtn = document.createElement("button");
-      loadBtn.textContent = "Load";
-      loadBtn.addEventListener("click", () => { fillFormFromData(d); switchToTab("entry-tab"); });
-      li.appendChild(loadBtn);
-      const deleteBtn = document.createElement("button");
-      deleteBtn.textContent = "Delete";
-      deleteBtn.classList.add("danger");
-      deleteBtn.addEventListener("click", async () => {
-        if (!window.confirm(`Delete entry for ${d.date}?`)) return;
-        try { await db.collection("days").doc(d.date).delete(); refreshHistory(); refreshTrends(); }
-        catch (err) { console.error("Error deleting day:", err); alert("Failed to delete."); }
+      li.innerHTML = `<strong style="cursor:pointer;color:#3f51b5">${label}</strong> ${parts ? "— " + parts : ""}`;
+      li.querySelector("strong").addEventListener("click", () => {
+        selectedDate = doc.id;
+        document.getElementById("datePicker").value = doc.id;
+        updateDOW(doc.id, document.getElementById("dayOfWeekDisplay"));
+        loadDay(doc.id);
+        document.querySelector('[data-tab="daily-tab"]').click();
       });
-      li.appendChild(deleteBtn);
       list.appendChild(li);
     });
   } catch (err) {
-    console.error("Error loading history:", err);
-    list.innerHTML = "<li>Cloud history load failed.</li>";
+    console.error("History error:", err);
+    list.innerHTML = "<li>Error loading history.</li>";
   }
 }
 
-function fillFormFromData(d) {
-  document.getElementById("dateInput").value = d.date || "";
-  updateDayOfWeek();
-  document.getElementById("dayTitleInput").value = d.dayTitle || "";
-  document.getElementById("overallNotesInput").value = d.overallNotes || "";
-  const setBlock = (prefix, obj = {}) => {
-    document.getElementById(prefix + "Score").value = obj.score ?? "";
-    document.getElementById(prefix + "Activity").value = obj.activity || "";
-    document.getElementById(prefix + "Symptoms").value = obj.symptoms || "";
-  };
-  setBlock("earlyMorning", d.functionality?.earlyMorning);
-  setBlock("lateMorning", d.functionality?.lateMorning);
-  setBlock("earlyAfternoon", d.functionality?.earlyAfternoon);
-  setBlock("lateAfternoon", d.functionality?.lateAfternoon);
-  setBlock("earlyEvening", d.functionality?.earlyEvening);
-  setBlock("lateEvening", d.functionality?.lateEvening);
-  if (d.sleep) {
-    document.getElementById("bedtimeInput").value = d.sleep.bedtime || "";
-    document.getElementById("wakeTimeInput").value = d.sleep.wakeTime || "";
-    document.getElementById("hoursSleptInput").value = d.sleep.hours ?? "";
-    document.getElementById("sleepQualityInput").value = d.sleep.quality ?? "";
-    document.getElementById("awakeningsInput").value = d.sleep.awakenings ?? "";
-    document.getElementById("sleepNotesInput").value = d.sleep.notes || "";
-  }
-  if (d.didExercise && d.exercise) {
-    document.getElementById("didExerciseInput").value = "yes";
-    document.getElementById("exerciseTypeInput").value = d.exercise.type || "";
-    document.getElementById("exerciseMinutesInput").value = d.exercise.minutes ?? "";
-    document.getElementById("exerciseIntensityInput").value = d.exercise.intensity || "";
-    document.getElementById("exerciseTimingInput").value = d.exercise.timing || "";
-    document.getElementById("exerciseNotesInput").value = d.exercise.notes || "";
-  } else {
-    document.getElementById("didExerciseInput").value = "no";
-  }
-  document.getElementById("didExerciseInput").dispatchEvent(new Event("change"));
-  if (d.mood && (d.mood.score != null || d.mood.notes)) {
-    document.getElementById("moodScoreInput").value = d.mood.score ?? "";
-    document.getElementById("moodNotesInput").value = d.mood.notes || "";
-  } else {
-    document.getElementById("moodScoreInput").value = "";
-    document.getElementById("moodNotesInput").value = "";
-  }
-  updateSleepDuration();
-  renderJournal();
-  const tagsSet = new Set(d.tags || []);
-  document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => cb.checked = tagsSet.has(cb.value));
-}
-
-function changeDateBy(days) {
-  const dateInput = document.getElementById("dateInput");
-  if (!dateInput || !dateInput.value) return;
-  const current = new Date(dateInput.value);
-  if (Number.isNaN(current.getTime())) return;
-  current.setUTCDate(current.getUTCDate() + days);
-  const y = current.getUTCFullYear();
-  const m = String(current.getUTCMonth() + 1).padStart(2, "0");
-  const d = String(current.getUTCDate()).padStart(2, "0");
-  dateInput.value = `${y}-${m}-${d}`;
-  updateDayOfWeek();
-  loadDayFromCloud(dateInput.value);
-}
-
-function setupDateNavigation() {
-  const dateInput = document.getElementById("dateInput");
-  const prevDayBtn = document.getElementById("prevDayBtn");
-  const nextDayBtn = document.getElementById("nextDayBtn");
-  if (!dateInput) return;
-  dateInput.addEventListener("change", async () => { loadDayFromCloud(dateInput.value); updateDayOfWeek(); });
-  prevDayBtn?.addEventListener("click", () => changeDateBy(-1));
-  nextDayBtn?.addEventListener("click", () => changeDateBy(1));
-}
-
-function switchToTab(tabId) {
-  document.querySelectorAll(".tab-button").forEach(btn => btn.classList.toggle("active", btn.getAttribute("data-tab") === tabId));
-  document.querySelectorAll(".tab").forEach(tab => tab.classList.toggle("active", tab.id === tabId));
-}
-
-function formatScore(value) { return typeof value === "number" ? value : "not recorded"; }
-function formatText(value, fallback = "Not recorded.") { return value && String(value).trim() ? value : fallback; }
-
-async function renderJournal() {
-  const container = document.getElementById("journalOutput");
-  if (!container) return;
-  container.innerHTML = `<p class="journal-muted">Loading journal entries...</p>`;
-  try {
-    const snapshot = await db.collection("days").orderBy(firebase.firestore.FieldPath.documentId()).get();
-    const days = [];
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      days.push({ date: data.date || doc.id, dayTitle: data.dayTitle || "", overallNotes: data.overallNotes || "", functionality: data.functionality || {}, sleep: data.sleep || {}, didExercise: data.didExercise || false, exercise: data.exercise || null, tags: data.tags || [], avgFunctionality: data.avgFunctionality ?? null, mood: data.mood || {} });
-    });
-    days.sort((a, b) => b.date.localeCompare(a.date));
-    if (!days.length) { container.innerHTML = `<p class="journal-muted">No journal entries yet.</p>`; return; }
-    container.innerHTML = days.map((data) => {
-      const title = data.dayTitle?.trim() || "";
-      const avgFunctionality = typeof data.avgFunctionality === "number" ? `${data.avgFunctionality.toFixed(1)}/10` : "Not recorded";
-      const moodScore = typeof data.mood?.score === "number" ? `${data.mood.score}/10` : "Not recorded";
-      const sleepHours = typeof data.sleep?.hours === "number" ? `${data.sleep.hours} hours` : "Not recorded";
-      const sleepQuality = typeof data.sleep?.quality === "number" ? `${data.sleep.quality}/10` : "Not recorded";
-      const awakenings = typeof data.sleep?.awakenings === "number" ? data.sleep.awakenings : "Not recorded";
-      const tagsHtml = data.tags?.length ? `<div class="journal-tags">${data.tags.map(tag => `<span class="journal-tag">${tag}</span>`).join("")}</div>` : `<p class="journal-muted">No tags recorded.</p>`;
-      const exerciseHtml = data.didExercise && data.exercise ? `<p><span class="journal-label">Type:</span> ${formatText(data.exercise.type, "not recorded")}</p><p><span class="journal-label">Minutes:</span> ${data.exercise.minutes ?? "not recorded"}</p><p><span class="journal-label">Intensity:</span> ${formatText(data.exercise.intensity, "not recorded")}</p><p><span class="journal-label">Timing:</span> ${formatText(data.exercise.timing, "not recorded")}</p><p>${formatText(data.exercise.notes, "No exercise notes recorded.")}</p>` : `<p>No exercise recorded.</p>`;
-
-      const dayOfWeek = getJournalDayOfWeek(data.date);
-      const dateLine = getJournalDateLine(data.date);
-
-      return `<article class="journal-entry"><header class="journal-day-header"><div><p class="journal-dow">${dayOfWeek}</p><p class="journal-date">${dateLine}</p>${title ? `<p class="journal-title">${title}</p>` : ""}</div><div class="journal-score-pill"><span class="journal-score-label">Avg function</span><strong>${avgFunctionality}</strong></div></header><section class="journal-section"><h4>Mood</h4><p><span class="journal-label">Score:</span> ${moodScore}</p><p>${formatText(data.mood?.notes, "No mood notes recorded.")}</p></section><section class="journal-section"><h4>Sleep summary</h4><div class="sleep-summary"><div class="sleep-stat"><span class="journal-label">Bedtime</span><strong>${formatText(data.sleep?.bedtime, "not recorded")}</strong></div><div class="sleep-stat"><span class="journal-label">Wake time</span><strong>${formatText(data.sleep?.wakeTime, "not recorded")}</strong></div><div class="sleep-stat"><span class="journal-label">Hours slept</span><strong>${sleepHours}</strong></div><div class="sleep-stat"><span class="journal-label">Sleep quality</span><strong>${sleepQuality}</strong></div><div class="sleep-stat"><span class="journal-label">Awakenings</span><strong>${awakenings}</strong></div></div><p class="sleep-notes">${formatText(data.sleep?.notes, "No sleep notes recorded.")}</p></section><section class="journal-section"><h4>Functionality through the day</h4><div class="function-grid"><div class="function-card"><div class="function-card-head"><span>Early morning</span><strong>${formatScore(data.functionality?.earlyMorning?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.earlyMorning?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.earlyMorning?.symptoms, "none recorded")}</p></div><div class="function-card"><div class="function-card-head"><span>Late morning</span><strong>${formatScore(data.functionality?.lateMorning?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.lateMorning?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.lateMorning?.symptoms, "none recorded")}</p></div><div class="function-card"><div class="function-card-head"><span>Early afternoon</span><strong>${formatScore(data.functionality?.earlyAfternoon?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.earlyAfternoon?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.earlyAfternoon?.symptoms, "none recorded")}</p></div><div class="function-card"><div class="function-card-head"><span>Late afternoon</span><strong>${formatScore(data.functionality?.lateAfternoon?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.lateAfternoon?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.lateAfternoon?.symptoms, "none recorded")}</p></div><div class="function-card"><div class="function-card-head"><span>Early evening</span><strong>${formatScore(data.functionality?.earlyEvening?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.earlyEvening?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.earlyEvening?.symptoms, "none recorded")}</p></div><div class="function-card"><div class="function-card-head"><span>Late evening</span><strong>${formatScore(data.functionality?.lateEvening?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.lateEvening?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.lateEvening?.symptoms, "none recorded")}</p></div></div></section><section class="journal-section"><h4>Exercise</h4>${exerciseHtml}</section><section class="journal-section"><h4>Tags</h4>${tagsHtml}</section><section class="journal-section"><h4>Overall notes</h4><p>${formatText(data.overallNotes, "No overall notes recorded.")}</p></section></article>`;
-    }).join("");
-  } catch (err) {
-    console.error("Error loading journal:", err);
-    container.innerHTML = `<p class="journal-muted">Cloud journal load failed.</p>`;
-  }
-}
-
-let functionalityChart = null;
-async function refreshTrends() {
-  const canvas = document.getElementById("functionalityChart");
-  if (!canvas) return;
-  const ctx = canvas.getContext("2d");
-  try {
-    const snapshot = await db.collection("days").orderBy(firebase.firestore.FieldPath.documentId()).get();
-    const labels = [], data = [];
-    snapshot.forEach(doc => {
-      const d = doc.data();
-      if (typeof d.avgFunctionality === "number") { labels.push(d.date || doc.id); data.push(d.avgFunctionality); }
-    });
-    if (functionalityChart) functionalityChart.destroy();
-    functionalityChart = new Chart(ctx, {
-      type: "line",
-      data: { labels, datasets: [{ label: "Average daily functionality", data, borderColor: "#3f51b5", backgroundColor: "rgba(63,81,181,0.15)", tension: 0.2 }] },
-      options: { scales: { y: { suggestedMin: 0, suggestedMax: 10 } } }
-    });
-  } catch (err) { console.error("Error loading trends:", err); }
+function avgScore(arr) {
+  const vals = arr.filter(v => v != null);
+  if (!vals.length) return null;
+  return (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1);
 }
 
 // ============================================================
 // MEDICATIONS TAB
 // ============================================================
 
+// ---- Sub-tab switching ----
 function setupMedicationsTab() {
-  document.getElementById("saveMedBtn")?.addEventListener("click", saveMedication);
-  document.getElementById("cancelMedEditBtn")?.addEventListener("click", resetMedForm);
-  document.getElementById("saveSuppBtn")?.addEventListener("click", saveSupplement);
-  document.getElementById("cancelSuppEditBtn")?.addEventListener("click", resetSuppForm);
+  const subBtns = document.querySelectorAll(".med-sub-tab-btn");
+  const subSections = document.querySelectorAll(".med-sub-section");
 
-  document.querySelectorAll(".med-sub-tab-btn").forEach(btn => {
+  subBtns.forEach(btn => {
     btn.addEventListener("click", () => {
-      const targetViewId = btn.getAttribute("data-med-view");
-      document.querySelectorAll(".med-sub-tab-btn").forEach(b => b.classList.remove("active"));
+      subBtns.forEach(b => b.classList.remove("active"));
+      subSections.forEach(s => s.classList.remove("active"));
       btn.classList.add("active");
-      document.querySelectorAll(".med-view").forEach(view => {
-        view.style.display = view.id === targetViewId ? "" : "none";
-      });
-      refreshMedView(targetViewId);
+      const target = document.getElementById(btn.dataset.subTab);
+      if (target) target.classList.add("active");
     });
   });
 
-  refreshMedList();
+  setupMedForm();
+  setupSuppForm();
+  setupMedHistoryTab();
+  setupMedPrintView();
 }
 
-function refreshMedView(viewId) {
-  if (viewId === "medListView") refreshMedList();
-  else if (viewId === "suppListView") refreshSuppList();
-  else if (viewId === "medHistoryView") refreshMedHistory();
-  else if (viewId === "medPrintView") { refreshMedPrintTable(); refreshSuppPrintTable(); }
+function refreshMedTab() {
+  refreshMedList();
+  refreshSuppList();
+  refreshMedHistory();
+  refreshPrintView();
 }
 
 // ---- Medications CRUD ----
 
+function setupMedForm() {
+  const saveBtn   = document.getElementById("saveMedBtn");
+  const cancelBtn = document.getElementById("cancelMedEditBtn");
+  if (saveBtn)   saveBtn.addEventListener("click",   saveMed);
+  if (cancelBtn) cancelBtn.addEventListener("click", cancelMedEdit);
+}
+
 function getMedFormData() {
   return {
-    name: document.getElementById("medNameInput").value.trim(),
-    dose: document.getElementById("medDoseInput").value.trim(),
-    frequency: document.getElementById("medFrequencyInput").value,
-    doctor: document.getElementById("medDoctorInput").value.trim(),
-    notes: document.getElementById("medNotesInput").value.trim()
+    name:        document.getElementById("medName")?.value.trim()        || "",
+    dose:        document.getElementById("medDose")?.value.trim()        || "",
+    frequency:   document.getElementById("medFrequency")?.value.trim()   || "",
+    prescriber:  document.getElementById("medPrescriber")?.value.trim()  || "",
+    startDate:   document.getElementById("medStartDate")?.value          || "",
+    indication:  document.getElementById("medIndication")?.value.trim()  || "",
+    sideEffects: document.getElementById("medSideEffects")?.value.trim() || "",
+    notes:       document.getElementById("medNotes")?.value.trim()       || ""
   };
 }
 
 function resetMedForm() {
-  document.getElementById("medNameInput").value = "";
-  document.getElementById("medDoseInput").value = "";
-  document.getElementById("medFrequencyInput").value = "";
-  document.getElementById("medDoctorInput").value = "";
-  document.getElementById("medNotesInput").value = "";
+  ["medName","medDose","medFrequency","medPrescriber","medStartDate",
+   "medIndication","medSideEffects","medNotes"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
   document.getElementById("medEditingId").value = "";
   document.getElementById("medFormTitle").textContent = "Add Medication";
-  document.getElementById("saveMedBtn").textContent = "Add Medication";
+  document.getElementById("saveMedBtn").textContent   = "Save Medication";
   document.getElementById("cancelMedEditBtn").style.display = "none";
 }
 
-async function saveMedication() {
+async function saveMed() {
   const data = getMedFormData();
-  if (!data.name) { alert("Please enter a medication name."); return; }
+  if (!data.name) { alert("Medication name is required."); return; }
   const editingId = document.getElementById("medEditingId").value;
   const now = new Date().toISOString();
-  if (editingId) {
-    const oldDoc = await db.collection("medications").doc(editingId).get();
-    const oldData = oldDoc.exists ? oldDoc.data() : {};
-    await db.collection("medications").doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
-    const changes = [];
-    if (oldData.name !== data.name) changes.push(`Name: "${oldData.name}" \u2192 "${data.name}"`);
-    if (oldData.dose !== data.dose) changes.push(`Dose: "${oldData.dose}" \u2192 "${data.dose}"`);
-    if (oldData.frequency !== data.frequency) changes.push(`Frequency: "${oldData.frequency}" \u2192 "${data.frequency}"`);
-    if (oldData.doctor !== data.doctor) changes.push(`Doctor: "${oldData.doctor}" \u2192 "${data.doctor}"`);
-    if (oldData.notes !== data.notes) changes.push(`Notes updated`);
-    await db.collection("medicationHistory").add({
-      type: "medication", action: "edited", medicationId: editingId, medicationName: data.name,
-      changes: changes.length ? changes : ["No field changes detected"],
-      snapshot: { ...data }, timestamp: now
-    });
-  } else {
-    const docRef = await db.collection("medications").add({ ...data, createdAt: now, updatedAt: now });
-    await db.collection("medicationHistory").add({
-      type: "medication", action: "added", medicationId: docRef.id, medicationName: data.name,
-      changes: [`Added: ${data.name}${data.dose ? ` ${data.dose}` : ""}`],
-      snapshot: { ...data }, timestamp: now
-    });
-  }
-  resetMedForm();
-  refreshMedList();
+  try {
+    if (editingId) {
+      await db.collection("medications").doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
+      await logMedHistory("edited", data.name, "medication");
+    } else {
+      await db.collection("medications").add({ ...data, createdAt: now, updatedAt: now });
+      await logMedHistory("added", data.name, "medication");
+    }
+    resetMedForm();
+    refreshMedList();
+    refreshMedHistory();
+    refreshPrintView();
+  } catch (err) { console.error(err); alert("Error saving medication."); }
 }
 
-async function deleteMedication(id, name) {
-  if (!window.confirm(`Delete "${name}" from your medication list?\n\nThis will be recorded in the change history.`)) return;
-  const now = new Date().toISOString();
-  const oldDoc = await db.collection("medications").doc(id).get();
-  const oldData = oldDoc.exists ? oldDoc.data() : {};
-  await db.collection("medications").doc(id).delete();
-  await db.collection("medicationHistory").add({
-    type: "medication", action: "deleted", medicationId: id, medicationName: name,
-    changes: [`Deleted: ${name}${oldData.dose ? ` ${oldData.dose}` : ""}`],
-    snapshot: { ...oldData }, timestamp: now
-  });
-  refreshMedList();
+async function deleteMed(id, name) {
+  if (!confirm(`Delete "${name}"?`)) return;
+  try {
+    await db.collection("medications").doc(id).delete();
+    await logMedHistory("deleted", name, "medication");
+    refreshMedList();
+    refreshMedHistory();
+    refreshPrintView();
+  } catch (err) { console.error(err); alert("Error deleting medication."); }
 }
 
-function startEditMedication(id, med) {
-  document.getElementById("medNameInput").value = med.name || "";
-  document.getElementById("medDoseInput").value = med.dose || "";
-  document.getElementById("medFrequencyInput").value = med.frequency || "";
-  document.getElementById("medDoctorInput").value = med.doctor || "";
-  document.getElementById("medNotesInput").value = med.notes || "";
-  document.getElementById("medEditingId").value = id;
+function startMedEdit(id, data) {
+  document.getElementById("medName").value        = data.name        || "";
+  document.getElementById("medDose").value        = data.dose        || "";
+  document.getElementById("medFrequency").value   = data.frequency   || "";
+  document.getElementById("medPrescriber").value  = data.prescriber  || "";
+  document.getElementById("medStartDate").value   = data.startDate   || "";
+  document.getElementById("medIndication").value  = data.indication  || "";
+  document.getElementById("medSideEffects").value = data.sideEffects || "";
+  document.getElementById("medNotes").value       = data.notes       || "";
+  document.getElementById("medEditingId").value   = id;
   document.getElementById("medFormTitle").textContent = "Edit Medication";
-  document.getElementById("saveMedBtn").textContent = "Save Changes";
+  document.getElementById("saveMedBtn").textContent   = "Save Changes";
   document.getElementById("cancelMedEditBtn").style.display = "inline-block";
   document.getElementById("medFormTitle").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+function cancelMedEdit() { resetMedForm(); }
+
 async function refreshMedList() {
   const list = document.getElementById("medList");
   if (!list) return;
-  list.innerHTML = "<li class='med-empty'>Loading...</li>";
+  list.innerHTML = "<li class='med-empty'>Loading…</li>";
   try {
-    const snapshot = await db.collection("medications").orderBy("name").get();
-    if (snapshot.empty) { list.innerHTML = "<li class='med-empty'>No medications added yet.</li>"; return; }
+    const snap = await db.collection("medications").orderBy("name").get();
+    if (snap.empty) { list.innerHTML = "<li class='med-empty'>No medications added yet.</li>"; return; }
     list.innerHTML = "";
-    const freqLabels = { daily: "Daily", twice_daily: "Twice daily", three_times_daily: "Three times daily", as_needed: "As needed", weekly: "Weekly", other: "Other" };
-    snapshot.forEach(doc => {
-      const med = doc.data();
+    snap.forEach(doc => {
+      const d  = doc.data();
       const li = document.createElement("li");
       li.className = "med-item";
       li.innerHTML = `
-        <div class="med-item-info">
-          <strong class="med-name">${med.name}</strong>
-          ${med.dose ? `<span class="med-dose">${med.dose}</span>` : ""}
-          ${med.frequency ? `<span class="med-freq">${freqLabels[med.frequency] || med.frequency}</span>` : ""}
-          ${med.doctor ? `<p class="med-detail">Dr: ${med.doctor}</p>` : ""}
-          ${med.notes ? `<p class="med-detail med-notes-text">${med.notes}</p>` : ""}
+        <div class="med-item-header">
+          <span class="med-item-name">${d.name}</span>
+          ${d.dose      ? `<span class="med-item-dose">${d.dose}</span>` : ""}
+          ${d.frequency ? `<span class="med-item-freq">${d.frequency}</span>` : ""}
+          <div class="med-item-actions">
+            <button class="med-edit-btn">Edit</button>
+            <button class="danger">Delete</button>
+          </div>
         </div>
-        <div class="med-item-actions">
-          <button class="med-edit-btn">Edit</button>
-          <button class="med-delete-btn danger">Delete</button>
-        </div>`;
-      li.querySelector(".med-edit-btn").addEventListener("click", () => startEditMedication(doc.id, med));
-      li.querySelector(".med-delete-btn").addEventListener("click", () => deleteMedication(doc.id, med.name));
+        ${d.prescriber  ? `<div class="med-item-detail"><span class="med-detail-label">Prescriber: </span>${d.prescriber}</div>`  : ""}
+        ${d.startDate   ? `<div class="med-item-detail"><span class="med-detail-label">Start date: </span>${d.startDate}</div>`  : ""}
+        ${d.indication  ? `<div class="med-item-detail"><span class="med-detail-label">Indication: </span>${d.indication}</div>` : ""}
+        ${d.sideEffects ? `<div class="med-item-detail"><span class="med-detail-label">Side effects: </span>${d.sideEffects}</div>` : ""}
+        ${d.notes       ? `<div class="med-item-detail med-item-notes">${d.notes}</div>` : ""}`;
+      li.querySelector(".med-edit-btn").addEventListener("click", () => startMedEdit(doc.id, d));
+      li.querySelector(".danger").addEventListener("click",       () => deleteMed(doc.id, d.name));
       list.appendChild(li);
     });
-  } catch (err) {
-    console.error("Error loading medications:", err);
-    list.innerHTML = "<li class='med-empty'>Failed to load medications.</li>";
-  }
+  } catch (err) { console.error(err); list.innerHTML = "<li class='med-empty'>Error loading medications.</li>"; }
 }
 
 // ---- Supplements CRUD ----
 
+function setupSuppForm() {
+  const saveBtn   = document.getElementById("saveSuppBtn");
+  const cancelBtn = document.getElementById("cancelSuppEditBtn");
+  if (saveBtn)   saveBtn.addEventListener("click",   saveSupp);
+  if (cancelBtn) cancelBtn.addEventListener("click", cancelSuppEdit);
+}
+
 function getSuppFormData() {
   return {
-    name: document.getElementById("suppNameInput").value.trim(),
-    dose: document.getElementById("suppDoseInput").value.trim(),
-    frequency: document.getElementById("suppFrequencyInput").value,
-    brand: document.getElementById("suppBrandInput").value.trim(),
-    notes: document.getElementById("suppNotesInput").value.trim()
+    name:      document.getElementById("suppName")?.value.trim()      || "",
+    dose:      document.getElementById("suppDose")?.value.trim()      || "",
+    frequency: document.getElementById("suppFrequency")?.value.trim() || "",
+    purpose:   document.getElementById("suppPurpose")?.value.trim()   || "",
+    notes:     document.getElementById("suppNotes")?.value.trim()     || ""
   };
 }
 
 function resetSuppForm() {
-  document.getElementById("suppNameInput").value = "";
-  document.getElementById("suppDoseInput").value = "";
-  document.getElementById("suppFrequencyInput").value = "";
-  document.getElementById("suppBrandInput").value = "";
-  document.getElementById("suppNotesInput").value = "";
+  ["suppName","suppDose","suppFrequency","suppPurpose","suppNotes"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
   document.getElementById("suppEditingId").value = "";
   document.getElementById("suppFormTitle").textContent = "Add Supplement";
-  document.getElementById("saveSuppBtn").textContent = "Add Supplement";
+  document.getElementById("saveSuppBtn").textContent   = "Save Supplement";
   document.getElementById("cancelSuppEditBtn").style.display = "none";
 }
 
-async function saveSupplement() {
+async function saveSupp() {
   const data = getSuppFormData();
-  if (!data.name) { alert("Please enter a supplement name."); return; }
+  if (!data.name) { alert("Supplement name is required."); return; }
   const editingId = document.getElementById("suppEditingId").value;
   const now = new Date().toISOString();
-  if (editingId) {
-    const oldDoc = await db.collection("supplements").doc(editingId).get();
-    const oldData = oldDoc.exists ? oldDoc.data() : {};
-    await db.collection("supplements").doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
-    const changes = [];
-    if (oldData.name !== data.name) changes.push(`Name: "${oldData.name}" \u2192 "${data.name}"`);
-    if (oldData.dose !== data.dose) changes.push(`Dose: "${oldData.dose}" \u2192 "${data.dose}"`);
-    if (oldData.frequency !== data.frequency) changes.push(`Frequency: "${oldData.frequency}" \u2192 "${data.frequency}"`);
-    if (oldData.brand !== data.brand) changes.push(`Brand: "${oldData.brand}" \u2192 "${data.brand}"`);
-    if (oldData.notes !== data.notes) changes.push(`Notes updated`);
-    await db.collection("medicationHistory").add({
-      type: "supplement", action: "edited", medicationId: editingId, medicationName: data.name,
-      changes: changes.length ? changes : ["No field changes detected"],
-      snapshot: { ...data }, timestamp: now
-    });
-  } else {
-    const docRef = await db.collection("supplements").add({ ...data, createdAt: now, updatedAt: now });
-    await db.collection("medicationHistory").add({
-      type: "supplement", action: "added", medicationId: docRef.id, medicationName: data.name,
-      changes: [`Added: ${data.name}${data.dose ? ` ${data.dose}` : ""}`],
-      snapshot: { ...data }, timestamp: now
-    });
-  }
-  resetSuppForm();
-  refreshSuppList();
+  try {
+    if (editingId) {
+      await db.collection("supplements").doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
+      await logMedHistory("edited", data.name, "supplement");
+    } else {
+      await db.collection("supplements").add({ ...data, createdAt: now, updatedAt: now });
+      await logMedHistory("added", data.name, "supplement");
+    }
+    resetSuppForm();
+    refreshSuppList();
+    refreshMedHistory();
+    refreshPrintView();
+  } catch (err) { console.error(err); alert("Error saving supplement."); }
 }
 
-async function deleteSupplement(id, name) {
-  if (!window.confirm(`Delete "${name}" from your supplements list?\n\nThis will be recorded in the change history.`)) return;
-  const now = new Date().toISOString();
-  const oldDoc = await db.collection("supplements").doc(id).get();
-  const oldData = oldDoc.exists ? oldDoc.data() : {};
-  await db.collection("supplements").doc(id).delete();
-  await db.collection("medicationHistory").add({
-    type: "supplement", action: "deleted", medicationId: id, medicationName: name,
-    changes: [`Deleted: ${name}${oldData.dose ? ` ${oldData.dose}` : ""}`],
-    snapshot: { ...oldData }, timestamp: now
-  });
-  refreshSuppList();
+async function deleteSupp(id, name) {
+  if (!confirm(`Delete "${name}"?`)) return;
+  try {
+    await db.collection("supplements").doc(id).delete();
+    await logMedHistory("deleted", name, "supplement");
+    refreshSuppList();
+    refreshMedHistory();
+    refreshPrintView();
+  } catch (err) { console.error(err); alert("Error deleting supplement."); }
 }
 
-function startEditSupplement(id, supp) {
-  document.getElementById("suppNameInput").value = supp.name || "";
-  document.getElementById("suppDoseInput").value = supp.dose || "";
-  document.getElementById("suppFrequencyInput").value = supp.frequency || "";
-  document.getElementById("suppBrandInput").value = supp.brand || "";
-  document.getElementById("suppNotesInput").value = supp.notes || "";
+function startSuppEdit(id, data) {
+  document.getElementById("suppName").value      = data.name      || "";
+  document.getElementById("suppDose").value      = data.dose      || "";
+  document.getElementById("suppFrequency").value = data.frequency || "";
+  document.getElementById("suppPurpose").value   = data.purpose   || "";
+  document.getElementById("suppNotes").value     = data.notes     || "";
   document.getElementById("suppEditingId").value = id;
   document.getElementById("suppFormTitle").textContent = "Edit Supplement";
-  document.getElementById("saveSuppBtn").textContent = "Save Changes";
+  document.getElementById("saveSuppBtn").textContent   = "Save Changes";
   document.getElementById("cancelSuppEditBtn").style.display = "inline-block";
   document.getElementById("suppFormTitle").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+function cancelSuppEdit() { resetSuppForm(); }
+
 async function refreshSuppList() {
   const list = document.getElementById("suppList");
   if (!list) return;
-  list.innerHTML = "<li class='med-empty'>Loading...</li>";
+  list.innerHTML = "<li class='med-empty'>Loading…</li>";
   try {
-    const snapshot = await db.collection("supplements").orderBy("name").get();
-    if (snapshot.empty) { list.innerHTML = "<li class='med-empty'>No supplements added yet.</li>"; return; }
+    const snap = await db.collection("supplements").orderBy("name").get();
+    if (snap.empty) { list.innerHTML = "<li class='med-empty'>No supplements added yet.</li>"; return; }
     list.innerHTML = "";
-    const freqLabels = { daily: "Daily", twice_daily: "Twice daily", three_times_daily: "Three times daily", as_needed: "As needed", weekly: "Weekly", other: "Other" };
-    snapshot.forEach(doc => {
-      const supp = doc.data();
+    snap.forEach(doc => {
+      const d  = doc.data();
       const li = document.createElement("li");
-      li.className = "med-item";
+      li.className = "med-item supp-item";
       li.innerHTML = `
-        <div class="med-item-info">
-          <strong class="med-name">${supp.name}</strong>
-          ${supp.dose ? `<span class="med-dose">${supp.dose}</span>` : ""}
-          ${supp.frequency ? `<span class="med-freq">${freqLabels[supp.frequency] || supp.frequency}</span>` : ""}
-          ${supp.brand ? `<p class="med-detail">Brand: ${supp.brand}</p>` : ""}
-          ${supp.notes ? `<p class="med-detail med-notes-text">${supp.notes}</p>` : ""}
+        <div class="med-item-header">
+          <span class="med-item-name">${d.name}</span>
+          ${d.dose      ? `<span class="med-item-dose">${d.dose}</span>` : ""}
+          ${d.frequency ? `<span class="med-item-freq supp-freq">${d.frequency}</span>` : ""}
+          <div class="med-item-actions">
+            <button class="med-edit-btn">Edit</button>
+            <button class="danger">Delete</button>
+          </div>
         </div>
-        <div class="med-item-actions">
-          <button class="med-edit-btn">Edit</button>
-          <button class="med-delete-btn danger">Delete</button>
-        </div>`;
-      li.querySelector(".med-edit-btn").addEventListener("click", () => startEditSupplement(doc.id, supp));
-      li.querySelector(".med-delete-btn").addEventListener("click", () => deleteSupplement(doc.id, supp.name));
+        ${d.purpose ? `<div class="med-item-detail"><span class="med-detail-label">Purpose: </span>${d.purpose}</div>` : ""}
+        ${d.notes   ? `<div class="med-item-detail med-item-notes">${d.notes}</div>` : ""}`;
+      li.querySelector(".med-edit-btn").addEventListener("click", () => startSuppEdit(doc.id, d));
+      li.querySelector(".danger").addEventListener("click",       () => deleteSupp(doc.id, d.name));
       list.appendChild(li);
     });
-  } catch (err) {
-    console.error("Error loading supplements:", err);
-    list.innerHTML = "<li class='med-empty'>Failed to load supplements.</li>";
-  }
+  } catch (err) { console.error(err); list.innerHTML = "<li class='med-empty'>Error loading supplements.</li>"; }
 }
 
-// ---- Medication history ----
+// ---- Med History log ----
+
+function setupMedHistoryTab() { /* refreshed when tab loads */ }
+
+async function logMedHistory(action, name, type) {
+  try {
+    await db.collection("medHistory").add({
+      action, name, type,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) { console.error("logMedHistory error:", err); }
+}
 
 async function refreshMedHistory() {
   const list = document.getElementById("medHistoryList");
   if (!list) return;
-  list.innerHTML = "<li class='med-empty'>Loading...</li>";
+  list.innerHTML = "<li class='med-empty'>Loading…</li>";
   try {
-    const snapshot = await db.collection("medicationHistory").orderBy("timestamp", "desc").limit(50).get();
-    if (snapshot.empty) { list.innerHTML = "<li class='med-empty'>No changes recorded yet.</li>"; return; }
+    const snap = await db.collection("medHistory")
+      .orderBy("timestamp", "desc")
+      .limit(50)
+      .get();
+    if (snap.empty) { list.innerHTML = "<li class='med-empty'>No history yet.</li>"; return; }
     list.innerHTML = "";
-    snapshot.forEach(doc => {
-      const h = doc.data();
+    snap.forEach(doc => {
+      const h  = doc.data();
       const li = document.createElement("li");
       li.className = "med-history-item";
-      const actionClass = h.action === "added" ? "med-action-added" : h.action === "edited" ? "med-action-edited" : "med-action-deleted";
-      const typeClass = h.type === "supplement" ? "med-type-supp" : "med-type-med";
-      const typeLabel = h.type === "supplement" ? "Supplement" : "Medication";
-      const dateStr = h.timestamp ? new Date(h.timestamp).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "";
-      const changesHtml = h.changes?.length ? `<ul class="med-history-changes">${h.changes.map(c => `<li>${c}</li>`).join("")}</ul>` : "";
+      const actionClass = h.action === "added" ? "med-history-added" :
+                          h.action === "edited" ? "med-history-edited" : "med-history-deleted";
+      const ts = h.timestamp ? new Date(h.timestamp).toLocaleString() : "";
       li.innerHTML = `
-        <div class="med-history-header">
-          <span class="med-history-action ${actionClass}">${h.action}</span>
-          <span class="med-history-type ${typeClass}">${typeLabel}</span>
-          <strong class="med-history-name">${h.medicationName || ""}</strong>
-          <span class="med-history-date">${dateStr}</span>
-        </div>
-        ${changesHtml}`;
+        <span class="med-history-action ${actionClass}">${h.action}</span>
+        <strong>${h.name}</strong>
+        <span class="med-history-type">(${h.type})</span>
+        <span class="med-history-date">${ts}</span>`;
       list.appendChild(li);
     });
-  } catch (err) {
-    console.error("Error loading med history:", err);
-    list.innerHTML = "<li class='med-empty'>Failed to load history.</li>";
+  } catch (err) { list.innerHTML = "<li class='med-empty'>Error loading history.</li>"; }
+}
+
+// ---- Print / Export View ----
+
+function setupMedPrintView() {
+  const printBtn  = document.getElementById("printMedListBtn");
+  const exportBtn = document.getElementById("exportMedCsvBtn");
+  if (printBtn)  printBtn.addEventListener("click",  () => window.print());
+  if (exportBtn) exportBtn.addEventListener("click", exportMedCsv);
+}
+
+async function refreshPrintView() {
+  await Promise.all([renderPrintMeds(), renderPrintSupps()]);
+}
+
+async function renderPrintMeds() {
+  const tbody = document.getElementById("printMedsTbody");
+  if (!tbody) return;
+  try {
+    const snap = await db.collection("medications").orderBy("name").get();
+    if (snap.empty) { tbody.innerHTML = `<tr><td colspan="6" class="med-table-empty">No medications</td></tr>`; return; }
+    tbody.innerHTML = "";
+    snap.forEach(doc => {
+      const d = doc.data();
+      tbody.innerHTML += `<tr>
+        <td>${d.name || ""}</td>
+        <td>${d.dose || ""}</td>
+        <td>${d.frequency || ""}</td>
+        <td>${d.prescriber || ""}</td>
+        <td>${d.indication || ""}</td>
+        <td>${d.sideEffects || ""}</td>
+      </tr>`;
+    });
+  } catch (err) { tbody.innerHTML = `<tr><td colspan="6" class="med-table-empty">Error</td></tr>`; }
+}
+
+async function renderPrintSupps() {
+  const tbody = document.getElementById("printSuppsTbody");
+  if (!tbody) return;
+  try {
+    const snap = await db.collection("supplements").orderBy("name").get();
+    if (snap.empty) { tbody.innerHTML = `<tr><td colspan="4" class="med-table-empty">No supplements</td></tr>`; return; }
+    tbody.innerHTML = "";
+    snap.forEach(doc => {
+      const d = doc.data();
+      tbody.innerHTML += `<tr>
+        <td>${d.name || ""}</td>
+        <td>${d.dose || ""}</td>
+        <td>${d.frequency || ""}</td>
+        <td>${d.purpose || ""}</td>
+      </tr>`;
+    });
+  } catch (err) { tbody.innerHTML = `<tr><td colspan="4" class="med-table-empty">Error</td></tr>`; }
+}
+
+async function exportMedCsv() {
+  try {
+    const [medSnap, suppSnap] = await Promise.all([
+      db.collection("medications").orderBy("name").get(),
+      db.collection("supplements").orderBy("name").get()
+    ]);
+
+    let csv = "Type,Name,Dose,Frequency,Prescriber,Indication,SideEffects,Notes\n";
+    medSnap.forEach(doc => {
+      const d = doc.data();
+      csv += ["Medication", d.name, d.dose, d.frequency, d.prescriber, d.indication, d.sideEffects, d.notes]
+        .map(v => `"${(v||"").replace(/"/g, '""')}"`).join(",") + "\n";
+    });
+    suppSnap.forEach(doc => {
+      const d = doc.data();
+      csv += ["Supplement", d.name, d.dose, d.frequency, "", d.purpose, "", d.notes]
+        .map(v => `"${(v||"").replace(/"/g, '""')}"`).join(",") + "\n";
+    });
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href = url; a.download = "medications.csv"; a.click();
+    URL.revokeObjectURL(url);
+  } catch (err) { alert("Export failed."); }
+}
+
+// ============================================================
+// BUILD FOOTER
+// ============================================================
+async function setupBuildFooter() {
+  const shaEl  = document.getElementById("buildSha");
+  const msgEl  = document.getElementById("buildMsg");
+  const dateEl = document.getElementById("buildDate");
+  if (!shaEl) return;
+
+  try {
+    const res  = await fetch("https://api.github.com/repos/dennismzanetti/FibroSymptomTracker/commits/main");
+    const data = await res.json();
+    const sha  = data.sha?.slice(0, 7) || "?";
+    const msg  = data.commit?.message?.split("\n")[0] || "";
+    const date = data.commit?.author?.date
+      ? new Date(data.commit.author.date).toLocaleString()
+      : "";
+    shaEl.textContent = sha;
+    shaEl.href        = data.html_url || "#";
+    if (msgEl)  msgEl.textContent  = msg;
+    if (dateEl) dateEl.textContent = date;
+  } catch (e) {
+    shaEl.textContent = "offline";
   }
-}
-
-// ---- Print tab tables ----
-
-async function refreshMedPrintTable() {
-  const tbody = document.getElementById("medPrintTableBody");
-  if (!tbody) return;
-  try {
-    const snapshot = await db.collection("medications").orderBy("name").get();
-    if (snapshot.empty) { tbody.innerHTML = `<tr><td colspan="5" class="med-table-empty">No medications added yet.</td></tr>`; return; }
-    const freqLabels = { daily: "Daily", twice_daily: "Twice daily", three_times_daily: "Three times daily", as_needed: "As needed", weekly: "Weekly", other: "Other" };
-    tbody.innerHTML = "";
-    snapshot.forEach(doc => {
-      const m = doc.data();
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td class="med-table-name">${m.name || ""}</td><td class="med-table-center">${m.dose || "\u2014"}</td><td class="med-table-center">${freqLabels[m.frequency] || m.frequency || "\u2014"}</td><td>${m.doctor || "\u2014"}</td><td class="med-table-notes">${m.notes || ""}</td>`;
-      tbody.appendChild(tr);
-    });
-  } catch (err) { console.error("Error loading med print table:", err); }
-}
-
-async function refreshSuppPrintTable() {
-  const tbody = document.getElementById("suppPrintTableBody");
-  if (!tbody) return;
-  try {
-    const snapshot = await db.collection("supplements").orderBy("name").get();
-    if (snapshot.empty) { tbody.innerHTML = `<tr><td colspan="5" class="med-table-empty">No supplements added yet.</td></tr>`; return; }
-    const freqLabels = { daily: "Daily", twice_daily: "Twice daily", three_times_daily: "Three times daily", as_needed: "As needed", weekly: "Weekly", other: "Other" };
-    tbody.innerHTML = "";
-    snapshot.forEach(doc => {
-      const s = doc.data();
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td class="med-table-name">${s.name || ""}</td><td class="med-table-center">${s.dose || "\u2014"}</td><td class="med-table-center">${freqLabels[s.frequency] || s.frequency || "\u2014"}</td><td>${s.brand || "\u2014"}</td><td class="med-table-notes">${s.notes || ""}</td>`;
-      tbody.appendChild(tr);
-    });
-  } catch (err) { console.error("Error loading supp print table:", err); }
 }
