@@ -27,7 +27,12 @@ async function refreshHistory() {
 
       const li = document.createElement("li");
       li.style.cursor = "pointer";
-      li.innerHTML = `<strong>${dateLabel}</strong> \u2014 Avg functionality: ${scorePill}`;
+      li.innerHTML = `
+        <span class="history-date-label">${dateLabel}</span>
+        <span class="history-score-wrap">
+          <span class="history-score-label">Avg Score</span>
+          ${scorePill}
+        </span>`;
       li.addEventListener("click", () => {
         loadDayFromCloud(doc.id);
         switchToTab("entry-tab");
