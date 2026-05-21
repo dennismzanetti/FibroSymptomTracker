@@ -1,12 +1,11 @@
-// ---- Local storage helpers ----
-const STORAGE_KEY = "fibroDaysLocal";
+// ---- In-memory day store (localStorage blocked in sandboxed iframes) ----
+let _localDays = [];
+
 function loadAllDays() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) return [];
-  try { return JSON.parse(raw); } catch { return []; }
+  return _localDays.slice();
 }
 function saveAllDays(days) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(days));
+  _localDays = days.slice();
 }
 function numberOrNull(val) {
   const n = parseFloat(val);
@@ -19,14 +18,14 @@ function loadDayFromCloud(date) {
   db.collection("days").doc(date).get().then((doc) => {
     if (doc.exists) {
       fillFormFromData(doc.data());
-      status.textContent = "Loaded from cloud for " + date + ".";
+      if (status) status.textContent = "Loaded from cloud for " + date + ".";
     } else {
       clearFormFieldsExceptDate();
-      status.textContent = "No cloud entry for that date. Form cleared.";
+      if (status) status.textContent = "No cloud entry for that date. Form cleared.";
     }
   }).catch((error) => {
     console.error("Error getting document:", error);
     clearFormFieldsExceptDate();
-    status.textContent = "Cloud load failed.";
+    if (status) status.textContent = "Cloud load failed.";
   });
 }
