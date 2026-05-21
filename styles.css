@@ -19,27 +19,19 @@ body {
 }
 
 /* ================================================================
-   HEADER — sticky, two-row: top row (title/date/sign-out) + tabs row
+   HEADER — 3-column layout: title | date-nav | sign-out
    ================================================================ */
 
 header,
 .app-header {
-  position: sticky;
-  top: 0;
-  z-index: 200;
   background: #3f51b5;
   color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
-  padding: 0.6rem 1.25rem 0;
-}
-
-/* ---- Top row: title | date nav | sign-out ---- */
-.header-top-row {
+  padding: 0.6rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 1rem;
-  padding-bottom: 0.5rem;
 }
 
 .header-title {
@@ -146,53 +138,14 @@ header,
   background: rgba(255, 255, 255, 0.28);
 }
 
-/* ================================================================
-   NAV TABS — lives inside the sticky header (second row)
-   ================================================================ */
-
-#tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  padding: 0.5rem 0 0 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  align-items: center;
-}
-
-.tab-button {
-  padding: 0.4rem 1rem;
-  border: none;
-  border-radius: 999px 999px 0 0;
-  background: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-.tab-button:hover {
-  background: rgba(255, 255, 255, 0.28);
-  color: white;
-}
-
-.tab-button.active {
-  background: #f3f4f8;
-  color: #3f51b5;
-}
-
 /* ---- Mobile header (<=640px): stack date row below title/sign-out ---- */
 @media (max-width: 640px) {
   header,
   .app-header {
-    padding: 0.5rem 0.85rem 0;
-  }
-
-  .header-top-row {
     grid-template-columns: 1fr auto;
     grid-template-rows: auto auto;
+    padding: 0.5rem 0.85rem;
     gap: 0.4rem 0.75rem;
-    padding-bottom: 0.4rem;
   }
 
   .header-title {
@@ -224,11 +177,6 @@ header,
   .day-of-week-display {
     font-size: 0.82rem;
     min-width: 70px;
-  }
-
-  .tab-button {
-    font-size: 0.8rem;
-    padding: 0.35rem 0.7rem;
   }
 }
 
@@ -362,6 +310,41 @@ textarea {
   line-height: 1.2;
   box-shadow: 0 8px 20px rgba(18, 24, 40, 0.12);
   letter-spacing: -0.01em;
+}
+
+/* ================================================================
+   NAV TABS
+   ================================================================ */
+
+#tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.75rem 0 0.5rem 0;
+  border-bottom: 2px solid #e3e6f0;
+  margin-bottom: 1.25rem;
+  align-items: center;
+}
+
+.tab-button {
+  padding: 0.45rem 1rem;
+  border: none;
+  border-radius: 999px;
+  background: #e8eaf6;
+  color: #3f51b5;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tab-button:hover {
+  background: #c5cae9;
+}
+
+.tab-button.active {
+  background: #3f51b5;
+  color: white;
 }
 
 button.primary {
@@ -632,78 +615,15 @@ button.primary:hover {
 .mood-row-empty td { opacity: 0.45; }
 
 /* ================================================================
-   MOOD TAB — SIDEBAR LAYOUT
-   ================================================================ */
-
-.mood-layout {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 1.25rem;
-  align-items: start;
-}
-
-.mood-sidebar {
-  position: sticky;
-  top: 1rem;
-}
-
-.mood-sidebar-card {
-  padding: 1rem;
-  margin-bottom: 0;
-}
-
-.mood-sidebar-card h3 {
-  font-size: 0.88rem;
-  margin-bottom: 0.75rem;
-}
-
-/* Compact table variant for sidebar — hide Notes column */
-.mood-table-compact th:nth-child(4),
-.mood-table-compact td:nth-child(4) {
-  display: none;
-}
-
-.mood-table-compact th,
-.mood-table-compact td {
-  padding: 0.35rem 0.4rem;
-  font-size: 0.8rem;
-}
-
-.mood-table-compact th {
-  font-size: 0.72rem;
-}
-
-.mood-main {
-  min-width: 0;
-}
-
-/* Stack on narrow screens */
-@media (max-width: 720px) {
-  .mood-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .mood-sidebar {
-    position: static;
-  }
-
-  /* Show Notes column again on mobile (full width) */
-  .mood-table-compact th:nth-child(4),
-  .mood-table-compact td:nth-child(4) {
-    display: table-cell;
-  }
-}
-
-/* ================================================================
-   JOURNAL
+   JOURNAL — timeline feed container
    ================================================================ */
 
 .journal-output {
-  font-size: 0.95rem;
-  line-height: 1.7;
+  font-size: 0.88rem;
+  line-height: 1;        /* was 1.7 — inflated row height */
   color: #2d3142;
-  white-space: pre-wrap;
   word-break: break-word;
+  /* removed white-space: pre-wrap — was adding extra vertical space */
 }
 
 .journal-entries-list {
@@ -797,7 +717,6 @@ button.primary:hover {
   font-size: 0.92rem;
   color: #2d3142;
   line-height: 1.6;
-  white-space: pre-wrap;
   word-break: break-word;
 }
 
@@ -849,7 +768,6 @@ button.primary:hover {
   font-size: 0.82rem;
   color: #5b6686;
   line-height: 1.5;
-  white-space: pre-wrap;
 }
 
 .journal-sleep-row {
@@ -1017,15 +935,6 @@ button.primary:hover {
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-}
-
-.atr-intensity-badge {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #e65100;
-  background: rgba(230, 81, 0, 0.08);
-  border-radius: 999px;
-  padding: 0.15rem 0.55rem;
 }
 
 .atr-edit-btn,
@@ -1261,6 +1170,7 @@ button.supp-primary:hover { background: #00695c; }
 
 @media print {
   header, .app-header,
+  #tabs,
   #saveStatus,
   .build-footer,
   .no-print { display: none !important; }
@@ -1280,10 +1190,6 @@ button.supp-primary:hover { background: #00695c; }
   .med-table th { background: #eee !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .supp-table th { background: #e0f2f1 !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .print-section-heading { color: black; border-color: #999; }
-
-  /* Flatten mood layout for print */
-  .mood-layout { display: block; }
-  .mood-sidebar { position: static; }
 }
 
 /* ================================================================
