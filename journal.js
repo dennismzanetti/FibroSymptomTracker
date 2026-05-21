@@ -173,7 +173,6 @@ function buildTimelineRow(dateStr, d) {
   const dlbl  = `${MTHS[date.getMonth()]} ${date.getDate()}`;
   const barC  = tierBarColor(avg);
 
-  // Compact block pills — tighter padding, no stacked label
   const blockPills = TIME_BLOCKS.map(({ short }, i) => {
     const s = scores[i];
     const t = s !== null ? scoreTier(s) : 0;
@@ -237,11 +236,12 @@ function buildTimelineRow(dateStr, d) {
   if (d.mood?.notes) moodDetail = `<div style="margin-bottom:0.6rem;"><strong style="font-size:0.82rem;display:block;margin-bottom:0.3rem;color:#2d3142;">Mood Notes</strong><div style="font-size:0.85rem;">${d.mood.notes}</div></div>`;
   if (d.overallNotes) overallDetail = `<div style="margin-bottom:0.6rem;"><strong style="font-size:0.82rem;display:block;margin-bottom:0.3rem;color:#2d3142;">Overall Notes</strong><div style="font-size:0.85rem;">${d.overallNotes}</div></div>`;
 
+  // Row wrapper: no min-height, line-height tight, background white, 1px bottom border only
   return `
-    <div style="display:flex;border-radius:6px;overflow:hidden;border:1px solid #e3e6f0;background:#fff;margin-bottom:1px;" data-journal-date="${dateStr}">
+    <div style="display:flex;border-bottom:1px solid #e3e6f0;background:#fff;line-height:1;" data-journal-date="${dateStr}">
       <div style="width:4px;flex-shrink:0;background:${barC};"></div>
       <div style="flex:1;min-width:0;">
-        <div onclick="toggleJournalRow('${expandId}')" style="padding:0.28rem 0.6rem;cursor:pointer;user-select:none;">
+        <div onclick="toggleJournalRow('${expandId}')" style="padding:0.22rem 0.6rem;cursor:pointer;user-select:none;">
           <div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;">
             <div style="display:flex;align-items:baseline;gap:0.3rem;min-width:60px;flex-shrink:0;">
               <span style="font-size:0.68rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;letter-spacing:0.05em;">${dow}</span>
