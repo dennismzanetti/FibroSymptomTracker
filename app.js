@@ -112,12 +112,12 @@ window.addEventListener("load", () => {
   const dateInput = document.getElementById("dateInput");
   if (dateInput && dateInput.value) loadDayFromCloud(dateInput.value);
 
+  // Only listen for "change" — using "input" or "blur" races with
+  // programmatic initialization and causes the field to visually clear.
   if (dateInput) {
-    ["change", "input", "blur"].forEach((evt) => {
-      dateInput.addEventListener(evt, (event) => {
-        if (event.target.value && evt === "change") loadDayFromCloud(event.target.value);
-        updateDayOfWeek();
-      });
+    dateInput.addEventListener("change", () => {
+      updateDayOfWeek();
+      if (dateInput.value) loadDayFromCloud(dateInput.value);
     });
   }
 
@@ -664,7 +664,6 @@ function setupDateNavigation() {
   const prevDayBtn = document.getElementById("prevDayBtn");
   const nextDayBtn = document.getElementById("nextDayBtn");
   if (!dateInput) return;
-  dateInput.addEventListener("change", async () => { loadDayFromCloud(dateInput.value); updateDayOfWeek(); });
   prevDayBtn?.addEventListener("click", () => changeDateBy(-1));
   nextDayBtn?.addEventListener("click", () => changeDateBy(1));
 }
