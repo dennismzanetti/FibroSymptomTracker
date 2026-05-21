@@ -1,7 +1,6 @@
 // ---- Tab switching ----
 function setupTabs() {
-  const tabBtns = document.querySelectorAll(".tab-btn");
-  const tabPanels = document.querySelectorAll(".tab-panel");
+  const tabBtns = document.querySelectorAll(".tab-button");
   tabBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
       const targetTab = btn.dataset.tab;
@@ -11,8 +10,8 @@ function setupTabs() {
 }
 
 function switchToTab(tabId) {
-  const tabBtns = document.querySelectorAll(".tab-btn");
-  const tabPanels = document.querySelectorAll(".tab-panel");
+  const tabBtns = document.querySelectorAll(".tab-button");
+  const tabPanels = document.querySelectorAll(".tab");
   tabBtns.forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.tab === tabId);
   });
@@ -20,11 +19,11 @@ function switchToTab(tabId) {
     panel.classList.toggle("active", panel.id === tabId);
   });
   requestAnimationFrame(() => {
-    if (tabId === "journalTab") renderJournal();
-    if (tabId === "historyTab") refreshHistory();
-    if (tabId === "trendsTab") refreshTrends();
-    if (tabId === "medicationsTab") refreshMedView("medListView");
-    if (tabId === "moodTab") refreshMoodTab();
+    if (tabId === "journal-tab")     renderJournal();
+    if (tabId === "history-tab")     refreshHistory();
+    if (tabId === "trends-tab")      refreshTrends();
+    if (tabId === "medications-tab") refreshMedView("medListView");
+    if (tabId === "mood-tab")        refreshMoodTab();
     syncDateInput();
   });
 }
