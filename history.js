@@ -11,15 +11,21 @@ async function refreshHistory() {
       historyList.innerHTML = "<p>No entries found.</p>";
       return;
     }
-    let html = "<ul>";
+    historyList.innerHTML = "";
     snapshot.forEach((doc) => {
       const d = doc.data();
       const dateLabel = getJournalDateLine(doc.id);
       const avg = typeof d.avgFunctionality === "number" ? d.avgFunctionality.toFixed(1) : "\u2014";
-      html += `<li><strong>${dateLabel}</strong> \u2014 Avg functionality: ${avg}/10</li>`;
+      const li = document.createElement("li");
+      li.style.cursor = "pointer";
+      li.innerHTML = `<strong>${dateLabel}</strong> \u2014 Avg functionality: ${avg}/10`;
+      li.addEventListener("click", () => {
+        loadDayFromCloud(doc.id);
+        // Switch back to the Daily Entry tab
+        switchToTab("entry-tab");
+      });
+      historyList.appendChild(li);
     });
-    html += "</ul>";
-    historyList.innerHTML = html;
   } catch (err) {
     console.error("refreshHistory error:", err);
     historyList.innerHTML = "<p>Failed to load history.</p>";

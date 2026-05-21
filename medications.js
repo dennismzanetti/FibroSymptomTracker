@@ -322,7 +322,8 @@ async function refreshMedHistory() {
 // ---- Print Preview Tables (in-page) ----
 
 async function refreshMedPrintTable() {
-  const tbody = document.getElementById("medPrintTbody");
+  // ID corrected: medPrintTableBody (matches index.html)
+  const tbody = document.getElementById("medPrintTableBody");
   if (!tbody) return;
   tbody.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
   try {
@@ -339,7 +340,8 @@ async function refreshMedPrintTable() {
 }
 
 async function refreshSuppPrintTable() {
-  const tbody = document.getElementById("suppPrintTbody");
+  // ID corrected: suppPrintTableBody (matches index.html)
+  const tbody = document.getElementById("suppPrintTableBody");
   if (!tbody) return;
   tbody.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
   try {

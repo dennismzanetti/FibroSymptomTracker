@@ -93,6 +93,7 @@ async function printMedList() {
     console.error("printMedList error:", err);
     alert("Failed to load data for printing.");
   } finally {
-    if (printBtn) { printBtn.disabled = false; printBtn.textContent = "Print Med List"; }
+    // Label restored to match the button in index.html
+    if (printBtn) { printBtn.disabled = false; printBtn.textContent = "\uD83D\uDDA8\uFE0F Print / Save PDF"; }
   }
 }
