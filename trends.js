@@ -1,4 +1,4 @@
-// Chart.js plugin: draws alternating background stripes per 7-day week
+// Chart.js plugin: draws alternating weekly background stripes
 const weekStripePlugin = {
   id: "weekStripes",
   beforeDraw(chart) {
@@ -6,24 +6,24 @@ const weekStripePlugin = {
     if (!chartArea) return;
     const xScale = scales.x;
     const count = chart.data.labels.length;
-    if (!count) return;
+    if (count < 2) return;
 
     const stripeColors = [
       "rgba(63, 81, 181, 0.07)",  // indigo tint — even weeks
       "rgba(0, 0, 0, 0)"          // transparent — odd weeks
     ];
 
-    ctx.save();
-    const halfStep = count > 1
-      ? (xScale.getPixelForIndex(1) - xScale.getPixelForIndex(0)) / 2
-      : 0;
+    // In Chart.js v3 the correct method is getPixelForValue(index)
+    const px = (i) => xScale.getPixelForValue(i);
+    const halfStep = (px(1) - px(0)) / 2;
 
+    ctx.save();
     for (let i = 0; i < count; i += 7) {
       const weekIndex = Math.floor(i / 7);
       const color = stripeColors[weekIndex % 2];
       const endIndex = Math.min(i + 6, count - 1);
-      const left  = i === 0 ? chartArea.left  : xScale.getPixelForIndex(i) - halfStep;
-      const right = endIndex === count - 1 ? chartArea.right : xScale.getPixelForIndex(endIndex) + halfStep;
+      const left  = i === 0            ? chartArea.left  : px(i) - halfStep;
+      const right = endIndex === count - 1 ? chartArea.right : px(endIndex) + halfStep;
       ctx.fillStyle = color;
       ctx.fillRect(left, chartArea.top, right - left, chartArea.bottom - chartArea.top);
     }
@@ -36,18 +36,13 @@ if (!Chart.registry.plugins.get("weekStripes")) {
   Chart.register(weekStripePlugin);
 }
 
-let functionalityChart = null;
-
 async function refreshTrends() {
   const canvas = document.getElementById("functionalityChart");
   if (!canvas) return;
 
-  // Always destroy existing chart instance so it redraws correctly
-  // when the tab was hidden during the previous render attempt
-  if (functionalityChart) {
-    functionalityChart.destroy();
-    functionalityChart = null;
-  }
+  // Destroy any existing chart on this canvas before reuse
+  const existing = Chart.getChart(canvas);
+  if (existing) existing.destroy();
 
   try {
     const snapshot = await db.collection("days")
@@ -59,7 +54,7 @@ async function refreshTrends() {
     snapshot.forEach((doc) => {
       const d = doc.data();
       if (typeof d.avgFunctionality === "number") {
-        rows.push({ date: doc.id, score: d.avgFunctionality.toFixed(1) });
+        rows.push({ date: doc.id, score: parseFloat(d.avgFunctionality.toFixed(1)) });
       }
     });
     rows.reverse(); // oldest → newest
@@ -67,7 +62,7 @@ async function refreshTrends() {
     const labels = rows.map(r => r.date);
     const data   = rows.map(r => r.score);
 
-    functionalityChart = new Chart(canvas, {
+    new Chart(canvas, {
       type: "line",
       data: {
         labels,
