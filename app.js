@@ -61,21 +61,38 @@ function numberOrNull(val) {
   return isNaN(n) ? null : n;
 }
 
+// ---- Module-level current date (authoritative source of truth) ----
+// We keep this in a JS variable so it is never affected by the browser
+// silently clearing an <input type="date"> value when its parent tab is
+// hidden (display:none).  All date navigation reads/writes go through
+// currentDateStr rather than reading dateInput.value directly.
+let currentDateStr = "";
+
+function todayStr() {
+  const t = new Date();
+  const y = t.getFullYear();
+  const m = String(t.getMonth() + 1).padStart(2, "0");
+  const d = String(t.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+/** Sync the date input to currentDateStr and refresh derived UI. */
+function syncDateInput() {
+  const dateInput = document.getElementById("dateInput");
+  if (dateInput) dateInput.value = currentDateStr;
+  updateDayOfWeek();
+}
+
 // ---- Day-of-week display (entry tab header) ----
 function updateDayOfWeek() {
   const dateInput = document.getElementById("dateInput");
   const display = document.getElementById("dayOfWeekDisplay");
   if (!display) return;
-  if (!dateInput || !dateInput.value) {
-    display.textContent = "";
-    return;
-  }
-  const [year, month, day] = dateInput.value.split("-").map(Number);
+  const val = currentDateStr || (dateInput && dateInput.value) || "";
+  if (!val) { display.textContent = ""; return; }
+  const [year, month, day] = val.split("-").map(Number);
   const date = new Date(year, month - 1, day);
-  if (isNaN(date.getTime())) {
-    display.textContent = "";
-    return;
-  }
+  if (isNaN(date.getTime())) { display.textContent = ""; return; }
   display.textContent = date.toLocaleDateString(undefined, { weekday: "long" });
 }
 
@@ -109,15 +126,17 @@ window.addEventListener("load", () => {
   setupPrint();
   setupAtrForm();
 
-  const dateInput = document.getElementById("dateInput");
-  if (dateInput && dateInput.value) loadDayFromCloud(dateInput.value);
+  if (currentDateStr) loadDayFromCloud(currentDateStr);
 
-  // Only listen for "change" — using "input" or "blur" races with
-  // programmatic initialization and causes the field to visually clear.
+  // Listen for manual date picker changes.
+  const dateInput = document.getElementById("dateInput");
   if (dateInput) {
     dateInput.addEventListener("change", () => {
-      updateDayOfWeek();
-      if (dateInput.value) loadDayFromCloud(dateInput.value);
+      if (dateInput.value) {
+        currentDateStr = dateInput.value;
+        updateDayOfWeek();
+        loadDayFromCloud(currentDateStr);
+      }
     });
   }
 
@@ -309,7 +328,7 @@ async function printMedList() {
     </div>
   </div>
 
-  <script>window.onload=function(){window.print();window.onafterprint=function(){window.close();};}<\/script>
+  <script>window.onload=function(){window.print();window.onafterprint=function(){window.close();};};<\/script>
 </body>
 </html>`;
 
@@ -357,6 +376,9 @@ function setupTabs() {
         const activeView = document.querySelector(".med-view:not([style*='display:none']):not([style*='display: none'])");
         if (activeView) refreshMedView(activeView.id);
       }
+      // When returning to the entry tab, re-sync the date input in case
+      // the browser cleared its value while it was hidden.
+      if (target === "entry-tab") syncDateInput();
     });
   });
 }
@@ -372,10 +394,8 @@ function setupExerciseToggle() {
 }
 
 function loadTodayDate() {
-  const dateInput = document.getElementById("dateInput");
-  const today = new Date();
-  dateInput.value = today.toISOString().slice(0, 10);
-  updateDayOfWeek();
+  currentDateStr = todayStr();
+  syncDateInput();
 }
 
 function setupSaveDay() {
@@ -514,7 +534,9 @@ function loadDayFromCloud(date) {
 }
 
 function collectFormData() {
-  const date = document.getElementById("dateInput").value;
+  // Always use currentDateStr as the authoritative date so that a browser-
+  // cleared hidden input never causes the date to be saved as "".
+  const date = currentDateStr || document.getElementById("dateInput").value;
   const dayTitle = document.getElementById("dayTitleInput").value;
   const overallNotes = document.getElementById("overallNotesInput").value;
   const getBlock = (prefix) => ({
@@ -598,8 +620,9 @@ async function refreshHistory() {
 }
 
 function fillFormFromData(d) {
-  document.getElementById("dateInput").value = d.date || "";
-  updateDayOfWeek();
+  // Update currentDateStr first so it is always in sync.
+  if (d.date) currentDateStr = d.date;
+  syncDateInput();
   document.getElementById("dayTitleInput").value = d.dayTitle || "";
   document.getElementById("overallNotesInput").value = d.overallNotes || "";
   const setBlock = (prefix, obj = {}) => {
@@ -646,24 +669,24 @@ function fillFormFromData(d) {
 }
 
 function changeDateBy(days) {
-  const dateInput = document.getElementById("dateInput");
-  if (!dateInput || !dateInput.value) return;
-  const current = new Date(dateInput.value);
-  if (Number.isNaN(current.getTime())) return;
-  current.setUTCDate(current.getUTCDate() + days);
-  const y = current.getUTCFullYear();
-  const m = String(current.getUTCMonth() + 1).padStart(2, "0");
-  const d = String(current.getUTCDate()).padStart(2, "0");
-  dateInput.value = `${y}-${m}-${d}`;
-  updateDayOfWeek();
-  loadDayFromCloud(dateInput.value);
+  // Use the module-level currentDateStr — never rely on dateInput.value which
+  // browsers may clear while the input's parent tab is hidden.
+  if (!currentDateStr) currentDateStr = todayStr();
+  const [y, mo, dy] = currentDateStr.split("-").map(Number);
+  const current = new Date(y, mo - 1, dy);   // local time — avoids UTC midnight issues
+  if (isNaN(current.getTime())) return;
+  current.setDate(current.getDate() + days);
+  const ny = current.getFullYear();
+  const nm = String(current.getMonth() + 1).padStart(2, "0");
+  const nd = String(current.getDate()).padStart(2, "0");
+  currentDateStr = `${ny}-${nm}-${nd}`;
+  syncDateInput();
+  loadDayFromCloud(currentDateStr);
 }
 
 function setupDateNavigation() {
-  const dateInput = document.getElementById("dateInput");
   const prevDayBtn = document.getElementById("prevDayBtn");
   const nextDayBtn = document.getElementById("nextDayBtn");
-  if (!dateInput) return;
   prevDayBtn?.addEventListener("click", () => changeDateBy(-1));
   nextDayBtn?.addEventListener("click", () => changeDateBy(1));
 }
@@ -671,6 +694,8 @@ function setupDateNavigation() {
 function switchToTab(tabId) {
   document.querySelectorAll(".tab-button").forEach(btn => btn.classList.toggle("active", btn.getAttribute("data-tab") === tabId));
   document.querySelectorAll(".tab").forEach(tab => tab.classList.toggle("active", tab.id === tabId));
+  // Re-sync the date input whenever the entry tab is activated programmatically.
+  if (tabId === "entry-tab") syncDateInput();
 }
 
 function formatScore(value) { return typeof value === "number" ? value : "not recorded"; }
@@ -852,20 +877,23 @@ async function refreshMedList() {
   list.innerHTML = "<li class='med-empty'>Loading...</li>";
   try {
     const snapshot = await db.collection("medications").orderBy("name").get();
-    if (snapshot.empty) { list.innerHTML = "<li class='med-empty'>No medications added yet.</li>"; return; }
+    if (snapshot.empty) {
+      list.innerHTML = "<li class='med-empty'>No medications added yet.</li>";
+      return;
+    }
     list.innerHTML = "";
-    const freqLabels = { daily: "Daily", twice_daily: "Twice daily", three_times_daily: "Three times daily", as_needed: "As needed", weekly: "Weekly", other: "Other" };
     snapshot.forEach(doc => {
       const med = doc.data();
       const li = document.createElement("li");
       li.className = "med-item";
+      const freq = FREQ_LABELS[med.frequency] || med.frequency || "";
       li.innerHTML = `
         <div class="med-item-info">
-          <strong class="med-name">${med.name}</strong>
-          ${med.dose ? `<span class="med-dose">${med.dose}</span>` : ""}
-          ${med.frequency ? `<span class="med-freq">${freqLabels[med.frequency] || med.frequency}</span>` : ""}
-          ${med.doctor ? `<p class="med-detail">Dr: ${med.doctor}</p>` : ""}
-          ${med.notes ? `<p class="med-detail med-notes-text">${med.notes}</p>` : ""}
+          <span class="med-item-name">${escHtml(med.name || "")}</span>
+          ${med.dose ? `<span class="med-item-detail">${escHtml(med.dose)}</span>` : ""}
+          ${freq ? `<span class="med-item-detail">${escHtml(freq)}</span>` : ""}
+          ${med.doctor ? `<span class="med-item-detail">Dr. ${escHtml(med.doctor)}</span>` : ""}
+          ${med.notes ? `<span class="med-item-notes">${escHtml(med.notes)}</span>` : ""}
         </div>
         <div class="med-item-actions">
           <button class="med-edit-btn">Edit</button>
@@ -938,7 +966,7 @@ async function saveSupplement() {
 }
 
 async function deleteSupplement(id, name) {
-  if (!window.confirm(`Delete "${name}" from your supplements list?\n\nThis will be recorded in the change history.`)) return;
+  if (!window.confirm(`Delete "${name}" from your supplement list?\n\nThis will be recorded in the change history.`)) return;
   const now = new Date().toISOString();
   const oldDoc = await db.collection("supplements").doc(id).get();
   const oldData = oldDoc.exists ? oldDoc.data() : {};
@@ -970,26 +998,29 @@ async function refreshSuppList() {
   list.innerHTML = "<li class='med-empty'>Loading...</li>";
   try {
     const snapshot = await db.collection("supplements").orderBy("name").get();
-    if (snapshot.empty) { list.innerHTML = "<li class='med-empty'>No supplements added yet.</li>"; return; }
+    if (snapshot.empty) {
+      list.innerHTML = "<li class='med-empty'>No supplements added yet.</li>";
+      return;
+    }
     list.innerHTML = "";
-    const freqLabels = { daily: "Daily", twice_daily: "Twice daily", three_times_daily: "Three times daily", as_needed: "As needed", weekly: "Weekly", other: "Other" };
     snapshot.forEach(doc => {
       const supp = doc.data();
       const li = document.createElement("li");
-      li.className = "med-item supp-item";
+      li.className = "med-item";
+      const freq = FREQ_LABELS[supp.frequency] || supp.frequency || "";
       li.innerHTML = `
         <div class="med-item-info">
-          <strong class="med-name">${supp.name}</strong>
-          ${supp.dose ? `<span class="med-dose supp-dose">${supp.dose}</span>` : ""}
-          ${supp.frequency ? `<span class="med-freq supp-freq">${freqLabels[supp.frequency] || supp.frequency}</span>` : ""}
-          ${supp.brand ? `<p class="med-detail">Brand: ${supp.brand}</p>` : ""}
-          ${supp.notes ? `<p class="med-detail med-notes-text">${supp.notes}</p>` : ""}
+          <span class="med-item-name">${escHtml(supp.name || "")}</span>
+          ${supp.dose ? `<span class="med-item-detail">${escHtml(supp.dose)}</span>` : ""}
+          ${freq ? `<span class="med-item-detail">${escHtml(freq)}</span>` : ""}
+          ${supp.brand ? `<span class="med-item-detail">${escHtml(supp.brand)}</span>` : ""}
+          ${supp.notes ? `<span class="med-item-notes">${escHtml(supp.notes)}</span>` : ""}
         </div>
         <div class="med-item-actions">
-          <button class="med-edit-btn supp-edit-btn">Edit</button>
+          <button class="med-edit-btn">Edit</button>
           <button class="med-delete-btn danger">Delete</button>
         </div>`;
-      li.querySelector(".supp-edit-btn").addEventListener("click", () => startEditSupplement(doc.id, supp));
+      li.querySelector(".med-edit-btn").addEventListener("click", () => startEditSupplement(doc.id, supp));
       li.querySelector(".med-delete-btn").addEventListener("click", () => deleteSupplement(doc.id, supp.name));
       list.appendChild(li);
     });
@@ -999,94 +1030,81 @@ async function refreshSuppList() {
   }
 }
 
-// ---- Change History (medications + supplements combined) ----
+// ---- Medication History ----
 
 async function refreshMedHistory() {
   const list = document.getElementById("medHistoryList");
   if (!list) return;
   list.innerHTML = "<li class='med-empty'>Loading...</li>";
   try {
-    const snapshot = await db.collection("medicationHistory").orderBy("timestamp", "desc").get();
-    if (snapshot.empty) { list.innerHTML = "<li class='med-empty'>No history yet.</li>"; return; }
+    const snapshot = await db.collection("medicationHistory")
+      .orderBy("timestamp", "desc")
+      .limit(50)
+      .get();
+    if (snapshot.empty) {
+      list.innerHTML = "<li class='med-empty'>No medication changes recorded yet.</li>";
+      return;
+    }
     list.innerHTML = "";
     snapshot.forEach(doc => {
       const h = doc.data();
       const li = document.createElement("li");
       li.className = "med-history-item";
-      const actionLabels = { added: "\u2795 Added", edited: "\u270f\ufe0f Edited", deleted: "\u{1f5d1}\ufe0f Deleted" };
-      const actionLabel = actionLabels[h.action] || h.action;
+      const ts = h.timestamp ? new Date(h.timestamp).toLocaleString() : "Unknown time";
+      const actionLabel = { added: "Added", edited: "Edited", deleted: "Deleted" }[h.action] || h.action;
       const typeLabel = h.type === "supplement" ? "Supplement" : "Medication";
-      const dateStr = h.timestamp ? new Date(h.timestamp).toLocaleString() : "Unknown time";
-      const changesHtml = (h.changes || []).map(c => `<li>${c}</li>`).join("");
-      const typeClass = h.type === "supplement" ? "med-type-supp" : "med-type-med";
       li.innerHTML = `
         <div class="med-history-header">
-          <span class="med-history-type ${typeClass}">${typeLabel}</span>
-          <span class="med-history-action med-action-${h.action}">${actionLabel}</span>
-          <strong class="med-history-name">${h.medicationName || "Unknown"}</strong>
-          <span class="med-history-date">${dateStr}</span>
+          <span class="med-history-action med-history-${h.action}">${actionLabel}</span>
+          <span class="med-history-type">${typeLabel}</span>
+          <span class="med-history-name">${escHtml(h.medicationName || "")}</span>
+          <span class="med-history-ts">${ts}</span>
         </div>
-        ${changesHtml ? `<ul class="med-history-changes">${changesHtml}</ul>` : ""}`;
+        ${h.changes?.length ? `<ul class="med-history-changes">${h.changes.map(c => `<li>${escHtml(c)}</li>`).join("")}</ul>` : ""}`;
       list.appendChild(li);
     });
   } catch (err) {
-    console.error("Error loading med history:", err);
+    console.error("Error loading medication history:", err);
     list.innerHTML = "<li class='med-empty'>Failed to load history.</li>";
   }
 }
 
-// ---- Print Tables (on-page view, kept for the Print sub-tab UI) ----
+// ---- Print view tables ----
 
 async function refreshMedPrintTable() {
   const tbody = document.getElementById("medPrintTableBody");
-  const dateEl = document.getElementById("medPrintDate");
   if (!tbody) return;
-  if (dateEl) dateEl.textContent = new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
-  tbody.innerHTML = `<tr><td colspan="5" class="med-table-empty">Loading\u2026</td></tr>`;
+  tbody.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
   try {
     const snapshot = await db.collection("medications").orderBy("name").get();
-    if (snapshot.empty) { tbody.innerHTML = `<tr><td colspan="5" class="med-table-empty">No medications on file.</td></tr>`; return; }
+    if (snapshot.empty) { tbody.innerHTML = "<tr><td colspan='5' class='med-empty'>No medications on file.</td></tr>"; return; }
     tbody.innerHTML = "";
-    snapshot.forEach((doc) => {
-      const med = doc.data();
+    snapshot.forEach(doc => {
+      const m = doc.data();
+      const freq = FREQ_LABELS[m.frequency] || m.frequency || "\u2014";
       const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td class="med-table-name">${med.name || ""}</td>
-        <td class="med-table-center">${med.dose || "\u2014"}</td>
-        <td class="med-table-center">${FREQ_LABELS[med.frequency] || med.frequency || "\u2014"}</td>
-        <td>${med.doctor || "\u2014"}</td>
-        <td class="med-table-notes">${med.notes || ""}</td>`;
+      tr.innerHTML = `<td>${escHtml(m.name||"")}</td><td>${escHtml(m.dose||"\u2014")}</td><td>${escHtml(freq)}</td><td>${escHtml(m.doctor||"\u2014")}</td><td>${escHtml(m.notes||"")}</td>`;
       tbody.appendChild(tr);
     });
-  } catch (err) {
-    console.error("Error loading med print table:", err);
-    tbody.innerHTML = `<tr><td colspan="5" class="med-table-empty">Failed to load medications.</td></tr>`;
-  }
+  } catch (err) { tbody.innerHTML = "<tr><td colspan='5'>Failed to load.</td></tr>"; }
 }
 
 async function refreshSuppPrintTable() {
   const tbody = document.getElementById("suppPrintTableBody");
   if (!tbody) return;
-  tbody.innerHTML = `<tr><td colspan="5" class="med-table-empty">Loading\u2026</td></tr>`;
+  tbody.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
   try {
     const snapshot = await db.collection("supplements").orderBy("name").get();
-    if (snapshot.empty) { tbody.innerHTML = `<tr><td colspan="5" class="med-table-empty">No supplements on file.</td></tr>`; return; }
+    if (snapshot.empty) { tbody.innerHTML = "<tr><td colspan='5' class='med-empty'>No supplements on file.</td></tr>"; return; }
     tbody.innerHTML = "";
-    snapshot.forEach((doc) => {
-      const supp = doc.data();
+    snapshot.forEach(doc => {
+      const s = doc.data();
+      const freq = FREQ_LABELS[s.frequency] || s.frequency || "\u2014";
       const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td class="med-table-name">${supp.name || ""}</td>
-        <td class="med-table-center">${supp.dose || "\u2014"}</td>
-        <td class="med-table-center">${FREQ_LABELS[supp.frequency] || supp.frequency || "\u2014"}</td>
-        <td>${supp.brand || "\u2014"}</td>
-        <td class="med-table-notes">${supp.notes || ""}</td>`;
+      tr.innerHTML = `<td>${escHtml(s.name||"")}</td><td>${escHtml(s.dose||"\u2014")}</td><td>${escHtml(freq)}</td><td>${escHtml(s.brand||"\u2014")}</td><td>${escHtml(s.notes||"")}</td>`;
       tbody.appendChild(tr);
     });
-  } catch (err) {
-    console.error("Error loading supplement print table:", err);
-    tbody.innerHTML = `<tr><td colspan="5" class="med-table-empty">Failed to load supplements.</td></tr>`;
-  }
+  } catch (err) { tbody.innerHTML = "<tr><td colspan='5'>Failed to load.</td></tr>"; }
 }
 
 // ============================================================
@@ -1094,11 +1112,6 @@ async function refreshSuppPrintTable() {
 // ============================================================
 
 async function refreshMoodTab() {
-  // Initialize ATR date field to today each time the tab is opened
-  const atrDateInput = document.getElementById("atrDateInput");
-  if (atrDateInput && !atrDateInput.value) {
-    atrDateInput.value = new Date().toISOString().split("T")[0];
-  }
   await Promise.all([refreshMoodSummaryTable(), refreshAtrList()]);
 }
 
@@ -1107,7 +1120,7 @@ async function refreshMoodTab() {
 async function refreshMoodSummaryTable() {
   const tbody = document.getElementById("moodSummaryBody");
   if (!tbody) return;
-  tbody.innerHTML = `<tr><td colspan="4" class="mood-table-empty">Loading\u2026</td></tr>`;
+  tbody.innerHTML = `<tr><td colspan="4" class="mood-table-empty">Loading&#8230;</td></tr>`;
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -1145,7 +1158,7 @@ async function refreshMoodSummaryTable() {
 
       const scoreCell = moodScore !== null
         ? `<span class="mood-score-pill mood-score-${Math.ceil(moodScore / 3)}">${moodScore}/10</span>`
-        : `<span class="mood-score-empty">\u2014</span>`;
+        : `<span class="mood-score-empty">—</span>`;
 
       const tr = document.createElement("tr");
       if (!hasData) tr.classList.add("mood-row-empty");
@@ -1155,7 +1168,7 @@ async function refreshMoodSummaryTable() {
         <td class="mood-score-cell">${scoreCell}</td>
         <td class="mood-notes-cell">${moodNotes
           ? `<span>${moodNotes}</span>`
-          : `<span class="mood-score-empty">\u2014</span>`}</td>`;
+          : `<span class="mood-score-empty">—</span>`}</td>`;
       tbody.appendChild(tr);
     });
 
@@ -1182,8 +1195,8 @@ function getAtrFormData() {
 }
 
 function resetAtrForm() {
-  // Note: date is NOT reset here — it is set by refreshMoodTab() on tab open
-  // and restored to today after saveAtr() completes.
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("atrDateInput").value = today;
   document.getElementById("atrSituationInput").value = "";
   document.getElementById("atrEmotionsInput").value = "";
   document.getElementById("atrIntensityRange").value = 50;
@@ -1210,8 +1223,6 @@ async function saveAtr() {
       await db.collection("automaticThoughtRecords").add({ ...data, createdAt: now, updatedAt: now });
     }
     resetAtrForm();
-    // Restore date to today after save so the next new record defaults to today
-    document.getElementById("atrDateInput").value = new Date().toISOString().split("T")[0];
     await refreshAtrList();
   } catch (err) {
     console.error("Error saving ATR:", err);
@@ -1248,7 +1259,7 @@ function startEditAtr(id, data) {
 async function refreshAtrList() {
   const container = document.getElementById("atrList");
   if (!container) return;
-  container.innerHTML = `<p class="atr-empty">Loading\u2026</p>`;
+  container.innerHTML = `<p class="atr-empty">Loading&#8230;</p>`;
   try {
     const snapshot = await db.collection("automaticThoughtRecords")
       .orderBy("date", "desc")
@@ -1278,8 +1289,8 @@ async function refreshAtrList() {
           </div>
         </div>
         <div class="atr-record-body">
-          <div class="atr-field"><span class="atr-field-label">Situation</span><p>${r.situation || "\u2014"}</p></div>
-          <div class="atr-field"><span class="atr-field-label">Automatic Thought</span><p>${r.automaticThought || "\u2014"}</p></div>
+          <div class="atr-field"><span class="atr-field-label">Situation</span><p>${r.situation || "—"}</p></div>
+          <div class="atr-field"><span class="atr-field-label">Automatic Thought</span><p>${r.automaticThought || "—"}</p></div>
           ${r.alternativeThought
             ? `<div class="atr-field atr-field-alt"><span class="atr-field-label">Alternative Thought</span><p>${r.alternativeThought}</p></div>`
             : ""}
@@ -1304,4 +1315,7 @@ function setupAtrForm() {
   if (saveBtn) saveBtn.addEventListener("click", saveAtr);
   const cancelBtn = document.getElementById("cancelAtrEditBtn");
   if (cancelBtn) cancelBtn.addEventListener("click", () => resetAtrForm());
+  const today = new Date().toISOString().split("T")[0];
+  const dateInput = document.getElementById("atrDateInput");
+  if (dateInput && !dateInput.value) dateInput.value = today;
 }
