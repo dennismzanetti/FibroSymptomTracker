@@ -133,10 +133,14 @@
       <h3 style="margin-bottom:0.75rem;">90-Day Overview</h3>
       <div id="journalHeatmap"></div>
     </div>
-    <!-- Timeline feed -->
-    <div class="card">
-      <h3 style="margin-bottom:0.5rem;">Daily Timeline</h3>
-      <div id="journalOutput" class="journal-output">No journal entry yet.</div>
+    <!-- Timeline feed: zero card padding so rows are flush edge-to-edge -->
+    <div class="card" style="padding:0; overflow:hidden;">
+      <div style="padding:0.6rem 0.9rem 0.5rem; border-bottom:1px solid #e3e6f0;">
+        <h3 style="margin:0; padding:0; border:none;">Daily Timeline</h3>
+      </div>
+      <div style="padding:0.35rem 0.35rem 0.35rem;">
+        <div id="journalOutput" class="journal-output">No journal entry yet.</div>
+      </div>
     </div>
   </section>
 
