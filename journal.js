@@ -2,7 +2,7 @@ function formatScore(value) { return typeof value === "number" ? value : "not re
 function formatText(value, fallback = "Not recorded.") { return value && String(value).trim() ? value : fallback; }
 
 async function renderJournal() {
-  const container = document.getElementById("journalContainer");
+  const container = document.getElementById("journalOutput");
   if (!container) return;
   const date = currentDateStr || document.getElementById("dateInput")?.value;
   if (!date) { container.innerHTML = "<p>No date selected.</p>"; return; }
