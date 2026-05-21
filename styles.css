@@ -80,6 +80,26 @@ h4 {
   border: 1px solid #e7eaf3;
 }
 
+/* ================================================================
+   DAILY TIMELINE — compact row card override
+   ================================================================ */
+
+.timeline-card {
+  padding: 0.35rem 0.75rem !important;
+  margin-bottom: 0.15rem !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid #e3e6f0 !important;
+  line-height: 1 !important;
+}
+
+.timeline-card:last-child {
+  border-bottom: none !important;
+}
+
 label {
   display: block;
   margin-bottom: 1rem;
@@ -498,13 +518,18 @@ button.primary:hover {
   justify-content: space-between;
   gap: 0.75rem;
   flex-wrap: wrap;
-  padding: 0.6rem 0.9rem;
-  border-radius: 8px;
-  margin-bottom: 0.4rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 0.15rem;
   background: #ffffff;
-  border: 1px solid #e3e6f0;
+  border-bottom: 1px solid #e3e6f0;
   cursor: pointer;
   transition: background 0.15s ease;
+  line-height: 1.2;
+}
+
+#historyList li:last-child {
+  border-bottom: none;
 }
 
 #historyList li:hover {
