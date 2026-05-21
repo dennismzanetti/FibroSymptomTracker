@@ -19,19 +19,27 @@ body {
 }
 
 /* ================================================================
-   HEADER — 3-column layout: title | date-nav | sign-out
+   HEADER — sticky, two-row: top row (title/date/sign-out) + tabs row
    ================================================================ */
 
 header,
 .app-header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
   background: #3f51b5;
   color: white;
-  padding: 0.6rem 1.25rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  padding: 0.6rem 1.25rem 0;
+}
+
+/* ---- Top row: title | date nav | sign-out ---- */
+.header-top-row {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 1rem;
+  padding-bottom: 0.5rem;
 }
 
 .header-title {
@@ -138,14 +146,53 @@ header,
   background: rgba(255, 255, 255, 0.28);
 }
 
+/* ================================================================
+   NAV TABS — lives inside the sticky header (second row)
+   ================================================================ */
+
+#tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.5rem 0 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  align-items: center;
+}
+
+.tab-button {
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 999px 999px 0 0;
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tab-button:hover {
+  background: rgba(255, 255, 255, 0.28);
+  color: white;
+}
+
+.tab-button.active {
+  background: #f3f4f8;
+  color: #3f51b5;
+}
+
 /* ---- Mobile header (<=640px): stack date row below title/sign-out ---- */
 @media (max-width: 640px) {
   header,
   .app-header {
+    padding: 0.5rem 0.85rem 0;
+  }
+
+  .header-top-row {
     grid-template-columns: 1fr auto;
     grid-template-rows: auto auto;
-    padding: 0.5rem 0.85rem;
     gap: 0.4rem 0.75rem;
+    padding-bottom: 0.4rem;
   }
 
   .header-title {
@@ -177,6 +224,11 @@ header,
   .day-of-week-display {
     font-size: 0.82rem;
     min-width: 70px;
+  }
+
+  .tab-button {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.7rem;
   }
 }
 
@@ -310,41 +362,6 @@ textarea {
   line-height: 1.2;
   box-shadow: 0 8px 20px rgba(18, 24, 40, 0.12);
   letter-spacing: -0.01em;
-}
-
-/* ================================================================
-   NAV TABS
-   ================================================================ */
-
-#tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  padding: 0.75rem 0 0.5rem 0;
-  border-bottom: 2px solid #e3e6f0;
-  margin-bottom: 1.25rem;
-  align-items: center;
-}
-
-.tab-button {
-  padding: 0.45rem 1rem;
-  border: none;
-  border-radius: 999px;
-  background: #e8eaf6;
-  color: #3f51b5;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-.tab-button:hover {
-  background: #c5cae9;
-}
-
-.tab-button.active {
-  background: #3f51b5;
-  color: white;
 }
 
 button.primary {
@@ -1244,7 +1261,6 @@ button.supp-primary:hover { background: #00695c; }
 
 @media print {
   header, .app-header,
-  #tabs,
   #saveStatus,
   .build-footer,
   .no-print { display: none !important; }

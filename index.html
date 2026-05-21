@@ -21,19 +21,18 @@
 </div>
 
 <header class="app-header">
+  <!-- Row 1: title, date nav, sign-out -->
   <div class="header-top-row">
-    <h1>Fibromyalgia Daily Tracker</h1>
-    <button id="signOutBtn" style="display:none; padding:0.4rem 0.9rem; font-size:0.875rem; background:#eee; border:1px solid #ccc; border-radius:4px; cursor:pointer;">Sign Out</button>
+    <h1 class="header-title">Fibromyalgia Daily Tracker</h1>
+    <div class="date-row">
+      <button type="button" id="prevDayBtn" class="date-nav-btn icon-btn" aria-label="Previous day" title="Previous day">&#8249;</button>
+      <span id="dayOfWeekDisplay" class="day-of-week-display"></span>
+      <input type="date" id="dateInput" aria-label="Entry date" class="sr-date-input">
+      <button type="button" id="nextDayBtn" class="date-nav-btn icon-btn" aria-label="Next day" title="Next day">&#8250;</button>
+    </div>
+    <button id="signOutBtn" style="display:none;">Sign Out</button>
   </div>
-  <div class="date-row">
-    <button type="button" id="prevDayBtn" class="date-nav-btn icon-btn" aria-label="Previous day" title="Previous day">&#8249;</button>
-    <span id="dayOfWeekDisplay" class="day-of-week-display"></span>
-    <input type="date" id="dateInput" aria-label="Entry date" class="sr-date-input">
-    <button type="button" id="nextDayBtn" class="date-nav-btn icon-btn" aria-label="Next day" title="Next day">&#8250;</button>
-  </div>
-</header>
-
-<main>
+  <!-- Row 2: navigation tabs -->
   <nav id="tabs">
     <button id="saveDayTop" class="primary">Save Day</button>
     <button class="tab-button active" data-tab="entry-tab">Daily Entry</button>
@@ -43,6 +42,9 @@
     <button class="tab-button" data-tab="mood-tab">Mood</button>
     <button class="tab-button" data-tab="medications-tab">Medications</button>
   </nav>
+</header>
+
+<main>
   <p id="saveStatus"></p>
 
   <!-- Daily Entry Tab -->
