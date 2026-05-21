@@ -309,7 +309,7 @@ async function printMedList() {
     </div>
   </div>
 
-  <script>window.onload=function(){window.print();window.onafterprint=function(){window.close();};};<\/script>
+  <script>window.onload=function(){window.print();window.onafterprint=function(){window.close();};}<\/script>
 </body>
 </html>`;
 
@@ -1094,6 +1094,11 @@ async function refreshSuppPrintTable() {
 // ============================================================
 
 async function refreshMoodTab() {
+  // Initialize ATR date field to today each time the tab is opened
+  const atrDateInput = document.getElementById("atrDateInput");
+  if (atrDateInput && !atrDateInput.value) {
+    atrDateInput.value = new Date().toISOString().split("T")[0];
+  }
   await Promise.all([refreshMoodSummaryTable(), refreshAtrList()]);
 }
 
@@ -1177,8 +1182,8 @@ function getAtrFormData() {
 }
 
 function resetAtrForm() {
-  const today = new Date().toISOString().split("T")[0];
-  document.getElementById("atrDateInput").value = today;
+  // Note: date is NOT reset here — it is set by refreshMoodTab() on tab open
+  // and restored to today after saveAtr() completes.
   document.getElementById("atrSituationInput").value = "";
   document.getElementById("atrEmotionsInput").value = "";
   document.getElementById("atrIntensityRange").value = 50;
@@ -1205,6 +1210,8 @@ async function saveAtr() {
       await db.collection("automaticThoughtRecords").add({ ...data, createdAt: now, updatedAt: now });
     }
     resetAtrForm();
+    // Restore date to today after save so the next new record defaults to today
+    document.getElementById("atrDateInput").value = new Date().toISOString().split("T")[0];
     await refreshAtrList();
   } catch (err) {
     console.error("Error saving ATR:", err);
@@ -1297,7 +1304,4 @@ function setupAtrForm() {
   if (saveBtn) saveBtn.addEventListener("click", saveAtr);
   const cancelBtn = document.getElementById("cancelAtrEditBtn");
   if (cancelBtn) cancelBtn.addEventListener("click", () => resetAtrForm());
-  const today = new Date().toISOString().split("T")[0];
-  const dateInput = document.getElementById("atrDateInput");
-  if (dateInput && !dateInput.value) dateInput.value = today;
 }
