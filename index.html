@@ -350,14 +350,22 @@
   <time class="build-footer-date" id="buildDate"></time>
 </footer>
 
-<script src="app.js"></script>
+<!-- App modules (order matters) -->
+<script src="firebase-init.js"></script>
+<script src="date.js"></script>
+<script src="cloud.js"></script>
+<script src="entry.js"></script>
+<script src="history.js"></script>
+<script src="journal.js"></script>
+<script src="trends.js"></script>
+<script src="medications.js"></script>
+<script src="mood.js"></script>
+<script src="print.js"></script>
+<script src="ui.js"></script>
+<script src="auth.js"></script>
 
 <!-- ============================================================
      Snap time inputs to nearest 15-minute boundary.
-     Runs on 'change' so it catches both spinner clicks and
-     manual keyboard entry. If the user types 10:23, it snaps
-     to 10:15 on blur/change. Works on all browsers that
-     support <input type="time">.
      ============================================================ -->
 <script>
 (function () {
@@ -369,16 +377,13 @@
     var snapped = Math.round(m / 15) * 15;
     if (snapped === 60) { snapped = 0; h = (h + 1) % 24; }
     input.value = String(h).padStart(2, '0') + ':' + String(snapped).padStart(2, '0');
-    // Re-fire change so app.js updateSleepDuration() recalculates
     input.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
   ['bedtimeInput', 'wakeTimeInput'].forEach(function (id) {
     var el = document.getElementById(id);
     if (!el) return;
-    // 'change' fires when the user leaves the field or picks via spinner/clock
     el.addEventListener('change', function () { snapTo15(this); });
-    // 'blur' catches keyboard entry on browsers that don't fire change until blur
     el.addEventListener('blur',   function () { snapTo15(this); });
   });
 }());
