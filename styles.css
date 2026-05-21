@@ -493,18 +493,96 @@ button.primary:hover {
 }
 
 #historyList li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
   padding: 0.6rem 0.9rem;
   border-radius: 8px;
   margin-bottom: 0.4rem;
   background: #ffffff;
   border: 1px solid #e3e6f0;
   cursor: pointer;
-  font-size: 0.92rem;
   transition: background 0.15s ease;
 }
 
 #historyList li:hover {
   background: #eef0fb;
+}
+
+.history-date-label {
+  font-weight: 600;
+  color: #2d3142;
+  font-size: 0.92rem;
+  flex: 1 1 auto;
+}
+
+.history-score-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.history-score-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #9e9e9e;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+/* ================================================================
+   MOOD SCORE PILLS (used in Mood summary & History tab)
+   ================================================================ */
+
+.mood-score-pill {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+/* Tier 1: low (1-3) - red */
+.mood-score-1 {
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid #ef9a9a;
+}
+
+/* Tier 2: moderate (4-6) - amber */
+.mood-score-2 {
+  background: #fff8e1;
+  color: #e65100;
+  border: 1px solid #ffcc80;
+}
+
+/* Tier 3: good (7-9) - green */
+.mood-score-3 {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+}
+
+/* Tier 4: perfect (10) - teal */
+.mood-score-4 {
+  background: #e0f2f1;
+  color: #00695c;
+  border: 1px solid #80cbc4;
+}
+
+.mood-score-empty {
+  color: #bdbdbd;
+  font-size: 0.9rem;
+}
+
+.mood-row-empty td {
+  opacity: 0.45;
 }
 
 /* ================================================================
@@ -519,7 +597,7 @@ button.primary:hover {
   word-break: break-word;
 }
 
-/* ---- Journal entry header — compact single-row banner ---- */
+/* ---- Journal entry header - compact single-row banner ---- */
 
 .journal-entries-list {
   display: flex;
@@ -1378,7 +1456,7 @@ button.supp-primary:hover {
 }
 
 /* ================================================================
-   RESPONSIVE — wider screens
+   RESPONSIVE - wider screens
    ================================================================ */
 
 @media (min-width: 641px) {
@@ -1388,7 +1466,7 @@ button.supp-primary:hover {
 }
 
 /* ================================================================
-   MOOD TABLE — smaller screens
+   MOOD TABLE - smaller screens
    ================================================================ */
 
 @media (max-width: 480px) {
