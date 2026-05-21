@@ -236,7 +236,6 @@ function buildTimelineRow(dateStr, d) {
   if (d.mood?.notes) moodDetail = `<div style="margin-bottom:0.4rem;"><strong style="font-size:0.78rem;display:block;margin-bottom:0.2rem;color:#2d3142;">Mood Notes</strong><div style="font-size:0.82rem;">${d.mood.notes}</div></div>`;
   if (d.overallNotes) overallDetail = `<div style="margin-bottom:0.4rem;"><strong style="font-size:0.78rem;display:block;margin-bottom:0.2rem;color:#2d3142;">Overall Notes</strong><div style="font-size:0.82rem;">${d.overallNotes}</div></div>`;
 
-  // Row wrapper: no margin, tight 1px bottom border only, no box-shadow
   return `
     <div style="display:flex;border-bottom:1px solid #e8eaf3;background:#fff;line-height:1;" data-journal-date="${dateStr}">
       <div style="width:3px;flex-shrink:0;background:${barC};"></div>
@@ -244,7 +243,7 @@ function buildTimelineRow(dateStr, d) {
         <div onclick="toggleJournalRow('${expandId}')" style="padding:0.18rem 0.5rem;cursor:pointer;user-select:none;">
           <div style="display:flex;align-items:center;gap:0.3rem;flex-wrap:wrap;">
             <div style="display:flex;align-items:baseline;gap:0.25rem;min-width:58px;flex-shrink:0;">
-              <span style="font-size:0.65rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;letter-spacing:0.05em;">${dow}</span>
+              <span style="font-size:0.65rem;font-weight:700;color:#1565c0;text-transform:uppercase;letter-spacing:0.05em;">${dow}</span>
               <span style="font-size:0.8rem;font-weight:700;color:#2d3142;white-space:nowrap;">${dlbl}</span>
             </div>
             <div style="display:flex;gap:0.15rem;flex-wrap:wrap;">${blockPills}</div>
@@ -315,7 +314,6 @@ async function renderJournal() {
 
     const snapshot = await query.get();
 
-    // Heatmap always shows 90 days regardless of filter
     let heatDocs = snapshot.docs;
     if (days > 0 && days < 90) {
       const hc = new Date();
