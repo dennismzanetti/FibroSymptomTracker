@@ -181,18 +181,18 @@ function buildTimelineRow(dateStr, d) {
     const bdr = c ? c.border : "#e0e4ef";
     const tc  = c ? c.text : "#b0b8cc";
     const val = s !== null ? s : "\u2014";
-    return `<span style="display:inline-flex;align-items:center;gap:2px;padding:0.08rem 0.28rem;border-radius:4px;border:1px solid ${bdr};background:${bg};color:${tc};font-size:0.7rem;white-space:nowrap;" title="${TIME_BLOCKS[i].label}"><span style="font-weight:600;color:inherit;opacity:0.7;font-size:0.6rem;">${short}</span><span style="font-weight:700;">${val}</span></span>`;
+    return `<span style="display:inline-flex;align-items:center;gap:2px;padding:0.06rem 0.25rem;border-radius:4px;border:1px solid ${bdr};background:${bg};color:${tc};font-size:0.68rem;white-space:nowrap;" title="${TIME_BLOCKS[i].label}"><span style="font-weight:600;color:inherit;opacity:0.7;font-size:0.58rem;">${short}</span><span style="font-weight:700;">${val}</span></span>`;
   }).join("");
 
   let sleepBadge = "", moodBadge = "";
-  if (d.sleep?.hours != null) sleepBadge = `<span style="font-size:0.7rem;font-weight:600;padding:0.08rem 0.35rem;border-radius:999px;border:1px solid #90caf9;background:#e3f2fd;color:#1565c0;white-space:nowrap;">&#128164; ${d.sleep.hours}h</span>`;
+  if (d.sleep?.hours != null) sleepBadge = `<span style="font-size:0.68rem;font-weight:600;padding:0.05rem 0.3rem;border-radius:999px;border:1px solid #90caf9;background:#e3f2fd;color:#1565c0;white-space:nowrap;">&#128164; ${d.sleep.hours}h</span>`;
   if (typeof d.mood?.score === "number") {
     const t = scoreTier(d.mood.score); const c = TIER_COLORS[t];
-    moodBadge = `<span style="font-size:0.7rem;font-weight:600;padding:0.08rem 0.35rem;border-radius:999px;border:1px solid ${c.border};background:${c.bg};color:${c.text};white-space:nowrap;">&#128522; ${d.mood.score}/10</span>`;
+    moodBadge = `<span style="font-size:0.68rem;font-weight:600;padding:0.05rem 0.3rem;border-radius:999px;border:1px solid ${c.border};background:${c.bg};color:${c.text};white-space:nowrap;">&#128522; ${d.mood.score}/10</span>`;
   }
 
   const tagsHtml = d.tags?.length
-    ? d.tags.map(t => `<span style="font-size:0.65rem;font-weight:600;padding:0.05rem 0.32rem;border-radius:999px;background:#fff3e0;color:#e65100;border:1px solid #ffe0b2;">${t}</span>`).join("")
+    ? d.tags.map(t => `<span style="font-size:0.62rem;font-weight:600;padding:0.04rem 0.28rem;border-radius:999px;background:#fff3e0;color:#e65100;border:1px solid #ffe0b2;">${t}</span>`).join("")
     : "";
 
   const expandId = `jfe-${dateStr}`;
@@ -200,13 +200,13 @@ function buildTimelineRow(dateStr, d) {
   const funcDetail = TIME_BLOCKS.map(({ key, label }, i) => {
     const b = d.functionality?.[key] || {};
     const s = scores[i];
-    return `<div style="background:#fff;border:1px solid #e3e6f0;border-radius:7px;padding:0.4rem 0.55rem;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.2rem;">
-        <span style="font-size:0.7rem;font-weight:700;color:#3f51b5;text-transform:uppercase;letter-spacing:0.04em;">${label}</span>
+    return `<div style="background:#fff;border:1px solid #e3e6f0;border-radius:6px;padding:0.3rem 0.45rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.15rem;">
+        <span style="font-size:0.68rem;font-weight:700;color:#3f51b5;text-transform:uppercase;letter-spacing:0.04em;">${label}</span>
         ${s !== null ? scorePillHtml(s, "sm") : "<span style='color:#b0b8cc;'>\u2014</span>"}
       </div>
-      ${b.activity ? `<div style="font-size:0.78rem;color:#2d3142;line-height:1.4;"><span style="font-size:0.65rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;margin-right:4px;">Activity</span>${b.activity}</div>` : ""}
-      ${b.symptoms ? `<div style="font-size:0.78rem;color:#2d3142;line-height:1.4;"><span style="font-size:0.65rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;margin-right:4px;">Symptoms</span>${b.symptoms}</div>` : ""}
+      ${b.activity ? `<div style="font-size:0.75rem;color:#2d3142;line-height:1.3;"><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;margin-right:3px;">Activity</span>${b.activity}</div>` : ""}
+      ${b.symptoms ? `<div style="font-size:0.75rem;color:#2d3142;line-height:1.3;"><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;margin-right:3px;">Symptoms</span>${b.symptoms}</div>` : ""}
     </div>`;
   }).join("");
 
@@ -215,46 +215,46 @@ function buildTimelineRow(dateStr, d) {
   if (d.sleep) {
     const s = d.sleep;
     const parts = [
-      s.bedtime   ? `<span><span style="font-size:0.65rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Bedtime</span>${s.bedtime}</span>` : "",
-      s.wakeTime  ? `<span><span style="font-size:0.65rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Wake</span>${s.wakeTime}</span>` : "",
-      s.hours!=null ? `<span><span style="font-size:0.65rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Hours</span>${s.hours}</span>` : "",
-      typeof s.quality==="number" ? `<span><span style="font-size:0.65rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Quality</span>${s.quality}/10</span>` : "",
-      s.awakenings!=null ? `<span><span style="font-size:0.65rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Wakes</span>${s.awakenings}</span>` : ""
+      s.bedtime   ? `<span><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Bedtime</span>${s.bedtime}</span>` : "",
+      s.wakeTime  ? `<span><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Wake</span>${s.wakeTime}</span>` : "",
+      s.hours!=null ? `<span><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Hours</span>${s.hours}</span>` : "",
+      typeof s.quality==="number" ? `<span><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Quality</span>${s.quality}/10</span>` : "",
+      s.awakenings!=null ? `<span><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Wakes</span>${s.awakenings}</span>` : ""
     ].filter(Boolean).join("");
-    if (parts) sleepDetail = `<div style="margin-bottom:0.4rem;"><strong style="font-size:0.78rem;display:block;margin-bottom:0.2rem;color:#2d3142;">Sleep</strong><div style="display:flex;flex-wrap:wrap;gap:0.5rem;font-size:0.78rem;color:#2d3142;font-weight:600;">${parts}</div>${s.notes ? `<div style="font-size:0.78rem;margin-top:0.2rem;">${s.notes}</div>` : ""}</div>`;
+    if (parts) sleepDetail = `<div style="margin-bottom:0.3rem;"><strong style="font-size:0.75rem;display:block;margin-bottom:0.15rem;color:#2d3142;">Sleep</strong><div style="display:flex;flex-wrap:wrap;gap:0.4rem;font-size:0.75rem;color:#2d3142;font-weight:600;">${parts}</div>${s.notes ? `<div style="font-size:0.75rem;margin-top:0.15rem;">${s.notes}</div>` : ""}</div>`;
   }
 
   if (d.didExercise === "yes" && d.exercise) {
     const e = d.exercise;
-    exDetail = `<div style="margin-bottom:0.4rem;"><strong style="font-size:0.78rem;display:block;margin-bottom:0.2rem;color:#2d3142;">Exercise</strong><div style="display:flex;flex-wrap:wrap;gap:0.5rem;font-size:0.78rem;color:#2d3142;font-weight:600;">
-      ${e.type ? `<span><span style="font-size:0.65rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Type</span>${e.type}</span>` : ""}
-      ${e.minutes!=null ? `<span><span style="font-size:0.65rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Duration</span>${e.minutes} min</span>` : ""}
-      ${e.intensity ? `<span><span style="font-size:0.65rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Intensity</span>${e.intensity}</span>` : ""}
+    exDetail = `<div style="margin-bottom:0.3rem;"><strong style="font-size:0.75rem;display:block;margin-bottom:0.15rem;color:#2d3142;">Exercise</strong><div style="display:flex;flex-wrap:wrap;gap:0.4rem;font-size:0.75rem;color:#2d3142;font-weight:600;">
+      ${e.type ? `<span><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Type</span>${e.type}</span>` : ""}
+      ${e.minutes!=null ? `<span><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Duration</span>${e.minutes} min</span>` : ""}
+      ${e.intensity ? `<span><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Intensity</span>${e.intensity}</span>` : ""}
     </div></div>`;
   }
 
-  if (d.mood?.notes) moodDetail = `<div style="margin-bottom:0.4rem;"><strong style="font-size:0.78rem;display:block;margin-bottom:0.2rem;color:#2d3142;">Mood Notes</strong><div style="font-size:0.82rem;">${d.mood.notes}</div></div>`;
-  if (d.overallNotes) overallDetail = `<div style="margin-bottom:0.4rem;"><strong style="font-size:0.78rem;display:block;margin-bottom:0.2rem;color:#2d3142;">Overall Notes</strong><div style="font-size:0.82rem;">${d.overallNotes}</div></div>`;
+  if (d.mood?.notes) moodDetail = `<div style="margin-bottom:0.3rem;"><strong style="font-size:0.75rem;display:block;margin-bottom:0.15rem;color:#2d3142;">Mood Notes</strong><div style="font-size:0.78rem;">${d.mood.notes}</div></div>`;
+  if (d.overallNotes) overallDetail = `<div style="margin-bottom:0.3rem;"><strong style="font-size:0.75rem;display:block;margin-bottom:0.15rem;color:#2d3142;">Overall Notes</strong><div style="font-size:0.78rem;">${d.overallNotes}</div></div>`;
 
   return `
     <div style="display:flex;border-bottom:1px solid #e8eaf3;background:#fff;line-height:1;" data-journal-date="${dateStr}">
       <div style="width:3px;flex-shrink:0;background:${barC};"></div>
       <div style="flex:1;min-width:0;">
-        <div onclick="toggleJournalRow('${expandId}')" style="padding:0.18rem 0.5rem;cursor:pointer;user-select:none;">
-          <div style="display:flex;align-items:center;gap:0.3rem;flex-wrap:wrap;">
-            <div style="display:flex;align-items:baseline;gap:0.25rem;min-width:58px;flex-shrink:0;">
-              <span style="font-size:0.65rem;font-weight:700;color:#1565c0;text-transform:uppercase;letter-spacing:0.05em;">${dow}</span>
-              <span style="font-size:0.8rem;font-weight:700;color:#2d3142;white-space:nowrap;">${dlbl}</span>
+        <div onclick="toggleJournalRow('${expandId}')" style="padding:0.12rem 0.45rem;cursor:pointer;user-select:none;">
+          <div style="display:flex;align-items:center;gap:0.25rem;flex-wrap:wrap;">
+            <div style="display:flex;align-items:baseline;gap:0.2rem;min-width:55px;flex-shrink:0;">
+              <span style="font-size:0.62rem;font-weight:700;color:#1565c0;text-transform:uppercase;letter-spacing:0.05em;">${dow}</span>
+              <span style="font-size:0.78rem;font-weight:700;color:#2d3142;white-space:nowrap;">${dlbl}</span>
             </div>
-            <div style="display:flex;gap:0.15rem;flex-wrap:wrap;">${blockPills}</div>
-            <div style="display:flex;gap:0.2rem;flex-wrap:wrap;align-items:center;">${sleepBadge}${moodBadge}</div>
-            ${tagsHtml ? `<div style="display:flex;gap:0.15rem;flex-wrap:wrap;">${tagsHtml}</div>` : ""}
+            <div style="display:flex;gap:0.12rem;flex-wrap:wrap;">${blockPills}</div>
+            <div style="display:flex;gap:0.15rem;flex-wrap:wrap;align-items:center;">${sleepBadge}${moodBadge}</div>
+            ${tagsHtml ? `<div style="display:flex;gap:0.12rem;flex-wrap:wrap;">${tagsHtml}</div>` : ""}
             ${avg !== null ? `<div style="margin-left:auto;flex-shrink:0;">${scorePillHtml(avg, "sm")}</div>` : ""}
-            <span id="${expandId}-chev" style="color:#c8cce0;font-size:1rem;font-weight:700;line-height:1;flex-shrink:0;transition:transform 0.2s;">&rsaquo;</span>
+            <span id="${expandId}-chev" style="color:#c8cce0;font-size:0.9rem;font-weight:700;line-height:1;flex-shrink:0;transition:transform 0.2s;">&rsaquo;</span>
           </div>
         </div>
-        <div id="${expandId}" style="display:none;padding:0.4rem 0.6rem 0.5rem;border-top:1px solid #eef0fb;background:#f8f9fd;">
-          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:0.4rem;margin-bottom:0.5rem;">${funcDetail}</div>
+        <div id="${expandId}" style="display:none;padding:0.3rem 0.5rem 0.35rem;border-top:1px solid #eef0fb;background:#f8f9fd;">
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.3rem;margin-bottom:0.4rem;">${funcDetail}</div>
           ${sleepDetail}${exDetail}${moodDetail}${overallDetail}
         </div>
       </div>
@@ -278,10 +278,10 @@ function injectJournalFilterUI() {
   const container = document.getElementById("journalOutput");
   if (!container || document.getElementById("journalRangeSelect")) return;
   const wrap = document.createElement("div");
-  wrap.style.cssText = "display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;";
+  wrap.style.cssText = "display:flex;align-items:center;gap:0.4rem;padding:0.3rem 0.45rem 0.25rem;border-bottom:1px solid #e3e6f0;";
   wrap.innerHTML = `
-    <label for="journalRangeSelect" style="font-weight:700;font-size:0.85rem;color:#5b6686;white-space:nowrap;">Show last:</label>
-    <select id="journalRangeSelect" style="width:auto;margin-top:0;padding:0.25rem 0.5rem;font-size:0.85rem;">
+    <label for="journalRangeSelect" style="font-weight:700;font-size:0.82rem;color:#5b6686;white-space:nowrap;">Show last:</label>
+    <select id="journalRangeSelect" style="width:auto;margin-top:0;padding:0.2rem 0.4rem;font-size:0.82rem;">
       <option value="7">7 days</option>
       <option value="30" selected>30 days</option>
       <option value="90">90 days</option>
@@ -299,7 +299,7 @@ async function renderJournal() {
   injectJournalFilterUI();
   const container = document.getElementById("journalOutput");
   if (!container) return;
-  container.innerHTML = `<p style="color:#8891ab;padding:0.5rem 0;">Loading journal entries&hellip;</p>`;
+  container.innerHTML = `<p style="color:#8891ab;padding:0.4rem 0.45rem;">Loading journal entries&hellip;</p>`;
 
   try {
     const sel  = document.getElementById("journalRangeSelect");
@@ -325,7 +325,7 @@ async function renderJournal() {
     await renderHeatmap(heatDocs);
 
     if (snapshot.empty) {
-      container.innerHTML = `<p style="color:#9e9e9e;font-style:italic;padding:0.5rem 0;">No journal entries found for the selected period.</p>`;
+      container.innerHTML = `<p style="color:#9e9e9e;font-style:italic;padding:0.4rem 0.45rem;">No journal entries found for the selected period.</p>`;
       return;
     }
 
