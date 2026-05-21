@@ -80,19 +80,14 @@
     <div class="card">
       <h3>Sleep (previous night)</h3>
       <div class="sleep-time-grid">
-
-        <!-- Bedtime — single time input, 15-min steps -->
         <label class="time-widget-label-wrap">
           <span class="time-widget-label">Bedtime</span>
           <input type="time" id="bedtimeInput" step="900" class="time-input-single" aria-label="Bedtime" />
         </label>
-
-        <!-- Wake time — single time input, 15-min steps -->
         <label class="time-widget-label-wrap">
           <span class="time-widget-label">Wake time</span>
           <input type="time" id="wakeTimeInput" step="900" class="time-input-single" aria-label="Wake time" />
         </label>
-
       </div>
       <div class="sleep-total-display" aria-live="polite">
         <span class="sleep-total-label">Total hours slept</span>
@@ -133,8 +128,14 @@
 
   <!-- Journal Tab -->
   <section id="journal-tab" class="tab">
+    <!-- 90-day heatmap -->
+    <div class="card" style="margin-bottom:1.25rem;">
+      <h3 style="margin-bottom:0.75rem;">90-Day Overview</h3>
+      <div id="journalHeatmap"></div>
+    </div>
+    <!-- Timeline feed -->
     <div class="card">
-      <h2>Journal View</h2>
+      <h3 style="margin-bottom:0.5rem;">Daily Timeline</h3>
       <div id="journalOutput" class="journal-output">No journal entry yet.</div>
     </div>
   </section>
@@ -156,8 +157,6 @@
   <!-- Mood Tab -->
   <section id="mood-tab" class="tab">
     <h2>Mood</h2>
-
-    <!-- 14-Day Mood Summary Table -->
     <div class="card">
       <h3>Last 14 Days &#8212; Mood Summary</h3>
       <div class="table-scroll-wrap">
@@ -176,8 +175,6 @@
         </table>
       </div>
     </div>
-
-    <!-- Automatic Thought Record Form -->
     <div class="card">
       <h3 id="atrFormTitle">New Automatic Thought Record</h3>
       <div class="atr-form">
@@ -209,8 +206,6 @@
         </div>
       </div>
     </div>
-
-    <!-- ATR Records List -->
     <div class="card">
       <h3>Automatic Thought Records</h3>
       <div id="atrList" class="atr-list">
@@ -222,14 +217,12 @@
   <!-- Medications Tab -->
   <section id="medications-tab" class="tab">
     <h2>Medications &amp; Supplements</h2>
-
     <nav class="med-sub-tabs">
       <button class="med-sub-tab-btn active" data-med-view="medListView">Medications</button>
       <button class="med-sub-tab-btn" data-med-view="suppListView">Supplements</button>
       <button class="med-sub-tab-btn" data-med-view="medHistoryView">Change History</button>
       <button class="med-sub-tab-btn" data-med-view="medPrintView">Print List</button>
     </nav>
-
     <div id="medListView" class="med-view">
       <div class="card">
         <h3 id="medFormTitle">Add Medication</h3>
@@ -261,7 +254,6 @@
         <ul id="medList" class="med-list"><li class="med-empty">No medications added yet.</li></ul>
       </div>
     </div>
-
     <div id="suppListView" class="med-view" style="display:none;">
       <div class="card supp-card">
         <h3 id="suppFormTitle">Add Supplement</h3>
@@ -293,14 +285,12 @@
         <ul id="suppList" class="med-list"><li class="med-empty">No supplements added yet.</li></ul>
       </div>
     </div>
-
     <div id="medHistoryView" class="med-view" style="display:none;">
       <div class="card">
         <h3>Medication &amp; Supplement Change History</h3>
         <ul id="medHistoryList" class="med-history-list"><li class="med-empty">No history yet.</li></ul>
       </div>
     </div>
-
     <div id="medPrintView" class="med-view" style="display:none;">
       <div class="med-print-header no-print">
         <div>
@@ -333,7 +323,6 @@
         </div>
       </div>
     </div>
-
   </section>
 
 </main>
@@ -362,9 +351,6 @@
 <script src="ui.js"></script>
 <script src="auth.js"></script>
 
-<!-- ============================================================
-     Snap time inputs to nearest 15-minute boundary.
-     ============================================================ -->
 <script>
 (function () {
   function snapTo15(input) {
@@ -377,7 +363,6 @@
     input.value = String(h).padStart(2, '0') + ':' + String(snapped).padStart(2, '0');
     input.dispatchEvent(new Event('change', { bubbles: true }));
   }
-
   ['bedtimeInput', 'wakeTimeInput'].forEach(function (id) {
     var el = document.getElementById(id);
     if (!el) return;
@@ -387,12 +372,10 @@
 }());
 </script>
 
-<!-- Build info footer script -->
 <script>
 (function () {
   var REPO = 'dennismzanetti/FibroSymptomTracker';
   var API  = 'https://api.github.com/repos/' + REPO + '/commits/main';
-
   fetch(API, { headers: { Accept: 'application/vnd.github.v3+json' } })
     .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
     .then(function (data) {
@@ -404,14 +387,11 @@
         year: 'numeric', month: 'short', day: 'numeric',
         hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
       });
-      var shaEl  = document.getElementById('buildSha');
-      var msgEl  = document.getElementById('buildMsg');
-      var dateEl = document.getElementById('buildDate');
-      shaEl.textContent = sha;
-      shaEl.href = 'https://github.com/' + REPO + '/commit/' + data.sha;
-      msgEl.textContent = msg;
-      dateEl.textContent = formatted;
-      dateEl.setAttribute('datetime', isoDate);
+      document.getElementById('buildSha').textContent = sha;
+      document.getElementById('buildSha').href = 'https://github.com/' + REPO + '/commit/' + data.sha;
+      document.getElementById('buildMsg').textContent = msg;
+      document.getElementById('buildDate').textContent = formatted;
+      document.getElementById('buildDate').setAttribute('datetime', isoDate);
     })
     .catch(function () {
       var footer = document.getElementById('buildFooter');
