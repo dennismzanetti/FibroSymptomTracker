@@ -15,13 +15,21 @@ async function refreshHistory() {
     snapshot.forEach((doc) => {
       const d = doc.data();
       const dateLabel = getJournalDateLine(doc.id);
-      const avg = typeof d.avgFunctionality === "number" ? d.avgFunctionality.toFixed(1) : "\u2014";
+      const avg = typeof d.avgFunctionality === "number" ? d.avgFunctionality : null;
+
+      let scorePill;
+      if (avg !== null) {
+        const tier = avg <= 3 ? 1 : avg <= 6 ? 2 : avg < 10 ? 3 : 4;
+        scorePill = `<span class="mood-score-pill mood-score-${tier}">${avg.toFixed(1)}/10</span>`;
+      } else {
+        scorePill = `<span class="mood-score-empty">\u2014</span>`;
+      }
+
       const li = document.createElement("li");
       li.style.cursor = "pointer";
-      li.innerHTML = `<strong>${dateLabel}</strong> \u2014 Avg functionality: ${avg}/10`;
+      li.innerHTML = `<strong>${dateLabel}</strong> \u2014 Avg functionality: ${scorePill}`;
       li.addEventListener("click", () => {
         loadDayFromCloud(doc.id);
-        // Switch back to the Daily Entry tab
         switchToTab("entry-tab");
       });
       historyList.appendChild(li);
