@@ -615,6 +615,69 @@ button.primary:hover {
 .mood-row-empty td { opacity: 0.45; }
 
 /* ================================================================
+   MOOD TAB — SIDEBAR LAYOUT
+   ================================================================ */
+
+.mood-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.mood-sidebar {
+  position: sticky;
+  top: 1rem;
+}
+
+.mood-sidebar-card {
+  padding: 1rem;
+  margin-bottom: 0;
+}
+
+.mood-sidebar-card h3 {
+  font-size: 0.88rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Compact table variant for sidebar — hide Notes column */
+.mood-table-compact th:nth-child(4),
+.mood-table-compact td:nth-child(4) {
+  display: none;
+}
+
+.mood-table-compact th,
+.mood-table-compact td {
+  padding: 0.35rem 0.4rem;
+  font-size: 0.8rem;
+}
+
+.mood-table-compact th {
+  font-size: 0.72rem;
+}
+
+.mood-main {
+  min-width: 0;
+}
+
+/* Stack on narrow screens */
+@media (max-width: 720px) {
+  .mood-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .mood-sidebar {
+    position: static;
+  }
+
+  /* Show Notes column again on mobile (full width) */
+  .mood-table-compact th:nth-child(4),
+  .mood-table-compact td:nth-child(4) {
+    display: table-cell;
+  }
+}
+
+/* ================================================================
    JOURNAL
    ================================================================ */
 
@@ -939,6 +1002,15 @@ button.primary:hover {
   letter-spacing: 0.04em;
 }
 
+.atr-intensity-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #e65100;
+  background: rgba(230, 81, 0, 0.08);
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+}
+
 .atr-edit-btn,
 .atr-delete-btn {
   padding: 0.3rem 0.7rem;
@@ -1192,6 +1264,10 @@ button.supp-primary:hover { background: #00695c; }
   .med-table th { background: #eee !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .supp-table th { background: #e0f2f1 !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .print-section-heading { color: black; border-color: #999; }
+
+  /* Flatten mood layout for print */
+  .mood-layout { display: block; }
+  .mood-sidebar { position: static; }
 }
 
 /* ================================================================
