@@ -180,26 +180,51 @@ textarea {
 }
 
 @media (max-width: 640px) {
+  /* ---- Header mobile layout ---- */
+  header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    text-align: left;
+  }
+  .header-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .header-top-row h1 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+  #signOutBtn {
+    float: none !important;
+    flex-shrink: 0;
+  }
+  .date-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  .date-row input[type="date"] {
+    width: auto !important;
+    min-width: 130px;
+    max-width: 145px;
+    font-size: 0.9rem;
+  }
+  .day-of-week-display {
+    font-size: 0.9rem;
+  }
+  /* ---- Other 640px rules (unchanged) ---- */
   .date-control-group {
     align-items: stretch;
   }
-
   .date-label {
     text-align: left;
-  }
-
-.date-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 0.55rem;
-}
-
-.date-row input[type="date"] {
-    width: 165px !important;
-    min-width: 165px;
-    max-width: 165px;
   }
 }
 
