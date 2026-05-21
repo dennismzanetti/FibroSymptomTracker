@@ -1,5 +1,3 @@
-let functionalityChart = null;
-
 // Chart.js plugin: draws alternating background stripes per 7-day week
 const weekStripePlugin = {
   id: "weekStripes",
@@ -11,24 +9,23 @@ const weekStripePlugin = {
     if (!count) return;
 
     const stripeColors = [
-      "rgba(63, 81, 181, 0.06)",   // indigo tint — even weeks
-      "rgba(63, 81, 181, 0.0)"     // transparent — odd weeks (clean contrast)
+      "rgba(63, 81, 181, 0.07)",  // indigo tint — even weeks
+      "rgba(0, 0, 0, 0)"          // transparent — odd weeks
     ];
 
     ctx.save();
+    const halfStep = count > 1
+      ? (xScale.getPixelForIndex(1) - xScale.getPixelForIndex(0)) / 2
+      : 0;
+
     for (let i = 0; i < count; i += 7) {
       const weekIndex = Math.floor(i / 7);
       const color = stripeColors[weekIndex % 2];
-      if (!color || color === "rgba(63, 81, 181, 0.0)") continue; // skip transparent bands
-
-      const startPx = xScale.getPixelForIndex(i);
+      const startIndex = i;
       const endIndex = Math.min(i + 6, count - 1);
-      const endPx = xScale.getPixelForIndex(endIndex);
 
-      // Extend band to midpoints between adjacent data points for clean edges
-      const halfStep = (xScale.getPixelForIndex(1) - xScale.getPixelForIndex(0)) / 2;
-      const left = i === 0 ? chartArea.left : startPx - halfStep;
-      const right = endIndex === count - 1 ? chartArea.right : endPx + halfStep;
+      const left  = startIndex === 0 ? chartArea.left  : xScale.getPixelForIndex(startIndex) - halfStep;
+      const right = endIndex === count - 1 ? chartArea.right : xScale.getPixelForIndex(endIndex) + halfStep;
 
       ctx.fillStyle = color;
       ctx.fillRect(left, chartArea.top, right - left, chartArea.bottom - chartArea.top);
@@ -36,6 +33,11 @@ const weekStripePlugin = {
     ctx.restore();
   }
 };
+
+// Register globally so Chart.js v3 picks it up for all chart instances
+Chart.register(weekStripePlugin);
+
+let functionalityChart = null;
 
 async function refreshTrends() {
   const ctx = document.getElementById("functionalityChart");
@@ -52,10 +54,10 @@ async function refreshTrends() {
         rows.push({ date: doc.id, score: d.avgFunctionality.toFixed(1) });
       }
     });
-    // Reverse so chart runs oldest \u2192 newest
+    // Reverse so chart runs oldest → newest
     rows.reverse();
     const labels = rows.map(r => r.date);
-    const data = rows.map(r => r.score);
+    const data   = rows.map(r => r.score);
 
     if (functionalityChart) {
       functionalityChart.data.labels = labels;
@@ -79,9 +81,10 @@ async function refreshTrends() {
         options: {
           responsive: true,
           plugins: { legend: { display: true } },
-          scales: { y: { min: 0, max: 10, title: { display: true, text: "Score (0\u201310)" } } }
-        },
-        plugins: [weekStripePlugin]
+          scales: {
+            y: { min: 0, max: 10, title: { display: true, text: "Score (0\u201310)" } }
+          }
+        }
       });
     }
   } catch (err) {
