@@ -4,18 +4,20 @@ async function refreshTrends() {
   if (!ctx) return;
   try {
     const snapshot = await db.collection("days")
-      .orderBy(firebase.firestore.FieldPath.documentId(), "asc")
-      .limit(30)
+      .orderBy(firebase.firestore.FieldPath.documentId(), "desc")
+      .limit(90)
       .get();
-    const labels = [];
-    const data = [];
+    const rows = [];
     snapshot.forEach((doc) => {
       const d = doc.data();
       if (typeof d.avgFunctionality === "number") {
-        labels.push(doc.id);
-        data.push(d.avgFunctionality.toFixed(1));
+        rows.push({ date: doc.id, score: d.avgFunctionality.toFixed(1) });
       }
     });
+    // Reverse so chart runs oldest → newest
+    rows.reverse();
+    const labels = rows.map(r => r.date);
+    const data = rows.map(r => r.score);
     if (functionalityChart) {
       functionalityChart.data.labels = labels;
       functionalityChart.data.datasets[0].data = data;
