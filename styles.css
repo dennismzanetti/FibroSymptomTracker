@@ -1645,3 +1645,439 @@ canvas {
     size: letter portrait;
   }
 }
+
+/* =============================================
+   MOOD TAB — 14-Day Summary Table
+   ============================================= */
+
+.mood-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.925rem;
+}
+
+.mood-table th {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #4a5278;
+  background: #f0f2fa;
+  border-bottom: 2px solid #dbe1ef;
+  white-space: nowrap;
+}
+
+.mood-table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid #edeaf3;
+  vertical-align: top;
+  line-height: 1.45;
+  color: #1c1d22;
+}
+
+.mood-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.mood-table tbody tr.mood-row-empty td {
+  color: #b0b8cc;
+}
+
+.mood-table tbody tr:hover td {
+  background: #f8faff;
+}
+
+.mood-date-cell {
+  white-space: nowrap;
+  font-weight: 600;
+  color: #1f2b4d;
+}
+
+.mood-day-cell {
+  white-space: nowrap;
+  color: #6b7394;
+  font-size: 0.88rem;
+}
+
+.mood-score-cell {
+  white-space: nowrap;
+}
+
+.mood-notes-cell {
+  max-width: 340px;
+  word-break: break-word;
+  font-size: 0.9rem;
+  color: #3a3f5c;
+}
+
+.mood-table-empty {
+  text-align: center;
+  color: #b0b8cc;
+  padding: 1.75rem 0.75rem;
+  font-style: italic;
+  font-size: 0.92rem;
+}
+
+/* Score pills — color-coded by value tier */
+.mood-score-pill {
+  display: inline-block;
+  padding: 0.18rem 0.6rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.84rem;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
+/* 1–3 : low (red/rose) */
+.mood-score-1 {
+  background: #fde8ea;
+  color: #a0202e;
+  border: 1px solid #f5c0c5;
+}
+
+/* 4–6 : mid (amber/orange) */
+.mood-score-2 {
+  background: #fdf3e0;
+  color: #8c5100;
+  border: 1px solid #f0d898;
+}
+
+/* 7–10 : good (green) */
+.mood-score-3 {
+  background: #e4f5ec;
+  color: #1e6640;
+  border: 1px solid #a8dfc0;
+}
+
+.mood-score-empty {
+  color: #b0b8cc;
+  font-size: 0.9rem;
+}
+
+/* =============================================
+   MOOD TAB — Automatic Thought Record Form
+   ============================================= */
+
+.atr-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+/* Override the global label default inside ATR form */
+.atr-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-weight: 600;
+  font-size: 0.93rem;
+  color: #2d3142;
+  margin-bottom: 0;
+}
+
+.atr-form input[type="date"],
+.atr-form input[type="text"],
+.atr-form textarea {
+  margin-top: 0;
+  background: #fafbff;
+  border: 1px solid #cfd5e3;
+  border-radius: 8px;
+  color: #1c1d22;
+  font-size: 0.95rem;
+  padding: 0.65rem 0.75rem;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.atr-form input[type="date"]:focus,
+.atr-form input[type="text"]:focus,
+.atr-form textarea:focus {
+  outline: none;
+  border-color: #3f51b5;
+  box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.13);
+  background: #ffffff;
+}
+
+.atr-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* Intensity slider row */
+.atr-intensity-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.25rem;
+}
+
+.atr-intensity-slider {
+  flex: 1;
+  height: 6px;
+  border-radius: 999px;
+  accent-color: #3f51b5;
+  cursor: pointer;
+  /* Reset global width:100% */
+  width: auto !important;
+  margin-top: 0 !important;
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.atr-intensity-value {
+  min-width: 3.5ch;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #3f51b5;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Form action buttons */
+.atr-form-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+  align-items: center;
+}
+
+#cancelAtrEditBtn {
+  padding: 0.65rem 1.1rem;
+  border: 1px solid #cfd5e3;
+  border-radius: 999px;
+  background: #f5f7fc;
+  color: #2d3142;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+#cancelAtrEditBtn:hover {
+  background: #e8ebf5;
+}
+
+@media (max-width: 480px) {
+  .atr-form-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .atr-form-actions .primary,
+  #cancelAtrEditBtn {
+    width: 100%;
+    text-align: center;
+    padding: 0.85rem 1rem;
+  }
+  .atr-intensity-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .atr-intensity-slider {
+    width: 100% !important;
+  }
+}
+
+/* =============================================
+   MOOD TAB — ATR Records List
+   ============================================= */
+
+.atr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.atr-empty {
+  color: #b0b8cc;
+  font-style: italic;
+  text-align: center;
+  padding: 1.5rem 0;
+  font-size: 0.93rem;
+}
+
+.atr-record {
+  border: 1px solid #e1e7f2;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.18s ease;
+}
+
+.atr-record:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+/* Record header bar */
+.atr-record-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  background: #f0f2fa;
+  border-bottom: 1px solid #e1e7f2;
+}
+
+.atr-record-date {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #1f2b4d;
+}
+
+/* Emotions badge */
+.atr-record-emotions {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: #4a5278;
+  background: #e4e8f8;
+  border: 1px solid #c5cdf0;
+  border-radius: 999px;
+  padding: 0.12rem 0.6rem;
+  font-weight: 600;
+}
+
+/* Intensity badge */
+.atr-intensity-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #2e4a8f;
+  background: #dce5fb;
+  border: 1px solid #b5c4f0;
+  border-radius: 999px;
+  padding: 0.12rem 0.6rem;
+}
+
+/* Edit / Delete buttons pushed to right */
+.atr-record-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.atr-edit-btn {
+  font-size: 0.82rem;
+  padding: 0.28rem 0.7rem;
+  border: 1px solid #c5d0f5;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #32408f;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  white-space: nowrap;
+  min-height: 32px;
+}
+
+.atr-edit-btn:hover {
+  background: #dce3fb;
+}
+
+/* Record body */
+.atr-record-body {
+  padding: 0.95rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.atr-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.atr-field-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #7a83a8;
+}
+
+.atr-field p {
+  font-size: 0.92rem;
+  color: #27314d;
+  line-height: 1.55;
+  margin: 0;
+  max-width: none;
+}
+
+/* Alternative thought — highlighted green */
+.atr-field-alt .atr-field-label {
+  color: #2e7d52;
+}
+
+.atr-field-alt p {
+  color: #1a4d30;
+  background: #ecf9f2;
+  border: 1px solid #b3e6c8;
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+}
+
+/* =============================================
+   MOOD TAB — Mobile responsive overrides
+   ============================================= */
+
+@media (max-width: 600px) {
+  /* Mood summary table: truncate notes on narrow screens */
+  .mood-notes-cell {
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ATR record header: stack vertically */
+  .atr-record-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .atr-record-actions {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .atr-edit-btn,
+  .atr-record-actions button.danger {
+    flex: 1;
+    text-align: center;
+    min-height: 44px;
+  }
+
+  /* ATR record body: tighter padding on phone */
+  .atr-record-body {
+    padding: 0.8rem 0.85rem;
+  }
+
+  /* Alternative thought box: full width */
+  .atr-field-alt p {
+    padding: 0.45rem 0.6rem;
+  }
+
+  /* Table scroll hint shadow only on small screens */
+  .table-scroll-wrap {
+    border-radius: 6px;
+  }
+}
+
+@media (max-width: 400px) {
+  .mood-table th,
+  .mood-table td {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.85rem;
+  }
+}
