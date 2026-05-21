@@ -173,28 +173,27 @@ function buildTimelineRow(dateStr, d) {
   const dlbl  = `${MTHS[date.getMonth()]} ${date.getDate()}`;
   const barC  = tierBarColor(avg);
 
+  // Compact block pills — tighter padding, no stacked label
   const blockPills = TIME_BLOCKS.map(({ short }, i) => {
     const s = scores[i];
     const t = s !== null ? scoreTier(s) : 0;
     const c = t ? TIER_COLORS[t] : null;
-    const bg = c ? c.bg : "#f0f2fa";
+    const bg  = c ? c.bg  : "#f0f2fa";
     const bdr = c ? c.border : "#e0e4ef";
-    const tc = c ? c.text : "#b0b8cc";
-    return `<span style="display:inline-flex;flex-direction:column;align-items:center;padding:0.15rem 0.35rem;border-radius:6px;border:1px solid ${bdr};background:${bg};color:${tc};font-size:0.7rem;min-width:32px;" title="${TIME_BLOCKS[i].label}">
-      <span style="font-weight:700;letter-spacing:0.04em;font-size:0.62rem;line-height:1.1;">${short}</span>
-      <span style="font-weight:700;font-size:0.75rem;line-height:1.2;">${s !== null ? s : "\u2014"}</span>
-    </span>`;
+    const tc  = c ? c.text : "#b0b8cc";
+    const val = s !== null ? s : "\u2014";
+    return `<span style="display:inline-flex;align-items:center;gap:2px;padding:0.1rem 0.3rem;border-radius:5px;border:1px solid ${bdr};background:${bg};color:${tc};font-size:0.72rem;white-space:nowrap;" title="${TIME_BLOCKS[i].label}"><span style="font-weight:600;color:inherit;opacity:0.7;font-size:0.62rem;">${short}</span><span style="font-weight:700;">${val}</span></span>`;
   }).join("");
 
   let sleepBadge = "", moodBadge = "";
-  if (d.sleep?.hours != null) sleepBadge = `<span style="font-size:0.75rem;font-weight:600;padding:0.15rem 0.5rem;border-radius:999px;border:1px solid #90caf9;background:#e3f2fd;color:#1565c0;white-space:nowrap;">&#128164; ${d.sleep.hours}h</span>`;
+  if (d.sleep?.hours != null) sleepBadge = `<span style="font-size:0.72rem;font-weight:600;padding:0.1rem 0.4rem;border-radius:999px;border:1px solid #90caf9;background:#e3f2fd;color:#1565c0;white-space:nowrap;">&#128164; ${d.sleep.hours}h</span>`;
   if (typeof d.mood?.score === "number") {
     const t = scoreTier(d.mood.score); const c = TIER_COLORS[t];
-    moodBadge = `<span style="font-size:0.75rem;font-weight:600;padding:0.15rem 0.5rem;border-radius:999px;border:1px solid ${c.border};background:${c.bg};color:${c.text};white-space:nowrap;">&#128522; ${d.mood.score}/10</span>`;
+    moodBadge = `<span style="font-size:0.72rem;font-weight:600;padding:0.1rem 0.4rem;border-radius:999px;border:1px solid ${c.border};background:${c.bg};color:${c.text};white-space:nowrap;">&#128522; ${d.mood.score}/10</span>`;
   }
 
   const tagsHtml = d.tags?.length
-    ? d.tags.map(t => `<span style="font-size:0.7rem;font-weight:600;padding:0.1rem 0.45rem;border-radius:999px;background:#fff3e0;color:#e65100;border:1px solid #ffe0b2;">${t}</span>`).join("")
+    ? d.tags.map(t => `<span style="font-size:0.68rem;font-weight:600;padding:0.08rem 0.4rem;border-radius:999px;background:#fff3e0;color:#e65100;border:1px solid #ffe0b2;">${t}</span>`).join("")
     : "";
 
   const expandId = `jfe-${dateStr}`;
@@ -239,23 +238,23 @@ function buildTimelineRow(dateStr, d) {
   if (d.overallNotes) overallDetail = `<div style="margin-bottom:0.6rem;"><strong style="font-size:0.82rem;display:block;margin-bottom:0.3rem;color:#2d3142;">Overall Notes</strong><div style="font-size:0.85rem;">${d.overallNotes}</div></div>`;
 
   return `
-    <div style="display:flex;border-radius:8px;overflow:hidden;border:1px solid #e3e6f0;background:#fff;margin-bottom:0.3rem;" data-journal-date="${dateStr}">
-      <div style="width:5px;flex-shrink:0;background:${barC};"></div>
-      <div style="flex:1;">
-        <div onclick="toggleJournalRow('${expandId}')" style="padding:0.55rem 0.75rem;cursor:pointer;user-select:none;">
-          <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">
-            <div style="display:flex;flex-direction:column;min-width:56px;flex-shrink:0;">
-              <span style="font-size:0.7rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;letter-spacing:0.06em;">${dow}</span>
-              <span style="font-size:0.88rem;font-weight:700;color:#2d3142;white-space:nowrap;">${dlbl}</span>
+    <div style="display:flex;border-radius:6px;overflow:hidden;border:1px solid #e3e6f0;background:#fff;margin-bottom:1px;" data-journal-date="${dateStr}">
+      <div style="width:4px;flex-shrink:0;background:${barC};"></div>
+      <div style="flex:1;min-width:0;">
+        <div onclick="toggleJournalRow('${expandId}')" style="padding:0.28rem 0.6rem;cursor:pointer;user-select:none;">
+          <div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;">
+            <div style="display:flex;align-items:baseline;gap:0.3rem;min-width:60px;flex-shrink:0;">
+              <span style="font-size:0.68rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;letter-spacing:0.05em;">${dow}</span>
+              <span style="font-size:0.82rem;font-weight:700;color:#2d3142;white-space:nowrap;">${dlbl}</span>
             </div>
-            <div style="display:flex;gap:0.3rem;flex-wrap:wrap;">${blockPills}</div>
-            <div style="display:flex;gap:0.35rem;flex-wrap:wrap;">${sleepBadge}${moodBadge}</div>
-            ${tagsHtml ? `<div style="display:flex;gap:0.3rem;flex-wrap:wrap;">${tagsHtml}</div>` : ""}
-            ${avg !== null ? `<div style="margin-left:auto;">${scorePillHtml(avg, "md")}</div>` : ""}
-            <span id="${expandId}-chev" style="color:#b0b8cc;font-size:1.2rem;font-weight:700;line-height:1;flex-shrink:0;transition:transform 0.2s;">&rsaquo;</span>
+            <div style="display:flex;gap:0.2rem;flex-wrap:wrap;">${blockPills}</div>
+            <div style="display:flex;gap:0.25rem;flex-wrap:wrap;align-items:center;">${sleepBadge}${moodBadge}</div>
+            ${tagsHtml ? `<div style="display:flex;gap:0.2rem;flex-wrap:wrap;">${tagsHtml}</div>` : ""}
+            ${avg !== null ? `<div style="margin-left:auto;flex-shrink:0;">${scorePillHtml(avg, "sm")}</div>` : ""}
+            <span id="${expandId}-chev" style="color:#c8cce0;font-size:1rem;font-weight:700;line-height:1;flex-shrink:0;transition:transform 0.2s;">&rsaquo;</span>
           </div>
         </div>
-        <div id="${expandId}" style="display:none;padding:0.75rem 0.9rem 0.85rem;border-top:1px solid #eef0fb;background:#f8f9fd;">
+        <div id="${expandId}" style="display:none;padding:0.6rem 0.75rem 0.7rem;border-top:1px solid #eef0fb;background:#f8f9fd;">
           <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:0.5rem;margin-bottom:0.75rem;">${funcDetail}</div>
           ${sleepDetail}${exDetail}${moodDetail}${overallDetail}
         </div>
@@ -280,7 +279,7 @@ function injectJournalFilterUI() {
   const container = document.getElementById("journalOutput");
   if (!container || document.getElementById("journalRangeSelect")) return;
   const wrap = document.createElement("div");
-  wrap.style.cssText = "display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;";
+  wrap.style.cssText = "display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;";
   wrap.innerHTML = `
     <label for="journalRangeSelect" style="font-weight:700;font-size:0.9rem;color:#5b6686;white-space:nowrap;">Show last:</label>
     <select id="journalRangeSelect" style="width:auto;margin-top:0;">
