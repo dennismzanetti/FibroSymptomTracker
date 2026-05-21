@@ -23,16 +23,30 @@ const appMain = document.querySelector("main");
 
 if (appMain) appMain.style.display = "none";
 
+// Track whether the app has been initialised for this session so that
+// onAuthStateChanged (which can fire multiple times) only runs setup once.
+let _appInitialised = false;
+
 auth.onAuthStateChanged((user) => {
   if (user) {
     if (authOverlay) authOverlay.style.display = "none";
     if (appMain) appMain.style.display = "";
     if (signOutBtn) signOutBtn.style.display = "inline-block";
     console.log("Signed in as", user.displayName, "UID:", user.uid);
+
+    // Only run one-time setup on the very first auth confirmation.
+    if (!_appInitialised) {
+      _appInitialised = true;
+      // Set the date AFTER auth so the DOM is fully ready and the input
+      // is guaranteed to accept values without being immediately wiped.
+      loadTodayDate();
+      loadDayFromCloud(currentDateStr);
+    }
   } else {
     if (authOverlay) authOverlay.style.display = "flex";
     if (appMain) appMain.style.display = "none";
     if (signOutBtn) signOutBtn.style.display = "none";
+    _appInitialised = false;
   }
 });
 
@@ -118,7 +132,6 @@ window.addEventListener("load", () => {
   setupTabs();
   setupExerciseToggle();
   setupSaveDay();
-  loadTodayDate();
   setupDateNavigation();
   setupSleepCalculation();
   setupNumberSteppers();
@@ -126,14 +139,22 @@ window.addEventListener("load", () => {
   setupPrint();
   setupAtrForm();
 
-  if (currentDateStr) loadDayFromCloud(currentDateStr);
+  // NOTE: loadTodayDate() and the initial loadDayFromCloud() are now called
+  // inside onAuthStateChanged (above) so the date is set only after Firebase
+  // confirms the user is signed in and the DOM is fully settled.
 
   // Listen for manual date picker changes.
+  // Guard: only update currentDateStr when the picker provides a real,
+  // non-empty value that actually differs from what we already have.
+  // This prevents a programmatic syncDateInput() call (which sets
+  // dateInput.value) from firing this listener and accidentally wiping
+  // currentDateStr if the browser emits a spurious "change" event.
   const dateInput = document.getElementById("dateInput");
   if (dateInput) {
     dateInput.addEventListener("change", () => {
-      if (dateInput.value) {
-        currentDateStr = dateInput.value;
+      const v = dateInput.value;
+      if (v && v !== currentDateStr) {
+        currentDateStr = v;
         updateDayOfWeek();
         loadDayFromCloud(currentDateStr);
       }
