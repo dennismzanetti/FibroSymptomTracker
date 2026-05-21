@@ -1152,10 +1152,9 @@ async function refreshMoodSummaryTable() {
       dates.push(d.toISOString().split("T")[0]);
     }
 
-    const snapshot = await db.collection("days")
-      .orderBy(firebase.firestore.FieldPath.documentId(), "desc")
-      .limit(14)
-      .get();
+const snapshot = await db.collection("days")
+  .where(firebase.firestore.FieldPath.documentId(), "in", dates)
+  .get();
 
     const byDate = {};
     snapshot.forEach(doc => { byDate[doc.id] = doc.data(); });
