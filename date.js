@@ -45,6 +45,12 @@ function changeDateBy(days) {
   const nd = String(current.getDate()).padStart(2, "0");
   currentDateStr = `${ny}-${nm}-${nd}`;
   syncDateInput();
+  // Clear any stale status message if not on the entry tab
+  const entryTab = document.getElementById("entry-tab");
+  const status   = document.getElementById("saveStatus");
+  if (status && !(entryTab && entryTab.classList.contains("active"))) {
+    status.textContent = "";
+  }
   loadDayFromCloud(currentDateStr);
 }
 
