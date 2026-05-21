@@ -21,12 +21,9 @@ const weekStripePlugin = {
     for (let i = 0; i < count; i += 7) {
       const weekIndex = Math.floor(i / 7);
       const color = stripeColors[weekIndex % 2];
-      const startIndex = i;
       const endIndex = Math.min(i + 6, count - 1);
-
-      const left  = startIndex === 0 ? chartArea.left  : xScale.getPixelForIndex(startIndex) - halfStep;
+      const left  = i === 0 ? chartArea.left  : xScale.getPixelForIndex(i) - halfStep;
       const right = endIndex === count - 1 ? chartArea.right : xScale.getPixelForIndex(endIndex) + halfStep;
-
       ctx.fillStyle = color;
       ctx.fillRect(left, chartArea.top, right - left, chartArea.bottom - chartArea.top);
     }
@@ -34,19 +31,30 @@ const weekStripePlugin = {
   }
 };
 
-// Register globally so Chart.js v3 picks it up for all chart instances
-Chart.register(weekStripePlugin);
+// Register globally once
+if (!Chart.registry.plugins.get("weekStripes")) {
+  Chart.register(weekStripePlugin);
+}
 
 let functionalityChart = null;
 
 async function refreshTrends() {
-  const ctx = document.getElementById("functionalityChart");
-  if (!ctx) return;
+  const canvas = document.getElementById("functionalityChart");
+  if (!canvas) return;
+
+  // Always destroy existing chart instance so it redraws correctly
+  // when the tab was hidden during the previous render attempt
+  if (functionalityChart) {
+    functionalityChart.destroy();
+    functionalityChart = null;
+  }
+
   try {
     const snapshot = await db.collection("days")
       .orderBy(firebase.firestore.FieldPath.documentId(), "desc")
       .limit(90)
       .get();
+
     const rows = [];
     snapshot.forEach((doc) => {
       const d = doc.data();
@@ -54,39 +62,33 @@ async function refreshTrends() {
         rows.push({ date: doc.id, score: d.avgFunctionality.toFixed(1) });
       }
     });
-    // Reverse so chart runs oldest → newest
-    rows.reverse();
+    rows.reverse(); // oldest → newest
+
     const labels = rows.map(r => r.date);
     const data   = rows.map(r => r.score);
 
-    if (functionalityChart) {
-      functionalityChart.data.labels = labels;
-      functionalityChart.data.datasets[0].data = data;
-      functionalityChart.update();
-    } else {
-      functionalityChart = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels,
-          datasets: [{
-            label: "Avg Functionality",
-            data,
-            borderColor: "#3f51b5",
-            backgroundColor: "rgba(63,81,181,0.1)",
-            fill: true,
-            tension: 0.3,
-            pointRadius: 4
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { display: true } },
-          scales: {
-            y: { min: 0, max: 10, title: { display: true, text: "Score (0\u201310)" } }
-          }
+    functionalityChart = new Chart(canvas, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: "Avg Functionality",
+          data,
+          borderColor: "#3f51b5",
+          backgroundColor: "rgba(63,81,181,0.1)",
+          fill: true,
+          tension: 0.3,
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: true } },
+        scales: {
+          y: { min: 0, max: 10, title: { display: true, text: "Score (0\u201310)" } }
         }
-      });
-    }
+      }
+    });
   } catch (err) {
     console.error("refreshTrends error:", err);
   }
