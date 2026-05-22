@@ -1008,3 +1008,42 @@ button.supp-primary:hover { background: #00695c; }
 @media (max-width: 480px) {
   .mood-table th, .mood-table td { padding: 0.5rem 0.5rem; font-size: 0.85rem; }
 }
+
+/* ================================================================
+   TOAST NOTIFICATION
+   ================================================================ */
+
+.toast {
+  position: fixed;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: #1c1d22;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.6rem 1.25rem;
+  border-radius: 999px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9999;
+  white-space: nowrap;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.toast--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 640px) {
+  .toast {
+    font-size: 0.82rem;
+    padding: 0.5rem 1rem;
+    bottom: 3.5rem;
+    max-width: 90vw;
+    white-space: normal;
+    text-align: center;
+  }
+}
