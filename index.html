@@ -21,27 +21,37 @@
 </div>
 
 <header class="app-header">
-  <!-- Row 1: title, date nav, sign-out -->
-  <div class="header-top-row">
-    <h1 class="header-title">Fibromyalgia Daily Tracker</h1>
-    <div class="date-row">
+  <!-- Single sticky row: title | date nav | save | tabs | sign-out -->
+  <div class="header-inner">
+
+    <!-- Title -->
+    <h1 class="header-title">Fibromyalgia Tracker</h1>
+
+    <!-- Date navigation -->
+    <div class="header-date-nav">
       <button type="button" id="prevDayBtn" class="date-nav-btn icon-btn" aria-label="Previous day" title="Previous day">&#8249;</button>
       <span id="dayOfWeekDisplay" class="day-of-week-display"></span>
       <input type="date" id="dateInput" aria-label="Entry date" class="sr-date-input">
       <button type="button" id="nextDayBtn" class="date-nav-btn icon-btn" aria-label="Next day" title="Next day">&#8250;</button>
     </div>
-    <button id="signOutBtn" style="display:none;">Sign Out</button>
+
+    <!-- Save Day button -->
+    <button id="saveDayTop" class="header-save-btn primary">Save Day</button>
+
+    <!-- Tab navigation -->
+    <nav id="tabs" class="header-tabs">
+      <button class="tab-button active" data-tab="entry-tab">Daily Entry</button>
+      <button class="tab-button" data-tab="journal-tab">Journal</button>
+      <button class="tab-button" data-tab="history-tab">History</button>
+      <button class="tab-button" data-tab="trends-tab">Trends</button>
+      <button class="tab-button" data-tab="mood-tab">Mood</button>
+      <button class="tab-button" data-tab="medications-tab">Medications</button>
+    </nav>
+
+    <!-- Sign Out -->
+    <button id="signOutBtn" class="header-signout-btn" style="display:none;">Sign Out</button>
+
   </div>
-  <!-- Row 2: navigation tabs -->
-  <nav id="tabs">
-    <button id="saveDayTop" class="primary">Save Day</button>
-    <button class="tab-button active" data-tab="entry-tab">Daily Entry</button>
-    <button class="tab-button" data-tab="journal-tab">Journal</button>
-    <button class="tab-button" data-tab="history-tab">History</button>
-    <button class="tab-button" data-tab="trends-tab">Trends</button>
-    <button class="tab-button" data-tab="mood-tab">Mood</button>
-    <button class="tab-button" data-tab="medications-tab">Medications</button>
-  </nav>
 </header>
 
 <main>
@@ -84,19 +94,14 @@
     <div class="card">
       <h3>Sleep (previous night)</h3>
       <div class="sleep-time-grid">
-
-        <!-- Bedtime — single time input, 15-min steps -->
         <label class="time-widget-label-wrap">
           <span class="time-widget-label">Bedtime</span>
           <input type="time" id="bedtimeInput" step="900" class="time-input-single" aria-label="Bedtime" />
         </label>
-
-        <!-- Wake time — single time input, 15-min steps -->
         <label class="time-widget-label-wrap">
           <span class="time-widget-label">Wake time</span>
           <input type="time" id="wakeTimeInput" step="900" class="time-input-single" aria-label="Wake time" />
         </label>
-
       </div>
       <div class="sleep-total-display" aria-live="polite">
         <span class="sleep-total-label">Total hours slept</span>
@@ -160,21 +165,14 @@
   <!-- Mood Tab -->
   <section id="mood-tab" class="tab">
     <h2>Mood</h2>
-
     <div class="mood-layout">
-
-      <!-- SIDEBAR: 14-Day Mood Summary -->
       <aside class="mood-sidebar">
         <div class="card mood-sidebar-card">
           <h3>Last 14 Days</h3>
           <div class="table-scroll-wrap">
             <table class="mood-table mood-table-compact" id="moodSummaryTable">
               <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Day</th>
-                  <th>Score</th>
-                </tr>
+                <tr><th>Date</th><th>Day</th><th>Score</th></tr>
               </thead>
               <tbody id="moodSummaryBody">
                 <tr><td colspan="3" class="mood-table-empty">Loading&#8230;</td></tr>
@@ -183,35 +181,21 @@
           </div>
         </div>
       </aside>
-
-      <!-- MAIN: ATR Form + Records -->
       <div class="mood-main">
-
-        <!-- Automatic Thought Record Form -->
         <div class="card">
           <h3 id="atrFormTitle">New Automatic Thought Record</h3>
           <div class="atr-form">
-            <label>Date:
-              <input type="date" id="atrDateInput" />
-            </label>
-            <label>Situation:
-              <textarea id="atrSituationInput" rows="3" placeholder="Describe the situation that triggered the thought&#8230;"></textarea>
-            </label>
-            <label>Emotions:
-              <input type="text" id="atrEmotionsInput" placeholder="e.g. Anxious, Sad, Frustrated" />
-            </label>
+            <label>Date: <input type="date" id="atrDateInput" /></label>
+            <label>Situation: <textarea id="atrSituationInput" rows="3" placeholder="Describe the situation that triggered the thought&#8230;"></textarea></label>
+            <label>Emotions: <input type="text" id="atrEmotionsInput" placeholder="e.g. Anxious, Sad, Frustrated" /></label>
             <label>Emotion Intensity (1&#8211;100):
               <div class="atr-intensity-wrap">
                 <input type="range" id="atrIntensityRange" min="1" max="100" value="50" class="atr-intensity-slider" />
                 <output id="atrIntensityDisplay" class="atr-intensity-value">50</output>
               </div>
             </label>
-            <label>Automatic Thought:
-              <textarea id="atrAutoThoughtInput" rows="3" placeholder="What thought went through your mind?"></textarea>
-            </label>
-            <label>Alternative Thought:
-              <textarea id="atrAltThoughtInput" rows="3" placeholder="A more balanced or realistic thought&#8230;"></textarea>
-            </label>
+            <label>Automatic Thought: <textarea id="atrAutoThoughtInput" rows="3" placeholder="What thought went through your mind?"></textarea></label>
+            <label>Alternative Thought: <textarea id="atrAltThoughtInput" rows="3" placeholder="A more balanced or realistic thought&#8230;"></textarea></label>
             <input type="hidden" id="atrEditingId" />
             <div class="atr-form-actions">
               <button class="primary" id="saveAtrBtn">Save Record</button>
@@ -219,30 +203,25 @@
             </div>
           </div>
         </div>
-
-        <!-- ATR Records List -->
         <div class="card">
           <h3>Automatic Thought Records</h3>
           <div id="atrList" class="atr-list">
             <p class="atr-empty">No records yet. Use the form above to add one.</p>
           </div>
         </div>
-
-      </div><!-- /.mood-main -->
-    </div><!-- /.mood-layout -->
+      </div>
+    </div>
   </section>
 
   <!-- Medications Tab -->
   <section id="medications-tab" class="tab">
     <h2>Medications &amp; Supplements</h2>
-
     <nav class="med-sub-tabs">
       <button class="med-sub-tab-btn active" data-med-view="medListView">Medications</button>
       <button class="med-sub-tab-btn" data-med-view="suppListView">Supplements</button>
       <button class="med-sub-tab-btn" data-med-view="medHistoryView">Change History</button>
       <button class="med-sub-tab-btn" data-med-view="medPrintView">Print List</button>
     </nav>
-
     <div id="medListView" class="med-view">
       <div class="card">
         <h3 id="medFormTitle">Add Medication</h3>
@@ -274,7 +253,6 @@
         <ul id="medList" class="med-list"><li class="med-empty">No medications added yet.</li></ul>
       </div>
     </div>
-
     <div id="suppListView" class="med-view" style="display:none;">
       <div class="card supp-card">
         <h3 id="suppFormTitle">Add Supplement</h3>
@@ -306,14 +284,12 @@
         <ul id="suppList" class="med-list"><li class="med-empty">No supplements added yet.</li></ul>
       </div>
     </div>
-
     <div id="medHistoryView" class="med-view" style="display:none;">
       <div class="card">
         <h3>Medication &amp; Supplement Change History</h3>
         <ul id="medHistoryList" class="med-history-list"><li class="med-empty">No history yet.</li></ul>
       </div>
     </div>
-
     <div id="medPrintView" class="med-view" style="display:none;">
       <div class="med-print-header no-print">
         <div>
@@ -346,7 +322,6 @@
         </div>
       </div>
     </div>
-
   </section>
 
 </main>
@@ -375,9 +350,6 @@
 <script src="ui.js"></script>
 <script src="auth.js"></script>
 
-<!-- ============================================================
-     Snap time inputs to nearest 15-minute boundary.
-     ============================================================ -->
 <script>
 (function () {
   function snapTo15(input) {
@@ -390,7 +362,6 @@
     input.value = String(h).padStart(2, '0') + ':' + String(snapped).padStart(2, '0');
     input.dispatchEvent(new Event('change', { bubbles: true }));
   }
-
   ['bedtimeInput', 'wakeTimeInput'].forEach(function (id) {
     var el = document.getElementById(id);
     if (!el) return;
@@ -400,12 +371,10 @@
 }());
 </script>
 
-<!-- Build info footer script -->
 <script>
 (function () {
   var REPO = 'dennismzanetti/FibroSymptomTracker';
   var API  = 'https://api.github.com/repos/' + REPO + '/commits/main';
-
   fetch(API, { headers: { Accept: 'application/vnd.github.v3+json' } })
     .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
     .then(function (data) {
