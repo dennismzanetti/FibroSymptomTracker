@@ -59,7 +59,7 @@ body {
 }
 
 .sr-date-input {
-  width: 130px !important;
+  width: 150px !important;
   padding: 0.25rem 0.4rem;
   font-size: 0.82rem;
   background: rgba(255,255,255,0.15);
@@ -196,7 +196,7 @@ body {
   }
 
   .sr-date-input {
-    width: 96px !important;
+    width: 116px !important;
     font-size: 0.73rem;
   }
 
