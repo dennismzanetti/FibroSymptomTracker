@@ -22,14 +22,14 @@ function loadDayFromCloud(date) {
   db.collection("days").doc(date).get().then((doc) => {
     if (doc.exists) {
       fillFormFromData(doc.data());
-      if (isEntryTabActive()) showToast("Loaded from cloud \u2713");
+      if (isEntryTabActive()) showToast("\u2601\ufe0f Loaded from cloud for " + date);
     } else {
       clearFormFieldsExceptDate();
-      if (isEntryTabActive()) showToast("No entry for that date \u2014 form cleared.");
+      if (isEntryTabActive()) showToast("No entry for " + date + " \u2014 form cleared");
     }
   }).catch((error) => {
     console.error("Error getting document:", error);
     clearFormFieldsExceptDate();
-    if (isEntryTabActive()) showToast("Cloud load failed.");
+    if (isEntryTabActive()) showToast("\u26a0\ufe0f Cloud load failed");
   });
 }
