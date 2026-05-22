@@ -173,6 +173,7 @@ function buildTimelineRow(dateStr, d) {
   const dlbl  = `${MTHS[date.getMonth()]} ${date.getDate()}`;
   const barC  = tierBarColor(avg);
 
+  // Col 1 — Block score pills
   const blockPills = TIME_BLOCKS.map(({ short }, i) => {
     const s = scores[i];
     const t = s !== null ? scoreTier(s) : 0;
@@ -184,6 +185,7 @@ function buildTimelineRow(dateStr, d) {
     return `<span style="display:inline-flex;align-items:center;gap:2px;padding:0.06rem 0.25rem;border-radius:4px;border:1px solid ${bdr};background:${bg};color:${tc};font-size:0.68rem;white-space:nowrap;" title="${TIME_BLOCKS[i].label}"><span style="font-weight:600;color:inherit;opacity:0.7;font-size:0.58rem;">${short}</span><span style="font-weight:700;">${val}</span></span>`;
   }).join("");
 
+  // Col 2 — Sleep + Mood badges
   let sleepBadge = "", moodBadge = "";
   if (d.sleep?.hours != null) sleepBadge = `<span style="font-size:0.68rem;font-weight:600;padding:0.05rem 0.3rem;border-radius:999px;border:1px solid #90caf9;background:#e3f2fd;color:#1565c0;white-space:nowrap;">&#128164; ${d.sleep.hours}h</span>`;
   if (typeof d.mood?.score === "number") {
@@ -191,12 +193,14 @@ function buildTimelineRow(dateStr, d) {
     moodBadge = `<span style="font-size:0.68rem;font-weight:600;padding:0.05rem 0.3rem;border-radius:999px;border:1px solid ${c.border};background:${c.bg};color:${c.text};white-space:nowrap;">&#128522; ${d.mood.score}/10</span>`;
   }
 
+  // Col 3 — Tags
   const tagsHtml = d.tags?.length
-    ? d.tags.map(t => `<span style="font-size:0.62rem;font-weight:600;padding:0.04rem 0.28rem;border-radius:999px;background:#fff3e0;color:#e65100;border:1px solid #ffe0b2;">${t}</span>`).join("")
+    ? d.tags.map(t => `<span style="font-size:0.62rem;font-weight:600;padding:0.04rem 0.28rem;border-radius:999px;background:#fff3e0;color:#e65100;border:1px solid #ffe0b2;white-space:nowrap;">${t}</span>`).join("")
     : "";
 
   const expandId = `jfe-${dateStr}`;
 
+  // Expanded detail
   const funcDetail = TIME_BLOCKS.map(({ key, label }, i) => {
     const b = d.functionality?.[key] || {};
     const s = scores[i];
@@ -240,17 +244,30 @@ function buildTimelineRow(dateStr, d) {
     <div style="display:flex;border-bottom:1px solid #e8eaf3;background:#fff;line-height:1;" data-journal-date="${dateStr}">
       <div style="width:3px;flex-shrink:0;background:${barC};"></div>
       <div style="flex:1;min-width:0;">
-        <div onclick="toggleJournalRow('${expandId}')" style="padding:0.12rem 0.45rem;cursor:pointer;user-select:none;">
-          <div style="display:flex;align-items:center;gap:0.25rem;flex-wrap:wrap;">
-            <div style="display:flex;align-items:baseline;gap:0.2rem;min-width:55px;flex-shrink:0;">
-              <span style="font-size:0.62rem;font-weight:700;color:#1565c0;text-transform:uppercase;letter-spacing:0.05em;">${dow}</span>
-              <span style="font-size:0.78rem;font-weight:700;color:#2d3142;white-space:nowrap;">${dlbl}</span>
+        <div onclick="toggleJournalRow('${expandId}')" style="cursor:pointer;user-select:none;">
+          <div style="display:grid;grid-template-columns:62px 1fr auto auto auto;align-items:center;gap:0.35rem;padding:0.25rem 0.45rem;min-width:0;">
+
+            <!-- Col 1: Date -->
+            <div style="display:flex;flex-direction:column;align-items:flex-start;justify-content:center;flex-shrink:0;">
+              <span style="font-size:0.6rem;font-weight:700;color:#1565c0;text-transform:uppercase;letter-spacing:0.05em;line-height:1;">${dow}</span>
+              <span style="font-size:0.78rem;font-weight:700;color:#2d3142;white-space:nowrap;line-height:1.3;">${dlbl}</span>
             </div>
-            <div style="display:flex;gap:0.12rem;flex-wrap:wrap;">${blockPills}</div>
-            <div style="display:flex;gap:0.15rem;flex-wrap:wrap;align-items:center;">${sleepBadge}${moodBadge}</div>
-            ${tagsHtml ? `<div style="display:flex;gap:0.12rem;flex-wrap:wrap;">${tagsHtml}</div>` : ""}
-            ${avg !== null ? `<div style="margin-left:auto;flex-shrink:0;">${scorePillHtml(avg, "sm")}</div>` : ""}
-            <span id="${expandId}-chev" style="color:#c8cce0;font-size:0.9rem;font-weight:700;line-height:1;flex-shrink:0;transition:transform 0.2s;">&rsaquo;</span>
+
+            <!-- Col 2: Block pills -->
+            <div style="display:flex;gap:0.1rem;flex-wrap:wrap;min-width:0;">${blockPills}</div>
+
+            <!-- Col 3: Sleep + Mood -->
+            <div style="display:flex;gap:0.2rem;flex-wrap:nowrap;align-items:center;flex-shrink:0;">${sleepBadge}${moodBadge}</div>
+
+            <!-- Col 4: Tags -->
+            <div style="display:flex;gap:0.12rem;flex-wrap:wrap;align-items:center;flex-shrink:0;">${tagsHtml}</div>
+
+            <!-- Col 5: Avg score + chevron -->
+            <div style="display:flex;align-items:center;gap:0.3rem;flex-shrink:0;">
+              ${avg !== null ? scorePillHtml(avg, "sm") : ""}
+              <span id="${expandId}-chev" style="color:#c8cce0;font-size:0.9rem;font-weight:700;line-height:1;transition:transform 0.2s;">&rsaquo;</span>
+            </div>
+
           </div>
         </div>
         <div id="${expandId}" style="display:none;padding:0.3rem 0.5rem 0.35rem;border-top:1px solid #eef0fb;background:#f8f9fd;">
