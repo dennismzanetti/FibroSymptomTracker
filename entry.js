@@ -14,21 +14,22 @@ function setupSaveDay() {
   const status = document.getElementById("saveStatus");
   const handleSaveClick = async () => {
     const dayData = collectFormData();
-    if (!dayData.date) { status.textContent = "Please select a date."; return; }
-    status.textContent = "Saving locally...";
+    if (!dayData.date) {
+      if (status) status.textContent = "Please select a date.";
+      return;
+    }
+    if (status) status.textContent = "";
     const days = loadAllDays();
     const existingIndex = days.findIndex(d => d.date === dayData.date);
     if (existingIndex >= 0) days[existingIndex] = dayData;
     else days.push(dayData);
     saveAllDays(days);
-    status.textContent = "Saved locally.";
     try {
-      status.textContent = "Saving to cloud...";
       await db.collection("days").doc(dayData.date).set(dayData, { merge: false });
-      status.textContent = "Saved locally + cloud.";
+      showToast("\u2713 Saved locally + cloud");
     } catch (err) {
       console.error("Error saving to cloud:", err);
-      status.textContent = "Saved locally, but cloud save failed.";
+      showToast("\u26A0 Saved locally \u2014 cloud save failed", true);
     }
     refreshHistory();
     renderJournal();
