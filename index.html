@@ -136,6 +136,7 @@
   <section id="journal-tab" class="tab">
     <div class="card">
       <h2>Journal View</h2>
+      <div id="journalHeatmap"></div>
       <div id="journalOutput" class="journal-output">No journal entry yet.</div>
     </div>
   </section>
@@ -161,16 +162,7 @@
       <aside class="mood-sidebar">
         <div class="card mood-sidebar-card">
           <h3>Last 14 Days</h3>
-          <div class="table-scroll-wrap">
-            <table class="mood-table mood-table-compact" id="moodSummaryTable">
-              <thead>
-                <tr><th>Date</th><th>Day</th><th>Score</th></tr>
-              </thead>
-              <tbody id="moodSummaryBody">
-                <tr><td colspan="3" class="mood-table-empty">Loading&#8230;</td></tr>
-              </tbody>
-            </table>
-          </div>
+          <div id="moodSummaryList" class="mood-sidebar-list">Loading&#8230;</div>
         </div>
       </aside>
       <div class="mood-main">

@@ -4,12 +4,30 @@ async function refreshMoodTab() {
   await Promise.all([refreshMoodSummaryTable(), refreshAtrList()]);
 }
 
-// ---- 14-Day Mood Summary Table ----
+// ---- 14-Day Mood Sidebar List ----
+
+const MOOD_TIER_COLORS = [
+  null,
+  { bg: "#ffebee", border: "#ef9a9a", text: "#c62828" }, // 1
+  { bg: "#fff3e0", border: "#ffcc80", text: "#e65100" }, // 2
+  { bg: "#fff8e1", border: "#ffe082", text: "#f57f17" }, // 3
+  { bg: "#e8f5e9", border: "#a5d6a7", text: "#2e7d32" }, // 4
+  { bg: "#e0f2f1", border: "#80cbc4", text: "#00695c" }  // 5
+];
+
+function moodTier(s) {
+  if (s === null || s === undefined) return 0;
+  if (s <= 2) return 1;
+  if (s <= 4) return 2;
+  if (s <= 6) return 3;
+  if (s <= 8) return 4;
+  return 5;
+}
 
 async function refreshMoodSummaryTable() {
-  const tbody = document.getElementById("moodSummaryBody");
-  if (!tbody) return;
-  tbody.innerHTML = `<tr><td colspan="4" class="mood-table-empty">Loading&#8230;</td></tr>`;
+  const container = document.getElementById("moodSummaryList");
+  if (!container) return;
+  container.innerHTML = `<p style="color:#8891ab;font-size:0.82rem;padding:0.25rem 0;">Loading&#8230;</p>`;
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -27,45 +45,63 @@ async function refreshMoodSummaryTable() {
     const byDate = {};
     snapshot.forEach(doc => { byDate[doc.id] = doc.data(); });
 
-    const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+    const DOW   = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
     const MONTH = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-    tbody.innerHTML = "";
+    let html = "";
     let hasAny = false;
+
     dates.forEach(dateStr => {
-      const data = byDate[dateStr];
-      const moodScore = data?.mood?.score ?? null;
-      const moodNotes = data?.mood?.notes || "";
-
-      const d = new Date(dateStr + "T12:00:00");
-      const dayLabel = DOW[d.getDay()];
-      const dateLabel = `${MONTH[d.getMonth()]} ${d.getDate()}`;
-
-      const hasData = moodScore !== null || moodNotes;
+      const data  = byDate[dateStr];
+      const score = data?.mood?.score ?? null;
+      const notes = data?.mood?.notes || "";
+      const hasData = score !== null || notes;
       if (hasData) hasAny = true;
 
-      const scoreCell = moodScore !== null
-        ? `<span class="mood-score-pill mood-score-${Math.ceil(moodScore / 3)}">${moodScore}/10</span>`
-        : `<span class="mood-score-empty">\u2014</span>`;
+      const d        = new Date(dateStr + "T12:00:00");
+      const dow      = DOW[d.getDay()];
+      const dateLbl  = `${MONTH[d.getMonth()]} ${d.getDate()}`;
+      const isEmpty  = !hasData;
 
-      const tr = document.createElement("tr");
-      if (!hasData) tr.classList.add("mood-row-empty");
-      tr.innerHTML = `
-        <td class="mood-date-cell">${dateLabel}</td>
-        <td class="mood-day-cell">${dayLabel}</td>
-        <td class="mood-score-cell">${scoreCell}</td>
-        <td class="mood-notes-cell">${moodNotes
-          ? `<span>${moodNotes}</span>`
-          : `<span class="mood-score-empty">\u2014</span>`}</td>`;
-      tbody.appendChild(tr);
+      // Tier + colors
+      const tier  = score !== null ? moodTier(score) : 0;
+      const tc    = tier ? MOOD_TIER_COLORS[tier] : null;
+      const barW  = score !== null ? Math.round((score / 10) * 100) : 0;
+      const barBg = tc ? tc.border : "#e3e6f0";
+
+      const pillHtml = score !== null
+        ? `<span style="display:inline-block;padding:0.1rem 0.4rem;border-radius:999px;font-size:0.72rem;font-weight:700;background:${tc.bg};color:${tc.text};border:1px solid ${tc.border};white-space:nowrap;">${score}/10</span>`
+        : `<span style="color:#c8cce0;font-size:0.75rem;">&mdash;</span>`;
+
+      const barHtml = `<div style="height:3px;border-radius:2px;background:#eef0fb;margin-top:3px;overflow:hidden;"><div style="height:100%;width:${barW}%;background:${barBg};border-radius:2px;transition:width 0.3s;"></div></div>`;
+
+      const notesHtml = notes
+        ? `<div style="font-size:0.7rem;color:#5b6686;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${notes.replace(/"/g,'&quot;')}">${notes}</div>`
+        : "";
+
+      html += `
+        <div style="display:grid;grid-template-columns:42px 1fr;align-items:center;gap:0.35rem;padding:0.28rem 0;border-bottom:1px solid #f0f2fa;opacity:${isEmpty ? 0.4 : 1};">
+          <div style="line-height:1.1;">
+            <div style="font-size:0.6rem;font-weight:700;color:#1565c0;text-transform:uppercase;letter-spacing:0.05em;">${dow}</div>
+            <div style="font-size:0.75rem;font-weight:700;color:#2d3142;white-space:nowrap;">${dateLbl}</div>
+          </div>
+          <div style="min-width:0;">
+            ${pillHtml}
+            ${barHtml}
+            ${notesHtml}
+          </div>
+        </div>`;
     });
 
     if (!hasAny) {
-      tbody.innerHTML = `<tr><td colspan="4" class="mood-table-empty">No mood data in the last 14 days. Add entries in the Daily Entry tab.</td></tr>`;
+      container.innerHTML = `<p style="color:#9e9e9e;font-style:italic;font-size:0.82rem;">No mood data in the last 14 days.</p>`;
+      return;
     }
+
+    container.innerHTML = html;
   } catch (err) {
     console.error("Error loading mood summary:", err);
-    tbody.innerHTML = `<tr><td colspan="4" class="mood-table-empty">Failed to load mood data.</td></tr>`;
+    container.innerHTML = `<p style="color:#c0392b;font-size:0.82rem;">Failed to load mood data.</p>`;
   }
 }
 
