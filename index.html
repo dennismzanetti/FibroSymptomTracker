@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Fibromyalgia Daily Tracker</title>
+  <title>Symptom Tracker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -14,7 +14,7 @@
 
 <!-- Auth overlay -->
 <div id="authOverlay" style="position:fixed; inset:0; background:#f7f6f2; z-index:1000; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem;">
-  <h2 style="font-size:1.5rem; margin-bottom:0.5rem;">Fibromyalgia Tracker</h2>
+  <h2 style="font-size:1.5rem; margin-bottom:0.5rem;">Symptom Tracker</h2>
   <p style="color:#666;">Sign in to access your data.</p>
   <button id="googleSignInBtn" style="padding:0.75rem 1.5rem; font-size:1rem; background:#4285F4; color:white; border:none; border-radius:6px; cursor:pointer;">Sign in with Google</button>
   <p id="authError" style="color:red; font-size:0.875rem;"></p>
@@ -23,7 +23,7 @@
 <header class="app-header">
   <!-- Row 1: title | date nav | sign-out -->
   <div class="header-row1">
-    <h1 class="header-title">Fibromyalgia Tracker</h1>
+    <h1 class="header-title">Symptom Tracker</h1>
     <div class="header-date-nav">
       <button type="button" id="prevDayBtn" class="date-nav-btn icon-btn" aria-label="Previous day" title="Previous day">&#8249;</button>
       <span id="dayOfWeekDisplay" class="day-of-week-display"></span>
@@ -310,7 +310,7 @@
           </table>
         </div>
         <div class="med-print-footer print-only">
-          <p>This list was generated from my Fibromyalgia Symptom Tracker.</p>
+          <p>This list was generated from my Symptom Tracker.</p>
         </div>
       </div>
     </div>
