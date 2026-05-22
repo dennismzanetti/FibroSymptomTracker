@@ -9,7 +9,7 @@ function setupExerciseToggle() {
 }
 
 function setupSaveDay() {
-  const topBtn = document.getElementById("saveDayTop");
+  const floatBtn  = document.getElementById("saveDayFloat");
   const bottomBtn = document.getElementById("saveDayBottom");
   const status = document.getElementById("saveStatus");
   const handleSaveClick = async () => {
@@ -34,7 +34,7 @@ function setupSaveDay() {
     renderJournal();
     refreshTrends();
   };
-  topBtn?.addEventListener("click", handleSaveClick);
+  floatBtn?.addEventListener("click", handleSaveClick);
   bottomBtn?.addEventListener("click", handleSaveClick);
 }
 

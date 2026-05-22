@@ -9,6 +9,12 @@ function setupTabs() {
   });
 }
 
+function updateFloatBtn(tabId) {
+  const floatBtn = document.getElementById("saveDayFloat");
+  if (!floatBtn) return;
+  floatBtn.style.display = tabId === "entry-tab" ? "block" : "none";
+}
+
 function switchToTab(tabId) {
   const tabBtns = document.querySelectorAll(".tab-button");
   const tabPanels = document.querySelectorAll(".tab");
@@ -18,6 +24,7 @@ function switchToTab(tabId) {
   tabPanels.forEach((panel) => {
     panel.classList.toggle("active", panel.id === tabId);
   });
+  updateFloatBtn(tabId);
   requestAnimationFrame(() => {
     if (tabId === "journal-tab")     renderJournal();
     if (tabId === "history-tab")     refreshHistory();
@@ -39,6 +46,7 @@ window.addEventListener("load", () => {
   setupMedicationsTab();
   setupPrint();
   setupAtrForm();
+  updateFloatBtn("entry-tab"); // show on initial load (entry tab is default)
 
   const dateInput = document.getElementById("dateInput");
   if (dateInput) {
