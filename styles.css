@@ -191,29 +191,69 @@ body {
   background: rgba(255, 255, 255, 0.25);
 }
 
-/* ---- Mobile header (<=640px): allow slight height increase, keep single row ---- */
+/* ================================================================
+   MOBILE HEADER (<=640px): two-row layout
+   Row 1: title | date nav | sign-out
+   Row 2: tab strip (full width, scrollable)
+   ================================================================ */
 @media (max-width: 640px) {
   .header-inner {
     height: auto;
-    min-height: 48px;
-    padding: 0.4rem 0.6rem;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 0.4rem;
+    padding: 0.4rem 0.6rem 0 0.6rem;
+    flex-wrap: wrap;
+    overflow: visible;
+    gap: 0;
   }
 
+  /* Row 1 — title + date nav + sign-out */
   .header-title {
     font-size: 0.85rem;
+    flex: 0 0 auto;
+    padding-bottom: 0.35rem;
+  }
+
+  .header-date-nav {
+    flex: 1 1 auto;
+    padding-bottom: 0.35rem;
   }
 
   .day-of-week-display {
-    min-width: 55px;
+    min-width: 50px;
     font-size: 0.75rem;
   }
 
   .sr-date-input {
-    width: 110px;
+    width: 100px;
     font-size: 0.75rem;
+  }
+
+  .header-signout-btn {
+    flex: 0 0 auto;
+    padding-bottom: 0.35rem;
+  }
+
+  /* Row 2 — tabs take full width */
+  #tabs.header-tabs {
+    flex: 0 0 100%;
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    padding-left: 0;
+    padding: 0.3rem 0 0.3rem 0;
+    gap: 0.3rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  #tabs.header-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  #tabs.header-tabs .tab-button {
+    padding: 0.35rem 0.85rem;
+    font-size: 0.78rem;
+    min-height: 32px;
   }
 }
 
@@ -425,7 +465,7 @@ button.primary:hover {
 @media (max-width: 640px) {
   .save-day-float {
     top: auto;
-    bottom: 3.5rem; /* above the build footer */
+    bottom: 3.5rem;
     right: 1rem;
     font-size: 0.85rem !important;
     padding: 0.45rem 1.1rem !important;
