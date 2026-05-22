@@ -18,19 +18,18 @@ function isEntryTabActive() {
 }
 
 function loadDayFromCloud(date) {
-  const status = document.getElementById("saveStatus");
   if (!date) return;
   db.collection("days").doc(date).get().then((doc) => {
     if (doc.exists) {
       fillFormFromData(doc.data());
-      if (status && isEntryTabActive()) status.textContent = "Loaded from cloud for " + date + ".";
+      if (isEntryTabActive()) showToast("Loaded from cloud \u2713");
     } else {
       clearFormFieldsExceptDate();
-      if (status && isEntryTabActive()) status.textContent = "No cloud entry for that date. Form cleared.";
+      if (isEntryTabActive()) showToast("No entry for that date \u2014 form cleared.");
     }
   }).catch((error) => {
     console.error("Error getting document:", error);
     clearFormFieldsExceptDate();
-    if (status && isEntryTabActive()) status.textContent = "Cloud load failed.";
+    if (isEntryTabActive()) showToast("Cloud load failed.");
   });
 }

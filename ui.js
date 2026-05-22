@@ -1,3 +1,25 @@
+// ---- Toast notification ----
+function showToast(msg, duration) {
+  duration = duration || 2500;
+  var existing = document.getElementById('appToast');
+  if (existing) existing.remove();
+  var toast = document.createElement('div');
+  toast.id = 'appToast';
+  toast.className = 'toast';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  // Trigger animation on next frame
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      toast.classList.add('toast--visible');
+    });
+  });
+  setTimeout(function() {
+    toast.classList.remove('toast--visible');
+    toast.addEventListener('transitionend', function() { toast.remove(); }, { once: true });
+  }, duration);
+}
+
 // ---- Tab switching ----
 function setupTabs() {
   const tabBtns = document.querySelectorAll(".tab-button");
