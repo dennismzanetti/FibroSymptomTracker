@@ -21,21 +21,20 @@
 </div>
 
 <header class="app-header">
-  <!-- Single sticky row: title | date nav | tabs | sign-out -->
-  <div class="header-inner">
-
-    <!-- Title -->
+  <!-- Row 1: title | date nav | sign-out -->
+  <div class="header-row1">
     <h1 class="header-title">Fibromyalgia Tracker</h1>
-
-    <!-- Date navigation -->
     <div class="header-date-nav">
       <button type="button" id="prevDayBtn" class="date-nav-btn icon-btn" aria-label="Previous day" title="Previous day">&#8249;</button>
       <span id="dayOfWeekDisplay" class="day-of-week-display"></span>
       <input type="date" id="dateInput" aria-label="Entry date" class="sr-date-input">
       <button type="button" id="nextDayBtn" class="date-nav-btn icon-btn" aria-label="Next day" title="Next day">&#8250;</button>
     </div>
+    <button id="signOutBtn" class="header-signout-btn" style="display:none;">Sign Out</button>
+  </div>
 
-    <!-- Tab navigation -->
+  <!-- Row 2: tab navigation -->
+  <div class="header-row2">
     <nav id="tabs" class="header-tabs">
       <button class="tab-button active" data-tab="entry-tab">Daily Entry</button>
       <button class="tab-button" data-tab="journal-tab">Journal</button>
@@ -44,10 +43,6 @@
       <button class="tab-button" data-tab="mood-tab">Mood</button>
       <button class="tab-button" data-tab="medications-tab">Medications</button>
     </nav>
-
-    <!-- Sign Out -->
-    <button id="signOutBtn" class="header-signout-btn" style="display:none;">Sign Out</button>
-
   </div>
 </header>
 
