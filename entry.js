@@ -1,215 +1,126 @@
 function setupExerciseToggle() {
   const didExerciseInput = document.getElementById("didExerciseInput");
-  const exerciseDetails = document.getElementById("exerciseDetails");
-  function updateVisibility() {
-    exerciseDetails.style.display = didExerciseInput.value === "yes" ? "block" : "none";
+  const exerciseDetails  = document.getElementById("exerciseDetails");
+  if (!didExerciseInput || !exerciseDetails) return;
+
+  function update() {
+    exerciseDetails.style.display = didExerciseInput.value === "yes" ? "" : "none";
   }
-  didExerciseInput.addEventListener("change", updateVisibility);
-  updateVisibility();
+  didExerciseInput.addEventListener("change", update);
+  update();
 }
 
-function setupSaveDay() {
-  const floatBtn  = document.getElementById("saveDayFloat");
-  const bottomBtn = document.getElementById("saveDayBottom");
-  const status = document.getElementById("saveStatus");
-  const handleSaveClick = async () => {
-    const dayData = collectFormData();
-    if (!dayData.date) {
-      if (status) status.textContent = "Please select a date.";
-      return;
-    }
-    if (status) status.textContent = "";
-    const days = loadAllDays();
-    const existingIndex = days.findIndex(d => d.date === dayData.date);
-    if (existingIndex >= 0) days[existingIndex] = dayData;
-    else days.push(dayData);
-    saveAllDays(days);
-    try {
-      await db.collection("days").doc(dayData.date).set(dayData, { merge: false });
-      showToast("\u2713 Saved locally + cloud");
-    } catch (err) {
-      console.error("Error saving to cloud:", err);
-      showToast("\u26A0 Saved locally \u2014 cloud save failed", true);
-    }
-    refreshHistory();
-    renderJournal();
-    refreshTrends();
+function collectEntry() {
+  function val(id)  { const el = document.getElementById(id); return el ? el.value.trim() : ""; }
+  function num(id)  { const v = parseFloat(val(id)); return isNaN(v) ? null : v; }
+  function check(id){ const el = document.getElementById(id); return el ? el.checked : false; }
+
+  const tags = Array.from(
+    document.querySelectorAll('#tagsContainer input[type="checkbox"]:checked')
+  ).map(cb => cb.value);
+
+  return {
+    dayTitle:       val("dayTitleInput"),
+    overallNotes:   val("overallNotesInput"),
+    moodScore:      num("moodScoreInput"),
+    moodNotes:      val("moodNotesInput"),
+    earlyMorning:   { score: num("earlyMorningScore"),     activity: val("earlyMorningActivity"),     symptoms: val("earlyMorningSymptoms") },
+    lateMorning:    { score: num("lateMorningScore"),      activity: val("lateMorningActivity"),      symptoms: val("lateMorningSymptoms") },
+    earlyAfternoon: { score: num("earlyAfternoonScore"),   activity: val("earlyAfternoonActivity"),   symptoms: val("earlyAfternoonSymptoms") },
+    lateAfternoon:  { score: num("lateAfternoonScore"),    activity: val("lateAfternoonActivity"),    symptoms: val("lateAfternoonSymptoms") },
+    earlyEvening:   { score: num("earlyEveningScore"),     activity: val("earlyEveningActivity"),     symptoms: val("earlyEveningSymptoms") },
+    lateEvening:    { score: num("lateEveningScore"),      activity: val("lateEveningActivity"),      symptoms: val("lateEveningSymptoms") },
+    painScore:      num("painScoreInput"),
+    painNotes:      val("painNotesInput"),
+    fatigueScore:   num("fatigueScoreInput"),
+    fatigueNotes:   val("fatigueNotesInput"),
+    bedtime:        val("bedtimeInput"),
+    wakeTime:       val("wakeTimeInput"),
+    hoursSlept:     num("hoursSleptInput"),
+    sleepQuality:   num("sleepQualityInput"),
+    awakenings:     num("awakeningsInput"),
+    sleepNotes:     val("sleepNotesInput"),
+    didExercise:    val("didExerciseInput"),
+    exerciseType:   val("exerciseTypeInput"),
+    exerciseMinutes:num("exerciseMinutesInput"),
+    exerciseIntensity: val("exerciseIntensityInput"),
+    exerciseTiming: val("exerciseTimingInput"),
+    exerciseNotes:  val("exerciseNotesInput"),
+    water:          num("waterInput"),
+    nutritionNotes: val("nutritionNotesInput"),
+    tags,
   };
-  floatBtn?.addEventListener("click", handleSaveClick);
-  bottomBtn?.addEventListener("click", handleSaveClick);
 }
 
-function setupNumberSteppers() {
-  document.querySelectorAll(".number-stepper").forEach((stepper) => {
-    const input = stepper.querySelector('input[type="number"]');
-    const buttons = stepper.querySelectorAll(".stepper-btn");
-    if (!input) return;
-    const min = input.min !== "" ? Number(input.min) : null;
-    const max = input.max !== "" ? Number(input.max) : null;
-    buttons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const step = Number(button.dataset.step || 0);
-        let current = input.value === "" ? min ?? 0 : Number(input.value);
-        let next = current + step;
-        if (min !== null && next < min) next = min;
-        if (max !== null && next > max) next = max;
-        input.value = next;
-        input.dispatchEvent(new Event("input", { bubbles: true }));
-        input.dispatchEvent(new Event("change", { bubbles: true }));
-      });
+function populateEntry(data) {
+  if (!data) return;
+  function set(id, v) { const el = document.getElementById(id); if (el && v != null) el.value = v; }
+  function setCheck(container, values) {
+    document.querySelectorAll(`#${container} input[type="checkbox"]`).forEach(cb => {
+      cb.checked = Array.isArray(values) && values.includes(cb.value);
     });
+  }
+
+  set("dayTitleInput",     data.dayTitle);
+  set("overallNotesInput", data.overallNotes);
+  set("moodScoreInput",    data.moodScore);
+  set("moodNotesInput",    data.moodNotes);
+
+  const blocks = [
+    ["earlyMorning",   "earlyMorningScore",     "earlyMorningActivity",     "earlyMorningSymptoms"],
+    ["lateMorning",    "lateMorningScore",      "lateMorningActivity",      "lateMorningSymptoms"],
+    ["earlyAfternoon", "earlyAfternoonScore",   "earlyAfternoonActivity",   "earlyAfternoonSymptoms"],
+    ["lateAfternoon",  "lateAfternoonScore",    "lateAfternoonActivity",    "lateAfternoonSymptoms"],
+    ["earlyEvening",   "earlyEveningScore",     "earlyEveningActivity",     "earlyEveningSymptoms"],
+    ["lateEvening",    "lateEveningScore",      "lateEveningActivity",      "lateEveningSymptoms"],
+  ];
+  blocks.forEach(([key, scoreId, actId, symId]) => {
+    const b = data[key] || {};
+    set(scoreId, b.score);
+    set(actId,   b.activity);
+    set(symId,   b.symptoms);
   });
+
+  set("painScoreInput",   data.painScore);
+  set("painNotesInput",   data.painNotes);
+  set("fatigueScoreInput",data.fatigueScore);
+  set("fatigueNotesInput",data.fatigueNotes);
+  set("bedtimeInput",     data.bedtime);
+  set("wakeTimeInput",    data.wakeTime);
+  set("sleepQualityInput",data.sleepQuality);
+  set("awakeningsInput",  data.awakenings);
+  set("sleepNotesInput",  data.sleepNotes);
+
+  // Trigger recalc for sleep display
+  const bedEl = document.getElementById('bedtimeInput');
+  if (bedEl) bedEl.dispatchEvent(new Event('change'));
+
+  set("didExerciseInput",     data.didExercise);
+  set("exerciseTypeInput",    data.exerciseType);
+  set("exerciseMinutesInput", data.exerciseMinutes);
+  set("exerciseIntensityInput",data.exerciseIntensity);
+  set("exerciseTimingInput",  data.exerciseTiming);
+  set("exerciseNotesInput",   data.exerciseNotes);
+
+  // Trigger exercise toggle
+  const exEl = document.getElementById('didExerciseInput');
+  if (exEl) exEl.dispatchEvent(new Event('change'));
+
+  set("waterInput",         data.water);
+  set("nutritionNotesInput",data.nutritionNotes);
+
+  setCheck("tagsContainer", data.tags);
 }
 
-function setupSleepCalculation() {
-  const bedtimeInput = document.getElementById("bedtimeInput");
-  const wakeTimeInput = document.getElementById("wakeTimeInput");
-  if (!bedtimeInput || !wakeTimeInput) return;
-  bedtimeInput.addEventListener("input", updateSleepDuration);
-  wakeTimeInput.addEventListener("input", updateSleepDuration);
-  bedtimeInput.addEventListener("change", updateSleepDuration);
-  wakeTimeInput.addEventListener("change", updateSleepDuration);
-  updateSleepDuration();
-}
+function clearEntry() {
+  document.querySelectorAll(
+    '#entry-tab input[type="number"], #entry-tab input[type="text"], #entry-tab input[type="time"], #entry-tab textarea'
+  ).forEach(el => { el.value = ''; });
+  document.querySelectorAll('#tagsContainer input[type="checkbox"]').forEach(cb => { cb.checked = false; });
 
-function updateSleepDuration() {
-  const bedtimeInput = document.getElementById("bedtimeInput");
-  const wakeTimeInput = document.getElementById("wakeTimeInput");
-  const hoursSleptInput = document.getElementById("hoursSleptInput");
-  const hoursSleptDisplay = document.getElementById("hoursSleptDisplay");
-  if (!bedtimeInput || !wakeTimeInput || !hoursSleptInput) return;
-  const bedtime = bedtimeInput.value;
-  const wakeTime = wakeTimeInput.value;
-  if (!bedtime || !wakeTime) {
-    hoursSleptInput.value = "";
-    if (hoursSleptDisplay) hoursSleptDisplay.textContent = "\u2014";
-    return;
-  }
-  const [bedHour, bedMinute] = bedtime.split(":").map(Number);
-  const [wakeHour, wakeMinute] = wakeTime.split(":").map(Number);
-  let bedtimeMinutes = bedHour * 60 + bedMinute;
-  let wakeTimeMinutes = wakeHour * 60 + wakeMinute;
-  if (wakeTimeMinutes <= bedtimeMinutes) wakeTimeMinutes += 24 * 60;
-  const totalMinutes = wakeTimeMinutes - bedtimeMinutes;
-  const totalHours = Math.round((totalMinutes / 60) * 10) / 10;
-  hoursSleptInput.value = totalHours;
-  if (hoursSleptDisplay) hoursSleptDisplay.textContent = `${totalHours.toFixed(1)} hours`;
-}
+  const didExEl = document.getElementById('didExerciseInput');
+  if (didExEl) { didExEl.value = 'no'; didExEl.dispatchEvent(new Event('change')); }
 
-function clearFormFieldsExceptDate() {
-  document.getElementById("dayTitleInput").value = "";
-  document.getElementById("overallNotesInput").value = "";
-  const clearBlock = (prefix) => {
-    document.getElementById(prefix + "Score").value = "";
-    document.getElementById(prefix + "Activity").value = "";
-    document.getElementById(prefix + "Symptoms").value = "";
-  };
-  ["earlyMorning","lateMorning","earlyAfternoon","lateAfternoon","earlyEvening","lateEvening"].forEach(clearBlock);
-  document.getElementById("bedtimeInput").value = "";
-  document.getElementById("wakeTimeInput").value = "";
-  document.getElementById("hoursSleptInput").value = "";
-  document.getElementById("sleepQualityInput").value = "";
-  document.getElementById("awakeningsInput").value = "";
-  document.getElementById("sleepNotesInput").value = "";
-  updateSleepDuration();
-  document.getElementById("didExerciseInput").value = "no";
-  document.getElementById("didExerciseInput").dispatchEvent(new Event("change"));
-  document.getElementById("exerciseTypeInput").value = "";
-  document.getElementById("exerciseMinutesInput").value = "";
-  document.getElementById("exerciseIntensityInput").value = "";
-  document.getElementById("exerciseTimingInput").value = "";
-  document.getElementById("exerciseNotesInput").value = "";
-  document.getElementById("moodScoreInput").value = "";
-  document.getElementById("moodNotesInput").value = "";
-  document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => cb.checked = false);
-}
-
-function collectFormData() {
-  const date = currentDateStr || document.getElementById("dateInput").value;
-  const dayTitle = document.getElementById("dayTitleInput").value;
-  const overallNotes = document.getElementById("overallNotesInput").value;
-  const getBlock = (prefix) => ({
-    score: numberOrNull(document.getElementById(prefix + "Score").value),
-    activity: document.getElementById(prefix + "Activity").value,
-    symptoms: document.getElementById(prefix + "Symptoms").value
-  });
-  const functionality = {
-    earlyMorning: getBlock("earlyMorning"),
-    lateMorning: getBlock("lateMorning"),
-    earlyAfternoon: getBlock("earlyAfternoon"),
-    lateAfternoon: getBlock("lateAfternoon"),
-    earlyEvening: getBlock("earlyEvening"),
-    lateEvening: getBlock("lateEvening")
-  };
-  const sleep = {
-    bedtime: document.getElementById("bedtimeInput").value,
-    wakeTime: document.getElementById("wakeTimeInput").value,
-    hours: numberOrNull(document.getElementById("hoursSleptInput").value),
-    quality: numberOrNull(document.getElementById("sleepQualityInput").value),
-    awakenings: numberOrNull(document.getElementById("awakeningsInput").value),
-    notes: document.getElementById("sleepNotesInput").value
-  };
-  const didExercise = document.getElementById("didExerciseInput").value === "yes";
-  const exercise = didExercise ? {
-    type: document.getElementById("exerciseTypeInput").value,
-    minutes: numberOrNull(document.getElementById("exerciseMinutesInput").value),
-    intensity: document.getElementById("exerciseIntensityInput").value,
-    timing: document.getElementById("exerciseTimingInput").value,
-    notes: document.getElementById("exerciseNotesInput").value
-  } : null;
-  const tags = [];
-  document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => { if (cb.checked) tags.push(cb.value); });
-  const scores = Object.values(functionality).map(b => b.score).filter(v => typeof v === "number");
-  const avgFunctionality = scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
-  const moodScore = numberOrNull(document.getElementById("moodScoreInput").value);
-  const moodNotes = document.getElementById("moodNotesInput").value;
-  return { date, dayTitle, overallNotes, functionality, sleep, didExercise, exercise, tags, avgFunctionality, mood: { score: moodScore, notes: moodNotes } };
-}
-
-function fillFormFromData(d) {
-  if (d.date) currentDateStr = d.date;
-  syncDateInput();
-  document.getElementById("dayTitleInput").value = d.dayTitle || "";
-  document.getElementById("overallNotesInput").value = d.overallNotes || "";
-  const setBlock = (prefix, obj = {}) => {
-    document.getElementById(prefix + "Score").value = obj.score ?? "";
-    document.getElementById(prefix + "Activity").value = obj.activity || "";
-    document.getElementById(prefix + "Symptoms").value = obj.symptoms || "";
-  };
-  setBlock("earlyMorning", d.functionality?.earlyMorning);
-  setBlock("lateMorning", d.functionality?.lateMorning);
-  setBlock("earlyAfternoon", d.functionality?.earlyAfternoon);
-  setBlock("lateAfternoon", d.functionality?.lateAfternoon);
-  setBlock("earlyEvening", d.functionality?.earlyEvening);
-  setBlock("lateEvening", d.functionality?.lateEvening);
-  if (d.sleep) {
-    document.getElementById("bedtimeInput").value = d.sleep.bedtime || "";
-    document.getElementById("wakeTimeInput").value = d.sleep.wakeTime || "";
-    document.getElementById("hoursSleptInput").value = d.sleep.hours ?? "";
-    document.getElementById("sleepQualityInput").value = d.sleep.quality ?? "";
-    document.getElementById("awakeningsInput").value = d.sleep.awakenings ?? "";
-    document.getElementById("sleepNotesInput").value = d.sleep.notes || "";
-  }
-  if (d.didExercise && d.exercise) {
-    document.getElementById("didExerciseInput").value = "yes";
-    document.getElementById("exerciseTypeInput").value = d.exercise.type || "";
-    document.getElementById("exerciseMinutesInput").value = d.exercise.minutes ?? "";
-    document.getElementById("exerciseIntensityInput").value = d.exercise.intensity || "";
-    document.getElementById("exerciseTimingInput").value = d.exercise.timing || "";
-    document.getElementById("exerciseNotesInput").value = d.exercise.notes || "";
-  } else {
-    document.getElementById("didExerciseInput").value = "no";
-  }
-  document.getElementById("didExerciseInput").dispatchEvent(new Event("change"));
-  if (d.mood && (d.mood.score != null || d.mood.notes)) {
-    document.getElementById("moodScoreInput").value = d.mood.score ?? "";
-    document.getElementById("moodNotesInput").value = d.mood.notes || "";
-  } else {
-    document.getElementById("moodScoreInput").value = "";
-    document.getElementById("moodNotesInput").value = "";
-  }
-  updateSleepDuration();
-  renderJournal();
-  const tagsSet = new Set(d.tags || []);
-  document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => cb.checked = tagsSet.has(cb.value));
+  const hoursDisp = document.getElementById('hoursSleptDisplay');
+  if (hoursDisp) hoursDisp.textContent = '\u2014';
 }
