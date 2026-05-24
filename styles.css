@@ -201,12 +201,16 @@ body {
   }
 
   #tabs.header-tabs {
+    flex-wrap: wrap;
+    justify-content: center;
     padding: 0.3rem 0.5rem;
-    gap: 0.25rem;
+    gap: 0.3rem;
   }
 
   #tabs.header-tabs .tab-button {
-    padding: 0.3rem 0.7rem;
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 0.3rem 0.5rem;
     font-size: 0.76rem;
     min-height: 32px;
   }
