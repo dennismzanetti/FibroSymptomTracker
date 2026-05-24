@@ -110,52 +110,38 @@
       </label>
     </div>
     <div class="card">
-      <h3>Sleep</h3>
-      <label>Hours slept:
-        <div class="number-stepper">
-          <button type="button" class="stepper-btn" data-step="-0.5" aria-label="Decrease hours slept">&#8722;</button>
-          <input type="number" min="0" max="24" step="0.5" id="sleepHoursInput" inputmode="decimal" />
-          <button type="button" class="stepper-btn" data-step="0.5" aria-label="Increase hours slept">+</button>
-        </div>
-      </label>
-      <label>Sleep quality (1&#8211;10):
-        <div class="number-stepper">
-          <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease sleep quality">&#8722;</button>
-          <input type="number" min="1" max="10" id="sleepQualityInput" inputmode="numeric" />
-          <button type="button" class="stepper-btn" data-step="1" aria-label="Increase sleep quality">+</button>
-        </div>
-      </label>
-      <label>Sleep notes:
-        <textarea id="sleepNotesInput" rows="2" placeholder="Insomnia, restless, vivid dreams, etc."></textarea>
-      </label>
+      <h3>Sleep (previous night)</h3>
+      <div class="sleep-time-grid">
+        <label class="time-widget-label-wrap">
+          <span class="time-widget-label">Bedtime</span>
+          <input type="time" id="bedtimeInput" step="900" class="time-input-single" aria-label="Bedtime" />
+        </label>
+        <label class="time-widget-label-wrap">
+          <span class="time-widget-label">Wake time</span>
+          <input type="time" id="wakeTimeInput" step="900" class="time-input-single" aria-label="Wake time" />
+        </label>
+      </div>
+      <div class="sleep-total-display" aria-live="polite">
+        <span class="sleep-total-label">Total hours slept</span>
+        <span id="hoursSleptDisplay" class="sleep-total-value">&#8212;</span>
+        <input type="hidden" id="hoursSleptInput" />
+      </div>
+      <label>Sleep Quality (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease sleep quality score">&#8722;</button><input type="number" min="1" max="10" id="sleepQualityInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase sleep quality score">+</button></div></label>
+      <label>Number of awakenings<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease number of awakenings">&#8722;</button><input type="number" min="0" max="20" id="awakeningsInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase number of awakenings">+</button></div></label>
+      <label>Sleep notes <textarea id="sleepNotesInput" rows="2"></textarea></label>
     </div>
     <div class="card">
-      <h3>Cognitive / Brain Fog</h3>
-      <label>Brain fog score (1&#8211;10)
-        <div class="number-stepper">
-          <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease brain fog score">&#8722;</button>
-          <input type="number" min="1" max="10" id="brainFogScoreInput" inputmode="numeric" />
-          <button type="button" class="stepper-btn" data-step="1" aria-label="Increase brain fog score">+</button>
-        </div>
+      <h3>Exercise / Activity</h3>
+      <label>Did you do planned exercise or notable activity?
+        <select id="didExerciseInput"><option value="no">No</option><option value="yes">Yes</option></select>
       </label>
-      <label>Brain fog notes:
-        <textarea id="brainFogNotesInput" rows="2" placeholder="Word finding, focus, memory, etc."></textarea>
-      </label>
-    </div>
-    <div class="card">
-      <h3>Other Symptoms</h3>
-      <label>Other symptoms / notes:
-        <textarea id="otherSymptomsInput" rows="3" placeholder="Headache, nausea, sensitivity, etc."></textarea>
-      </label>
-    </div>
-    <div class="card">
-      <h3>Activity</h3>
-      <label>Steps:
-        <input type="number" id="stepsInput" min="0" inputmode="numeric" placeholder="e.g. 2500" />
-      </label>
-      <label>Activity notes:
-        <textarea id="activityNotesInput" rows="2" placeholder="Walk, PT, rest day, etc."></textarea>
-      </label>
+      <div id="exerciseDetails">
+        <label>Type:<select id="exerciseTypeInput"><option value="">Select...</option><option value="walk">Walk</option><option value="stretching">Stretching</option><option value="pt">Physical therapy</option><option value="strength">Strength</option><option value="yoga">Yoga</option><option value="other">Other</option></select></label>
+        <label>Duration (minutes): <input type="number" min="0" id="exerciseMinutesInput" /></label>
+        <label>Intensity:<select id="exerciseIntensityInput"><option value="">Select...</option><option value="gentle">Gentle</option><option value="moderate">Moderate</option><option value="overdid">Pushed too hard</option></select></label>
+        <label>Timing:<select id="exerciseTimingInput"><option value="">Select...</option><option value="morning">Morning</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option></select></label>
+        <label>Exercise notes: <textarea id="exerciseNotesInput" rows="2"></textarea></label>
+      </div>
     </div>
     <div class="card">
       <h3>Nutrition &amp; Hydration</h3>
@@ -169,6 +155,17 @@
       <label>Nutrition notes:
         <textarea id="nutritionNotesInput" rows="2" placeholder="Meals, diet changes, triggers, etc."></textarea>
       </label>
+    </div>
+    <div class="card">
+      <h3>Quick tags (optional)</h3>
+      <div id="tagsContainer">
+        <label><input type="checkbox" value="flare" /> Flare</label>
+        <label><input type="checkbox" value="crash" /> Crash / post-exertional</label>
+        <label><input type="checkbox" value="better" /> Better than usual</label>
+        <label><input type="checkbox" value="poor_sleep" /> Poor sleep</label>
+        <label><input type="checkbox" value="high_stress" /> High stress</label>
+        <label><input type="checkbox" value="weather_change" /> Weather change</label>
+      </div>
     </div>
     <button id="saveBtn" class="save-btn">Save Entry</button>
   </section>
@@ -253,10 +250,10 @@
 
 <footer class="build-footer" id="buildFooter" aria-label="Build information">
   <span class="build-footer-label">Build</span>
-  <a class="build-footer-sha" id="buildSha" href="https://github.com/dennismzanetti/FibroSymptomTracker/commit/97c87141baf828b9d2478fc8ff490cb634b3beb8" target="_blank" rel="noopener noreferrer" title="View commit on GitHub">97c8714</a>
-  <span class="build-footer-sep">·</span>
+  <a class="build-footer-sha" id="buildSha" href="https://github.com/dennismzanetti/FibroSymptomTracker/commit/e7c5c35810cc817db945e9483458f8c54e359044" target="_blank" rel="noopener noreferrer" title="View commit on GitHub">e7c5c35</a>
+  <span class="build-footer-sep">&middot;</span>
   <span class="build-footer-msg" id="buildMsg"></span>
-  <span class="build-footer-sep">·</span>
+  <span class="build-footer-sep">&middot;</span>
   <time class="build-footer-date" id="buildDate"></time>
 </footer>
 
@@ -285,14 +282,25 @@
 
 <script>
 (function () {
-  function snapTo15(el) {
-    var v = parseFloat(el.value);
-    if (!isNaN(v)) el.value = (Math.round(v * 4) / 4).toFixed(2).replace(/\.?0+$/, '');
-  }
-  var sleepEl = document.getElementById('sleepHoursInput');
-  if (sleepEl) {
-    sleepEl.addEventListener('change', function () { snapTo15(this); });
-    sleepEl.addEventListener('blur',   function () { snapTo15(this); });
+  ['bedtimeInput', 'wakeTimeInput'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('change', recalcSleep);
+  });
+  function recalcSleep() {
+    var bed  = document.getElementById('bedtimeInput').value;
+    var wake = document.getElementById('wakeTimeInput').value;
+    var disp = document.getElementById('hoursSleptDisplay');
+    var hid  = document.getElementById('hoursSleptInput');
+    if (!bed || !wake) { if (disp) disp.textContent = '\u2014'; return; }
+    var bParts = bed.split(':').map(Number);
+    var wParts = wake.split(':').map(Number);
+    var bMins  = bParts[0] * 60 + bParts[1];
+    var wMins  = wParts[0] * 60 + wParts[1];
+    if (wMins <= bMins) wMins += 1440;
+    var total  = (wMins - bMins) / 60;
+    if (disp) disp.textContent = total.toFixed(1) + ' hrs';
+    if (hid)  hid.value = total.toFixed(2);
   }
 }());
 </script>
