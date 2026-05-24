@@ -395,7 +395,7 @@ button.primary:hover {
 
 .save-day-float {
   position: fixed;
-  top: 96px; /* below two-row header (~48px row1 + ~38px row2) */
+  top: 122px; /* below two-row header (~48px row1 + ~64px two-line tab row + 10px gap) */
   right: 1.25rem;
   z-index: 150;
   display: none;
@@ -416,6 +416,35 @@ button.primary:hover {
     font-size: 0.85rem !important;
     padding: 0.45rem 1.1rem !important;
   }
+}
+
+/* ================================================================
+   TOAST NOTIFICATION
+   ================================================================ */
+
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(1rem);
+  background: #1c1d22;
+  color: white;
+  padding: 0.6rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  z-index: 9999;
+  white-space: nowrap;
+}
+
+.toast--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
 }
 
 /* ================================================================
