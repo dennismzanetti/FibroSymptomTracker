@@ -167,57 +167,37 @@
         <label><input type="checkbox" value="weather_change" /> Weather change</label>
       </div>
     </div>
-    <button id="saveBtn" class="save-btn">Save Entry</button>
+    <button id="saveDayBottom" class="primary">Save Day</button>
+    <p id="saveStatus"></p>
   </section>
 
   <!-- Journal Tab -->
   <section id="journal-tab" class="tab">
-    <h2>Journal</h2>
     <div class="card">
-      <label>Journal entry:
-        <textarea id="journalInput" rows="10" placeholder="Free-form notes for the day…"></textarea>
-      </label>
-      <button id="saveJournalBtn" class="save-btn">Save Journal</button>
+      <h2>Journal View</h2>
+      <div id="journalHeatmap"></div>
+      <div id="journalOutput" class="journal-output">No journal entry yet.</div>
     </div>
   </section>
 
   <!-- History Tab -->
   <section id="history-tab" class="tab">
     <h2>History</h2>
-    <div class="card">
-      <div class="history-controls">
-        <label>From: <input type="date" id="historyFrom" /></label>
-        <label>To: <input type="date" id="historyTo" /></label>
-        <button id="loadHistoryBtn" class="save-btn">Load</button>
-      </div>
-      <div id="historyList"></div>
-    </div>
+    <p>Recent days (click to load into the form):</p>
+    <ul id="historyList"></ul>
   </section>
 
   <!-- Trends Tab -->
   <section id="trends-tab" class="tab">
     <h2>Trends</h2>
-    <div class="card">
-      <div class="history-controls">
-        <label>From: <input type="date" id="trendsFrom" /></label>
-        <label>To: <input type="date" id="trendsTo" /></label>
-        <button id="loadTrendsBtn" class="save-btn">Load</button>
-      </div>
-      <div class="chart-wrapper"><canvas id="trendsChart"></canvas></div>
-    </div>
+    <p>Average daily functionality (all six time blocks combined).</p>
+    <canvas id="functionalityChart" height="200"></canvas>
   </section>
 
   <!-- Mood Tab -->
   <section id="mood-tab" class="tab">
-    <h2>Mood Trends</h2>
-    <div class="card">
-      <div class="history-controls">
-        <label>From: <input type="date" id="moodFrom" /></label>
-        <label>To: <input type="date" id="moodTo" /></label>
-        <button id="loadMoodBtn" class="save-btn">Load</button>
-      </div>
-      <div class="chart-wrapper"><canvas id="moodChart"></canvas></div>
-    </div>
+    <h2>Mood</h2>
+    <div id="moodContent"></div>
   </section>
 
   <!-- Medications Tab -->
@@ -250,12 +230,15 @@
 
 <footer class="build-footer" id="buildFooter" aria-label="Build information">
   <span class="build-footer-label">Build</span>
-  <a class="build-footer-sha" id="buildSha" href="https://github.com/dennismzanetti/FibroSymptomTracker/commit/e7c5c35810cc817db945e9483458f8c54e359044" target="_blank" rel="noopener noreferrer" title="View commit on GitHub">e7c5c35</a>
+  <a class="build-footer-sha" id="buildSha" href="#" target="_blank" rel="noopener noreferrer" title="View commit on GitHub">loading&hellip;</a>
   <span class="build-footer-sep">&middot;</span>
   <span class="build-footer-msg" id="buildMsg"></span>
   <span class="build-footer-sep">&middot;</span>
   <time class="build-footer-date" id="buildDate"></time>
 </footer>
+
+<!-- Floating Save Day button (Daily Entry tab only) -->
+<button id="saveDayFloat" class="save-day-float primary" aria-label="Save Day">&#128190; Save Day</button>
 
 <script src="app.js"></script>
 
@@ -309,7 +292,6 @@
 (function () {
   var REPO = 'dennismzanetti/FibroSymptomTracker';
   var API  = 'https://api.github.com/repos/' + REPO + '/commits/main';
-  // Footer already shows hardcoded SHA — API call updates it if available
   fetch(API, { headers: { Accept: 'application/vnd.github.v3+json' } })
     .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
     .then(function (data) {
@@ -331,11 +313,8 @@
       dateEl.setAttribute('datetime', isoDate);
     })
     .catch(function () {
-      // API failed — footer stays visible with hardcoded SHA, just hide the date
-      var dateEl = document.getElementById('buildDate');
-      if (dateEl) dateEl.style.display = 'none';
-      var sepEls = document.querySelectorAll('.build-footer-sep');
-      if (sepEls[1]) sepEls[1].style.display = 'none';
+      var footer = document.getElementById('buildFooter');
+      if (footer) footer.style.display = 'none';
     });
 }());
 </script>
