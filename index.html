@@ -84,277 +84,216 @@
       <div class="time-block"><h4>Late evening (9&#8211;12)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late evening functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateEveningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late evening functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateEveningActivity" /></label><label>Symptoms / how it felt: <textarea id="lateEveningSymptoms" rows="2"></textarea></label></div>
     </div>
     <div class="card">
-      <h3>Sleep (previous night)</h3>
-      <div class="sleep-time-grid">
-        <label class="time-widget-label-wrap">
-          <span class="time-widget-label">Bedtime</span>
-          <input type="time" id="bedtimeInput" step="900" class="time-input-single" aria-label="Bedtime" />
-        </label>
-        <label class="time-widget-label-wrap">
-          <span class="time-widget-label">Wake time</span>
-          <input type="time" id="wakeTimeInput" step="900" class="time-input-single" aria-label="Wake time" />
-        </label>
-      </div>
-      <div class="sleep-total-display" aria-live="polite">
-        <span class="sleep-total-label">Total hours slept</span>
-        <span id="hoursSleptDisplay" class="sleep-total-value">&#8212;</span>
-        <input type="hidden" id="hoursSleptInput" />
-      </div>
-      <label>Sleep Quality (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease sleep quality score">&#8722;</button><input type="number" min="1" max="10" id="sleepQualityInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase sleep quality score">+</button></div></label>
-      <label>Number of awakenings<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease number of awakenings">&#8722;</button><input type="number" min="0" max="20" id="awakeningsInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase number of awakenings">+</button></div></label>
-      <label>Sleep notes <textarea id="sleepNotesInput" rows="2"></textarea></label>
-    </div>
-    <div class="card">
-      <h3>Exercise / Activity</h3>
-      <label>Did you do planned exercise or notable activity?
-        <select id="didExerciseInput"><option value="no">No</option><option value="yes">Yes</option></select>
+      <h3>Pain</h3>
+      <label>Overall pain score (1&#8211;10)
+        <div class="number-stepper">
+          <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease pain score">&#8722;</button>
+          <input type="number" min="1" max="10" id="painScoreInput" inputmode="numeric" />
+          <button type="button" class="stepper-btn" data-step="1" aria-label="Increase pain score">+</button>
+        </div>
       </label>
-      <div id="exerciseDetails">
-        <label>Type:<select id="exerciseTypeInput"><option value="">Select...</option><option value="walk">Walk</option><option value="stretching">Stretching</option><option value="pt">Physical therapy</option><option value="strength">Strength</option><option value="yoga">Yoga</option><option value="other">Other</option></select></label>
-        <label>Duration (minutes): <input type="number" min="0" id="exerciseMinutesInput" /></label>
-        <label>Intensity:<select id="exerciseIntensityInput"><option value="">Select...</option><option value="gentle">Gentle</option><option value="moderate">Moderate</option><option value="overdid">Pushed too hard</option></select></label>
-        <label>Timing:<select id="exerciseTimingInput"><option value="">Select...</option><option value="morning">Morning</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option></select></label>
-        <label>Exercise notes: <textarea id="exerciseNotesInput" rows="2"></textarea></label>
-      </div>
+      <label>Pain notes:
+        <textarea id="painNotesInput" rows="2" placeholder="Location, type, triggers, etc."></textarea>
+      </label>
     </div>
     <div class="card">
-      <h3>Quick tags (optional)</h3>
-      <div id="tagsContainer">
-        <label><input type="checkbox" value="flare" /> Flare</label>
-        <label><input type="checkbox" value="crash" /> Crash / post-exertional</label>
-        <label><input type="checkbox" value="better" /> Better than usual</label>
-        <label><input type="checkbox" value="poor_sleep" /> Poor sleep</label>
-        <label><input type="checkbox" value="high_stress" /> High stress</label>
-        <label><input type="checkbox" value="weather_change" /> Weather change</label>
-      </div>
+      <h3>Fatigue</h3>
+      <label>Fatigue score (1&#8211;10)
+        <div class="number-stepper">
+          <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease fatigue score">&#8722;</button>
+          <input type="number" min="1" max="10" id="fatigueScoreInput" inputmode="numeric" />
+          <button type="button" class="stepper-btn" data-step="1" aria-label="Increase fatigue score">+</button>
+        </div>
+      </label>
+      <label>Fatigue notes:
+        <textarea id="fatigueNotesInput" rows="2" placeholder="Crashed, tired but ok, etc."></textarea>
+      </label>
     </div>
-    <button id="saveDayBottom" class="primary">Save Day</button>
-    <p id="saveStatus"></p>
+    <div class="card">
+      <h3>Sleep</h3>
+      <label>Hours slept:
+        <div class="number-stepper">
+          <button type="button" class="stepper-btn" data-step="-0.5" aria-label="Decrease hours slept">&#8722;</button>
+          <input type="number" min="0" max="24" step="0.5" id="sleepHoursInput" inputmode="decimal" />
+          <button type="button" class="stepper-btn" data-step="0.5" aria-label="Increase hours slept">+</button>
+        </div>
+      </label>
+      <label>Sleep quality (1&#8211;10):
+        <div class="number-stepper">
+          <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease sleep quality">&#8722;</button>
+          <input type="number" min="1" max="10" id="sleepQualityInput" inputmode="numeric" />
+          <button type="button" class="stepper-btn" data-step="1" aria-label="Increase sleep quality">+</button>
+        </div>
+      </label>
+      <label>Sleep notes:
+        <textarea id="sleepNotesInput" rows="2" placeholder="Insomnia, restless, vivid dreams, etc."></textarea>
+      </label>
+    </div>
+    <div class="card">
+      <h3>Cognitive / Brain Fog</h3>
+      <label>Brain fog score (1&#8211;10)
+        <div class="number-stepper">
+          <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease brain fog score">&#8722;</button>
+          <input type="number" min="1" max="10" id="brainFogScoreInput" inputmode="numeric" />
+          <button type="button" class="stepper-btn" data-step="1" aria-label="Increase brain fog score">+</button>
+        </div>
+      </label>
+      <label>Brain fog notes:
+        <textarea id="brainFogNotesInput" rows="2" placeholder="Word finding, focus, memory, etc."></textarea>
+      </label>
+    </div>
+    <div class="card">
+      <h3>Other Symptoms</h3>
+      <label>Other symptoms / notes:
+        <textarea id="otherSymptomsInput" rows="3" placeholder="Headache, nausea, sensitivity, etc."></textarea>
+      </label>
+    </div>
+    <div class="card">
+      <h3>Activity</h3>
+      <label>Steps:
+        <input type="number" id="stepsInput" min="0" inputmode="numeric" placeholder="e.g. 2500" />
+      </label>
+      <label>Activity notes:
+        <textarea id="activityNotesInput" rows="2" placeholder="Walk, PT, rest day, etc."></textarea>
+      </label>
+    </div>
+    <div class="card">
+      <h3>Nutrition &amp; Hydration</h3>
+      <label>Water (oz):
+        <div class="number-stepper">
+          <button type="button" class="stepper-btn" data-step="-8" aria-label="Decrease water intake">&#8722;</button>
+          <input type="number" min="0" id="waterInput" inputmode="numeric" />
+          <button type="button" class="stepper-btn" data-step="8" aria-label="Increase water intake">+</button>
+        </div>
+      </label>
+      <label>Nutrition notes:
+        <textarea id="nutritionNotesInput" rows="2" placeholder="Meals, diet changes, triggers, etc."></textarea>
+      </label>
+    </div>
+    <button id="saveBtn" class="save-btn">Save Entry</button>
   </section>
 
   <!-- Journal Tab -->
   <section id="journal-tab" class="tab">
+    <h2>Journal</h2>
     <div class="card">
-      <h2>Journal View</h2>
-      <div id="journalHeatmap"></div>
-      <div id="journalOutput" class="journal-output">No journal entry yet.</div>
+      <label>Journal entry:
+        <textarea id="journalInput" rows="10" placeholder="Free-form notes for the day…"></textarea>
+      </label>
+      <button id="saveJournalBtn" class="save-btn">Save Journal</button>
     </div>
   </section>
 
   <!-- History Tab -->
   <section id="history-tab" class="tab">
     <h2>History</h2>
-    <p>Recent days (click to load into the form):</p>
-    <ul id="historyList"></ul>
+    <div class="card">
+      <div class="history-controls">
+        <label>From: <input type="date" id="historyFrom" /></label>
+        <label>To: <input type="date" id="historyTo" /></label>
+        <button id="loadHistoryBtn" class="save-btn">Load</button>
+      </div>
+      <div id="historyList"></div>
+    </div>
   </section>
 
   <!-- Trends Tab -->
   <section id="trends-tab" class="tab">
     <h2>Trends</h2>
-    <p>Average daily functionality (all six time blocks combined).</p>
-    <canvas id="functionalityChart" height="200"></canvas>
+    <div class="card">
+      <div class="history-controls">
+        <label>From: <input type="date" id="trendsFrom" /></label>
+        <label>To: <input type="date" id="trendsTo" /></label>
+        <button id="loadTrendsBtn" class="save-btn">Load</button>
+      </div>
+      <div class="chart-wrapper"><canvas id="trendsChart"></canvas></div>
+    </div>
   </section>
 
   <!-- Mood Tab -->
   <section id="mood-tab" class="tab">
-    <h2>Mood</h2>
-    <div class="mood-layout">
-      <aside class="mood-sidebar">
-        <div class="card mood-sidebar-card">
-          <h3>Last 14 Days</h3>
-          <div id="moodSummaryList" class="mood-sidebar-list">Loading&#8230;</div>
-        </div>
-      </aside>
-      <div class="mood-main">
-        <div class="card">
-          <h3 id="atrFormTitle">New Automatic Thought Record</h3>
-          <div class="atr-form">
-            <label>Date: <input type="date" id="atrDateInput" /></label>
-            <label>Situation: <textarea id="atrSituationInput" rows="3" placeholder="Describe the situation that triggered the thought&#8230;"></textarea></label>
-            <label>Emotions: <input type="text" id="atrEmotionsInput" placeholder="e.g. Anxious, Sad, Frustrated" /></label>
-            <label>Emotion Intensity (1&#8211;100):
-              <div class="atr-intensity-wrap">
-                <input type="range" id="atrIntensityRange" min="1" max="100" value="50" class="atr-intensity-slider" />
-                <output id="atrIntensityDisplay" class="atr-intensity-value">50</output>
-              </div>
-            </label>
-            <label>Automatic Thought: <textarea id="atrAutoThoughtInput" rows="3" placeholder="What thought went through your mind?"></textarea></label>
-            <label>Alternative Thought: <textarea id="atrAltThoughtInput" rows="3" placeholder="A more balanced or realistic thought&#8230;"></textarea></label>
-            <input type="hidden" id="atrEditingId" />
-            <div class="atr-form-actions">
-              <button class="primary" id="saveAtrBtn">Save Record</button>
-              <button id="cancelAtrEditBtn" style="display:none;">Cancel</button>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <h3>Automatic Thought Records</h3>
-          <div id="atrList" class="atr-list">
-            <p class="atr-empty">No records yet. Use the form above to add one.</p>
-          </div>
-        </div>
+    <h2>Mood Trends</h2>
+    <div class="card">
+      <div class="history-controls">
+        <label>From: <input type="date" id="moodFrom" /></label>
+        <label>To: <input type="date" id="moodTo" /></label>
+        <button id="loadMoodBtn" class="save-btn">Load</button>
       </div>
+      <div class="chart-wrapper"><canvas id="moodChart"></canvas></div>
     </div>
   </section>
 
   <!-- Medications Tab -->
   <section id="medications-tab" class="tab">
-    <h2>Medications &amp; Supplements</h2>
-    <nav class="med-sub-tabs">
-      <button class="med-sub-tab-btn active" data-med-view="medListView">Medications</button>
-      <button class="med-sub-tab-btn" data-med-view="suppListView">Supplements</button>
-      <button class="med-sub-tab-btn" data-med-view="medHistoryView">Change History</button>
-      <button class="med-sub-tab-btn" data-med-view="medPrintView">Print List</button>
-    </nav>
-    <div id="medListView" class="med-view">
-      <div class="card">
-        <h3 id="medFormTitle">Add Medication</h3>
-        <div class="med-form">
-          <label>Name: <input type="text" id="medNameInput" placeholder="e.g. Duloxetine" /></label>
-          <label>Dose: <input type="text" id="medDoseInput" placeholder="e.g. 60mg" /></label>
-          <label>Frequency:
-            <select id="medFrequencyInput">
-              <option value="">Select...</option>
-              <option value="daily">Daily</option>
-              <option value="twice_daily">Twice daily</option>
-              <option value="three_times_daily">Three times daily</option>
-              <option value="as_needed">As needed (PRN)</option>
-              <option value="weekly">Weekly</option>
-              <option value="other">Other</option>
-            </select>
-          </label>
-          <label>Prescribing doctor: <input type="text" id="medDoctorInput" placeholder="e.g. Dr. Smith" /></label>
-          <label>Purpose / notes: <textarea id="medNotesInput" rows="2" placeholder="What it treats, side effects, etc."></textarea></label>
-          <input type="hidden" id="medEditingId" />
-          <div class="med-form-actions">
-            <button class="primary" id="saveMedBtn">Add Medication</button>
-            <button id="cancelMedEditBtn" style="display:none;">Cancel</button>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <h3>Current Medications</h3>
-        <ul id="medList" class="med-list"><li class="med-empty">No medications added yet.</li></ul>
+    <h2>Medications</h2>
+    <div class="card">
+      <h3>Add / Edit Medication</h3>
+      <label>Name: <input type="text" id="medName" placeholder="e.g. Gabapentin" /></label>
+      <label>Dose: <input type="text" id="medDose" placeholder="e.g. 300 mg" /></label>
+      <label>Frequency: <input type="text" id="medFreq" placeholder="e.g. 3x daily" /></label>
+      <label>Notes: <textarea id="medNotes" rows="2" placeholder="Side effects, instructions, etc."></textarea></label>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <button id="saveMedBtn" class="save-btn">Save Medication</button>
+        <button id="clearMedFormBtn" class="save-btn" style="background:var(--color-surface-offset);color:var(--color-text);">Clear</button>
       </div>
     </div>
-    <div id="suppListView" class="med-view" style="display:none;">
-      <div class="card supp-card">
-        <h3 id="suppFormTitle">Add Supplement</h3>
-        <div class="med-form">
-          <label>Name: <input type="text" id="suppNameInput" placeholder="e.g. Magnesium Glycinate" /></label>
-          <label>Dose / Amount: <input type="text" id="suppDoseInput" placeholder="e.g. 400mg" /></label>
-          <label>Frequency:
-            <select id="suppFrequencyInput">
-              <option value="">Select...</option>
-              <option value="daily">Daily</option>
-              <option value="twice_daily">Twice daily</option>
-              <option value="three_times_daily">Three times daily</option>
-              <option value="as_needed">As needed</option>
-              <option value="weekly">Weekly</option>
-              <option value="other">Other</option>
-            </select>
-          </label>
-          <label>Brand (optional): <input type="text" id="suppBrandInput" placeholder="e.g. Pure Encapsulations" /></label>
-          <label>Purpose / notes: <textarea id="suppNotesInput" rows="2" placeholder="Why you take it, any observations, etc."></textarea></label>
-          <input type="hidden" id="suppEditingId" />
-          <div class="med-form-actions">
-            <button class="primary supp-primary" id="saveSuppBtn">Add Supplement</button>
-            <button id="cancelSuppEditBtn" style="display:none;">Cancel</button>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <h3>Current Supplements</h3>
-        <ul id="suppList" class="med-list"><li class="med-empty">No supplements added yet.</li></ul>
-      </div>
+    <div class="card">
+      <h3>My Medications</h3>
+      <div id="medList"></div>
     </div>
-    <div id="medHistoryView" class="med-view" style="display:none;">
-      <div class="card">
-        <h3>Medication &amp; Supplement Change History</h3>
-        <ul id="medHistoryList" class="med-history-list"><li class="med-empty">No history yet.</li></ul>
-      </div>
-    </div>
-    <div id="medPrintView" class="med-view" style="display:none;">
-      <div class="med-print-header no-print">
-        <div>
-          <h3 style="margin:0; padding:0; border:none;">Print / Save PDF</h3>
-          <p style="margin:0.25rem 0 0 0; color:#5b6686; font-size:0.92rem;">Clean view optimized for printing</p>
-        </div>
-        <button class="primary" id="printMedBtn">&#128438; Print / Save PDF</button>
-      </div>
-      <div class="med-print-sheet" id="medPrintSheet">
-        <div class="print-only med-print-doc-header">
-          <h1>Medications &amp; Supplements</h1>
-          <p>Printed: <span id="medPrintDate"></span></p>
-        </div>
-        <h3 class="print-section-heading">Medications</h3>
-        <div class="table-scroll-wrap">
-          <table class="med-table" id="medPrintTable">
-            <thead><tr><th>Medication</th><th>Dose</th><th>Frequency</th><th>Prescribing Doctor</th><th>Purpose / Notes</th></tr></thead>
-            <tbody id="medPrintTableBody"><tr><td colspan="5" class="med-table-empty">Loading&#8230;</td></tr></tbody>
-          </table>
-        </div>
-        <h3 class="print-section-heading supp-heading" style="margin-top:2rem;">Supplements</h3>
-        <div class="table-scroll-wrap">
-          <table class="med-table supp-table" id="suppPrintTable">
-            <thead><tr><th>Supplement</th><th>Dose</th><th>Brand</th><th>Purpose / Notes</th></tr></thead>
-            <tbody id="suppPrintTableBody"><tr><td colspan="4" class="med-table-empty">Loading&#8230;</td></tr></tbody>
-          </table>
-        </div>
-        <div class="med-print-footer print-only">
-          <p>This list was generated from my Symptom Tracker.</p>
-        </div>
-      </div>
+    <!-- Daily log section -->
+    <div class="card">
+      <h3>Daily Medication Log</h3>
+      <p style="font-size:0.875rem;color:var(--color-text-muted);margin-bottom:0.75rem;">Track which medications you took today (<span id="medLogDateLabel"></span>).</p>
+      <div id="medLogList"></div>
+      <button id="saveMedLogBtn" class="save-btn" style="margin-top:1rem;">Save Log</button>
     </div>
   </section>
-
 </main>
 
-<!-- Floating Save Day button (Daily Entry tab only) -->
-<button id="saveDayFloat" class="save-day-float primary" aria-label="Save Day">&#128190; Save Day</button>
-
-<!-- Build info footer -->
 <footer class="build-footer" id="buildFooter" aria-label="Build information">
-  <span class="build-footer-label">Build:</span>
-  <a class="build-footer-sha" id="buildSha" href="#" target="_blank" rel="noopener noreferrer" title="View commit on GitHub">loading&hellip;</a>
-  <span class="build-footer-sep" aria-hidden="true">&mdash;</span>
+  <span class="build-footer-label">Build</span>
+  <a class="build-footer-sha" id="buildSha" href="https://github.com/dennismzanetti/FibroSymptomTracker/commit/97c87141baf828b9d2478fc8ff490cb634b3beb8" target="_blank" rel="noopener noreferrer" title="View commit on GitHub">97c8714</a>
+  <span class="build-footer-sep">·</span>
   <span class="build-footer-msg" id="buildMsg"></span>
-  <span class="build-footer-sep" aria-hidden="true">&mdash;</span>
+  <span class="build-footer-sep">·</span>
   <time class="build-footer-date" id="buildDate"></time>
 </footer>
 
-<!-- App modules (order matters) -->
-<script src="firebase-init.js"></script>
-<script src="date.js"></script>
-<script src="cloud.js"></script>
-<script src="entry.js"></script>
-<script src="history.js"></script>
-<script src="journal.js"></script>
-<script src="trends.js"></script>
-<script src="medications.js"></script>
-<script src="mood.js"></script>
-<script src="print.js"></script>
-<script src="ui.js"></script>
-<script src="auth.js"></script>
+<script src="app.js"></script>
 
 <script>
 (function () {
-  function snapTo15(input) {
-    if (!input || !input.value) return;
-    var parts = input.value.split(':');
-    var h = parseInt(parts[0], 10);
-    var m = parseInt(parts[1], 10);
-    var snapped = Math.round(m / 15) * 15;
-    if (snapped === 60) { snapped = 0; h = (h + 1) % 24; }
-    input.value = String(h).padStart(2, '0') + ':' + String(snapped).padStart(2, '0');
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-  }
-  ['bedtimeInput', 'wakeTimeInput'].forEach(function (id) {
-    var el = document.getElementById(id);
+  var steppers = document.querySelectorAll('.number-stepper');
+  steppers.forEach(function (stepper) {
+    var btn = stepper.querySelectorAll('.stepper-btn');
+    var el  = stepper.querySelector('input[type="number"]');
     if (!el) return;
-    el.addEventListener('change', function () { snapTo15(this); });
-    el.addEventListener('blur',   function () { snapTo15(this); });
+    btn.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var step = parseFloat(this.dataset.step) || 1;
+        var val  = parseFloat(el.value) || 0;
+        var min  = el.min !== '' ? parseFloat(el.min) : -Infinity;
+        var max  = el.max !== '' ? parseFloat(el.max) :  Infinity;
+        el.value = Math.min(max, Math.max(min, val + step));
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+    });
   });
+}());
+</script>
+
+<script>
+(function () {
+  function snapTo15(el) {
+    var v = parseFloat(el.value);
+    if (!isNaN(v)) el.value = (Math.round(v * 4) / 4).toFixed(2).replace(/\.?0+$/, '');
+  }
+  var sleepEl = document.getElementById('sleepHoursInput');
+  if (sleepEl) {
+    sleepEl.addEventListener('change', function () { snapTo15(this); });
+    sleepEl.addEventListener('blur',   function () { snapTo15(this); });
+  }
 }());
 </script>
 
@@ -362,6 +301,7 @@
 (function () {
   var REPO = 'dennismzanetti/FibroSymptomTracker';
   var API  = 'https://api.github.com/repos/' + REPO + '/commits/main';
+  // Footer already shows hardcoded SHA — API call updates it if available
   fetch(API, { headers: { Accept: 'application/vnd.github.v3+json' } })
     .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
     .then(function (data) {
@@ -383,8 +323,11 @@
       dateEl.setAttribute('datetime', isoDate);
     })
     .catch(function () {
-      var footer = document.getElementById('buildFooter');
-      if (footer) footer.style.display = 'none';
+      // API failed — footer stays visible with hardcoded SHA, just hide the date
+      var dateEl = document.getElementById('buildDate');
+      if (dateEl) dateEl.style.display = 'none';
+      var sepEls = document.querySelectorAll('.build-footer-sep');
+      if (sepEls[1]) sepEls[1].style.display = 'none';
     });
 }());
 </script>
