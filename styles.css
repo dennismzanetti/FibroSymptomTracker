@@ -395,7 +395,7 @@ button.primary:hover {
 
 .save-day-float {
   position: fixed;
-  top: 122px; /* below two-row header (~48px row1 + ~64px two-line tab row + 10px gap) */
+  top: 122px;
   right: 1.25rem;
   z-index: 150;
   display: none;
@@ -1003,6 +1003,7 @@ input[type="range"] {
 @media print {
   .app-header,
   .save-day-float,
+  .build-footer,
   .print-controls { display: none !important; }
 
   main { padding: 0; margin: 0; max-width: 100%; }
@@ -1158,3 +1159,45 @@ input[type="range"] {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #cfd5e3; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #9fa8da; }
+
+/* ================================================================
+   BUILD FOOTER
+   ================================================================ */
+
+.build-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(28, 29, 34, 0.92);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: rgba(255,255,255,0.75);
+  font-size: 0.72rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.35rem 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.build-footer-sha {
+  color: #9fa8da;
+  text-decoration: none;
+  font-family: monospace;
+}
+
+.build-footer-sha:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+.build-footer-sep { opacity: 0.35; }
+
+@media (max-width: 480px) {
+  .build-footer { font-size: 0.65rem; gap: 0.3rem; padding: 0.3rem 0.5rem; }
+}
