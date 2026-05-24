@@ -424,9 +424,9 @@ button.primary:hover {
 
 .toast {
   position: fixed;
-  bottom: 1.5rem;
+  top: 130px;
   left: 50%;
-  transform: translateX(-50%) translateY(1rem);
+  transform: translateX(-50%) translateY(-0.5rem);
   background: #1c1d22;
   color: white;
   padding: 0.6rem 1.25rem;
