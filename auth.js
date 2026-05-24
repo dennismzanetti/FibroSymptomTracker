@@ -1,38 +1,33 @@
-// ---- Auth ----
-const authOverlay = document.getElementById("authOverlay");
-const googleSignInBtn = document.getElementById("googleSignInBtn");
-const signOutBtn = document.getElementById("signOutBtn");
-const appMain = document.querySelector("main");
+import { initFirebase } from './firebase-init.js';
 
-if (appMain) appMain.style.display = "none";
+const { auth, googleProvider } = initFirebase();
 
-let _appInitialised = false;
+export function setupAuth(onSignIn, onSignOut) {
+  const overlay     = document.getElementById('authOverlay');
+  const signInBtn   = document.getElementById('googleSignInBtn');
+  const signOutBtn  = document.getElementById('signOutBtn');
+  const authError   = document.getElementById('authError');
 
-auth.onAuthStateChanged((user) => {
-  if (user) {
-    if (authOverlay) authOverlay.style.display = "none";
-    if (appMain) appMain.style.display = "";
-    if (signOutBtn) signOutBtn.style.display = "inline-block";
-    console.log("Signed in as", user.displayName, "UID:", user.uid);
-    if (!_appInitialised) {
-      _appInitialised = true;
-      loadTodayDate();
-      loadDayFromCloud(currentDateStr);
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      overlay.style.display = 'none';
+      signOutBtn.style.display = '';
+      onSignIn(user);
+    } else {
+      overlay.style.display = 'flex';
+      signOutBtn.style.display = 'none';
+      onSignOut();
     }
-  } else {
-    if (authOverlay) authOverlay.style.display = "flex";
-    if (appMain) appMain.style.display = "none";
-    if (signOutBtn) signOutBtn.style.display = "none";
-    _appInitialised = false;
-  }
-});
-
-googleSignInBtn?.addEventListener("click", () => {
-  const authError = document.getElementById("authError");
-  auth.signInWithPopup(provider).catch((err) => {
-    console.error("Sign-in error:", err);
-    if (authError) authError.textContent = "Sign-in failed. Please try again.";
   });
-});
 
-signOutBtn?.addEventListener("click", () => auth.signOut());
+  signInBtn.addEventListener('click', async () => {
+    authError.textContent = '';
+    try {
+      await auth.signInWithPopup(googleProvider);
+    } catch (err) {
+      authError.textContent = 'Sign-in failed: ' + err.message;
+    }
+  });
+
+  signOutBtn.addEventListener('click', () => auth.signOut());
+}

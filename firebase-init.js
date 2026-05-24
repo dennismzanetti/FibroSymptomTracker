@@ -1,27 +1,21 @@
-// ---- Firebase init -----
-const firebaseConfig = {
-  apiKey: "AIzaSyD75EQyz7w9ZYuK8iDewQDzI5Z2RUzMk1k",
-  authDomain: "fibrosymptomtracker.firebaseapp.com",
-  projectId: "fibrosymptomtracker",
-  storageBucket: "fibrosymptomtracker.firebasestorage.app",
-  messagingSenderId: "729903386531",
-  appId: "1:729903386531:web:b73385c230369ac53b9416",
-  measurementId: "G-N20WEFRW9Y"
-};
+let _app, _db, _auth, _googleProvider;
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+export function initFirebase() {
+  if (_app) return { app: _app, db: _db, auth: _auth, googleProvider: _googleProvider };
 
-// ---- Auth globals ----
-const auth = firebase.auth();
-const provider = new firebase.auth.GoogleAuthProvider();
+  const config = {
+    apiKey: "AIzaSyD7bnVAfclKhMjfqX3VQ1FP-EKyQIMV5Kc",
+    authDomain: "fibrosymptomtracker.firebaseapp.com",
+    projectId: "fibrosymptomtracker",
+    storageBucket: "fibrosymptomtracker.appspot.com",
+    messagingSenderId: "399399538093",
+    appId: "1:399399538093:web:8a0d4d90e0f81a5e8bb22a"
+  };
 
-// ---- Shared frequency labels (used by medications + print) ----
-const FREQ_LABELS = {
-  daily: "Daily",
-  twice_daily: "2×/day",
-  three_times_daily: "3×/day",
-  as_needed: "PRN",
-  weekly: "Weekly",
-  other: "Other"
-};
+  _app           = firebase.initializeApp(config);
+  _db            = firebase.firestore();
+  _auth          = firebase.auth();
+  _googleProvider = new firebase.auth.GoogleAuthProvider();
+
+  return { app: _app, db: _db, auth: _auth, googleProvider: _googleProvider };
+}

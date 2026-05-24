@@ -1,35 +1,27 @@
-// ---- In-memory day store (localStorage blocked in sandboxed iframes) ----
-let _localDays = [];
+import { initFirebase } from './firebase-init.js';
 
-function loadAllDays() {
-  return _localDays.slice();
-}
-function saveAllDays(days) {
-  _localDays = days.slice();
-}
-function numberOrNull(val) {
-  const n = parseFloat(val);
-  return isNaN(n) ? null : n;
+const { db } = initFirebase();
+
+export function dayDocRef(uid, dateStr) {
+  return db.collection('users').doc(uid).collection('days').doc(dateStr);
 }
 
-function isEntryTabActive() {
-  const tab = document.getElementById("entry-tab");
-  return tab && tab.classList.contains("active");
+export async function saveDay(uid, dateStr, data) {
+  await dayDocRef(uid, dateStr).set(data, { merge: true });
 }
 
-function loadDayFromCloud(date) {
-  if (!date) return;
-  db.collection("days").doc(date).get().then((doc) => {
-    if (doc.exists) {
-      fillFormFromData(doc.data());
-      if (isEntryTabActive()) showToast("\u2601\ufe0f Loaded from cloud for " + date);
-    } else {
-      clearFormFieldsExceptDate();
-      if (isEntryTabActive()) showToast("No entry for " + date + " \u2014 form cleared");
-    }
-  }).catch((error) => {
-    console.error("Error getting document:", error);
-    clearFormFieldsExceptDate();
-    if (isEntryTabActive()) showToast("\u26a0\ufe0f Cloud load failed");
-  });
+export async function loadDay(uid, dateStr) {
+  const snap = await dayDocRef(uid, dateStr).get();
+  return snap.exists ? snap.data() : null;
+}
+
+export async function loadRange(uid, from, to) {
+  const snap = await db
+    .collection('users').doc(uid)
+    .collection('days')
+    .where('__name__', '>=', from)
+    .where('__name__', '<=', to)
+    .orderBy('__name__')
+    .get();
+  return snap.docs.map(d => ({ date: d.id, ...d.data() }));
 }
