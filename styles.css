@@ -110,7 +110,7 @@ body {
   opacity: 0.8;
 }
 
-/* Hidden native date input — positioned under the button so showPicker() works */
+/* Hidden native date input */
 .sr-date-input {
   position: absolute;
   top: 0;
@@ -168,7 +168,12 @@ body {
 
 .header-signout-btn:hover { background: rgba(255,255,255,0.25); }
 
-/* ---- Row 2: tab strip ---- */
+/* ---- Tab select: hidden on desktop, shown on mobile ---- */
+.tab-select {
+  display: none;
+}
+
+/* ---- Row 2: desktop tab strip ---- */
 .header-row2 {
   border-top: 1px solid rgba(255,255,255,0.18);
   background: rgba(0,0,0,0.08);
@@ -216,68 +221,83 @@ body {
   color: #3f51b5;
 }
 
-/* ---- Mobile tab select dropdown ---- */
-.tab-select {
-  display: none; /* hidden on desktop */
-}
-
-/* ---- Mobile tweaks (<=640px) ---- */
+/* ================================================================
+   MOBILE (<=640px)
+   ================================================================ */
 @media (max-width: 640px) {
   .header-row1 {
     height: auto;
-    min-height: 44px;
+    min-height: 48px;
     padding: 0.35rem 0.6rem;
     gap: 0.4rem;
+    flex-wrap: nowrap;
   }
 
+  /* Hide desktop title */
   .header-title { display: none; }
-  .header-date-nav { flex: 1; justify-content: flex-start; }
+
+  /* Date nav stays compact */
+  .header-date-nav { flex-shrink: 0; justify-content: flex-start; }
 
   .date-picker-btn {
-    padding: 0.25rem 0.5rem;
+    padding: 0.28rem 0.55rem;
     font-size: 0.78rem;
     gap: 0.25rem;
   }
 
   .day-of-week-display { display: none; }
 
-  .header-signout-btn {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-  }
-
-  /* Hide desktop tab buttons on mobile */
-  #tabs.header-tabs {
-    display: none;
-  }
-
-  /* Show dropdown on mobile */
+  /* Tab select: styled to match date-picker-btn */
   .tab-select {
-    display: block;
-    width: 100%;
-    margin: 0;
-    padding: 0.55rem 0.75rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    background: rgba(0,0,0,0.18);
+    display: inline-flex;
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 32px;
+    padding: 0 0.55rem;
+    background: rgba(255,255,255,0.15);
     color: white;
-    border: none;
-    border-radius: 0;
+    border: 1px solid rgba(255,255,255,0.45);
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     cursor: pointer;
     appearance: auto;
     -webkit-appearance: auto;
+    /* Override the generic select styles that would clobber this */
+    margin-top: 0;
+    box-sizing: border-box;
+    transition: background 0.18s ease, border-color 0.18s ease;
   }
 
   .tab-select:focus {
     outline: none;
-    box-shadow: inset 0 -2px 0 white;
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.35);
+    border-color: rgba(255,255,255,0.7);
   }
 
-  /* Style the select options (limited cross-browser, but readable) */
+  .tab-select:active {
+    background: rgba(255,255,255,0.25);
+  }
+
+  /* Options inherit the page-level color reset via appearance:auto;
+     give them a dark bg so they're readable when the sheet opens */
   .tab-select option {
     background: #3f51b5;
     color: white;
     font-weight: 600;
+  }
+
+  /* Sign-out button */
+  .header-signout-btn {
+    flex-shrink: 0;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  /* Hide entire desktop tab row on mobile */
+  .header-row2 {
+    display: none;
   }
 }
 

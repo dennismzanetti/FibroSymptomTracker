@@ -21,7 +21,7 @@
 </div>
 
 <header class="app-header">
-  <!-- Row 1: title | date nav | sign-out -->
+  <!-- Row 1: title | date nav | [mobile: tab select] | sign-out -->
   <div class="header-row1">
     <h1 class="header-title">Symptom Tracker</h1>
     <div class="header-date-nav">
@@ -39,21 +39,8 @@
 
       <button type="button" id="nextDayBtn" class="date-nav-btn icon-btn" aria-label="Next day" title="Next day">&#8250;</button>
     </div>
-    <button id="signOutBtn" class="header-signout-btn" style="display:none;">Sign Out</button>
-  </div>
 
-  <!-- Row 2: tab navigation -->
-  <div class="header-row2">
-    <!-- Desktop: pill tab buttons -->
-    <nav id="tabs" class="header-tabs">
-      <button class="tab-button active" data-tab="entry-tab">Daily Entry</button>
-      <button class="tab-button" data-tab="journal-tab">Journal</button>
-      <button class="tab-button" data-tab="history-tab">History</button>
-      <button class="tab-button" data-tab="trends-tab">Trends</button>
-      <button class="tab-button" data-tab="mood-tab">Mood</button>
-      <button class="tab-button" data-tab="medications-tab">Medications</button>
-    </nav>
-    <!-- Mobile: dropdown menu -->
+    <!-- Mobile-only tab selector: lives in row1 next to date nav -->
     <select id="tabSelect" class="tab-select" aria-label="Select section">
       <option value="entry-tab">Daily Entry</option>
       <option value="journal-tab">Journal</option>
@@ -62,6 +49,20 @@
       <option value="mood-tab">Mood</option>
       <option value="medications-tab">Medications</option>
     </select>
+
+    <button id="signOutBtn" class="header-signout-btn" style="display:none;">Sign Out</button>
+  </div>
+
+  <!-- Row 2: desktop tab navigation only -->
+  <div class="header-row2">
+    <nav id="tabs" class="header-tabs">
+      <button class="tab-button active" data-tab="entry-tab">Daily Entry</button>
+      <button class="tab-button" data-tab="journal-tab">Journal</button>
+      <button class="tab-button" data-tab="history-tab">History</button>
+      <button class="tab-button" data-tab="trends-tab">Trends</button>
+      <button class="tab-button" data-tab="mood-tab">Mood</button>
+      <button class="tab-button" data-tab="medications-tab">Medications</button>
+    </nav>
   </div>
 </header>
 
@@ -325,8 +326,9 @@
 
 <script>
 (function () {
-  // Keep mobile select in sync when desktop tab buttons are clicked
   var tabSelect = document.getElementById('tabSelect');
+
+  // Keep select in sync when desktop tab buttons are clicked
   document.querySelectorAll('#tabs .tab-button').forEach(function (btn) {
     btn.addEventListener('click', function () {
       if (tabSelect) tabSelect.value = btn.getAttribute('data-tab');
@@ -336,9 +338,7 @@
   // Switch tabs when the mobile select changes
   if (tabSelect) {
     tabSelect.addEventListener('change', function () {
-      var targetTab = tabSelect.value;
-      // Simulate a click on the matching desktop tab button to reuse existing logic
-      var btn = document.querySelector('#tabs .tab-button[data-tab="' + targetTab + '"]');
+      var btn = document.querySelector('#tabs .tab-button[data-tab="' + tabSelect.value + '"]');
       if (btn) btn.click();
     });
   }
