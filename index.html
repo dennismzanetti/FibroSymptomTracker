@@ -26,8 +26,17 @@
     <h1 class="header-title">Symptom Tracker</h1>
     <div class="header-date-nav">
       <button type="button" id="prevDayBtn" class="date-nav-btn icon-btn" aria-label="Previous day" title="Previous day">&#8249;</button>
-      <span id="dayOfWeekDisplay" class="day-of-week-display"></span>
-      <input type="date" id="dateInput" aria-label="Entry date" class="sr-date-input">
+
+      <!-- Date picker button + hidden native input -->
+      <div class="date-picker-wrap">
+        <button type="button" id="datePickerBtn" class="date-picker-btn" aria-label="Select date" title="Click to pick a date">
+          <span id="dayOfWeekDisplay" class="date-picker-dow"></span>
+          <span id="dateDisplay" class="date-picker-date"></span>
+          <svg class="date-picker-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </button>
+        <input type="date" id="dateInput" aria-label="Entry date" class="date-picker-hidden-input">
+      </div>
+
       <button type="button" id="nextDayBtn" class="date-nav-btn icon-btn" aria-label="Next day" title="Next day">&#8250;</button>
     </div>
     <button id="signOutBtn" class="header-signout-btn" style="display:none;">Sign Out</button>
@@ -51,7 +60,6 @@
 
   <!-- Daily Entry Tab -->
   <section id="entry-tab" class="tab active">
-    <!-- Floating Save Day button — lives inside #entry-tab so .tab display:none hides it automatically -->
     <button id="saveDayFloat" class="save-day-float primary" aria-label="Save Day">&#128190; Save Day</button>
 
     <h2>Daily Entry</h2>
@@ -160,25 +168,17 @@
   <section id="mood-tab" class="tab">
     <h2>Mood</h2>
     <div id="moodContent">
-      <!-- 14-day summary table -->
       <div class="card">
         <h3>14-Day Mood Summary</h3>
         <table class="mood-summary-table">
           <thead>
-            <tr>
-              <th>Date</th>
-              <th>Day</th>
-              <th>Score</th>
-              <th>Notes</th>
-            </tr>
+            <tr><th>Date</th><th>Day</th><th>Score</th><th>Notes</th></tr>
           </thead>
           <tbody id="moodSummaryBody">
             <tr><td colspan="4" class="mood-table-empty">Loading&#8230;</td></tr>
           </tbody>
         </table>
       </div>
-
-      <!-- Automatic Thought Records -->
       <div class="card">
         <h3 id="atrFormTitle">New Automatic Thought Record</h3>
         <label>Date: <input type="date" id="atrDateInput" /></label>
@@ -206,7 +206,6 @@
           <button id="cancelAtrEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
         </div>
       </div>
-
       <div class="card">
         <h3>Thought Records</h3>
         <div id="atrList"><p class="atr-empty">No records yet.</p></div>
@@ -217,16 +216,12 @@
   <!-- Medications Tab -->
   <section id="medications-tab" class="tab">
     <h2>Medications</h2>
-
-    <!-- Sub-tab navigation -->
     <div class="med-sub-tabs">
       <button class="med-sub-tab-btn active" data-med-view="medListView">Medications</button>
       <button class="med-sub-tab-btn" data-med-view="suppListView">Supplements</button>
       <button class="med-sub-tab-btn" data-med-view="medHistoryView">Change History</button>
       <button class="med-sub-tab-btn" data-med-view="medPrintView">Print / Export</button>
     </div>
-
-    <!-- Medications view -->
     <div id="medListView" class="med-view">
       <div class="card">
         <h3 id="medFormTitle">Add Medication</h3>
@@ -251,13 +246,8 @@
           <button id="cancelMedEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
         </div>
       </div>
-      <div class="card">
-        <h3>My Medications</h3>
-        <ul id="medList"></ul>
-      </div>
+      <div class="card"><h3>My Medications</h3><ul id="medList"></ul></div>
     </div>
-
-    <!-- Supplements view -->
     <div id="suppListView" class="med-view" style="display:none;">
       <div class="card">
         <h3 id="suppFormTitle">Add Supplement</h3>
@@ -282,21 +272,11 @@
           <button id="cancelSuppEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
         </div>
       </div>
-      <div class="card">
-        <h3>My Supplements</h3>
-        <ul id="suppList"></ul>
-      </div>
+      <div class="card"><h3>My Supplements</h3><ul id="suppList"></ul></div>
     </div>
-
-    <!-- Change history view -->
     <div id="medHistoryView" class="med-view" style="display:none;">
-      <div class="card">
-        <h3>Medication &amp; Supplement Change History</h3>
-        <ul id="medHistoryList"></ul>
-      </div>
+      <div class="card"><h3>Medication &amp; Supplement Change History</h3><ul id="medHistoryList"></ul></div>
     </div>
-
-    <!-- Print / Export view -->
     <div id="medPrintView" class="med-view" style="display:none;">
       <div class="card">
         <h3>Print / Save as PDF</h3>
@@ -318,7 +298,6 @@
         </table>
       </div>
     </div>
-
   </section>
 </main>
 
