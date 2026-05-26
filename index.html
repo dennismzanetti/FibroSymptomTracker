@@ -335,27 +335,6 @@
 
 <script>
 (function () {
-  var steppers = document.querySelectorAll('.number-stepper');
-  steppers.forEach(function (stepper) {
-    var btn = stepper.querySelectorAll('.stepper-btn');
-    var el  = stepper.querySelector('input[type="number"]');
-    if (!el) return;
-    btn.forEach(function (b) {
-      b.addEventListener('click', function () {
-        var step = parseFloat(this.dataset.step) || 1;
-        var val  = parseFloat(el.value) || 0;
-        var min  = el.min !== '' ? parseFloat(el.min) : -Infinity;
-        var max  = el.max !== '' ? parseFloat(el.max) :  Infinity;
-        el.value = Math.min(max, Math.max(min, val + step));
-        el.dispatchEvent(new Event('input', { bubbles: true }));
-      });
-    });
-  });
-}());
-</script>
-
-<script>
-(function () {
   ['bedtimeInput', 'wakeTimeInput'].forEach(function (id) {
     var el = document.getElementById(id);
     if (!el) return;
