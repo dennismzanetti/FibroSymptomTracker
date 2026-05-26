@@ -216,6 +216,11 @@ body {
   color: #3f51b5;
 }
 
+/* ---- Mobile tab select dropdown ---- */
+.tab-select {
+  display: none; /* hidden on desktop */
+}
+
 /* ---- Mobile tweaks (<=640px) ---- */
 @media (max-width: 640px) {
   .header-row1 {
@@ -241,19 +246,38 @@ body {
     font-size: 0.75rem;
   }
 
+  /* Hide desktop tab buttons on mobile */
   #tabs.header-tabs {
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 0.3rem 0.5rem;
-    gap: 0.3rem;
+    display: none;
   }
 
-  #tabs.header-tabs .tab-button {
-    flex: 1 1 auto;
-    text-align: center;
-    padding: 0.3rem 0.5rem;
-    font-size: 0.76rem;
-    min-height: 32px;
+  /* Show dropdown on mobile */
+  .tab-select {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: rgba(0,0,0,0.18);
+    color: white;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    appearance: auto;
+    -webkit-appearance: auto;
+  }
+
+  .tab-select:focus {
+    outline: none;
+    box-shadow: inset 0 -2px 0 white;
+  }
+
+  /* Style the select options (limited cross-browser, but readable) */
+  .tab-select option {
+    background: #3f51b5;
+    color: white;
+    font-weight: 600;
   }
 }
 

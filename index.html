@@ -44,6 +44,7 @@
 
   <!-- Row 2: tab navigation -->
   <div class="header-row2">
+    <!-- Desktop: pill tab buttons -->
     <nav id="tabs" class="header-tabs">
       <button class="tab-button active" data-tab="entry-tab">Daily Entry</button>
       <button class="tab-button" data-tab="journal-tab">Journal</button>
@@ -52,6 +53,15 @@
       <button class="tab-button" data-tab="mood-tab">Mood</button>
       <button class="tab-button" data-tab="medications-tab">Medications</button>
     </nav>
+    <!-- Mobile: dropdown menu -->
+    <select id="tabSelect" class="tab-select" aria-label="Select section">
+      <option value="entry-tab">Daily Entry</option>
+      <option value="journal-tab">Journal</option>
+      <option value="history-tab">History</option>
+      <option value="trends-tab">Trends</option>
+      <option value="mood-tab">Mood</option>
+      <option value="medications-tab">Medications</option>
+    </select>
   </div>
 </header>
 
@@ -312,6 +322,28 @@
 </footer>
 
 <script src="app.js"></script>
+
+<script>
+(function () {
+  // Keep mobile select in sync when desktop tab buttons are clicked
+  var tabSelect = document.getElementById('tabSelect');
+  document.querySelectorAll('#tabs .tab-button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (tabSelect) tabSelect.value = btn.getAttribute('data-tab');
+    });
+  });
+
+  // Switch tabs when the mobile select changes
+  if (tabSelect) {
+    tabSelect.addEventListener('change', function () {
+      var targetTab = tabSelect.value;
+      // Simulate a click on the matching desktop tab button to reuse existing logic
+      var btn = document.querySelector('#tabs .tab-button[data-tab="' + targetTab + '"]');
+      if (btn) btn.click();
+    });
+  }
+}());
+</script>
 
 <script>
 (function () {
