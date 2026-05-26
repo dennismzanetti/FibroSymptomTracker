@@ -158,34 +158,166 @@
   <!-- Mood Tab -->
   <section id="mood-tab" class="tab">
     <h2>Mood</h2>
-    <div id="moodContent"></div>
+    <div id="moodContent">
+      <!-- 14-day summary table -->
+      <div class="card">
+        <h3>14-Day Mood Summary</h3>
+        <table class="mood-summary-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Day</th>
+              <th>Score</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="moodSummaryBody">
+            <tr><td colspan="4" class="mood-table-empty">Loading&#8230;</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Automatic Thought Records -->
+      <div class="card">
+        <h3 id="atrFormTitle">New Automatic Thought Record</h3>
+        <label>Date: <input type="date" id="atrDateInput" /></label>
+        <label>Situation:
+          <textarea id="atrSituationInput" rows="2" placeholder="What were you doing / what happened?"></textarea>
+        </label>
+        <label>Emotions:
+          <input type="text" id="atrEmotionsInput" placeholder="e.g. anxious, sad, angry" />
+        </label>
+        <label>Intensity (0&#8211;100):
+          <div style="display:flex;align-items:center;gap:0.5rem;">
+            <input type="range" id="atrIntensityRange" min="0" max="100" value="50" style="flex:1;" />
+            <span id="atrIntensityDisplay" style="min-width:2rem;text-align:right;">50</span>
+          </div>
+        </label>
+        <label>Automatic thought:
+          <textarea id="atrAutoThoughtInput" rows="2" placeholder="What went through your mind?"></textarea>
+        </label>
+        <label>Alternative / balanced thought:
+          <textarea id="atrAltThoughtInput" rows="2" placeholder="A more balanced way of seeing it (optional)"></textarea>
+        </label>
+        <input type="hidden" id="atrEditingId" />
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem;">
+          <button id="saveAtrBtn" class="save-btn">Save Record</button>
+          <button id="cancelAtrEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Thought Records</h3>
+        <div id="atrList"><p class="atr-empty">No records yet.</p></div>
+      </div>
+    </div>
   </section>
 
   <!-- Medications Tab -->
   <section id="medications-tab" class="tab">
     <h2>Medications</h2>
-    <div class="card">
-      <h3>Add / Edit Medication</h3>
-      <label>Name: <input type="text" id="medName" placeholder="e.g. Gabapentin" /></label>
-      <label>Dose: <input type="text" id="medDose" placeholder="e.g. 300 mg" /></label>
-      <label>Frequency: <input type="text" id="medFreq" placeholder="e.g. 3x daily" /></label>
-      <label>Notes: <textarea id="medNotes" rows="2" placeholder="Side effects, instructions, etc."></textarea></label>
-      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-        <button id="saveMedBtn" class="save-btn">Save Medication</button>
-        <button id="clearMedFormBtn" class="save-btn" style="background:var(--color-surface-offset);color:var(--color-text);">Clear</button>
+
+    <!-- Sub-tab navigation -->
+    <div class="med-sub-tabs">
+      <button class="med-sub-tab-btn active" data-med-view="medListView">Medications</button>
+      <button class="med-sub-tab-btn" data-med-view="suppListView">Supplements</button>
+      <button class="med-sub-tab-btn" data-med-view="medHistoryView">Change History</button>
+      <button class="med-sub-tab-btn" data-med-view="medPrintView">Print / Export</button>
+    </div>
+
+    <!-- Medications view -->
+    <div id="medListView" class="med-view">
+      <div class="card">
+        <h3 id="medFormTitle">Add Medication</h3>
+        <label>Name: <input type="text" id="medNameInput" placeholder="e.g. Gabapentin" /></label>
+        <label>Dose: <input type="text" id="medDoseInput" placeholder="e.g. 300 mg" /></label>
+        <label>Frequency:
+          <select id="medFrequencyInput">
+            <option value="">Select...</option>
+            <option value="daily">Daily</option>
+            <option value="twice_daily">Twice daily</option>
+            <option value="three_times_daily">Three times daily</option>
+            <option value="as_needed">As needed (PRN)</option>
+            <option value="weekly">Weekly</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+        <label>Prescribing doctor: <input type="text" id="medDoctorInput" placeholder="e.g. Dr. Smith" /></label>
+        <label>Notes: <textarea id="medNotesInput" rows="2" placeholder="Side effects, instructions, etc."></textarea></label>
+        <input type="hidden" id="medEditingId" />
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <button id="saveMedBtn" class="save-btn">Add Medication</button>
+          <button id="cancelMedEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>My Medications</h3>
+        <ul id="medList"></ul>
       </div>
     </div>
-    <div class="card">
-      <h3>My Medications</h3>
-      <div id="medList"></div>
+
+    <!-- Supplements view -->
+    <div id="suppListView" class="med-view" style="display:none;">
+      <div class="card">
+        <h3 id="suppFormTitle">Add Supplement</h3>
+        <label>Name: <input type="text" id="suppNameInput" placeholder="e.g. Magnesium" /></label>
+        <label>Dose: <input type="text" id="suppDoseInput" placeholder="e.g. 400 mg" /></label>
+        <label>Frequency:
+          <select id="suppFrequencyInput">
+            <option value="">Select...</option>
+            <option value="daily">Daily</option>
+            <option value="twice_daily">Twice daily</option>
+            <option value="three_times_daily">Three times daily</option>
+            <option value="as_needed">As needed</option>
+            <option value="weekly">Weekly</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+        <label>Brand: <input type="text" id="suppBrandInput" placeholder="e.g. Nature Made" /></label>
+        <label>Notes: <textarea id="suppNotesInput" rows="2" placeholder="Why you take it, effects, etc."></textarea></label>
+        <input type="hidden" id="suppEditingId" />
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <button id="saveSuppBtn" class="save-btn">Add Supplement</button>
+          <button id="cancelSuppEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>My Supplements</h3>
+        <ul id="suppList"></ul>
+      </div>
     </div>
-    <!-- Daily log section -->
-    <div class="card">
-      <h3>Daily Medication Log</h3>
-      <p style="font-size:0.875rem;color:var(--color-text-muted);margin-bottom:0.75rem;">Track which medications you took today (<span id="medLogDateLabel"></span>).</p>
-      <div id="medLogList"></div>
-      <button id="saveMedLogBtn" class="save-btn" style="margin-top:1rem;">Save Log</button>
+
+    <!-- Change history view -->
+    <div id="medHistoryView" class="med-view" style="display:none;">
+      <div class="card">
+        <h3>Medication &amp; Supplement Change History</h3>
+        <ul id="medHistoryList"></ul>
+      </div>
     </div>
+
+    <!-- Print / Export view -->
+    <div id="medPrintView" class="med-view" style="display:none;">
+      <div class="card">
+        <h3>Print / Save as PDF</h3>
+        <p style="font-size:0.875rem;color:var(--color-text-muted);margin-bottom:1rem;">Generates a compact, print-ready list of all your medications and supplements.</p>
+        <button id="printMedBtn" class="save-btn">Print / Save PDF</button>
+      </div>
+      <div class="card">
+        <h3>Medications Preview</h3>
+        <table class="med-print-table">
+          <thead><tr><th>Name</th><th>Dose</th><th>Frequency</th><th>Doctor</th><th>Notes</th></tr></thead>
+          <tbody id="medPrintTableBody"><tr><td colspan="5">Loading&#8230;</td></tr></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Supplements Preview</h3>
+        <table class="med-print-table">
+          <thead><tr><th>Name</th><th>Dose</th><th>Frequency</th><th>Brand</th><th>Notes</th></tr></thead>
+          <tbody id="suppPrintTableBody"><tr><td colspan="5">Loading&#8230;</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
   </section>
 </main>
 
