@@ -393,14 +393,23 @@ button.primary:hover {
 
 /* ================================================================
    FLOATING SAVE DAY BUTTON
+   Lives inside #entry-tab so .tab { display:none } hides it
+   automatically when switching tabs. When #entry-tab is active
+   (.tab.active { display:block }) the fixed positioning takes over
+   and it floats above the viewport.
+
+   Desktop: top-right, just below the sticky header (~88px from top)
+   Mobile:  bottom-right, above the build footer bar
    ================================================================ */
 
 .save-day-float {
   position: fixed;
-  bottom: 2.6rem;   /* sits just above the build footer bar */
+  /* Desktop default: top-right, below the two-row header (~88px) */
+  top: 96px;
   right: 1.25rem;
+  bottom: auto;
   z-index: 190;
-  display: none;    /* shown via JS when entry-tab is active */
+  display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   border-radius: 999px !important;
@@ -430,9 +439,11 @@ button.primary:hover {
   box-shadow: 0 2px 8px rgba(63,81,181,0.3);
 }
 
+/* Mobile: move to bottom-right, above the build footer */
 @media (max-width: 640px) {
   .save-day-float {
-    bottom: 2.4rem;
+    top: auto;
+    bottom: 2.4rem;   /* clears the build footer bar (~1.8rem tall) */
     right: 1rem;
     padding: 0.5rem 1.15rem !important;
     font-size: 0.85rem !important;
