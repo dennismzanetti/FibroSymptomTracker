@@ -188,13 +188,8 @@ body {
     gap: 0.4rem;
   }
 
-  /* Hide title on mobile — saves ~120px, reduces overflow */
   .header-title { display: none; }
-
-  /* Hide day-of-week label — date input already shows the date */
   .day-of-week-display { display: none; }
-
-  /* Let date nav fill freed space */
   .header-date-nav { flex: 1; justify-content: flex-start; }
 
   .sr-date-input {
@@ -202,7 +197,6 @@ body {
     font-size: 0.82rem;
   }
 
-  /* Compact sign-out button */
   .header-signout-btn {
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem;
@@ -403,26 +397,45 @@ button.primary:hover {
 
 .save-day-float {
   position: fixed;
-  top: 122px;
+  bottom: 2.6rem;   /* sits just above the build footer bar */
   right: 1.25rem;
-  z-index: 150;
-  display: none;
+  z-index: 190;
+  display: none;    /* shown via JS when entry-tab is active */
+  align-items: center;
+  gap: 0.4rem;
   border-radius: 999px !important;
-  padding: 0.5rem 1.35rem !important;
-  font-size: 0.9rem !important;
-  box-shadow: 0 4px 18px rgba(63,81,181,0.38);
-  transition: box-shadow 0.2s ease, transform 0.15s ease, background 0.2s ease;
+  padding: 0.6rem 1.4rem !important;
+  font-size: 0.92rem !important;
+  font-weight: 700 !important;
+  box-shadow:
+    0 2px 6px rgba(63,81,181,0.25),
+    0 6px 20px rgba(63,81,181,0.35);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.15s ease,
+    background 0.2s ease;
+  white-space: nowrap;
 }
 
-.save-day-float:hover { box-shadow: 0 6px 22px rgba(63,81,181,0.5); }
+.save-day-float:hover {
+  background: #303f9f !important;
+  box-shadow:
+    0 4px 10px rgba(63,81,181,0.3),
+    0 10px 28px rgba(63,81,181,0.45);
+  transform: translateY(-2px);
+}
+
+.save-day-float:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 2px 8px rgba(63,81,181,0.3);
+}
 
 @media (max-width: 640px) {
   .save-day-float {
-    top: auto;
-    bottom: 3.5rem;
+    bottom: 2.4rem;
     right: 1rem;
+    padding: 0.5rem 1.15rem !important;
     font-size: 0.85rem !important;
-    padding: 0.45rem 1.1rem !important;
   }
 }
 

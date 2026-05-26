@@ -20,6 +20,9 @@
   <p id="authError" style="color:red; font-size:0.875rem;"></p>
 </div>
 
+<!-- Floating Save Day button (shown only on Daily Entry tab) -->
+<button id="saveDayFloat" class="save-day-float primary" aria-label="Save Day">&#128190; Save Day</button>
+
 <header class="app-header">
   <!-- Row 1: title | date nav | sign-out -->
   <div class="header-row1">
@@ -128,8 +131,6 @@
         <label><input type="checkbox" value="weather_change" /> Weather change</label>
       </div>
     </div>
-    <button id="saveDayBottom" class="primary">Save Day</button>
-    <p id="saveStatus"></p>
   </section>
 
   <!-- Journal Tab -->
@@ -334,6 +335,37 @@
 
 <script>
 (function () {
+  // Wire the floating Save Day button to the same save handler as saveDayBottom
+  var floatBtn = document.getElementById('saveDayFloat');
+  var bottomBtn = document.getElementById('saveDayBottom');
+
+  // Show/hide the float based on which tab is active
+  function updateFloatVisibility() {
+    var entryTab = document.getElementById('entry-tab');
+    if (floatBtn) {
+      floatBtn.style.display = (entryTab && entryTab.classList.contains('active')) ? 'inline-flex' : 'none';
+    }
+  }
+
+  // Observe tab changes via MutationObserver on entry-tab class
+  var entrySection = document.getElementById('entry-tab');
+  if (entrySection) {
+    new MutationObserver(updateFloatVisibility).observe(entrySection, { attributes: true, attributeFilter: ['class'] });
+  }
+  updateFloatVisibility();
+
+  // Forward clicks to saveDayBottom so app.js save logic runs unchanged
+  if (floatBtn) {
+    floatBtn.addEventListener('click', function () {
+      var target = document.getElementById('saveDayBottom');
+      if (target) target.click();
+    });
+  }
+}());
+</script>
+
+<script>
+(function () {
   var steppers = document.querySelectorAll('.number-stepper');
   steppers.forEach(function (stepper) {
     var btn = stepper.querySelectorAll('.stepper-btn');
@@ -408,5 +440,9 @@
     });
 }());
 </script>
+
+<!-- Hidden proxy button that app.js saves wires to -->
+<button id="saveDayBottom" style="display:none;" aria-hidden="true"></button>
+
 </body>
 </html>
