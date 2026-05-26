@@ -225,16 +225,27 @@ body {
    MOBILE (<=640px)
    ================================================================ */
 @media (max-width: 640px) {
+  /* Allow row1 to wrap so title sits on its own line */
   .header-row1 {
     height: auto;
-    min-height: 52px;
-    padding: 0.4rem 0.6rem;
+    min-height: unset;
+    padding: 0.3rem 0.6rem 0.4rem;
     gap: 0.4rem;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
   }
 
-  /* Hide desktop title */
-  .header-title { display: none; }
+  /* Title: full-width, centered, on its own line */
+  .header-title {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    opacity: 0.95;
+    padding: 0.15rem 0 0.05rem;
+    order: -1;
+  }
 
   /* Date nav stays compact */
   .header-date-nav { flex-shrink: 0; justify-content: flex-start; }
@@ -262,17 +273,14 @@ body {
     font-weight: 700;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     cursor: pointer;
-    /* Remove default OS arrow so we can use our own */
     appearance: none;
     -webkit-appearance: none;
-    /* Custom white chevron arrow */
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.6rem center;
     background-size: 16px 16px;
     box-sizing: border-box;
     transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-    /* Ensure text doesn't overlap the arrow */
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -289,7 +297,6 @@ body {
     background-color: rgba(255,255,255,0.32);
   }
 
-  /* Options: dark indigo bg so the sheet is readable on all OSes */
   .tab-select option {
     background: #3f51b5;
     color: white;
