@@ -557,20 +557,19 @@ function clearFormFieldsExceptDate() {
 }
 
 function loadDayFromCloud(date) {
-  const status = document.getElementById("saveStatus");
   if (!date) return;
   db.collection("days").doc(date).get().then((doc) => {
     if (doc.exists) {
       fillFormFromData(doc.data());
-      if (status) status.textContent = "Loaded from cloud for " + date + ".";
+      showToast("\u2601 Loaded from cloud");
     } else {
       clearFormFieldsExceptDate();
-      if (status) status.textContent = "No cloud entry for that date. Form cleared.";
+      showToast("No entry for that date \u2014 form cleared");
     }
   }).catch((error) => {
     console.error("Error getting document:", error);
     clearFormFieldsExceptDate();
-    if (status) status.textContent = "Cloud load failed.";
+    showToast("\u26A0 Cloud load failed", true);
   });
 }
 
@@ -1198,7 +1197,7 @@ const snapshot = await db.collection("days")
 
       const scoreCell = moodScore !== null
         ? `<span class="mood-score-pill mood-score-${Math.ceil(moodScore / 3)}">${moodScore}/10</span>`
-        : `<span class="mood-score-empty">—</span>`;
+        : `<span class="mood-score-empty">\u2014</span>`;
 
       const tr = document.createElement("tr");
       if (!hasData) tr.classList.add("mood-row-empty");
@@ -1208,7 +1207,7 @@ const snapshot = await db.collection("days")
         <td class="mood-score-cell">${scoreCell}</td>
         <td class="mood-notes-cell">${moodNotes
           ? `<span>${moodNotes}</span>`
-          : `<span class="mood-score-empty">—</span>`}</td>`;
+          : `<span class="mood-score-empty">\u2014</span>`}</td>`;
       tbody.appendChild(tr);
     });
 
@@ -1329,33 +1328,27 @@ async function refreshAtrList() {
           </div>
         </div>
         <div class="atr-record-body">
-          <div class="atr-field"><span class="atr-field-label">Situation</span><p>${r.situation || "—"}</p></div>
-          <div class="atr-field"><span class="atr-field-label">Automatic Thought</span><p>${r.automaticThought || "—"}</p></div>
-          ${r.alternativeThought
-            ? `<div class="atr-field atr-field-alt"><span class="atr-field-label">Alternative Thought</span><p>${r.alternativeThought}</p></div>`
-            : ""}
+          <div class="atr-field"><span class="atr-label">Situation</span><p>${escHtml(r.situation || "")}</p></div>
+          <div class="atr-field"><span class="atr-label">Automatic Thought</span><p>${escHtml(r.automaticThought || "")}</p></div>
+          ${r.alternativeThought ? `<div class="atr-field"><span class="atr-label">Alternative Thought</span><p>${escHtml(r.alternativeThought)}</p></div>` : ""}
         </div>`;
       card.querySelector(".atr-edit-btn").addEventListener("click", () => startEditAtr(doc.id, r));
       card.querySelector(".atr-delete-btn").addEventListener("click", () => deleteAtr(doc.id));
       container.appendChild(card);
     });
   } catch (err) {
-    console.error("Error loading ATRs:", err);
+    console.error("Error loading ATR list:", err);
     container.innerHTML = `<p class="atr-empty">Failed to load records.</p>`;
   }
 }
 
 function setupAtrForm() {
-  const slider = document.getElementById("atrIntensityRange");
+  document.getElementById("saveAtrBtn")?.addEventListener("click", saveAtr);
+  document.getElementById("cancelAtrEditBtn")?.addEventListener("click", resetAtrForm);
+  const range = document.getElementById("atrIntensityRange");
   const display = document.getElementById("atrIntensityDisplay");
-  if (slider && display) {
-    slider.addEventListener("input", () => { display.textContent = slider.value; });
+  if (range && display) {
+    range.addEventListener("input", () => { display.textContent = range.value; });
   }
-  const saveBtn = document.getElementById("saveAtrBtn");
-  if (saveBtn) saveBtn.addEventListener("click", saveAtr);
-  const cancelBtn = document.getElementById("cancelAtrEditBtn");
-  if (cancelBtn) cancelBtn.addEventListener("click", () => resetAtrForm());
-  const today = new Date().toISOString().split("T")[0];
-  const dateInput = document.getElementById("atrDateInput");
-  if (dateInput && !dateInput.value) dateInput.value = today;
+  resetAtrForm();
 }
