@@ -95,10 +95,6 @@ function numberOrNull(val) {
 }
 
 // ---- Module-level current date (authoritative source of truth) ----
-// We keep this in a JS variable so it is never affected by the browser
-// silently clearing an <input type="date"> value when its parent tab is
-// hidden (display:none).  All date navigation reads/writes go through
-// currentDateStr rather than reading dateInput.value directly.
 let currentDateStr = "";
 
 function todayStr() {
@@ -116,7 +112,7 @@ function syncDateInput() {
   updateDayOfWeek();
 }
 
-// ---- Day-of-week display (entry tab header) ----
+// ---- Day-of-week display ----
 function updateDayOfWeek() {
   const dateInput = document.getElementById("dateInput");
   const display = document.getElementById("dayOfWeekDisplay");
@@ -158,16 +154,6 @@ window.addEventListener("load", () => {
   setupPrint();
   setupAtrForm();
 
-  // NOTE: loadTodayDate() and the initial loadDayFromCloud() are now called
-  // inside onAuthStateChanged (above) so the date is set only after Firebase
-  // confirms the user is signed in and the DOM is fully settled.
-
-  // Listen for manual date picker changes.
-  // Guard: only update currentDateStr when the picker provides a real,
-  // non-empty value that actually differs from what we already have.
-  // This prevents a programmatic syncDateInput() call (which sets
-  // dateInput.value) from firing this listener and accidentally wiping
-  // currentDateStr if the browser emits a spurious "change" event.
   const dateInput = document.getElementById("dateInput");
   if (dateInput) {
     dateInput.addEventListener("change", () => {
@@ -416,8 +402,6 @@ function setupTabs() {
         const activeView = document.querySelector(".med-view:not([style*='display:none']):not([style*='display: none'])");
         if (activeView) refreshMedView(activeView.id);
       }
-      // When returning to the entry tab, re-sync the date input in case
-      // the browser cleared its value while it was hidden.
       if (target === "entry-tab") syncDateInput();
     });
   });
@@ -439,9 +423,8 @@ function loadTodayDate() {
 }
 
 function setupSaveDay() {
-  const topBtn = document.getElementById("saveDayTop");
-  const bottomBtn = document.getElementById("saveDayBottom");
-  const status = document.getElementById("saveStatus");
+  const floatBtn  = document.getElementById("saveDayFloat");
+  const status    = document.getElementById("saveStatus");
 
   const handleSaveClick = async () => {
     const dayData = collectFormData();
@@ -467,8 +450,7 @@ function setupSaveDay() {
     refreshTrends();
   };
 
-  topBtn?.addEventListener("click", handleSaveClick);
-  bottomBtn?.addEventListener("click", handleSaveClick);
+  floatBtn?.addEventListener("click", handleSaveClick);
 }
 
 function setupNumberSteppers() {
@@ -574,8 +556,6 @@ function loadDayFromCloud(date) {
 }
 
 function collectFormData() {
-  // Always use currentDateStr as the authoritative date so that a browser-
-  // cleared hidden input never causes the date to be saved as "".
   const date = currentDateStr || document.getElementById("dateInput").value;
   const dayTitle = document.getElementById("dayTitleInput").value;
   const overallNotes = document.getElementById("overallNotesInput").value;
@@ -660,7 +640,6 @@ async function refreshHistory() {
 }
 
 function fillFormFromData(d) {
-  // Update currentDateStr first so it is always in sync.
   if (d.date) currentDateStr = d.date;
   syncDateInput();
   document.getElementById("dayTitleInput").value = d.dayTitle || "";
@@ -709,11 +688,9 @@ function fillFormFromData(d) {
 }
 
 function changeDateBy(days) {
-  // Use the module-level currentDateStr — never rely on dateInput.value which
-  // browsers may clear while the input's parent tab is hidden.
   if (!currentDateStr) currentDateStr = todayStr();
   const [y, mo, dy] = currentDateStr.split("-").map(Number);
-  const current = new Date(y, mo - 1, dy);   // local time — avoids UTC midnight issues
+  const current = new Date(y, mo - 1, dy);
   if (isNaN(current.getTime())) return;
   current.setDate(current.getDate() + days);
   const ny = current.getFullYear();
@@ -734,7 +711,6 @@ function setupDateNavigation() {
 function switchToTab(tabId) {
   document.querySelectorAll(".tab-button").forEach(btn => btn.classList.toggle("active", btn.getAttribute("data-tab") === tabId));
   document.querySelectorAll(".tab").forEach(tab => tab.classList.toggle("active", tab.id === tabId));
-  // Re-sync the date input whenever the entry tab is activated programmatically.
   if (tabId === "entry-tab") syncDateInput();
 }
 
@@ -1148,14 +1124,12 @@ async function refreshSuppPrintTable() {
 }
 
 // ============================================================
-// MOOD TAB — 14-Day Mood Summary + Automatic Thought Records
+// MOOD TAB
 // ============================================================
 
 async function refreshMoodTab() {
   await Promise.all([refreshMoodSummaryTable(), refreshAtrList()]);
 }
-
-// ---- 14-Day Mood Summary Table ----
 
 async function refreshMoodSummaryTable() {
   const tbody = document.getElementById("moodSummaryBody");
@@ -1171,9 +1145,9 @@ async function refreshMoodSummaryTable() {
       dates.push(d.toISOString().split("T")[0]);
     }
 
-const snapshot = await db.collection("days")
-  .where(firebase.firestore.FieldPath.documentId(), "in", dates)
-  .get();
+    const snapshot = await db.collection("days")
+      .where(firebase.firestore.FieldPath.documentId(), "in", dates)
+      .get();
 
     const byDate = {};
     snapshot.forEach(doc => { byDate[doc.id] = doc.data(); });
