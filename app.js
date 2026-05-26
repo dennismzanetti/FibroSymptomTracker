@@ -23,6 +23,12 @@ const appMain = document.querySelector("main");
 
 if (appMain) appMain.style.display = "none";
 
+// Detect mobile browsers (iOS Safari, Android Chrome/WebView, etc.)
+// These environments block signInWithPopup, so we use signInWithRedirect instead.
+function isMobileBrowser() {
+  return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+}
+
 // Track whether the app has been initialised for this session so that
 // onAuthStateChanged (which can fire multiple times) only runs setup once.
 let _appInitialised = false;
@@ -50,12 +56,37 @@ auth.onAuthStateChanged((user) => {
   }
 });
 
+// Handle the result of a redirect sign-in (mobile flow).
+// Must be called on every page load so the auth token is consumed after redirect.
+auth.getRedirectResult().then((result) => {
+  // result.user will be null if there was no pending redirect — that's fine.
+  if (result && result.user) {
+    console.log("Redirect sign-in complete:", result.user.displayName);
+  }
+}).catch((err) => {
+  console.error("Redirect sign-in error:", err);
+  const authError = document.getElementById("authError");
+  if (authError) authError.textContent = "Sign-in failed. Please try again.";
+});
+
 googleSignInBtn?.addEventListener("click", () => {
   const authError = document.getElementById("authError");
-  auth.signInWithPopup(provider).catch((err) => {
-    console.error("Sign-in error:", err);
-    if (authError) authError.textContent = "Sign-in failed. Please try again.";
-  });
+  if (authError) authError.textContent = "";
+
+  if (isMobileBrowser()) {
+    // Redirect flow — browser navigates away and returns with credentials.
+    // No popup needed; works on all mobile browsers including iOS Safari.
+    auth.signInWithRedirect(provider).catch((err) => {
+      console.error("Redirect sign-in error:", err);
+      if (authError) authError.textContent = "Sign-in failed. Please try again.";
+    });
+  } else {
+    // Popup flow — preferred on desktop where popups are not blocked.
+    auth.signInWithPopup(provider).catch((err) => {
+      console.error("Sign-in error:", err);
+      if (authError) authError.textContent = "Sign-in failed. Please try again.";
+    });
+  }
 });
 
 signOutBtn?.addEventListener("click", () => auth.signOut());
