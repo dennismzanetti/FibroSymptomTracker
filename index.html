@@ -335,17 +335,6 @@
 
 <script>
 (function () {
-  // Forward float button clicks to the hidden proxy so app.js save logic runs unchanged
-  var floatBtn  = document.getElementById('saveDayFloat');
-  var proxyBtn  = document.getElementById('saveDayBottom');
-  if (floatBtn && proxyBtn) {
-    floatBtn.addEventListener('click', function () { proxyBtn.click(); });
-  }
-}());
-</script>
-
-<script>
-(function () {
   var steppers = document.querySelectorAll('.number-stepper');
   steppers.forEach(function (stepper) {
     var btn = stepper.querySelectorAll('.stepper-btn');
@@ -420,9 +409,6 @@
     });
 }());
 </script>
-
-<!-- Hidden proxy button that app.js save logic wires to -->
-<button id="saveDayBottom" style="display:none;" aria-hidden="true"></button>
 
 </body>
 </html>
