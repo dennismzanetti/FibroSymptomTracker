@@ -135,20 +135,25 @@ async function refreshMedList() {
       const li = document.createElement("li");
       li.className = "med-item";
       const freq = FREQ_LABELS[med.frequency] || med.frequency || "";
+      const metaParts = [
+        med.dose || "",
+        freq,
+        med.doctor ? `Dr. ${escHtml(med.doctor)}` : ""
+      ].filter(Boolean);
       li.innerHTML = `
-        <div class="med-item-info">
-          <span class="med-item-name">${escHtml(med.name || "")}</span>
-          ${med.dose ? `<span class="med-item-detail">${escHtml(med.dose)}</span>` : ""}
-          ${freq ? `<span class="med-item-detail">${escHtml(freq)}</span>` : ""}
-          ${med.doctor ? `<span class="med-item-detail">Dr. ${escHtml(med.doctor)}</span>` : ""}
-          ${med.notes ? `<span class="med-item-notes">${escHtml(med.notes)}</span>` : ""}
-        </div>
-        <div class="med-item-actions">
-          <button class="med-edit-btn">Edit</button>
-          <button class="med-delete-btn danger">Delete</button>
+        <div class="med-item-header">
+          <div>
+            <span class="med-item-name">${escHtml(med.name || "")}</span>
+            ${metaParts.length ? `<div class="med-item-meta">${metaParts.map(escHtml).join(" &bull; ")}</div>` : ""}
+            ${med.notes ? `<div class="med-item-meta" style="font-style:italic;margin-top:0.15rem;">${escHtml(med.notes)}</div>` : ""}
+          </div>
+          <div class="med-item-actions">
+            <button class="med-btn med-btn-edit">Edit</button>
+            <button class="med-btn med-btn-delete">Delete</button>
+          </div>
         </div>`;
-      li.querySelector(".med-edit-btn").addEventListener("click", () => startEditMedication(doc.id, med));
-      li.querySelector(".med-delete-btn").addEventListener("click", () => deleteMedication(doc.id, med.name));
+      li.querySelector(".med-btn-edit").addEventListener("click", () => startEditMedication(doc.id, med));
+      li.querySelector(".med-btn-delete").addEventListener("click", () => deleteMedication(doc.id, med.name));
       list.appendChild(li);
     });
   } catch (err) {
@@ -256,20 +261,25 @@ async function refreshSuppList() {
       const li = document.createElement("li");
       li.className = "med-item";
       const freq = FREQ_LABELS[supp.frequency] || supp.frequency || "";
+      const metaParts = [
+        supp.dose || "",
+        freq,
+        supp.brand || ""
+      ].filter(Boolean);
       li.innerHTML = `
-        <div class="med-item-info">
-          <span class="med-item-name">${escHtml(supp.name || "")}</span>
-          ${supp.dose ? `<span class="med-item-detail">${escHtml(supp.dose)}</span>` : ""}
-          ${freq ? `<span class="med-item-detail">${escHtml(freq)}</span>` : ""}
-          ${supp.brand ? `<span class="med-item-detail">${escHtml(supp.brand)}</span>` : ""}
-          ${supp.notes ? `<span class="med-item-notes">${escHtml(supp.notes)}</span>` : ""}
-        </div>
-        <div class="med-item-actions">
-          <button class="med-edit-btn">Edit</button>
-          <button class="med-delete-btn danger">Delete</button>
+        <div class="med-item-header">
+          <div>
+            <span class="med-item-name">${escHtml(supp.name || "")}</span>
+            ${metaParts.length ? `<div class="med-item-meta">${metaParts.map(escHtml).join(" &bull; ")}</div>` : ""}
+            ${supp.notes ? `<div class="med-item-meta" style="font-style:italic;margin-top:0.15rem;">${escHtml(supp.notes)}</div>` : ""}
+          </div>
+          <div class="med-item-actions">
+            <button class="med-btn med-btn-edit">Edit</button>
+            <button class="med-btn med-btn-delete">Delete</button>
+          </div>
         </div>`;
-      li.querySelector(".med-edit-btn").addEventListener("click", () => startEditSupplement(doc.id, supp));
-      li.querySelector(".med-delete-btn").addEventListener("click", () => deleteSupplement(doc.id, supp.name));
+      li.querySelector(".med-btn-edit").addEventListener("click", () => startEditSupplement(doc.id, supp));
+      li.querySelector(".med-btn-delete").addEventListener("click", () => deleteSupplement(doc.id, supp.name));
       list.appendChild(li);
     });
   } catch (err) {
@@ -322,7 +332,6 @@ async function refreshMedHistory() {
 // ---- Print Preview Tables (in-page) ----
 
 async function refreshMedPrintTable() {
-  // ID corrected: medPrintTableBody (matches index.html)
   const tbody = document.getElementById("medPrintTableBody");
   if (!tbody) return;
   tbody.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
@@ -340,7 +349,6 @@ async function refreshMedPrintTable() {
 }
 
 async function refreshSuppPrintTable() {
-  // ID corrected: suppPrintTableBody (matches index.html)
   const tbody = document.getElementById("suppPrintTableBody");
   if (!tbody) return;
   tbody.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
