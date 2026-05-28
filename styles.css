@@ -225,13 +225,14 @@ body {
    MOBILE (<=640px)
    ================================================================ */
 @media (max-width: 640px) {
-  /* Allow row1 to wrap so title sits on its own line */
+  /* Allow row1 to wrap so title sits on its own line; center all items */
   .header-row1 {
     height: auto;
     min-height: unset;
     padding: 0.3rem 0.6rem 0.4rem;
     gap: 0.4rem;
     flex-wrap: wrap;
+    justify-content: center;
   }
 
   /* Title: full-width, centered, on its own line */
@@ -247,8 +248,11 @@ body {
     order: -1;
   }
 
-  /* Date nav stays compact */
-  .header-date-nav { flex-shrink: 0; justify-content: flex-start; }
+  /* Date nav: centered */
+  .header-date-nav {
+    flex-shrink: 0;
+    justify-content: center;
+  }
 
   .date-picker-btn {
     padding: 0.28rem 0.55rem;
@@ -261,7 +265,8 @@ body {
   /* ---- Tab select: clear, tappable dropdown ---- */
   .tab-select {
     display: block;
-    flex: 1 1 auto;
+    flex: 0 1 auto;
+    max-width: 180px;
     min-width: 0;
     height: 40px;
     padding: 0 2.2rem 0 0.75rem;
