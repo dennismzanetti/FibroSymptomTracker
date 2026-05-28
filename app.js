@@ -660,45 +660,132 @@ function collectFormData() {
   return { date, dayTitle, overallNotes, functionality, sleep, didExercise, exercise, tags, avgFunctionality, mood: { score: moodScore, notes: moodNotes } };
 }
 
+// ---- Score chip helper ----
+function scoreChipClass(score) {
+  if (score == null) return "";
+  if (score <= 3) return "score-low";
+  if (score <= 6) return "score-mid";
+  return "score-high";
+}
+
 async function refreshHistory() {
   const list = document.getElementById("historyList");
   if (!list) return;
-  list.innerHTML = "<li>Loading...</li>";
+
+  list.innerHTML = '<li class="history-loading">Loading\u2026</li>';
+
   try {
-    const snapshot = await db.collection("days").orderBy(firebase.firestore.FieldPath.documentId()).get();
+    const snapshot = await db.collection("days")
+      .orderBy(firebase.firestore.FieldPath.documentId())
+      .get();
+
     const days = [];
     snapshot.forEach(doc => {
       const data = doc.data();
-      days.push({ date: data.date || doc.id, dayTitle: data.dayTitle || "", avgFunctionality: data.avgFunctionality ?? null, functionality: data.functionality || null, sleep: data.sleep || null, didExercise: data.didExercise || false, exercise: data.exercise || null, tags: data.tags || [] });
+      days.push({
+        date: data.date || doc.id,
+        dayTitle: data.dayTitle || "",
+        avgFunctionality: data.avgFunctionality ?? null,
+        functionality: data.functionality || null,
+        sleep: data.sleep || null,
+        didExercise: data.didExercise || false,
+        exercise: data.exercise || null,
+        tags: data.tags || [],
+        overallNotes: data.overallNotes || "",
+        mood: data.mood || {}
+      });
     });
+
     days.sort((a, b) => a.date.localeCompare(b.date)).reverse();
     list.innerHTML = "";
-    if (!days.length) { list.innerHTML = "<li>No entries yet.</li>"; return; }
+
+    if (!days.length) {
+      list.innerHTML = `
+        <li class="history-empty">
+          <span class="history-empty-icon">📋</span>
+          <span>No entries yet. Start by saving a day in the Daily Entry tab.</span>
+        </li>`;
+      return;
+    }
+
     days.slice(0, 30).forEach(d => {
+      // Format date label
+      const [y, mo, dy] = d.date.split("-").map(Number);
+      const dateObj = new Date(y, mo - 1, dy);
+      const dow = isNaN(dateObj.getTime()) ? "" : dateObj.toLocaleDateString(undefined, { weekday: "short" });
+      const dateLabel = isNaN(dateObj.getTime())
+        ? d.date
+        : dateObj.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+
+      // Score chips
+      const avgScore = d.avgFunctionality;
+      const moodScore = d.mood?.score ?? null;
+      const sleepQuality = d.sleep?.quality ?? null;
+
+      const chipsHtml = [
+        avgScore != null
+          ? `<span class="score-chip ${scoreChipClass(avgScore)}">Func ${avgScore.toFixed(1)}</span>`
+          : "",
+        moodScore != null
+          ? `<span class="score-chip ${scoreChipClass(moodScore)}">Mood ${moodScore}</span>`
+          : "",
+        sleepQuality != null
+          ? `<span class="score-chip ${scoreChipClass(sleepQuality)}">Sleep ${sleepQuality}</span>`
+          : "",
+        d.didExercise
+          ? `<span class="score-chip score-low">🏃 Exercise</span>`
+          : ""
+      ].filter(Boolean).join("");
+
+      // Notes preview (first non-empty of overallNotes or mood notes)
+      const notesPreview = d.overallNotes?.trim() || d.mood?.notes?.trim() || "";
+
       const li = document.createElement("li");
-      const title = d.dayTitle ? ` \u2013 ${d.dayTitle}` : "";
-      const avg = d.avgFunctionality != null ? ` | Avg func: ${d.avgFunctionality.toFixed(1)}` : "";
-      const textSpan = document.createElement("span");
-      textSpan.textContent = `${d.date}${title}${avg}`;
-      li.appendChild(textSpan);
-      const loadBtn = document.createElement("button");
-      loadBtn.textContent = "Load";
-      loadBtn.addEventListener("click", () => { fillFormFromData(d); switchToTab("entry-tab"); });
-      li.appendChild(loadBtn);
-      const deleteBtn = document.createElement("button");
-      deleteBtn.textContent = "Delete";
-      deleteBtn.classList.add("danger");
-      deleteBtn.addEventListener("click", async () => {
-        if (!window.confirm(`Delete entry for ${d.date}?`)) return;
-        try { await db.collection("days").doc(d.date).delete(); refreshHistory(); refreshTrends(); }
-        catch (err) { console.error("Error deleting day:", err); alert("Failed to delete."); }
+      li.className = "history-item";
+
+      li.innerHTML = `
+        <div class="history-item-header">
+          <span class="history-date-label">${dow ? dow + " · " : ""}${dateLabel}</span>
+          ${d.dayTitle ? `<span class="history-day-title">${escHtml(d.dayTitle)}</span>` : ""}
+          <div class="history-scores">${chipsHtml}</div>
+        </div>
+        ${notesPreview ? `<div class="history-notes-preview">${escHtml(notesPreview)}</div>` : ""}
+        <div class="history-item-actions" style="display:flex;gap:0.5rem;margin-top:0.6rem;">
+          <button class="history-load-btn">Load into entry</button>
+          <button class="history-delete-btn danger">Delete</button>
+        </div>`;
+
+      li.querySelector(".history-load-btn").addEventListener("click", (e) => {
+        e.stopPropagation();
+        fillFormFromData(d);
+        switchToTab("entry-tab");
       });
-      li.appendChild(deleteBtn);
+
+      li.querySelector(".history-delete-btn").addEventListener("click", async (e) => {
+        e.stopPropagation();
+        if (!window.confirm(`Delete entry for ${d.date}?`)) return;
+        try {
+          await db.collection("days").doc(d.date).delete();
+          refreshHistory();
+          refreshTrends();
+        } catch (err) {
+          console.error("Error deleting day:", err);
+          alert("Failed to delete.");
+        }
+      });
+
+      // Click card body (not buttons) to load
+      li.addEventListener("click", (e) => {
+        if (e.target.tagName === "BUTTON") return;
+        fillFormFromData(d);
+        switchToTab("entry-tab");
+      });
+
       list.appendChild(li);
     });
   } catch (err) {
     console.error("Error loading history:", err);
-    list.innerHTML = "<li>Cloud history load failed.</li>";
+    list.innerHTML = '<li class="history-error">⚠️ Could not load history. Please check your connection.</li>';
   }
 }
 
@@ -1249,7 +1336,7 @@ async function refreshMoodSummaryTable() {
     });
 
     if (!hasAny) {
-      tbody.innerHTML = `<tr><td colspan="4" class="mood-table-empty">No mood data in the last 14 days. Add entries in the Daily Entry tab.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="4" class="mood-table-empty">No mood data recorded in the last 14 days.</td></tr>`;
     }
   } catch (err) {
     console.error("Error loading mood summary:", err);
@@ -1257,135 +1344,67 @@ async function refreshMoodSummaryTable() {
   }
 }
 
-// ---- Automatic Thought Records (ATR) ----
-
-function getAtrFormData() {
-  return {
-    date: document.getElementById("atrDateInput").value,
-    situation: document.getElementById("atrSituationInput").value.trim(),
-    emotions: document.getElementById("atrEmotionsInput").value.trim(),
-    intensity: parseInt(document.getElementById("atrIntensityRange").value, 10),
-    automaticThought: document.getElementById("atrAutoThoughtInput").value.trim(),
-    alternativeThought: document.getElementById("atrAltThoughtInput").value.trim()
-  };
-}
-
-function resetAtrForm() {
-  const today = new Date().toISOString().split("T")[0];
-  document.getElementById("atrDateInput").value = today;
-  document.getElementById("atrSituationInput").value = "";
-  document.getElementById("atrEmotionsInput").value = "";
-  document.getElementById("atrIntensityRange").value = 50;
-  document.getElementById("atrIntensityDisplay").textContent = "50";
-  document.getElementById("atrAutoThoughtInput").value = "";
-  document.getElementById("atrAltThoughtInput").value = "";
-  document.getElementById("atrEditingId").value = "";
-  document.getElementById("atrFormTitle").textContent = "New Automatic Thought Record";
-  document.getElementById("saveAtrBtn").textContent = "Save Record";
-  document.getElementById("cancelAtrEditBtn").style.display = "none";
-}
-
-async function saveAtr() {
-  const data = getAtrFormData();
-  if (!data.date) { alert("Please select a date."); return; }
-  if (!data.situation) { alert("Please describe the situation."); return; }
-  if (!data.automaticThought) { alert("Please enter the automatic thought."); return; }
-  const editingId = document.getElementById("atrEditingId").value;
-  const now = new Date().toISOString();
-  try {
-    if (editingId) {
-      await db.collection("automaticThoughtRecords").doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
-    } else {
-      await db.collection("automaticThoughtRecords").add({ ...data, createdAt: now, updatedAt: now });
-    }
-    resetAtrForm();
-    await refreshAtrList();
-  } catch (err) {
-    console.error("Error saving ATR:", err);
-    alert("Failed to save record. Please try again.");
-  }
-}
-
-async function deleteAtr(id) {
-  if (!window.confirm("Delete this Automatic Thought Record? This cannot be undone.")) return;
-  try {
-    await db.collection("automaticThoughtRecords").doc(id).delete();
-    await refreshAtrList();
-  } catch (err) {
-    console.error("Error deleting ATR:", err);
-    alert("Failed to delete record.");
-  }
-}
-
-function startEditAtr(id, data) {
-  document.getElementById("atrDateInput").value = data.date || "";
-  document.getElementById("atrSituationInput").value = data.situation || "";
-  document.getElementById("atrEmotionsInput").value = data.emotions || "";
-  document.getElementById("atrIntensityRange").value = data.intensity ?? 50;
-  document.getElementById("atrIntensityDisplay").textContent = data.intensity ?? 50;
-  document.getElementById("atrAutoThoughtInput").value = data.automaticThought || "";
-  document.getElementById("atrAltThoughtInput").value = data.alternativeThought || "";
-  document.getElementById("atrEditingId").value = id;
-  document.getElementById("atrFormTitle").textContent = "Edit Automatic Thought Record";
-  document.getElementById("saveAtrBtn").textContent = "Save Changes";
-  document.getElementById("cancelAtrEditBtn").style.display = "inline-block";
-  document.getElementById("atrFormTitle").scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-async function refreshAtrList() {
-  const container = document.getElementById("atrList");
-  if (!container) return;
-  container.innerHTML = `<p class="atr-empty">Loading&#8230;</p>`;
-  try {
-    const snapshot = await db.collection("automaticThoughtRecords")
-      .orderBy("date", "desc")
-      .get();
-
-    if (snapshot.empty) {
-      container.innerHTML = `<p class="atr-empty">No records yet. Use the form above to add one.</p>`;
-      return;
-    }
-
-    const MONTH = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-    container.innerHTML = "";
-    snapshot.forEach(doc => {
-      const r = doc.data();
-      const d = r.date ? new Date(r.date + "T12:00:00") : null;
-      const dateStr = d ? `${MONTH[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}` : "Unknown date";
-      const card = document.createElement("div");
-      card.className = "atr-record";
-      card.innerHTML = `
-        <div class="atr-record-header">
-          <span class="atr-record-date">${dateStr}</span>
-          ${r.emotions ? `<span class="atr-record-emotions">${r.emotions}</span>` : ""}
-          ${r.intensity != null ? `<span class="atr-intensity-badge">${r.intensity}/100</span>` : ""}
-          <div class="atr-record-actions">
-            <button class="atr-edit-btn" aria-label="Edit record">Edit</button>
-            <button class="atr-delete-btn danger" aria-label="Delete record">Delete</button>
-          </div>
-        </div>
-        <div class="atr-record-body">
-          <div class="atr-field"><span class="atr-label">Situation</span><p>${escHtml(r.situation || "")}</p></div>
-          <div class="atr-field"><span class="atr-label">Automatic Thought</span><p>${escHtml(r.automaticThought || "")}</p></div>
-          ${r.alternativeThought ? `<div class="atr-field"><span class="atr-label">Alternative Thought</span><p>${escHtml(r.alternativeThought)}</p></div>` : ""}
-        </div>`;
-      card.querySelector(".atr-edit-btn").addEventListener("click", () => startEditAtr(doc.id, r));
-      card.querySelector(".atr-delete-btn").addEventListener("click", () => deleteAtr(doc.id));
-      container.appendChild(card);
-    });
-  } catch (err) {
-    console.error("Error loading ATR list:", err);
-    container.innerHTML = `<p class="atr-empty">Failed to load records.</p>`;
-  }
-}
+// ============================================================
+// ATR (Automatic Thought Records)
+// ============================================================
 
 function setupAtrForm() {
   document.getElementById("saveAtrBtn")?.addEventListener("click", saveAtr);
-  document.getElementById("cancelAtrEditBtn")?.addEventListener("click", resetAtrForm);
-  const range = document.getElementById("atrIntensityRange");
-  const display = document.getElementById("atrIntensityDisplay");
-  if (range && display) {
-    range.addEventListener("input", () => { display.textContent = range.value; });
+}
+
+async function saveAtr() {
+  const situation = document.getElementById("atrSituation")?.value.trim() || "";
+  const emotions = document.getElementById("atrEmotions")?.value.trim() || "";
+  const thoughts = document.getElementById("atrThoughts")?.value.trim() || "";
+  const evidence = document.getElementById("atrEvidence")?.value.trim() || "";
+  const against = document.getElementById("atrAgainst")?.value.trim() || "";
+  const balanced = document.getElementById("atrBalanced")?.value.trim() || "";
+
+  if (!situation && !emotions && !thoughts) {
+    alert("Please fill in at least the Situation, Emotions, or Thoughts fields.");
+    return;
   }
-  resetAtrForm();
+
+  const now = new Date().toISOString();
+  try {
+    await db.collection("atrs").add({ situation, emotions, thoughts, evidence, against, balanced, timestamp: now });
+    showToast("\u2713 Thought record saved");
+    ["atrSituation","atrEmotions","atrThoughts","atrEvidence","atrAgainst","atrBalanced"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = "";
+    });
+    refreshAtrList();
+  } catch (err) {
+    console.error("Error saving ATR:", err);
+    showToast("\u26A0 Failed to save thought record", true);
+  }
+}
+
+async function refreshAtrList() {
+  const list = document.getElementById("atrList");
+  if (!list) return;
+  list.innerHTML = "<li class='atr-empty'>Loading\u2026</li>";
+  try {
+    const snapshot = await db.collection("atrs").orderBy("timestamp", "desc").limit(20).get();
+    if (snapshot.empty) { list.innerHTML = "<li class='atr-empty'>No thought records yet.</li>"; return; }
+    list.innerHTML = "";
+    snapshot.forEach(doc => {
+      const a = doc.data();
+      const li = document.createElement("li");
+      li.className = "atr-item";
+      const ts = a.timestamp ? new Date(a.timestamp).toLocaleString() : "";
+      li.innerHTML = `
+        <div class="atr-item-header">
+          <span class="atr-date">${ts}</span>
+          ${a.emotions ? `<span class="atr-emotions">${escHtml(a.emotions)}</span>` : ""}
+        </div>
+        ${a.situation ? `<div class="atr-field"><span class="atr-field-label">Situation: </span>${escHtml(a.situation)}</div>` : ""}
+        ${a.thoughts ? `<div class="atr-field"><span class="atr-field-label">Thoughts: </span>${escHtml(a.thoughts)}</div>` : ""}
+        ${a.balanced ? `<div class="atr-field"><span class="atr-field-label">Balanced view: </span>${escHtml(a.balanced)}</div>` : ""}`;
+      list.appendChild(li);
+    });
+  } catch (err) {
+    console.error("Error loading ATRs:", err);
+    list.innerHTML = "<li class='atr-empty'>Failed to load thought records.</li>";
+  }
 }
