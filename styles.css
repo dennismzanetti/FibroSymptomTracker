@@ -238,30 +238,39 @@ body {
     display: block;
   }
 
-  /* ── Row 1: title (centered) + sign-out (right) ── */
+  /* ── Row 1: title (truly centered) + sign-out (right-anchored) ── */
   .header-mobile-row1 {
+    position: relative;
     display: flex;
     align-items: center;
-    padding: 0.45rem 0.75rem;
+    justify-content: center;
+    padding: 0 0.75rem;
     min-height: 44px;
     border-bottom: 1px solid rgba(255,255,255,0.15);
   }
 
+  /* Title is absolutely centered in the row regardless of button width */
   .header-mobile-title {
-    flex: 1 1 auto;
-    text-align: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     font-size: 0.95rem;
     font-weight: 700;
     color: white;
     letter-spacing: 0.02em;
-    /* offset by sign-out button width so text is truly centered */
-    margin-left: 70px;
+    white-space: nowrap;
+    pointer-events: none;
   }
 
+  /* Sign-out button pushed to the right edge via margin-left: auto */
   .header-mobile-row1 .header-signout-btn {
+    margin-left: auto;
     flex-shrink: 0;
     padding: 0.25rem 0.55rem;
     font-size: 0.75rem;
+    min-height: 32px;
+    position: relative; /* above the absolute title */
+    z-index: 1;
   }
 
   /* ── Row 2: date nav (centered) ── */
@@ -271,8 +280,16 @@ body {
     justify-content: center;
     gap: 0.3rem;
     padding: 0.3rem 0.75rem;
+    min-height: 40px;
     border-bottom: 1px solid rgba(255,255,255,0.15);
     position: relative;
+  }
+
+  .header-mobile-row2 .date-nav-btn.icon-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    font-size: 1.3rem;
   }
 
   .header-mobile-row2 .date-picker-btn {
