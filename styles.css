@@ -469,12 +469,25 @@ label {
   color: #2d3142;
 }
 
+/* Global form inputs — width:100% applies to all EXCEPT .number-stepper inputs */
 input[type="text"],
-input[type="number"],
 input[type="time"],
 input[type="date"],
 select,
 textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid #d1d5e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #f9fafb;
+  color: #1c1d22;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+/* number inputs default to full-width unless inside a .number-stepper */
+input[type="number"] {
   width: 100%;
   padding: 0.5rem 0.75rem;
   border: 1.5px solid #d1d5e0;
@@ -495,6 +508,157 @@ textarea:focus {
   border-color: #3f51b5;
   outline: none;
   background: #fff;
+}
+
+/* ================================================================
+   NUMBER STEPPER
+   ================================================================ */
+
+.number-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+
+.stepper-btn {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  flex-shrink: 0;
+  border: 1.5px solid #d1d5e0;
+  border-radius: 8px;
+  background: #f3f4f8;
+  color: #3f51b5;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background 0.15s, border-color 0.15s;
+  padding: 0;
+}
+
+.stepper-btn:hover {
+  background: #e8eaf6;
+  border-color: #3f51b5;
+}
+
+.stepper-btn:active {
+  background: #c5cae9;
+}
+
+/* Override global width:100% for number inputs inside steppers */
+.number-stepper input[type="number"] {
+  width: 64px;
+  min-width: 64px;
+  max-width: 64px;
+  flex-shrink: 0;
+  text-align: center;
+  padding: 0.4rem 0.3rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  border: 1.5px solid #d1d5e0;
+  border-radius: 8px;
+  background: #fff;
+  color: #1c1d22;
+  -moz-appearance: textfield;
+}
+
+.number-stepper input[type="number"]::-webkit-inner-spin-button,
+.number-stepper input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.number-stepper input[type="number"]:focus {
+  border-color: #3f51b5;
+  outline: none;
+  background: #fff;
+}
+
+/* ================================================================
+   TIME BLOCKS (Functionality by Time of Day)
+   ================================================================ */
+
+.time-block {
+  padding: 0.9rem 0;
+  border-bottom: 1px solid #e7eaf3;
+}
+
+.time-block:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.time-block h4 {
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  color: #2f3c8f;
+  font-weight: 700;
+}
+
+/* ================================================================
+   SLEEP SECTION
+   ================================================================ */
+
+.sleep-time-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 480px) {
+  .sleep-time-grid { grid-template-columns: 1fr; }
+}
+
+.time-widget-label-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0;
+}
+
+.time-widget-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #2d3142;
+}
+
+.time-input-single {
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  border: 1.5px solid #d1d5e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #f9fafb;
+  color: #1c1d22;
+}
+
+.sleep-total-display {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #f3f4f8;
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.sleep-total-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #2d3142;
+  flex: 1;
+}
+
+.sleep-total-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #3f51b5;
 }
 
 /* ================================================================
