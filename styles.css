@@ -380,6 +380,70 @@ h4 {
 }
 
 /* ================================================================
+   COLLAPSIBLE ENTRY SECTIONS (Daily Entry tab)
+   ================================================================ */
+
+.entry-section {
+  margin-bottom: 0.6rem;
+  border-radius: 12px;
+  border: 1px solid #e7eaf3;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+/* Remove the default browser disclosure triangle */
+.entry-section > summary {
+  list-style: none;
+}
+.entry-section > summary::-webkit-details-marker {
+  display: none;
+}
+
+.entry-section-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  cursor: pointer;
+  user-select: none;
+  background: #ffffff;
+  transition: background 0.15s ease;
+  gap: 0.75rem;
+}
+
+.entry-section-summary:hover {
+  background: #f3f4f8;
+}
+
+.entry-section-title {
+  font-size: 1.0rem;
+  font-weight: 700;
+  color: #2f3c8f;
+  flex: 1;
+}
+
+.entry-section-chevron {
+  flex-shrink: 0;
+  color: #9fa8da;
+  transition: transform 0.22s ease;
+}
+
+/* Rotate chevron when open */
+.entry-section[open] > .entry-section-summary .entry-section-chevron {
+  transform: rotate(180deg);
+}
+
+/* Body: remove card's own margin/border-radius since the <details> wraps it */
+.entry-section-body.card {
+  border-radius: 0;
+  border: none;
+  border-top: 1px solid #e7eaf3;
+  box-shadow: none;
+  margin-bottom: 0;
+}
+
+/* ================================================================
    DAILY TIMELINE
    ================================================================ */
 

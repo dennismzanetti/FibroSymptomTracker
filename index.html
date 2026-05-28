@@ -99,82 +99,125 @@
     <button id="saveDayFloat" class="save-day-float primary" aria-label="Save Day">&#128190; Save Day</button>
 
     <h2>Daily Entry</h2>
-    <div class="card">
-      <h3>Day Info</h3>
-      <label>Day title (optional):
-        <input type="text" id="dayTitleInput" placeholder="Flare day, Better day, etc." />
-      </label>
-      <label>Overall notes:
-        <textarea id="overallNotesInput" rows="2" placeholder="Big events, stress, weather, etc."></textarea>
-      </label>
-    </div>
-    <div class="card">
-      <h3>Mood</h3>
-      <label>Mood score (1&#8211;10)
-        <div class="number-stepper">
-          <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease mood score">&#8722;</button>
-          <input type="number" min="1" max="10" id="moodScoreInput" inputmode="numeric" />
-          <button type="button" class="stepper-btn" data-step="1" aria-label="Increase mood score">+</button>
+
+    <!-- Day Info — open by default -->
+    <details class="entry-section" open>
+      <summary class="entry-section-summary">
+        <span class="entry-section-title">Day Info</span>
+        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="entry-section-body card">
+        <label>Day title (optional):
+          <input type="text" id="dayTitleInput" placeholder="Flare day, Better day, etc." />
+        </label>
+        <label>Overall notes:
+          <textarea id="overallNotesInput" rows="2" placeholder="Big events, stress, weather, etc."></textarea>
+        </label>
+      </div>
+    </details>
+
+    <!-- Mood -->
+    <details class="entry-section" open>
+      <summary class="entry-section-summary">
+        <span class="entry-section-title">Mood</span>
+        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="entry-section-body card">
+        <label>Mood score (1&#8211;10)
+          <div class="number-stepper">
+            <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease mood score">&#8722;</button>
+            <input type="number" min="1" max="10" id="moodScoreInput" inputmode="numeric" />
+            <button type="button" class="stepper-btn" data-step="1" aria-label="Increase mood score">+</button>
+          </div>
+        </label>
+        <label>Mood notes:
+          <textarea id="moodNotesInput" rows="2" placeholder="Anxious, low, ok, calm, etc."></textarea>
+        </label>
+      </div>
+    </details>
+
+    <!-- Functionality by Time of Day -->
+    <details class="entry-section" open>
+      <summary class="entry-section-summary">
+        <span class="entry-section-title">Functionality by Time of Day</span>
+        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="entry-section-body card">
+        <div class="time-block"><h4>Early morning (5&#8211;9 am)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early morning functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyMorningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early morning functionality score">+</button></div></label><label>What I was doing: <input type="text" id="earlyMorningActivity" /></label><label>Symptoms / how it felt: <textarea id="earlyMorningSymptoms" rows="2"></textarea></label></div>
+        <div class="time-block"><h4>Late morning (9&#8211;12)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late morning functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateMorningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late morning functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateMorningActivity" /></label><label>Symptoms / how it felt: <textarea id="lateMorningSymptoms" rows="2"></textarea></label></div>
+        <div class="time-block"><h4>Early afternoon (12&#8211;3)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early afternoon functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyAfternoonScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early afternoon functionality score">+</button></div></label><label>What I was doing: <input type="text" id="earlyAfternoonActivity" /></label><label>Symptoms / how it felt: <textarea id="earlyAfternoonSymptoms" rows="2"></textarea></label></div>
+        <div class="time-block"><h4>Late afternoon (3&#8211;6)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late afternoon functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateAfternoonScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late afternoon functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateAfternoonActivity" /></label><label>Symptoms / how it felt: <textarea id="lateAfternoonSymptoms" rows="2"></textarea></label></div>
+        <div class="time-block"><h4>Early evening (6&#8211;9)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early evening functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyEveningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early evening functionality score">+</button></div></label><label>What I was doing: <input type="text" id="earlyEveningActivity" /></label><label>Symptoms / how it felt: <textarea id="earlyEveningSymptoms" rows="2"></textarea></label></div>
+        <div class="time-block"><h4>Late evening (9&#8211;12)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late evening functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateEveningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late evening functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateEveningActivity" /></label><label>Symptoms / how it felt: <textarea id="lateEveningSymptoms" rows="2"></textarea></label></div>
+      </div>
+    </details>
+
+    <!-- Sleep -->
+    <details class="entry-section" open>
+      <summary class="entry-section-summary">
+        <span class="entry-section-title">Sleep (previous night)</span>
+        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="entry-section-body card">
+        <div class="sleep-time-grid">
+          <label class="time-widget-label-wrap">
+            <span class="time-widget-label">Bedtime</span>
+            <input type="time" id="bedtimeInput" step="900" class="time-input-single" aria-label="Bedtime" />
+          </label>
+          <label class="time-widget-label-wrap">
+            <span class="time-widget-label">Wake time</span>
+            <input type="time" id="wakeTimeInput" step="900" class="time-input-single" aria-label="Wake time" />
+          </label>
         </div>
-      </label>
-      <label>Mood notes:
-        <textarea id="moodNotesInput" rows="2" placeholder="Anxious, low, ok, calm, etc."></textarea>
-      </label>
-    </div>
-    <div class="card">
-      <h3>Functionality by Time of Day</h3>
-      <div class="time-block"><h4>Early morning (5&#8211;9 am)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early morning functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyMorningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early morning functionality score">+</button></div></label><label>What I was doing: <input type="text" id="earlyMorningActivity" /></label><label>Symptoms / how it felt: <textarea id="earlyMorningSymptoms" rows="2"></textarea></label></div>
-      <div class="time-block"><h4>Late morning (9&#8211;12)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late morning functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateMorningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late morning functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateMorningActivity" /></label><label>Symptoms / how it felt: <textarea id="lateMorningSymptoms" rows="2"></textarea></label></div>
-      <div class="time-block"><h4>Early afternoon (12&#8211;3)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early afternoon functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyAfternoonScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early afternoon functionality score">+</button></div></label><label>What I was doing: <input type="text" id="earlyAfternoonActivity" /></label><label>Symptoms / how it felt: <textarea id="earlyAfternoonSymptoms" rows="2"></textarea></label></div>
-      <div class="time-block"><h4>Late afternoon (3&#8211;6)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late afternoon functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateAfternoonScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late afternoon functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateAfternoonActivity" /></label><label>Symptoms / how it felt: <textarea id="lateAfternoonSymptoms" rows="2"></textarea></label></div>
-      <div class="time-block"><h4>Early evening (6&#8211;9)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early evening functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyEveningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early evening functionality score">+</button></div></label><label>What I was doing: <input type="text" id="earlyEveningActivity" /></label><label>Symptoms / how it felt: <textarea id="earlyEveningSymptoms" rows="2"></textarea></label></div>
-      <div class="time-block"><h4>Late evening (9&#8211;12)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late evening functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateEveningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late evening functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateEveningActivity" /></label><label>Symptoms / how it felt: <textarea id="lateEveningSymptoms" rows="2"></textarea></label></div>
-    </div>
-    <div class="card">
-      <h3>Sleep (previous night)</h3>
-      <div class="sleep-time-grid">
-        <label class="time-widget-label-wrap">
-          <span class="time-widget-label">Bedtime</span>
-          <input type="time" id="bedtimeInput" step="900" class="time-input-single" aria-label="Bedtime" />
+        <div class="sleep-total-display" aria-live="polite">
+          <span class="sleep-total-label">Total hours slept</span>
+          <span id="hoursSleptDisplay" class="sleep-total-value">&#8212;</span>
+          <input type="hidden" id="hoursSleptInput" />
+        </div>
+        <label>Sleep Quality (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease sleep quality score">&#8722;</button><input type="number" min="1" max="10" id="sleepQualityInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase sleep quality score">+</button></div></label>
+        <label>Number of awakenings<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease number of awakenings">&#8722;</button><input type="number" min="0" max="20" id="awakeningsInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase number of awakenings">+</button></div></label>
+        <label>Sleep notes <textarea id="sleepNotesInput" rows="2"></textarea></label>
+      </div>
+    </details>
+
+    <!-- Exercise / Activity -->
+    <details class="entry-section" open>
+      <summary class="entry-section-summary">
+        <span class="entry-section-title">Exercise / Activity</span>
+        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="entry-section-body card">
+        <label>Did you do planned exercise or notable activity?
+          <select id="didExerciseInput"><option value="no">No</option><option value="yes">Yes</option></select>
         </label>
-        <label class="time-widget-label-wrap">
-          <span class="time-widget-label">Wake time</span>
-          <input type="time" id="wakeTimeInput" step="900" class="time-input-single" aria-label="Wake time" />
-        </label>
+        <div id="exerciseDetails">
+          <label>Type:<select id="exerciseTypeInput"><option value="">Select...</option><option value="walk">Walk</option><option value="stretching">Stretching</option><option value="pt">Physical therapy</option><option value="strength">Strength</option><option value="yoga">Yoga</option><option value="other">Other</option></select></label>
+          <label>Duration (minutes): <input type="number" min="0" id="exerciseMinutesInput" /></label>
+          <label>Intensity:<select id="exerciseIntensityInput"><option value="">Select...</option><option value="gentle">Gentle</option><option value="moderate">Moderate</option><option value="overdid">Pushed too hard</option></select></label>
+          <label>Timing:<select id="exerciseTimingInput"><option value="">Select...</option><option value="morning">Morning</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option></select></label>
+          <label>Exercise notes: <textarea id="exerciseNotesInput" rows="2"></textarea></label>
+        </div>
       </div>
-      <div class="sleep-total-display" aria-live="polite">
-        <span class="sleep-total-label">Total hours slept</span>
-        <span id="hoursSleptDisplay" class="sleep-total-value">&#8212;</span>
-        <input type="hidden" id="hoursSleptInput" />
+    </details>
+
+    <!-- Quick Tags -->
+    <details class="entry-section" open>
+      <summary class="entry-section-summary">
+        <span class="entry-section-title">Quick Tags (optional)</span>
+        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="entry-section-body card">
+        <div id="tagsContainer">
+          <label><input type="checkbox" value="flare" /> Flare</label>
+          <label><input type="checkbox" value="crash" /> Crash / post-exertional</label>
+          <label><input type="checkbox" value="better" /> Better than usual</label>
+          <label><input type="checkbox" value="poor_sleep" /> Poor sleep</label>
+          <label><input type="checkbox" value="high_stress" /> High stress</label>
+          <label><input type="checkbox" value="weather_change" /> Weather change</label>
+        </div>
       </div>
-      <label>Sleep Quality (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease sleep quality score">&#8722;</button><input type="number" min="1" max="10" id="sleepQualityInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase sleep quality score">+</button></div></label>
-      <label>Number of awakenings<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease number of awakenings">&#8722;</button><input type="number" min="0" max="20" id="awakeningsInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase number of awakenings">+</button></div></label>
-      <label>Sleep notes <textarea id="sleepNotesInput" rows="2"></textarea></label>
-    </div>
-    <div class="card">
-      <h3>Exercise / Activity</h3>
-      <label>Did you do planned exercise or notable activity?
-        <select id="didExerciseInput"><option value="no">No</option><option value="yes">Yes</option></select>
-      </label>
-      <div id="exerciseDetails">
-        <label>Type:<select id="exerciseTypeInput"><option value="">Select...</option><option value="walk">Walk</option><option value="stretching">Stretching</option><option value="pt">Physical therapy</option><option value="strength">Strength</option><option value="yoga">Yoga</option><option value="other">Other</option></select></label>
-        <label>Duration (minutes): <input type="number" min="0" id="exerciseMinutesInput" /></label>
-        <label>Intensity:<select id="exerciseIntensityInput"><option value="">Select...</option><option value="gentle">Gentle</option><option value="moderate">Moderate</option><option value="overdid">Pushed too hard</option></select></label>
-        <label>Timing:<select id="exerciseTimingInput"><option value="">Select...</option><option value="morning">Morning</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option></select></label>
-        <label>Exercise notes: <textarea id="exerciseNotesInput" rows="2"></textarea></label>
-      </div>
-    </div>
-    <div class="card">
-      <h3>Quick tags (optional)</h3>
-      <div id="tagsContainer">
-        <label><input type="checkbox" value="flare" /> Flare</label>
-        <label><input type="checkbox" value="crash" /> Crash / post-exertional</label>
-        <label><input type="checkbox" value="better" /> Better than usual</label>
-        <label><input type="checkbox" value="poor_sleep" /> Poor sleep</label>
-        <label><input type="checkbox" value="high_stress" /> High stress</label>
-        <label><input type="checkbox" value="weather_change" /> Weather change</label>
-      </div>
-    </div>
+    </details>
+
   </section>
 
   <!-- Journal Tab -->
@@ -351,10 +394,6 @@
 <script>
 (function () {
   // ── Mobile-specific wiring ──────────────────────────────────────────────────
-  // The mobile header duplicates some controls (date nav, sign-out).
-  // Keep them in sync with the desktop counterparts.
-
-  // Sign-out button mirror
   var signOutBtnMobile = document.getElementById('signOutBtnMobile');
   if (signOutBtnMobile) {
     signOutBtnMobile.addEventListener('click', function () {
@@ -363,9 +402,6 @@
     });
   }
 
-  // Expose mobile sign-out button so app.js auth handler can show/hide it
-  // app.js already handles #signOutBtn; we mirror its display state via
-  // MutationObserver so we don't need to touch app.js.
   var signOutBtnDesktop = document.getElementById('signOutBtn');
   if (signOutBtnDesktop && signOutBtnMobile) {
     var obs = new MutationObserver(function () {
@@ -374,20 +410,16 @@
     obs.observe(signOutBtnDesktop, { attributes: true, attributeFilter: ['style'] });
   }
 
-  // Mobile prev/next day buttons mirror desktop buttons
   document.getElementById('prevDayBtnMobile')?.addEventListener('click', function () {
     document.getElementById('prevDayBtn').click();
   });
   document.getElementById('nextDayBtnMobile')?.addEventListener('click', function () {
     document.getElementById('nextDayBtn').click();
   });
-
-  // Mobile date picker button opens the desktop hidden date input
   document.getElementById('datePickerBtnMobile')?.addEventListener('click', function () {
     document.getElementById('datePickerBtn').click();
   });
 
-  // Mirror date display text into mobile spans whenever the desktop spans update
   function mirrorDateDisplay() {
     var dowSrc  = document.getElementById('dayOfWeekDisplay');
     var dateSrc = document.getElementById('dateDisplay');
@@ -397,22 +429,18 @@
     if (dateDst && dateSrc) dateDst.textContent = dateSrc.textContent;
   }
 
-  // Poll for updates to the date display (lightweight, fires rarely)
   var dowSrc  = document.getElementById('dayOfWeekDisplay');
   var dateSrc = document.getElementById('dateDisplay');
   if (dowSrc)  new MutationObserver(mirrorDateDisplay).observe(dowSrc,  { childList: true, characterData: true, subtree: true });
   if (dateSrc) new MutationObserver(mirrorDateDisplay).observe(dateSrc, { childList: true, characterData: true, subtree: true });
   mirrorDateDisplay();
 
-  // Tab dropdown — keep in sync with desktop tab buttons
   var tabSelect = document.getElementById('tabSelect');
-
   document.querySelectorAll('#tabs .tab-button').forEach(function (btn) {
     btn.addEventListener('click', function () {
       if (tabSelect) tabSelect.value = btn.getAttribute('data-tab');
     });
   });
-
   if (tabSelect) {
     tabSelect.addEventListener('change', function () {
       var btn = document.querySelector('#tabs .tab-button[data-tab="' + tabSelect.value + '"]');
