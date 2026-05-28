@@ -444,6 +444,58 @@ h4 {
 }
 
 /* ================================================================
+   DESKTOP: always-expanded entry sections (no collapse on desktop)
+   ================================================================ */
+
+@media (min-width: 641px) {
+  /* Force all entry sections open — the open attribute is ignored by CSS
+     so we simply always show the body and hide the summary toggle */
+  .entry-section {
+    /* Ensure the section border-top matches the body border */
+    overflow: visible;
+  }
+
+  /* Hide the clickable summary header; show only a plain section title bar */
+  .entry-section > .entry-section-summary {
+    display: none;
+  }
+
+  /* Remove the top border that was separating summary from body */
+  .entry-section-body.card {
+    border-top: none;
+    border-radius: 12px;
+  }
+
+  /* Always show the body regardless of the [open] attribute */
+  .entry-section > .entry-section-body {
+    display: block !important;
+  }
+
+  /* Add a styled section heading above each card using the title data
+     — rendered via a ::before pseudo trick isn't possible for dynamic text,
+     so instead we restore the summary as a non-interactive header strip */
+  .entry-section > .entry-section-summary {
+    display: flex;
+    cursor: default;
+    pointer-events: none;
+    border-bottom: 1px solid #e7eaf3;
+    background: #f7f8fc;
+    border-radius: 12px 12px 0 0;
+  }
+
+  /* Hide only the chevron on desktop */
+  .entry-section > .entry-section-summary .entry-section-chevron {
+    display: none;
+  }
+
+  /* Restore body top border since summary is now visible */
+  .entry-section-body.card {
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+  }
+}
+
+/* ================================================================
    DAILY TIMELINE
    ================================================================ */
 
