@@ -417,7 +417,7 @@ async function printMedList() {
     </div>
   </div>
 
-  <script>window.onload=function(){window.print();window.onafterprint=function(){window.close();};};<\/script>
+  <script>window.onload=function(){window.print();window.onafterprint=function(){window.close();};}<\/script>
 </body>
 </html>`;
 
@@ -709,7 +709,6 @@ async function refreshHistory() {
     }
 
     days.slice(0, 30).forEach(d => {
-      // Format date label
       const [y, mo, dy] = d.date.split("-").map(Number);
       const dateObj = new Date(y, mo - 1, dy);
       const dow = isNaN(dateObj.getTime()) ? "" : dateObj.toLocaleDateString(undefined, { weekday: "short" });
@@ -717,7 +716,6 @@ async function refreshHistory() {
         ? d.date
         : dateObj.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
 
-      // Score chips
       const avgScore = d.avgFunctionality;
       const moodScore = d.mood?.score ?? null;
       const sleepQuality = d.sleep?.quality ?? null;
@@ -737,7 +735,6 @@ async function refreshHistory() {
           : ""
       ].filter(Boolean).join("");
 
-      // Notes preview (first non-empty of overallNotes or mood notes)
       const notesPreview = d.overallNotes?.trim() || d.mood?.notes?.trim() || "";
 
       const li = document.createElement("li");
@@ -774,7 +771,6 @@ async function refreshHistory() {
         }
       });
 
-      // Click card body (not buttons) to load
       li.addEventListener("click", (e) => {
         if (e.target.tagName === "BUTTON") return;
         fillFormFromData(d);
@@ -889,10 +885,8 @@ async function renderJournal() {
       const awakenings = typeof data.sleep?.awakenings === "number" ? data.sleep.awakenings : "Not recorded";
       const tagsHtml = data.tags?.length ? `<div class="journal-tags">${data.tags.map(tag => `<span class="journal-tag">${tag}</span>`).join("")}</div>` : `<p class="journal-muted">No tags recorded.</p>`;
       const exerciseHtml = data.didExercise && data.exercise ? `<p><span class="journal-label">Type:</span> ${formatText(data.exercise.type, "not recorded")}</p><p><span class="journal-label">Minutes:</span> ${data.exercise.minutes ?? "not recorded"}</p><p><span class="journal-label">Intensity:</span> ${formatText(data.exercise.intensity, "not recorded")}</p><p><span class="journal-label">Timing:</span> ${formatText(data.exercise.timing, "not recorded")}</p><p>${formatText(data.exercise.notes, "No exercise notes recorded.")}</p>` : `<p>No exercise recorded.</p>`;
-
       const dayOfWeek = getJournalDayOfWeek(data.date);
       const dateLine = getJournalDateLine(data.date);
-
       return `<article class="journal-entry"><header class="journal-day-header"><div><p class="journal-dow">${dayOfWeek}</p><p class="journal-date">${dateLine}</p>${title ? `<p class="journal-title">${title}</p>` : ""}</div><div class="journal-score-pill"><span class="journal-score-label">Avg function</span><strong>${avgFunctionality}</strong></div></header><section class="journal-section"><h4>Mood</h4><p><span class="journal-label">Score:</span> ${moodScore}</p><p>${formatText(data.mood?.notes, "No mood notes recorded.")}</p></section><section class="journal-section"><h4>Sleep summary</h4><div class="sleep-summary"><div class="sleep-stat"><span class="journal-label">Bedtime</span><strong>${formatText(data.sleep?.bedtime, "not recorded")}</strong></div><div class="sleep-stat"><span class="journal-label">Wake time</span><strong>${formatText(data.sleep?.wakeTime, "not recorded")}</strong></div><div class="sleep-stat"><span class="journal-label">Hours slept</span><strong>${sleepHours}</strong></div><div class="sleep-stat"><span class="journal-label">Sleep quality</span><strong>${sleepQuality}</strong></div><div class="sleep-stat"><span class="journal-label">Awakenings</span><strong>${awakenings}</strong></div></div><p class="sleep-notes">${formatText(data.sleep?.notes, "No sleep notes recorded.")}</p></section><section class="journal-section"><h4>Functionality through the day</h4><div class="function-grid"><div class="function-card"><div class="function-card-head"><span>Early morning</span><strong>${formatScore(data.functionality?.earlyMorning?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.earlyMorning?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.earlyMorning?.symptoms, "none recorded")}</p></div><div class="function-card"><div class="function-card-head"><span>Late morning</span><strong>${formatScore(data.functionality?.lateMorning?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.lateMorning?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.lateMorning?.symptoms, "none recorded")}</p></div><div class="function-card"><div class="function-card-head"><span>Early afternoon</span><strong>${formatScore(data.functionality?.earlyAfternoon?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.earlyAfternoon?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.earlyAfternoon?.symptoms, "none recorded")}</p></div><div class="function-card"><div class="function-card-head"><span>Late afternoon</span><strong>${formatScore(data.functionality?.lateAfternoon?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.lateAfternoon?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.lateAfternoon?.symptoms, "none recorded")}</p></div><div class="function-card"><div class="function-card-head"><span>Early evening</span><strong>${formatScore(data.functionality?.earlyEvening?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.earlyEvening?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.earlyEvening?.symptoms, "none recorded")}</p></div><div class="function-card"><div class="function-card-head"><span>Late evening</span><strong>${formatScore(data.functionality?.lateEvening?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.lateEvening?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.lateEvening?.symptoms, "none recorded")}</p></div></div></section><section class="journal-section"><h4>Exercise</h4>${exerciseHtml}</section><section class="journal-section"><h4>Tags</h4>${tagsHtml}</section><section class="journal-section"><h4>Overall notes</h4><p>${formatText(data.overallNotes, "No overall notes recorded.")}</p></section></article>`;
     }).join("");
   } catch (err) {
@@ -1274,137 +1268,8 @@ async function refreshSuppPrintTable() {
 }
 
 // ============================================================
-// MOOD TAB
+// MOOD TAB — owned entirely by mood.js
+// refreshMoodTab(), refreshMoodSummaryTable(), setupAtrForm(),
+// saveAtr(), and refreshAtrList() are defined in mood.js.
+// DO NOT add duplicate versions of these functions here.
 // ============================================================
-
-async function refreshMoodTab() {
-  await Promise.all([refreshMoodSummaryTable(), refreshAtrList()]);
-}
-
-async function refreshMoodSummaryTable() {
-  const tbody = document.getElementById("moodSummaryBody");
-  if (!tbody) return;
-  tbody.innerHTML = `<tr><td colspan="4" class="mood-table-empty">Loading&#8230;</td></tr>`;
-  try {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const dates = [];
-    for (let i = 0; i < 14; i++) {
-      const d = new Date(today);
-      d.setDate(today.getDate() - i);
-      dates.push(d.toISOString().split("T")[0]);
-    }
-
-    const snapshot = await db.collection("days")
-      .where(firebase.firestore.FieldPath.documentId(), "in", dates)
-      .get();
-
-    const byDate = {};
-    snapshot.forEach(doc => { byDate[doc.id] = doc.data(); });
-
-    const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-    const MONTH = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
-    tbody.innerHTML = "";
-    let hasAny = false;
-    dates.forEach(dateStr => {
-      const data = byDate[dateStr];
-      const moodScore = data?.mood?.score ?? null;
-      const moodNotes = data?.mood?.notes || "";
-
-      const d = new Date(dateStr + "T12:00:00");
-      const dayLabel = DOW[d.getDay()];
-      const dateLabel = `${MONTH[d.getMonth()]} ${d.getDate()}`;
-
-      const hasData = moodScore !== null || moodNotes;
-      if (hasData) hasAny = true;
-
-      const scoreCell = moodScore !== null
-        ? `<span class="mood-score-pill mood-score-${Math.ceil(moodScore / 3)}">${moodScore}/10</span>`
-        : `<span class="mood-score-empty">\u2014</span>`;
-
-      const tr = document.createElement("tr");
-      if (!hasData) tr.classList.add("mood-row-empty");
-      tr.innerHTML = `
-        <td class="mood-date-cell">${dateLabel}</td>
-        <td class="mood-day-cell">${dayLabel}</td>
-        <td class="mood-score-cell">${scoreCell}</td>
-        <td class="mood-notes-cell">${moodNotes
-          ? `<span>${moodNotes}</span>`
-          : `<span class="mood-score-empty">\u2014</span>`}</td>`;
-      tbody.appendChild(tr);
-    });
-
-    if (!hasAny) {
-      tbody.innerHTML = `<tr><td colspan="4" class="mood-table-empty">No mood data recorded in the last 14 days.</td></tr>`;
-    }
-  } catch (err) {
-    console.error("Error loading mood summary:", err);
-    tbody.innerHTML = `<tr><td colspan="4" class="mood-table-empty">Failed to load mood data.</td></tr>`;
-  }
-}
-
-// ============================================================
-// ATR (Automatic Thought Records)
-// ============================================================
-
-function setupAtrForm() {
-  document.getElementById("saveAtrBtn")?.addEventListener("click", saveAtr);
-}
-
-async function saveAtr() {
-  const situation = document.getElementById("atrSituation")?.value.trim() || "";
-  const emotions = document.getElementById("atrEmotions")?.value.trim() || "";
-  const thoughts = document.getElementById("atrThoughts")?.value.trim() || "";
-  const evidence = document.getElementById("atrEvidence")?.value.trim() || "";
-  const against = document.getElementById("atrAgainst")?.value.trim() || "";
-  const balanced = document.getElementById("atrBalanced")?.value.trim() || "";
-
-  if (!situation && !emotions && !thoughts) {
-    alert("Please fill in at least the Situation, Emotions, or Thoughts fields.");
-    return;
-  }
-
-  const now = new Date().toISOString();
-  try {
-    await db.collection("atrs").add({ situation, emotions, thoughts, evidence, against, balanced, timestamp: now });
-    showToast("\u2713 Thought record saved");
-    ["atrSituation","atrEmotions","atrThoughts","atrEvidence","atrAgainst","atrBalanced"].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = "";
-    });
-    refreshAtrList();
-  } catch (err) {
-    console.error("Error saving ATR:", err);
-    showToast("\u26A0 Failed to save thought record", true);
-  }
-}
-
-async function refreshAtrList() {
-  const list = document.getElementById("atrList");
-  if (!list) return;
-  list.innerHTML = "<li class='atr-empty'>Loading\u2026</li>";
-  try {
-    const snapshot = await db.collection("atrs").orderBy("timestamp", "desc").limit(20).get();
-    if (snapshot.empty) { list.innerHTML = "<li class='atr-empty'>No thought records yet.</li>"; return; }
-    list.innerHTML = "";
-    snapshot.forEach(doc => {
-      const a = doc.data();
-      const li = document.createElement("li");
-      li.className = "atr-item";
-      const ts = a.timestamp ? new Date(a.timestamp).toLocaleString() : "";
-      li.innerHTML = `
-        <div class="atr-item-header">
-          <span class="atr-date">${ts}</span>
-          ${a.emotions ? `<span class="atr-emotions">${escHtml(a.emotions)}</span>` : ""}
-        </div>
-        ${a.situation ? `<div class="atr-field"><span class="atr-field-label">Situation: </span>${escHtml(a.situation)}</div>` : ""}
-        ${a.thoughts ? `<div class="atr-field"><span class="atr-field-label">Thoughts: </span>${escHtml(a.thoughts)}</div>` : ""}
-        ${a.balanced ? `<div class="atr-field"><span class="atr-field-label">Balanced view: </span>${escHtml(a.balanced)}</div>` : ""}`;
-      list.appendChild(li);
-    });
-  } catch (err) {
-    console.error("Error loading ATRs:", err);
-    list.innerHTML = "<li class='atr-empty'>Failed to load thought records.</li>";
-  }
-}
