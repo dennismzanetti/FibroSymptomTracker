@@ -1124,7 +1124,7 @@ input[type="range"]::-moz-range-thumb {
 #trendsChart { max-width: 100%; }
 
 /* ================================================================
-   JOURNAL TAB
+   JOURNAL TAB — legacy wrappers
    ================================================================ */
 
 .journal-toolbar {
@@ -1198,6 +1198,350 @@ input[type="range"]::-moz-range-thumb {
 .journal-delete-btn { background: #fce8f3; color: #c0105c; }
 .journal-edit-btn:hover   { background: #c5cae9; }
 .journal-delete-btn:hover { background: #f5c6e0; }
+
+/* ================================================================
+   JOURNAL TAB — jv2 card system (journal.js)
+   ================================================================ */
+
+/* Filter bar */
+.jv2-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.jv2-filter-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2d3142;
+  margin-bottom: 0;
+}
+
+.jv2-filter-select {
+  width: auto;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.6rem;
+  border: 1.5px solid #d1d5e0;
+  border-radius: 7px;
+  background: #fff;
+  color: #1c1d22;
+  cursor: pointer;
+}
+
+/* Loading / empty states */
+.jv2-loading {
+  text-align: center;
+  color: #9ba3bf;
+  font-size: 0.92rem;
+  padding: 2rem 0;
+  font-style: italic;
+}
+
+/* Day card */
+.jv2-card {
+  display: flex;
+  background: #fff;
+  border: 1px solid #e7eaf3;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+.jv2-card-accent {
+  width: 5px;
+  flex-shrink: 0;
+  border-radius: 12px 0 0 12px;
+}
+
+.jv2-card-inner {
+  flex: 1;
+  min-width: 0;
+  padding: 0.9rem 1rem;
+}
+
+/* Card header */
+.jv2-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.65rem;
+}
+
+.jv2-date-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.jv2-dow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #9ba3bf;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.jv2-date {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1c1d22;
+  line-height: 1.2;
+}
+
+.jv2-title {
+  font-size: 0.82rem;
+  color: #3f51b5;
+  font-style: italic;
+  margin-top: 0.1rem;
+}
+
+.jv2-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+}
+
+/* Stat chips row */
+.jv2-stat-row {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.jv2-stat-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #f3f4f8;
+  border: 1px solid #e7eaf3;
+  border-radius: 8px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.78rem;
+}
+
+.jv2-stat-icon { font-size: 0.9rem; line-height: 1; }
+
+.jv2-stat-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  line-height: 1.2;
+}
+
+.jv2-stat-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #9ba3bf;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.jv2-stat-value {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1c1d22;
+}
+
+/* Tags */
+.jv2-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  justify-content: flex-end;
+}
+
+.jv2-tag {
+  display: inline-block;
+  background: #e8eaf6;
+  color: #3f51b5;
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: 1px solid #c5cae9;
+  text-transform: capitalize;
+}
+
+/* Score pill */
+.jv2-score-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.05rem;
+  border-radius: 6px;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1px solid;
+}
+
+.jv2-score-denom {
+  font-size: 0.65rem;
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.jv2-dash {
+  color: #c5cae9;
+  font-weight: 700;
+}
+
+/* Accordion sections */
+.jv2-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.jv2-section {
+  border: 1px solid #e7eaf3;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.jv2-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.55rem 0.85rem;
+  background: #f7f8fc;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2f3c8f;
+  text-align: left;
+  gap: 0.5rem;
+  transition: background 0.15s;
+}
+
+.jv2-section-header:hover { background: #eef0fa; }
+
+.jv2-section-title { flex: 1; }
+
+.jv2-section-chevron {
+  flex-shrink: 0;
+  color: #9fa8da;
+  transition: transform 0.2s ease;
+}
+
+.jv2-section-body {
+  padding: 0.75rem 0.85rem;
+  background: #fff;
+  border-top: 1px solid #e7eaf3;
+}
+
+/* Functionality grid */
+.jv2-func-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.5rem;
+}
+
+.jv2-func-card {
+  border: 1px solid #e7eaf3;
+  border-radius: 8px;
+  padding: 0.55rem 0.7rem;
+  background: #f9fafb;
+}
+
+.jv2-func-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  margin-bottom: 0.35rem;
+}
+
+.jv2-func-card-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+}
+
+.jv2-func-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #2d3142;
+}
+
+.jv2-func-time {
+  font-size: 0.7rem;
+  color: #9ba3bf;
+}
+
+.jv2-func-detail {
+  font-size: 0.78rem;
+  color: #4a5270;
+  margin-top: 0.2rem;
+  line-height: 1.4;
+}
+
+/* Sleep / exercise stats grid */
+.jv2-sleep-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.jv2-sleep-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  background: #f3f4f8;
+  border-radius: 7px;
+  padding: 0.3rem 0.6rem;
+  min-width: 80px;
+}
+
+.jv2-sleep-stat strong {
+  font-size: 0.88rem;
+  color: #1c1d22;
+}
+
+/* Shared detail label */
+.jv2-detail-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #9ba3bf;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+}
+
+/* Notes text */
+.jv2-notes-text {
+  font-size: 0.88rem;
+  color: #2d3142;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+/* Empty state inside a section */
+.jv2-empty {
+  font-size: 0.82rem;
+  color: #9ba3bf;
+  font-style: italic;
+  margin: 0;
+}
+
+/* Mobile tweaks */
+@media (max-width: 480px) {
+  .jv2-card-header { flex-direction: column; }
+  .jv2-header-right { align-items: flex-start; }
+  .jv2-stat-row { justify-content: flex-start; }
+  .jv2-tags { justify-content: flex-start; }
+  .jv2-func-grid { grid-template-columns: 1fr; }
+}
 
 /* ================================================================
    MOOD TAB
