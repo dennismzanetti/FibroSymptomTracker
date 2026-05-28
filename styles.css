@@ -1898,7 +1898,7 @@ input[type="range"] {
 }
 
 /* ================================================================
-   ATR (Automatic Thought Records)
+   ATR (Automatic Thought Records) — Legacy classes kept for compat
    ================================================================ */
 
 .atr-item {
@@ -1937,6 +1937,12 @@ input[type="range"] {
   line-height: 1.5;
 }
 
+.atr-field p {
+  margin: 0.15rem 0 0;
+  line-height: 1.55;
+  color: #2d3142;
+}
+
 .atr-field-label {
   font-weight: 700;
   color: #6b7280;
@@ -1945,11 +1951,166 @@ input[type="range"] {
   letter-spacing: 0.04em;
 }
 
+/* Alternative thought field gets a tinted background */
+.atr-field.atr-field-alt {
+  background: #f0f4ff;
+  border: 1px solid #c5cae9;
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  margin-top: 0.3rem;
+}
+
+.atr-field.atr-field-alt .atr-field-label {
+  color: #3f51b5;
+}
+
 .atr-empty {
   color: #6b7280;
   font-size: 0.9rem;
   text-align: center;
   padding: 1.5rem 0;
+  font-style: italic;
+}
+
+/* ================================================================
+   ATR RECORD CARDS  (classes used by mood.js refreshAtrList)
+   ================================================================ */
+
+/* Desktop: side-by-side form layout */
+@media (min-width: 641px) {
+  .atr-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 1.25rem;
+  }
+  /* Date + intensity span full width */
+  .atr-form-grid .atr-full-col {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Record list container */
+#atrList {
+  margin-top: 0.5rem;
+}
+
+/* Individual record card */
+.atr-record {
+  background: #ffffff;
+  border: 1px solid #e7eaf3;
+  border-radius: 12px;
+  margin-bottom: 0.9rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  overflow: hidden;
+  transition: box-shadow 0.18s ease, transform 0.15s ease;
+}
+
+.atr-record:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.09);
+  transform: translateY(-1px);
+}
+
+/* Card header row: date + emotions badge + intensity + actions */
+.atr-record-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #f8f9fd;
+  border-bottom: 1px solid #e7eaf3;
+}
+
+.atr-record-date {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #2d3142;
+  flex-shrink: 0;
+}
+
+.atr-record-emotions {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #3f51b5;
+  background: #e8eaf6;
+  border-radius: 999px;
+  padding: 0.18rem 0.6rem;
+  white-space: nowrap;
+}
+
+/* Intensity badge: warm amber tone */
+.atr-intensity-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: #fff3e0;
+  color: #bf6000;
+  border: 1px solid #ffe0b2;
+  border-radius: 999px;
+  padding: 0.18rem 0.55rem;
+  white-space: nowrap;
+}
+
+/* Push action buttons to the right */
+.atr-record-actions {
+  display: flex;
+  gap: 0.4rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Edit button */
+.atr-edit-btn {
+  padding: 0.28rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #e8eaf6;
+  color: #3f51b5;
+  transition: background 0.15s ease;
+}
+
+.atr-edit-btn:hover {
+  background: #c5cae9;
+}
+
+/* Delete button */
+.atr-delete-btn {
+  padding: 0.28rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #fce8f3;
+  color: #c0105c;
+  transition: background 0.15s ease;
+}
+
+.atr-delete-btn:hover {
+  background: #f5c6e0;
+}
+
+/* Card body: thought fields */
+.atr-record-body {
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* Desktop: show situation + auto thought side by side */
+@media (min-width: 641px) {
+  .atr-record-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem 1.25rem;
+  }
+  /* Alternative thought spans full width */
+  .atr-record-body .atr-field.atr-field-alt {
+    grid-column: 1 / -1;
+  }
 }
 
 /* ================================================================
