@@ -19,7 +19,7 @@ body {
 }
 
 /* ================================================================
-   STICKY TWO-ROW HEADER
+   STICKY HEADER
    ================================================================ */
 
 .app-header {
@@ -31,8 +31,11 @@ body {
   box-shadow: 0 2px 10px rgba(0,0,0,0.18);
 }
 
-/* ---- Row 1: title | date nav | [mobile: tab select] | sign-out ---- */
-.header-row1 {
+/* ================================================================
+   DESKTOP HEADER  (>640px)
+   ================================================================ */
+
+.header-desktop {
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -40,6 +43,9 @@ body {
   height: 48px;
   min-height: 48px;
 }
+
+/* Hide mobile rows on desktop */
+.header-mobile { display: none; }
 
 .header-title {
   font-size: 1rem;
@@ -55,7 +61,7 @@ body {
   align-items: center;
   gap: 0.3rem;
   justify-content: center;
-  flex-shrink: 0;
+  flex: 1 1 auto;
   position: relative;
 }
 
@@ -168,12 +174,7 @@ body {
 
 .header-signout-btn:hover { background: rgba(255,255,255,0.25); }
 
-/* ---- Tab select: hidden on desktop, shown on mobile ---- */
-.tab-select {
-  display: none;
-}
-
-/* ---- Row 2: desktop tab strip ---- */
+/* ---- Desktop tab strip ---- */
 .header-row2 {
   border-top: 1px solid rgba(255,255,255,0.18);
   background: rgba(0,0,0,0.08);
@@ -222,89 +223,82 @@ body {
 }
 
 /* ================================================================
-   MOBILE (<=640px) — 3-ROW HEADER
-
-   Visual layout on mobile:
-     ┌─────────────────────────────────────────┐
-     │  [title — centered]       [Sign Out]    │  ← row 1
-     ├─────────────────────────────────────────┤
-     │        [‹] [date btn] [›]               │  ← row 2
-     ├─────────────────────────────────────────┤
-     │  [Tab dropdown ▼]                       │  ← row 3
-     └─────────────────────────────────────────┘
-
-   Achieved purely with CSS: flex-wrap + order + width on existing
-   elements — no HTML restructuring needed.
+   MOBILE HEADER  (<=640px)
+   Three explicit rows — no flex-wrap tricks.
    ================================================================ */
+
 @media (max-width: 640px) {
 
-  /* Wrap all children; align-items stretch so rows fill width */
-  .header-row1 {
-    height: auto;
-    min-height: unset;
-    padding: 0.4rem 0.75rem 0.5rem;
-    gap: 0;
-    flex-wrap: wrap;
-    align-items: center;
+  /* Hide desktop layout */
+  .header-desktop { display: none; }
+  .header-row2    { display: none; }
+
+  /* Show mobile layout */
+  .header-mobile {
+    display: block;
   }
 
-  /* ── ROW 1: title + sign-out ─────────────────────────────────
-     Give this row its own full-width flex line by setting
-     order values so title & sign-out come first, then force a
-     break after them via the date-nav margin trick.             */
+  /* ── Row 1: title (centered) + sign-out (right) ── */
+  .header-mobile-row1 {
+    display: flex;
+    align-items: center;
+    padding: 0.45rem 0.75rem;
+    min-height: 44px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
 
-  /* Title: grows to fill leftover space after sign-out, centered */
-  .header-title {
-    order: 1;
+  .header-mobile-title {
     flex: 1 1 auto;
     text-align: center;
-    font-size: 0.92rem;
+    font-size: 0.95rem;
     font-weight: 700;
-    letter-spacing: 0.03em;
-    padding: 0.1rem 0;
-    /* push sign-out to far right by letting title grow */
+    color: white;
+    letter-spacing: 0.02em;
+    /* offset by sign-out button width so text is truly centered */
+    margin-left: 70px;
   }
 
-  /* Sign-out: right end of row 1 */
-  .header-signout-btn {
-    order: 2;
+  .header-mobile-row1 .header-signout-btn {
     flex-shrink: 0;
     padding: 0.25rem 0.55rem;
     font-size: 0.75rem;
-    margin-left: auto;
   }
 
-  /* ── ROW 2: date nav centered ────────────────────────────────
-     width:100% forces a new flex line; justify-content centers  */
-  .header-date-nav {
-    order: 3;
-    width: 100%;
-    flex-shrink: 0;
+  /* ── Row 2: date nav (centered) ── */
+  .header-mobile-row2 {
+    display: flex;
+    align-items: center;
     justify-content: center;
-    padding: 0.3rem 0;
-    border-top: 1px solid rgba(255,255,255,0.15);
+    gap: 0.3rem;
+    padding: 0.3rem 0.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    position: relative;
   }
 
-  .date-picker-btn {
+  .header-mobile-row2 .date-picker-btn {
     padding: 0.28rem 0.55rem;
     font-size: 0.78rem;
-    gap: 0.25rem;
   }
 
-  .day-of-week-display { display: none; }
+  .header-mobile-row2 .day-of-week-display { display: none; }
 
-  /* ── ROW 3: tab dropdown left-aligned ───────────────────────── */
+  /* ── Row 3: tab dropdown (left-aligned) ── */
+  .header-mobile-row3 {
+    border-top: 0; /* row2 already has border-bottom */
+  }
+
   .tab-select {
     display: block;
-    order: 4;
     width: 100%;
-    flex-shrink: 0;
-    height: 36px;
+    height: 38px;
     padding: 0 2.2rem 0 0.75rem;
-    background: rgba(255,255,255,0.14);
+    background-color: rgba(255,255,255,0.14);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 14px 14px;
     color: white;
     border: none;
-    border-top: 1px solid rgba(255,255,255,0.15);
     border-radius: 0;
     font-size: 0.85rem;
     font-weight: 700;
@@ -312,26 +306,13 @@ body {
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 14px 14px;
     box-sizing: border-box;
     text-align: left;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    transition: background-color 0.18s ease;
   }
 
   .tab-select:focus {
     outline: none;
-    box-shadow: none;
     background-color: rgba(255,255,255,0.22);
-  }
-
-  .tab-select:active {
-    background-color: rgba(255,255,255,0.28);
   }
 
   .tab-select option {
@@ -341,10 +322,6 @@ body {
     font-size: 1rem;
   }
 
-  /* Hide entire desktop tab row on mobile */
-  .header-row2 {
-    display: none;
-  }
 }
 
 /* ================================================================

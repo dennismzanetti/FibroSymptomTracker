@@ -21,39 +21,27 @@
 </div>
 
 <header class="app-header">
-  <!-- Row 1: title | date nav | [mobile: tab select] | sign-out -->
-  <div class="header-row1">
+
+  <!-- DESKTOP: single row with title | date nav | sign-out -->
+  <!-- MOBILE: hidden; replaced by the three mobile rows below -->
+  <div class="header-desktop">
     <h1 class="header-title">Symptom Tracker</h1>
+
     <div class="header-date-nav">
       <button type="button" id="prevDayBtn" class="date-nav-btn icon-btn" aria-label="Previous day" title="Previous day">&#8249;</button>
-
-      <!-- Clickable date display button -->
       <button type="button" id="datePickerBtn" class="date-picker-btn" aria-label="Pick a date" title="Click to choose a date">
         <span id="dayOfWeekDisplay" class="day-of-week-display"></span>
         <span id="dateDisplay" class="date-display-text"></span>
         <svg class="date-cal-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       </button>
-
-      <!-- Hidden native date input — opened programmatically -->
       <input type="date" id="dateInput" aria-label="Entry date" class="sr-date-input" tabindex="-1" aria-hidden="true">
-
       <button type="button" id="nextDayBtn" class="date-nav-btn icon-btn" aria-label="Next day" title="Next day">&#8250;</button>
     </div>
-
-    <!-- Mobile-only tab selector: lives in row1 next to date nav -->
-    <select id="tabSelect" class="tab-select" aria-label="Select section">
-      <option value="entry-tab">Daily Entry</option>
-      <option value="journal-tab">Journal</option>
-      <option value="history-tab">History</option>
-      <option value="trends-tab">Trends</option>
-      <option value="mood-tab">Mood</option>
-      <option value="medications-tab">Medications</option>
-    </select>
 
     <button id="signOutBtn" class="header-signout-btn" style="display:none;">Sign Out</button>
   </div>
 
-  <!-- Row 2: desktop tab navigation only -->
+  <!-- DESKTOP: tab strip row -->
   <div class="header-row2">
     <nav id="tabs" class="header-tabs">
       <button class="tab-button active" data-tab="entry-tab">Daily Entry</button>
@@ -64,6 +52,42 @@
       <button class="tab-button" data-tab="medications-tab">Medications</button>
     </nav>
   </div>
+
+  <!-- MOBILE ROWS: shown only on small screens -->
+  <div class="header-mobile">
+
+    <!-- Mobile Row 1: title (centered) + sign-out (right) -->
+    <div class="header-mobile-row1">
+      <span class="header-mobile-title">Symptom Tracker</span>
+      <button id="signOutBtnMobile" class="header-signout-btn" style="display:none;">Sign Out</button>
+    </div>
+
+    <!-- Mobile Row 2: date nav (centered) -->
+    <div class="header-mobile-row2">
+      <button type="button" id="prevDayBtnMobile" class="date-nav-btn icon-btn" aria-label="Previous day">&#8249;</button>
+      <button type="button" id="datePickerBtnMobile" class="date-picker-btn" aria-label="Pick a date">
+        <span id="dayOfWeekDisplayMobile" class="day-of-week-display"></span>
+        <span id="dateDisplayMobile" class="date-display-text"></span>
+        <svg class="date-cal-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </button>
+      <input type="date" id="dateInputMobile" aria-label="Entry date" class="sr-date-input" tabindex="-1" aria-hidden="true">
+      <button type="button" id="nextDayBtnMobile" class="date-nav-btn icon-btn" aria-label="Next day">&#8250;</button>
+    </div>
+
+    <!-- Mobile Row 3: tab dropdown (left-aligned) -->
+    <div class="header-mobile-row3">
+      <select id="tabSelect" class="tab-select" aria-label="Select section">
+        <option value="entry-tab">Daily Entry</option>
+        <option value="journal-tab">Journal</option>
+        <option value="history-tab">History</option>
+        <option value="trends-tab">Trends</option>
+        <option value="mood-tab">Mood</option>
+        <option value="medications-tab">Medications</option>
+      </select>
+    </div>
+
+  </div>
+
 </header>
 
 <main>
@@ -326,16 +350,69 @@
 
 <script>
 (function () {
+  // ── Mobile-specific wiring ──────────────────────────────────────────────────
+  // The mobile header duplicates some controls (date nav, sign-out).
+  // Keep them in sync with the desktop counterparts.
+
+  // Sign-out button mirror
+  var signOutBtnMobile = document.getElementById('signOutBtnMobile');
+  if (signOutBtnMobile) {
+    signOutBtnMobile.addEventListener('click', function () {
+      var main = document.getElementById('signOutBtn');
+      if (main) main.click();
+    });
+  }
+
+  // Expose mobile sign-out button so app.js auth handler can show/hide it
+  // app.js already handles #signOutBtn; we mirror its display state via
+  // MutationObserver so we don't need to touch app.js.
+  var signOutBtnDesktop = document.getElementById('signOutBtn');
+  if (signOutBtnDesktop && signOutBtnMobile) {
+    var obs = new MutationObserver(function () {
+      signOutBtnMobile.style.display = signOutBtnDesktop.style.display;
+    });
+    obs.observe(signOutBtnDesktop, { attributes: true, attributeFilter: ['style'] });
+  }
+
+  // Mobile prev/next day buttons mirror desktop buttons
+  document.getElementById('prevDayBtnMobile')?.addEventListener('click', function () {
+    document.getElementById('prevDayBtn').click();
+  });
+  document.getElementById('nextDayBtnMobile')?.addEventListener('click', function () {
+    document.getElementById('nextDayBtn').click();
+  });
+
+  // Mobile date picker button opens the desktop hidden date input
+  document.getElementById('datePickerBtnMobile')?.addEventListener('click', function () {
+    document.getElementById('datePickerBtn').click();
+  });
+
+  // Mirror date display text into mobile spans whenever the desktop spans update
+  function mirrorDateDisplay() {
+    var dowSrc  = document.getElementById('dayOfWeekDisplay');
+    var dateSrc = document.getElementById('dateDisplay');
+    var dowDst  = document.getElementById('dayOfWeekDisplayMobile');
+    var dateDst = document.getElementById('dateDisplayMobile');
+    if (dowDst  && dowSrc)  dowDst.textContent  = dowSrc.textContent;
+    if (dateDst && dateSrc) dateDst.textContent = dateSrc.textContent;
+  }
+
+  // Poll for updates to the date display (lightweight, fires rarely)
+  var dowSrc  = document.getElementById('dayOfWeekDisplay');
+  var dateSrc = document.getElementById('dateDisplay');
+  if (dowSrc)  new MutationObserver(mirrorDateDisplay).observe(dowSrc,  { childList: true, characterData: true, subtree: true });
+  if (dateSrc) new MutationObserver(mirrorDateDisplay).observe(dateSrc, { childList: true, characterData: true, subtree: true });
+  mirrorDateDisplay();
+
+  // Tab dropdown — keep in sync with desktop tab buttons
   var tabSelect = document.getElementById('tabSelect');
 
-  // Keep select in sync when desktop tab buttons are clicked
   document.querySelectorAll('#tabs .tab-button').forEach(function (btn) {
     btn.addEventListener('click', function () {
       if (tabSelect) tabSelect.value = btn.getAttribute('data-tab');
     });
   });
 
-  // Switch tabs when the mobile select changes
   if (tabSelect) {
     tabSelect.addEventListener('change', function () {
       var btn = document.querySelector('#tabs .tab-button[data-tab="' + tabSelect.value + '"]');
