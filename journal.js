@@ -1,14 +1,14 @@
 // ================================================================
-// JOURNAL — Compact Timeline Feed + 90-Day Heatmap
+// JOURNAL — Daily Cards with Collapsible Sections
 // ================================================================
 
 const TIME_BLOCKS = [
-  { key: "earlyMorning",   label: "Early Morning (6\u20139am)",   short: "AM1" },
-  { key: "lateMorning",    label: "Late Morning (9am\u201312pm)",  short: "AM2" },
-  { key: "earlyAfternoon", label: "Early Afternoon (12\u20133pm)", short: "PM1" },
-  { key: "lateAfternoon",  label: "Late Afternoon (3\u20136pm)",   short: "PM2" },
-  { key: "earlyEvening",   label: "Early Evening (6\u20139pm)",    short: "EVE" },
-  { key: "lateEvening",    label: "Late Evening (9pm\u201312am)",  short: "NGT" }
+  { key: "earlyMorning",   label: "Early Morning",   time: "6–9 am",    short: "AM1" },
+  { key: "lateMorning",    label: "Late Morning",    time: "9 am–12 pm", short: "AM2" },
+  { key: "earlyAfternoon", label: "Early Afternoon", time: "12–3 pm",   short: "PM1" },
+  { key: "lateAfternoon",  label: "Late Afternoon",  time: "3–6 pm",    short: "PM2" },
+  { key: "earlyEvening",   label: "Early Evening",   time: "6–9 pm",    short: "EVE" },
+  { key: "lateEvening",    label: "Late Evening",    time: "9 pm–12 am", short: "NGT" }
 ];
 
 function scoreTier(s) {
@@ -34,13 +34,21 @@ function tierBarColor(avg) {
   return TIER_COLORS[t]?.border || "#e3e6f0";
 }
 
-function scorePillHtml(score, size) {
-  if (score === null || score === undefined) return `<span style="color:#b0b8cc;">&mdash;</span>`;
+function scorePillHtml(score) {
+  if (score === null || score === undefined) return `<span class="jv2-dash">&mdash;</span>`;
   const t = scoreTier(score);
   const c = TIER_COLORS[t];
-  const fs = size === "sm" ? "0.72rem" : "0.8rem";
-  const px = size === "sm" ? "0.15rem 0.45rem" : "0.2rem 0.55rem";
-  return `<span style="display:inline-block;padding:${px};border-radius:999px;font-size:${fs};font-weight:700;background:${c.bg};color:${c.text};border:1px solid ${c.border};white-space:nowrap;">${score}/10</span>`;
+  return `<span class="jv2-score-pill" style="background:${c.bg};color:${c.text};border-color:${c.border};">${score}<span class="jv2-score-denom">/10</span></span>`;
+}
+
+function statChipHtml(icon, label, value, colorStyle) {
+  return `<div class="jv2-stat-chip" style="${colorStyle || ''}">
+    <span class="jv2-stat-icon">${icon}</span>
+    <div class="jv2-stat-body">
+      <span class="jv2-stat-label">${label}</span>
+      <span class="jv2-stat-value">${value}</span>
+    </div>
+  </div>`;
 }
 
 // ================================================================
@@ -107,7 +115,7 @@ async function renderHeatmap(allDocs) {
     for (let row = 0; row < 7; row++) {
       const dateStr = cells[col * 7 + row];
       if (!dateStr) {
-        colCells += `<div style="width:${CELL}px;height:${CELL}px;border-radius:3px;border:1px solid transparent;background:transparent;"></div>`;
+        colCells += `<div style="width:${CELL}px;height:${CELL}px;border-radius:3px;background:transparent;"></div>`;
         continue;
       }
       const avg = byDate[dateStr] ?? null;
@@ -147,137 +155,28 @@ async function renderHeatmap(allDocs) {
     cell.addEventListener("mouseleave", () => { cell.style.transform = ""; cell.style.boxShadow = ""; cell.style.zIndex = ""; });
     cell.addEventListener("click", () => {
       const target = document.querySelector(`[data-journal-date="${cell.dataset.hmDate}"]`);
-      if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
 }
 
 // ================================================================
-// TIMELINE ROW
+// SECTION ACCORDION TOGGLE
 // ================================================================
 
-function buildTimelineRow(dateStr, d) {
-  const scores = TIME_BLOCKS.map(({ key }) => {
-    const s = d.functionality?.[key]?.score;
-    return typeof s === "number" ? s : null;
-  });
-  const valid = scores.filter(s => s !== null);
-  const avg   = valid.length
-    ? parseFloat((valid.reduce((a,b)=>a+b,0)/valid.length).toFixed(1))
-    : null;
-
-  const date  = new Date(dateStr + "T12:00:00");
-  const DOWS  = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  const MTHS  = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  const dow   = DOWS[date.getDay()];
-  const dlbl  = `${MTHS[date.getMonth()]} ${date.getDate()}`;
-  const barC  = tierBarColor(avg);
-
-  // Col 1 — Block score pills
-  const blockPills = TIME_BLOCKS.map(({ short }, i) => {
-    const s = scores[i];
-    const t = s !== null ? scoreTier(s) : 0;
-    const c = t ? TIER_COLORS[t] : null;
-    const bg  = c ? c.bg  : "#f0f2fa";
-    const bdr = c ? c.border : "#e0e4ef";
-    const tc  = c ? c.text : "#b0b8cc";
-    const val = s !== null ? s : "\u2014";
-    return `<span style="display:inline-flex;align-items:center;gap:2px;padding:0.06rem 0.25rem;border-radius:4px;border:1px solid ${bdr};background:${bg};color:${tc};font-size:0.68rem;white-space:nowrap;" title="${TIME_BLOCKS[i].label}"><span style="font-weight:600;color:inherit;opacity:0.7;font-size:0.58rem;">${short}</span><span style="font-weight:700;">${val}</span></span>`;
-  }).join("");
-
-  // Col 2 — Sleep + Mood badges
-  let sleepBadge = "", moodBadge = "";
-  if (d.sleep?.hours != null) sleepBadge = `<span style="font-size:0.68rem;font-weight:600;padding:0.05rem 0.3rem;border-radius:999px;border:1px solid #90caf9;background:#e3f2fd;color:#1565c0;white-space:nowrap;">&#128164; ${d.sleep.hours}h</span>`;
-  if (typeof d.mood?.score === "number") {
-    const t = scoreTier(d.mood.score); const c = TIER_COLORS[t];
-    moodBadge = `<span style="font-size:0.68rem;font-weight:600;padding:0.05rem 0.3rem;border-radius:999px;border:1px solid ${c.border};background:${c.bg};color:${c.text};white-space:nowrap;">&#128522; ${d.mood.score}/10</span>`;
-  }
-
-  // Col 3 — Tags
-  const tagsHtml = d.tags?.length
-    ? d.tags.map(t => `<span style="font-size:0.62rem;font-weight:600;padding:0.04rem 0.28rem;border-radius:999px;background:#fff3e0;color:#e65100;border:1px solid #ffe0b2;white-space:nowrap;">${t}</span>`).join("")
-    : "";
-
-  const expandId = `jfe-${dateStr}`;
-
-  // Expanded detail
-  const funcDetail = TIME_BLOCKS.map(({ key, label }, i) => {
-    const b = d.functionality?.[key] || {};
-    const s = scores[i];
-    return `<div style="background:#fff;border:1px solid #e3e6f0;border-radius:6px;padding:0.3rem 0.45rem;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.15rem;">
-        <span style="font-size:0.68rem;font-weight:700;color:#3f51b5;text-transform:uppercase;letter-spacing:0.04em;">${label}</span>
-        ${s !== null ? scorePillHtml(s, "sm") : "<span style='color:#b0b8cc;'>\u2014</span>"}
-      </div>
-      ${b.activity ? `<div style="font-size:0.75rem;color:#2d3142;line-height:1.3;"><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;margin-right:3px;">Activity</span>${b.activity}</div>` : ""}
-      ${b.symptoms ? `<div style="font-size:0.75rem;color:#2d3142;line-height:1.3;"><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;margin-right:3px;">Symptoms</span>${b.symptoms}</div>` : ""}
-    </div>`;
-  }).join("");
-
-  let sleepDetail = "", exDetail = "", moodDetail = "", overallDetail = "";
-
-  if (d.sleep) {
-    const s = d.sleep;
-    const parts = [
-      s.bedtime   ? `<span><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Bedtime</span>${s.bedtime}</span>` : "",
-      s.wakeTime  ? `<span><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Wake</span>${s.wakeTime}</span>` : "",
-      s.hours!=null ? `<span><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Hours</span>${s.hours}</span>` : "",
-      typeof s.quality==="number" ? `<span><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Quality</span>${s.quality}/10</span>` : "",
-      s.awakenings!=null ? `<span><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Wakes</span>${s.awakenings}</span>` : ""
-    ].filter(Boolean).join("");
-    if (parts) sleepDetail = `<div style="margin-bottom:0.3rem;"><strong style="font-size:0.75rem;display:block;margin-bottom:0.15rem;color:#2d3142;">Sleep</strong><div style="display:flex;flex-wrap:wrap;gap:0.4rem;font-size:0.75rem;color:#2d3142;font-weight:600;">${parts}</div>${s.notes ? `<div style="font-size:0.75rem;margin-top:0.15rem;">${s.notes}</div>` : ""}</div>`;
-  }
-
-  if (d.didExercise === "yes" && d.exercise) {
-    const e = d.exercise;
-    exDetail = `<div style="margin-bottom:0.3rem;"><strong style="font-size:0.75rem;display:block;margin-bottom:0.15rem;color:#2d3142;">Exercise</strong><div style="display:flex;flex-wrap:wrap;gap:0.4rem;font-size:0.75rem;color:#2d3142;font-weight:600;">
-      ${e.type ? `<span><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Type</span>${e.type}</span>` : ""}
-      ${e.minutes!=null ? `<span><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Duration</span>${e.minutes} min</span>` : ""}
-      ${e.intensity ? `<span><span style="font-size:0.62rem;font-weight:700;color:#9e9e9e;text-transform:uppercase;display:block;">Intensity</span>${e.intensity}</span>` : ""}
-    </div></div>`;
-  }
-
-  if (d.mood?.notes) moodDetail = `<div style="margin-bottom:0.3rem;"><strong style="font-size:0.75rem;display:block;margin-bottom:0.15rem;color:#2d3142;">Mood Notes</strong><div style="font-size:0.78rem;">${d.mood.notes}</div></div>`;
-  if (d.overallNotes) overallDetail = `<div style="margin-bottom:0.3rem;"><strong style="font-size:0.75rem;display:block;margin-bottom:0.15rem;color:#2d3142;">Overall Notes</strong><div style="font-size:0.78rem;">${d.overallNotes}</div></div>`;
-
-  return `
-    <div style="display:flex;border-bottom:1px solid #e8eaf3;background:#fff;line-height:1;" data-journal-date="${dateStr}">
-      <div style="width:3px;flex-shrink:0;background:${barC};"></div>
-      <div style="flex:1;min-width:0;">
-        <div onclick="toggleJournalRow('${expandId}')" style="cursor:pointer;user-select:none;">
-          <div style="display:grid;grid-template-columns:62px 1fr auto auto auto;align-items:center;gap:0.35rem;padding:0.25rem 0.45rem;min-width:0;">
-
-            <!-- Col 1: Date -->
-            <div style="display:flex;flex-direction:column;align-items:flex-start;justify-content:center;flex-shrink:0;">
-              <span style="font-size:0.6rem;font-weight:700;color:#1565c0;text-transform:uppercase;letter-spacing:0.05em;line-height:1;">${dow}</span>
-              <span style="font-size:0.78rem;font-weight:700;color:#2d3142;white-space:nowrap;line-height:1.3;">${dlbl}</span>
-            </div>
-
-            <!-- Col 2: Block pills -->
-            <div style="display:flex;gap:0.1rem;flex-wrap:wrap;min-width:0;">${blockPills}</div>
-
-            <!-- Col 3: Sleep + Mood -->
-            <div style="display:flex;gap:0.2rem;flex-wrap:nowrap;align-items:center;flex-shrink:0;">${sleepBadge}${moodBadge}</div>
-
-            <!-- Col 4: Tags -->
-            <div style="display:flex;gap:0.12rem;flex-wrap:wrap;align-items:center;flex-shrink:0;">${tagsHtml}</div>
-
-            <!-- Col 5: Avg score + chevron -->
-            <div style="display:flex;align-items:center;gap:0.3rem;flex-shrink:0;">
-              ${avg !== null ? scorePillHtml(avg, "sm") : ""}
-              <span id="${expandId}-chev" style="color:#c8cce0;font-size:0.9rem;font-weight:700;line-height:1;transition:transform 0.2s;">&rsaquo;</span>
-            </div>
-
-          </div>
-        </div>
-        <div id="${expandId}" style="display:none;padding:0.3rem 0.5rem 0.35rem;border-top:1px solid #eef0fb;background:#f8f9fd;">
-          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.3rem;margin-bottom:0.4rem;">${funcDetail}</div>
-          ${sleepDetail}${exDetail}${moodDetail}${overallDetail}
-        </div>
-      </div>
-    </div>`;
+function toggleJournalSection(btn) {
+  const section = btn.closest(".jv2-section");
+  if (!section) return;
+  const body  = section.querySelector(".jv2-section-body");
+  const icon  = section.querySelector(".jv2-section-chevron");
+  if (!body) return;
+  const isOpen = body.style.display !== "none";
+  body.style.display = isOpen ? "none" : "block";
+  if (icon) icon.style.transform = isOpen ? "" : "rotate(90deg)";
+  btn.setAttribute("aria-expanded", isOpen ? "false" : "true");
 }
 
+// Keep legacy compat
 function toggleJournalRow(expandId) {
   const panel = document.getElementById(expandId);
   const chev  = document.getElementById(expandId + "-chev");
@@ -288,6 +187,187 @@ function toggleJournalRow(expandId) {
 }
 
 // ================================================================
+// SECTION BUILDER HELPER
+// ================================================================
+
+function buildSection(title, bodyHtml, defaultOpen) {
+  const display = defaultOpen ? "block" : "none";
+  const chevRot = defaultOpen ? "rotate(90deg)" : "";
+  return `
+    <div class="jv2-section">
+      <button class="jv2-section-header" onclick="toggleJournalSection(this)" aria-expanded="${defaultOpen ? 'true' : 'false'}">
+        <span class="jv2-section-title">${title}</span>
+        <svg class="jv2-section-chevron" style="transform:${chevRot};" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div class="jv2-section-body" style="display:${display};">${bodyHtml}</div>
+    </div>`;
+}
+
+// ================================================================
+// CARD BUILDER
+// ================================================================
+
+function buildJournalCard(dateStr, d) {
+  // ---- Scores & stats ----
+  const scores = TIME_BLOCKS.map(({ key }) => {
+    const s = d.functionality?.[key]?.score;
+    return typeof s === "number" ? s : null;
+  });
+  const valid = scores.filter(s => s !== null);
+  const avg   = valid.length
+    ? parseFloat((valid.reduce((a,b)=>a+b,0)/valid.length).toFixed(1))
+    : null;
+
+  const date  = new Date(dateStr + "T12:00:00");
+  const DOWS  = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const MTHS  = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const dow   = DOWS[date.getDay()];
+  const dlbl  = `${MTHS[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+  const barColor = tierBarColor(avg);
+
+  const title = d.dayTitle?.trim() || "";
+
+  // ---- Stat chips (always visible in header) ----
+  const avgFuncChip = avg !== null
+    ? statChipHtml("⚡", "Avg Function", scorePillHtml(avg), "")
+    : "";
+
+  const sleepChip = typeof d.sleep?.hours === "number"
+    ? statChipHtml("😴", "Sleep", `${d.sleep.hours}h`, "")
+    : "";
+
+  const moodChip = typeof d.mood?.score === "number"
+    ? statChipHtml("😌", "Mood", scorePillHtml(d.mood.score), "")
+    : "";
+
+  // ---- Tags ----
+  const tagsHtml = d.tags?.length
+    ? `<div class="jv2-tags">${d.tags.map(t => `<span class="jv2-tag">${t}</span>`).join("")}</div>`
+    : "";
+
+  // ============================================================
+  // SECTION: Functionality
+  // ============================================================
+  const hasFuncData = scores.some(s => s !== null);
+  let funcBody = "";
+  if (hasFuncData) {
+    funcBody = `<div class="jv2-func-grid">${TIME_BLOCKS.map(({ key, label, time }, i) => {
+      const b = d.functionality?.[key] || {};
+      const s = scores[i];
+      const t = s !== null ? scoreTier(s) : 0;
+      const c = t ? TIER_COLORS[t] : null;
+      const cardStyle = c ? `border-color:${c.border};background:${c.bg};` : "";
+      return `<div class="jv2-func-card" style="${cardStyle}">
+        <div class="jv2-func-card-head">
+          <div class="jv2-func-card-label">
+            <span class="jv2-func-name">${label}</span>
+            <span class="jv2-func-time">${time}</span>
+          </div>
+          <div>${s !== null ? scorePillHtml(s) : `<span class="jv2-dash">&mdash;</span>`}</div>
+        </div>
+        ${b.activity ? `<div class="jv2-func-detail"><span class="jv2-detail-label">Activity</span>${b.activity}</div>` : ""}
+        ${b.symptoms ? `<div class="jv2-func-detail"><span class="jv2-detail-label">Symptoms</span>${b.symptoms}</div>` : ""}
+      </div>`;
+    }).join("")}</div>`;
+  } else {
+    funcBody = `<p class="jv2-empty">No functionality data recorded.</p>`;
+  }
+  const funcSection = buildSection("Functionality Through the Day", funcBody, false);
+
+  // ============================================================
+  // SECTION: Sleep
+  // ============================================================
+  const s = d.sleep || {};
+  const hasSleep = s.bedtime || s.wakeTime || s.hours != null || s.quality != null || s.awakenings != null || s.notes;
+  let sleepBody;
+  if (hasSleep) {
+    const sleepStats = [
+      s.bedtime    ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Bedtime</span><strong>${s.bedtime}</strong></div>` : "",
+      s.wakeTime   ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Wake</span><strong>${s.wakeTime}</strong></div>` : "",
+      s.hours!=null? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Hours</span><strong>${s.hours}h</strong></div>` : "",
+      s.quality!=null?`<div class="jv2-sleep-stat"><span class="jv2-detail-label">Quality</span><strong>${scorePillHtml(s.quality)}</strong></div>` : "",
+      s.awakenings!=null?`<div class="jv2-sleep-stat"><span class="jv2-detail-label">Awakenings</span><strong>${s.awakenings}</strong></div>` : ""
+    ].filter(Boolean).join("");
+    sleepBody = `<div class="jv2-sleep-grid">${sleepStats}</div>${s.notes ? `<p class="jv2-notes-text">${s.notes}</p>` : ""}`;
+  } else {
+    sleepBody = `<p class="jv2-empty">No sleep data recorded.</p>`;
+  }
+  const sleepSection = buildSection("Sleep", sleepBody, false);
+
+  // ============================================================
+  // SECTION: Exercise
+  // ============================================================
+  let exerciseBody;
+  const didEx = d.didExercise === true || d.didExercise === "yes";
+  if (didEx && d.exercise) {
+    const e = d.exercise;
+    const exStats = [
+      e.type      ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Type</span><strong>${e.type}</strong></div>` : "",
+      e.minutes!=null?`<div class="jv2-sleep-stat"><span class="jv2-detail-label">Duration</span><strong>${e.minutes} min</strong></div>` : "",
+      e.intensity ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Intensity</span><strong>${e.intensity}</strong></div>` : "",
+      e.timing    ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Timing</span><strong>${e.timing}</strong></div>` : ""
+    ].filter(Boolean).join("");
+    exerciseBody = `<div class="jv2-sleep-grid">${exStats}</div>${e.notes ? `<p class="jv2-notes-text">${e.notes}</p>` : ""}`;
+  } else {
+    exerciseBody = `<p class="jv2-empty">No exercise recorded.</p>`;
+  }
+  const exerciseSection = buildSection("Exercise", exerciseBody, false);
+
+  // ============================================================
+  // SECTION: Mood
+  // ============================================================
+  const hasMood = d.mood?.score != null || d.mood?.notes;
+  let moodBody;
+  if (hasMood) {
+    moodBody = `<div class="jv2-sleep-grid">${d.mood.score != null ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Score</span><strong>${scorePillHtml(d.mood.score)}</strong></div>` : ""}</div>${d.mood.notes ? `<p class="jv2-notes-text">${d.mood.notes}</p>` : ""}`;
+  } else {
+    moodBody = `<p class="jv2-empty">No mood data recorded.</p>`;
+  }
+  const moodSection = buildSection("Mood", moodBody, false);
+
+  // ============================================================
+  // SECTION: Overall Notes
+  // ============================================================
+  const notesBody = d.overallNotes
+    ? `<p class="jv2-notes-text">${d.overallNotes}</p>`
+    : `<p class="jv2-empty">No overall notes recorded.</p>`;
+  const notesSection = buildSection("Overall Notes", notesBody, !!d.overallNotes);
+
+  // ============================================================
+  // CARD ASSEMBLY
+  // ============================================================
+  return `
+    <article class="jv2-card" data-journal-date="${dateStr}">
+      <div class="jv2-card-accent" style="background:${barColor};"></div>
+      <div class="jv2-card-inner">
+
+        <!-- Header -->
+        <header class="jv2-card-header">
+          <div class="jv2-date-block">
+            <span class="jv2-dow">${dow}</span>
+            <span class="jv2-date">${dlbl}</span>
+            ${title ? `<span class="jv2-title">&ldquo;${title}&rdquo;</span>` : ""}
+          </div>
+          <div class="jv2-header-right">
+            <div class="jv2-stat-row">${avgFuncChip}${sleepChip}${moodChip}</div>
+            ${tagsHtml}
+          </div>
+        </header>
+
+        <!-- Accordion sections -->
+        <div class="jv2-sections">
+          ${funcSection}
+          ${sleepSection}
+          ${exerciseSection}
+          ${moodSection}
+          ${notesSection}
+        </div>
+
+      </div>
+    </article>`;
+}
+
+// ================================================================
 // FILTER UI
 // ================================================================
 
@@ -295,10 +375,10 @@ function injectJournalFilterUI() {
   const container = document.getElementById("journalOutput");
   if (!container || document.getElementById("journalRangeSelect")) return;
   const wrap = document.createElement("div");
-  wrap.style.cssText = "display:flex;align-items:center;gap:0.4rem;padding:0.3rem 0.45rem 0.25rem;border-bottom:1px solid #e3e6f0;";
+  wrap.className = "jv2-filter-bar";
   wrap.innerHTML = `
-    <label for="journalRangeSelect" style="font-weight:700;font-size:0.82rem;color:#5b6686;white-space:nowrap;">Show last:</label>
-    <select id="journalRangeSelect" style="width:auto;margin-top:0;padding:0.2rem 0.4rem;font-size:0.82rem;">
+    <label for="journalRangeSelect" class="jv2-filter-label">Show last:</label>
+    <select id="journalRangeSelect" class="jv2-filter-select">
       <option value="7">7 days</option>
       <option value="30" selected>30 days</option>
       <option value="90">90 days</option>
@@ -316,7 +396,7 @@ async function renderJournal() {
   injectJournalFilterUI();
   const container = document.getElementById("journalOutput");
   if (!container) return;
-  container.innerHTML = `<p style="color:#8891ab;padding:0.4rem 0.45rem;">Loading journal entries&hellip;</p>`;
+  container.innerHTML = `<p class="jv2-loading">Loading journal entries&hellip;</p>`;
 
   try {
     const sel  = document.getElementById("journalRangeSelect");
@@ -342,14 +422,14 @@ async function renderJournal() {
     await renderHeatmap(heatDocs);
 
     if (snapshot.empty) {
-      container.innerHTML = `<p style="color:#9e9e9e;font-style:italic;padding:0.4rem 0.45rem;">No journal entries found for the selected period.</p>`;
+      container.innerHTML = `<p class="jv2-loading" style="font-style:italic;">No journal entries found for the selected period.</p>`;
       return;
     }
 
-    container.innerHTML = snapshot.docs.map(doc => buildTimelineRow(doc.id, doc.data())).join("");
+    container.innerHTML = snapshot.docs.map(doc => buildJournalCard(doc.id, doc.data())).join("");
 
   } catch (err) {
     console.error("renderJournal error:", err);
-    container.innerHTML = `<p style="color:#c0392b;">Failed to load journal entries.</p>`;
+    container.innerHTML = `<p style="color:#c0392b;padding:1rem;">Failed to load journal entries.</p>`;
   }
 }
