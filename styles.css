@@ -349,6 +349,13 @@ main {
   margin: 0 auto 4rem auto;
 }
 
+/* On desktop, add extra bottom padding so content clears the fixed build footer */
+@media (min-width: 641px) {
+  main {
+    padding-bottom: 3.5rem;
+  }
+}
+
 h2 {
   margin-top: 0;
   margin-bottom: 1rem;
@@ -776,13 +783,126 @@ input[type="range"]::-moz-range-thumb {
   position: fixed;
   bottom: 1.25rem;
   right: 1.25rem;
-  z-index: 100;
+  z-index: 150;
+}
+
+/* On desktop, lift the float button above the fixed build footer */
+@media (min-width: 641px) {
+  .save-day-float {
+    bottom: 3rem;
+  }
 }
 
 .save-day-float .save-btn {
-  padding: 0.7rem 1.5rem;
-  font-size: 0.95rem;
-  box-shadow: 0 4px 16px rgba(63,81,181,0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.65rem 1.4rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  border-radius: 999px;
+  box-shadow: 0 4px 18px rgba(63,81,181,0.38);
+  letter-spacing: 0.01em;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+
+.save-day-float .save-btn:hover {
+  background: #3949ab;
+  box-shadow: 0 6px 24px rgba(63,81,181,0.45);
+  transform: translateY(-1px);
+}
+
+.save-day-float .save-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(63,81,181,0.3);
+}
+
+/* ================================================================
+   BUILD FOOTER (desktop only — fixed to bottom of viewport)
+   ================================================================ */
+
+.build-footer {
+  display: none;
+}
+
+@media (min-width: 641px) {
+  .build-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2.2rem;
+    z-index: 100;
+    background: #1a1d2e;
+    color: rgba(255,255,255,0.55);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    gap: 0.5rem;
+    padding: 0 1rem;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.18);
+  }
+
+  .build-footer a {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .build-footer a:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+}
+
+/* ================================================================
+   TOAST NOTIFICATION
+   ================================================================ */
+
+.toast {
+  position: fixed;
+  bottom: 5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  min-width: 220px;
+  max-width: 90vw;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  pointer-events: none;
+  animation: toastIn 0.22s ease;
+}
+
+/* On desktop, float toast above the build footer */
+@media (min-width: 641px) {
+  .toast {
+    bottom: 3.5rem;
+  }
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.toast-success {
+  background: #1e3a1e;
+  color: #a8e6a3;
+  border: 1px solid #2e7d32;
+}
+
+.toast-error {
+  background: #3b1a1a;
+  color: #ffb3b3;
+  border: 1px solid #c62828;
 }
 
 /* ================================================================
