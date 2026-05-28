@@ -232,8 +232,18 @@
   <!-- History Tab -->
   <section id="history-tab" class="tab">
     <h2>History</h2>
-    <p>Recent days (click to load into the form):</p>
-    <ul id="historyList"></ul>
+    <div class="history-controls">
+      <div>
+        <label for="historyFrom">From</label>
+        <input type="date" id="historyFrom" />
+      </div>
+      <div>
+        <label for="historyTo">To</label>
+        <input type="date" id="historyTo" />
+      </div>
+      <button id="loadHistoryBtn" class="btn btn-primary">Load History</button>
+    </div>
+    <ul id="historyList" class="history-list"></ul>
   </section>
 
   <!-- Trends Tab -->
