@@ -25,9 +25,9 @@ function moodTier(s) {
 }
 
 async function refreshMoodSummaryTable() {
-  const container = document.getElementById("moodSummaryList");
-  if (!container) return;
-  container.innerHTML = `<p style="color:#8891ab;font-size:0.82rem;padding:0.25rem 0;">Loading&#8230;</p>`;
+  const tbody = document.getElementById("moodSummaryBody");
+  if (!tbody) return;
+  tbody.innerHTML = `<tr><td colspan="4" class="mood-table-empty">Loading&#8230;</td></tr>`;
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -48,7 +48,7 @@ async function refreshMoodSummaryTable() {
     const DOW   = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
     const MONTH = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-    let html = "";
+    let rows = "";
     let hasAny = false;
 
     dates.forEach(dateStr => {
@@ -58,50 +58,37 @@ async function refreshMoodSummaryTable() {
       const hasData = score !== null || notes;
       if (hasData) hasAny = true;
 
-      const d        = new Date(dateStr + "T12:00:00");
-      const dow      = DOW[d.getDay()];
-      const dateLbl  = `${MONTH[d.getMonth()]} ${d.getDate()}`;
-      const isEmpty  = !hasData;
+      const d       = new Date(dateStr + "T12:00:00");
+      const dow     = DOW[d.getDay()];
+      const dateLbl = `${MONTH[d.getMonth()]} ${d.getDate()}`;
 
-      // Tier + colors
-      const tier  = score !== null ? moodTier(score) : 0;
-      const tc    = tier ? MOOD_TIER_COLORS[tier] : null;
-      const barW  = score !== null ? Math.round((score / 10) * 100) : 0;
-      const barBg = tc ? tc.border : "#e3e6f0";
+      const tier = score !== null ? moodTier(score) : 0;
+      const tc   = tier ? MOOD_TIER_COLORS[tier] : null;
 
       const pillHtml = score !== null
-        ? `<span style="display:inline-block;padding:0.1rem 0.4rem;border-radius:999px;font-size:0.72rem;font-weight:700;background:${tc.bg};color:${tc.text};border:1px solid ${tc.border};white-space:nowrap;">${score}/10</span>`
-        : `<span style="color:#c8cce0;font-size:0.75rem;">&mdash;</span>`;
+        ? `<span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:999px;font-size:0.75rem;font-weight:700;background:${tc.bg};color:${tc.text};border:1px solid ${tc.border};white-space:nowrap;">${score}/10</span>`
+        : `<span style="color:#bbb;">&#8212;</span>`;
 
-      const barHtml = `<div style="height:3px;border-radius:2px;background:#eef0fb;margin-top:3px;overflow:hidden;"><div style="height:100%;width:${barW}%;background:${barBg};border-radius:2px;transition:width 0.3s;"></div></div>`;
+      const rowOpacity = hasData ? "1" : "0.4";
 
-      const notesHtml = notes
-        ? `<div style="font-size:0.7rem;color:#5b6686;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${notes.replace(/"/g,'&quot;')}">${notes}</div>`
-        : "";
-
-      html += `
-        <div style="display:grid;grid-template-columns:42px 1fr;align-items:center;gap:0.35rem;padding:0.28rem 0;border-bottom:1px solid #f0f2fa;opacity:${isEmpty ? 0.4 : 1};">
-          <div style="line-height:1.1;">
-            <div style="font-size:0.6rem;font-weight:700;color:#1565c0;text-transform:uppercase;letter-spacing:0.05em;">${dow}</div>
-            <div style="font-size:0.75rem;font-weight:700;color:#2d3142;white-space:nowrap;">${dateLbl}</div>
-          </div>
-          <div style="min-width:0;">
-            ${pillHtml}
-            ${barHtml}
-            ${notesHtml}
-          </div>
-        </div>`;
+      rows += `
+        <tr style="opacity:${rowOpacity};">
+          <td style="white-space:nowrap;font-size:0.82rem;color:var(--color-text);">${dateLbl}</td>
+          <td style="font-size:0.82rem;color:var(--color-text-muted);">${dow}</td>
+          <td>${pillHtml}</td>
+          <td style="font-size:0.78rem;color:var(--color-text-muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${notes.replace(/"/g,'&quot;')}">${notes || "&#8212;"}</td>
+        </tr>`;
     });
 
     if (!hasAny) {
-      container.innerHTML = `<p style="color:#9e9e9e;font-style:italic;font-size:0.82rem;">No mood data in the last 14 days.</p>`;
+      tbody.innerHTML = `<tr><td colspan="4" class="mood-table-empty" style="font-style:italic;color:#9e9e9e;">No mood data in the last 14 days.</td></tr>`;
       return;
     }
 
-    container.innerHTML = html;
+    tbody.innerHTML = rows;
   } catch (err) {
     console.error("Error loading mood summary:", err);
-    container.innerHTML = `<p style="color:#c0392b;font-size:0.82rem;">Failed to load mood data.</p>`;
+    tbody.innerHTML = `<tr><td colspan="4" class="mood-table-empty" style="color:#c0392b;">Failed to load mood data.</td></tr>`;
   }
 }
 
