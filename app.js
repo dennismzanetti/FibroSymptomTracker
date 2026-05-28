@@ -29,6 +29,31 @@ function isMobileBrowser() {
   return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 }
 
+// ---- window.load / auth race guard ----
+// On desktop, onAuthStateChanged can resolve synchronously (popup auth is
+// very fast) BEFORE window.load fires, so the DOM setup functions haven't
+// run yet when we would call loadTodayDate / loadDayFromCloud.
+// On mobile (redirect auth) load always finishes first, which is why it
+// worked there but not on desktop.
+//
+// Strategy:
+//   _windowLoaded  — flipped to true inside the window "load" handler,
+//                    after all setup functions have been called.
+//   _pendingSetup  — set to true when auth beats load; the load handler
+//                    will call runPostLoadSetup() to finish the job.
+//   runPostLoadSetup() — called from EITHER path, but only executes
+//                    when BOTH flags are satisfied.
+
+let _windowLoaded = false;
+let _pendingSetup = false;
+
+function runPostLoadSetup() {
+  if (!_windowLoaded || !_pendingSetup) return;
+  _pendingSetup = false;          // consume the pending request
+  loadTodayDate();
+  loadDayFromCloud(currentDateStr);
+}
+
 // Track whether the app has been initialised for this session so that
 // onAuthStateChanged (which can fire multiple times) only runs setup once.
 let _appInitialised = false;
@@ -40,19 +65,21 @@ auth.onAuthStateChanged((user) => {
     if (signOutBtn) signOutBtn.style.display = "inline-block";
     console.log("Signed in as", user.displayName, "UID:", user.uid);
 
-    // Only run one-time setup on the very first auth confirmation.
     if (!_appInitialised) {
       _appInitialised = true;
-      // Set the date AFTER auth so the DOM is fully ready and the input
-      // is guaranteed to accept values without being immediately wiped.
-      loadTodayDate();
-      loadDayFromCloud(currentDateStr);
+      // Signal that we want post-load setup to run.
+      // If window.load has already fired this is a no-op guard and
+      // runPostLoadSetup() executes immediately; if not, the load
+      // handler will pick it up.
+      _pendingSetup = true;
+      runPostLoadSetup();
     }
   } else {
     if (authOverlay) authOverlay.style.display = "flex";
     if (appMain) appMain.style.display = "none";
     if (signOutBtn) signOutBtn.style.display = "none";
     _appInitialised = false;
+    _pendingSetup = false;
   }
 });
 
@@ -232,6 +259,10 @@ window.addEventListener("load", () => {
 
   refreshHistory();
   refreshTrends();
+
+  // All DOM setup is done — mark load complete and run any pending auth setup.
+  _windowLoaded = true;
+  runPostLoadSetup();
 });
 
 // ---- Date picker button wiring ----
