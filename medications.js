@@ -66,23 +66,23 @@ async function saveMedication() {
   const editingId = document.getElementById("medEditingId").value;
   const now = new Date().toISOString();
   if (editingId) {
-    const oldDoc = await db.collection("medications").doc(editingId).get();
+    const oldDoc = await window._db.collection("medications").doc(editingId).get();
     const oldData = oldDoc.exists ? oldDoc.data() : {};
-    await db.collection("medications").doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
+    await window._db.collection("medications").doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
     const changes = [];
     if (oldData.name !== data.name) changes.push(`Name: "${oldData.name}" \u2192 "${data.name}"`);
     if (oldData.dose !== data.dose) changes.push(`Dose: "${oldData.dose}" \u2192 "${data.dose}"`);
     if (oldData.frequency !== data.frequency) changes.push(`Frequency: "${oldData.frequency}" \u2192 "${data.frequency}"`);
     if (oldData.doctor !== data.doctor) changes.push(`Doctor: "${oldData.doctor}" \u2192 "${data.doctor}"`);
     if (oldData.notes !== data.notes) changes.push(`Notes updated`);
-    await db.collection("medicationHistory").add({
+    await window._db.collection("medicationHistory").add({
       type: "medication", action: "edited", medicationId: editingId, medicationName: data.name,
       changes: changes.length ? changes : ["No field changes detected"],
       snapshot: { ...data }, timestamp: now
     });
   } else {
-    const docRef = await db.collection("medications").add({ ...data, createdAt: now, updatedAt: now });
-    await db.collection("medicationHistory").add({
+    const docRef = await window._db.collection("medications").add({ ...data, createdAt: now, updatedAt: now });
+    await window._db.collection("medicationHistory").add({
       type: "medication", action: "added", medicationId: docRef.id, medicationName: data.name,
       changes: [`Added: ${data.name}${data.dose ? ` ${data.dose}` : ""}`],
       snapshot: { ...data }, timestamp: now
@@ -95,10 +95,10 @@ async function saveMedication() {
 async function deleteMedication(id, name) {
   if (!window.confirm(`Delete "${name}" from your medication list?\n\nThis will be recorded in the change history.`)) return;
   const now = new Date().toISOString();
-  const oldDoc = await db.collection("medications").doc(id).get();
+  const oldDoc = await window._db.collection("medications").doc(id).get();
   const oldData = oldDoc.exists ? oldDoc.data() : {};
-  await db.collection("medications").doc(id).delete();
-  await db.collection("medicationHistory").add({
+  await window._db.collection("medications").doc(id).delete();
+  await window._db.collection("medicationHistory").add({
     type: "medication", action: "deleted", medicationId: id, medicationName: name,
     changes: [`Deleted: ${name}${oldData.dose ? ` ${oldData.dose}` : ""}`],
     snapshot: { ...oldData }, timestamp: now
@@ -124,7 +124,7 @@ async function refreshMedList() {
   if (!list) return;
   list.innerHTML = "<li class='med-empty'>Loading...</li>";
   try {
-    const snapshot = await db.collection("medications").orderBy("name").get();
+    const snapshot = await window._db.collection("medications").orderBy("name").get();
     if (snapshot.empty) {
       list.innerHTML = "<li class='med-empty'>No medications added yet.</li>";
       return;
@@ -192,23 +192,23 @@ async function saveSupplement() {
   const editingId = document.getElementById("suppEditingId").value;
   const now = new Date().toISOString();
   if (editingId) {
-    const oldDoc = await db.collection("supplements").doc(editingId).get();
+    const oldDoc = await window._db.collection("supplements").doc(editingId).get();
     const oldData = oldDoc.exists ? oldDoc.data() : {};
-    await db.collection("supplements").doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
+    await window._db.collection("supplements").doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
     const changes = [];
     if (oldData.name !== data.name) changes.push(`Name: "${oldData.name}" \u2192 "${data.name}"`);
     if (oldData.dose !== data.dose) changes.push(`Dose: "${oldData.dose}" \u2192 "${data.dose}"`);
     if (oldData.frequency !== data.frequency) changes.push(`Frequency: "${oldData.frequency}" \u2192 "${data.frequency}"`);
     if (oldData.brand !== data.brand) changes.push(`Brand: "${oldData.brand}" \u2192 "${data.brand}"`);
     if (oldData.notes !== data.notes) changes.push(`Notes updated`);
-    await db.collection("medicationHistory").add({
+    await window._db.collection("medicationHistory").add({
       type: "supplement", action: "edited", medicationId: editingId, medicationName: data.name,
       changes: changes.length ? changes : ["No field changes detected"],
       snapshot: { ...data }, timestamp: now
     });
   } else {
-    const docRef = await db.collection("supplements").add({ ...data, createdAt: now, updatedAt: now });
-    await db.collection("medicationHistory").add({
+    const docRef = await window._db.collection("supplements").add({ ...data, createdAt: now, updatedAt: now });
+    await window._db.collection("medicationHistory").add({
       type: "supplement", action: "added", medicationId: docRef.id, medicationName: data.name,
       changes: [`Added: ${data.name}${data.dose ? ` ${data.dose}` : ""}`],
       snapshot: { ...data }, timestamp: now
@@ -221,10 +221,10 @@ async function saveSupplement() {
 async function deleteSupplement(id, name) {
   if (!window.confirm(`Delete "${name}" from your supplement list?\n\nThis will be recorded in the change history.`)) return;
   const now = new Date().toISOString();
-  const oldDoc = await db.collection("supplements").doc(id).get();
+  const oldDoc = await window._db.collection("supplements").doc(id).get();
   const oldData = oldDoc.exists ? oldDoc.data() : {};
-  await db.collection("supplements").doc(id).delete();
-  await db.collection("medicationHistory").add({
+  await window._db.collection("supplements").doc(id).delete();
+  await window._db.collection("medicationHistory").add({
     type: "supplement", action: "deleted", medicationId: id, medicationName: name,
     changes: [`Deleted: ${name}${oldData.dose ? ` ${oldData.dose}` : ""}`],
     snapshot: { ...oldData }, timestamp: now
@@ -250,7 +250,7 @@ async function refreshSuppList() {
   if (!list) return;
   list.innerHTML = "<li class='med-empty'>Loading...</li>";
   try {
-    const snapshot = await db.collection("supplements").orderBy("name").get();
+    const snapshot = await window._db.collection("supplements").orderBy("name").get();
     if (snapshot.empty) {
       list.innerHTML = "<li class='med-empty'>No supplements added yet.</li>";
       return;
@@ -295,7 +295,7 @@ async function refreshMedHistory() {
   if (!container) return;
   container.innerHTML = "<p>Loading history...</p>";
   try {
-    const snapshot = await db.collection("medicationHistory")
+    const snapshot = await window._db.collection("medicationHistory")
       .orderBy("timestamp", "desc")
       .limit(50)
       .get();
@@ -336,7 +336,7 @@ async function refreshMedPrintTable() {
   if (!tbody) return;
   tbody.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
   try {
-    const snapshot = await db.collection("medications").orderBy("name").get();
+    const snapshot = await window._db.collection("medications").orderBy("name").get();
     if (snapshot.empty) { tbody.innerHTML = "<tr><td colspan='5' class='med-empty'>No medications on file.</td></tr>"; return; }
     tbody.innerHTML = "";
     snapshot.forEach(doc => {
@@ -353,7 +353,7 @@ async function refreshSuppPrintTable() {
   if (!tbody) return;
   tbody.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
   try {
-    const snapshot = await db.collection("supplements").orderBy("name").get();
+    const snapshot = await window._db.collection("supplements").orderBy("name").get();
     if (snapshot.empty) { tbody.innerHTML = "<tr><td colspan='5' class='med-empty'>No supplements on file.</td></tr>"; return; }
     tbody.innerHTML = "";
     snapshot.forEach(doc => {

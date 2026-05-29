@@ -95,10 +95,10 @@ async function saveProvider() {
   const now = new Date().toISOString();
   try {
     if (editingId) {
-      await db.collection('careTeam').doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
+      await window._db.collection('careTeam').doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
       showToast('\u2713 Provider updated');
     } else {
-      await db.collection('careTeam').add({ ...data, createdAt: now, updatedAt: now });
+      await window._db.collection('careTeam').add({ ...data, createdAt: now, updatedAt: now });
       showToast('\u2713 Team member added');
     }
     resetProviderForm();
@@ -113,7 +113,7 @@ async function saveProvider() {
 async function deleteProvider(id, name) {
   if (!window.confirm(`Remove "${name}" from your care team?\n\nTheir appointments will remain in the Appointments list.`)) return;
   try {
-    await db.collection('careTeam').doc(id).delete();
+    await window._db.collection('careTeam').doc(id).delete();
     refreshProviderList();
     populateProviderDropdown();
     showToast('Team member removed');
@@ -147,7 +147,7 @@ async function refreshProviderList() {
   if (!list) return;
   list.innerHTML = '<li class="ct-empty">Loading\u2026</li>';
   try {
-    const snapshot = await db.collection('careTeam').orderBy('displayName').get();
+    const snapshot = await window._db.collection('careTeam').orderBy('displayName').get();
     if (snapshot.empty) {
       list.innerHTML = `
         <li class="ct-empty-state">
@@ -222,7 +222,7 @@ async function populateProviderDropdown() {
   const currentVal = sel.value;
   sel.innerHTML = '<option value="">Select provider\u2026</option>';
   try {
-    const snapshot = await db.collection('careTeam').orderBy('displayName').get();
+    const snapshot = await window._db.collection('careTeam').orderBy('displayName').get();
     snapshot.forEach(doc => {
       const p = doc.data();
       const opt = document.createElement('option');
@@ -278,10 +278,10 @@ async function saveAppointment() {
   const now = new Date().toISOString();
   try {
     if (editingId) {
-      await db.collection('appointments').doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
+      await window._db.collection('appointments').doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
       showToast('\u2713 Appointment updated');
     } else {
-      await db.collection('appointments').add({ ...data, createdAt: now, updatedAt: now });
+      await window._db.collection('appointments').add({ ...data, createdAt: now, updatedAt: now });
       showToast('\u2713 Appointment added');
     }
     resetApptForm();
@@ -295,7 +295,7 @@ async function saveAppointment() {
 async function deleteAppointment(id, label) {
   if (!window.confirm(`Delete this appointment?\n\n${label}`)) return;
   try {
-    await db.collection('appointments').doc(id).delete();
+    await window._db.collection('appointments').doc(id).delete();
     refreshAppointmentList();
     showToast('Appointment deleted');
   } catch (err) {
@@ -330,7 +330,7 @@ async function refreshAppointmentList() {
   pastList.innerHTML     = '<li class="ct-empty">Loading\u2026</li>';
 
   try {
-    const snapshot = await db.collection('appointments').orderBy('date', 'desc').get();
+    const snapshot = await window._db.collection('appointments').orderBy('date', 'desc').get();
     const today = new Date().toISOString().slice(0, 10);
     const upcoming = [], past = [];
 
