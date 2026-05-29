@@ -116,120 +116,126 @@
         <div class="time-block"><h4>Late morning (9&#8211;12)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late morning functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateMorningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late morning functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateMorningActivity" /></label><label>Symptoms / how it felt: <textarea id="lateMorningSymptoms" rows="2"></textarea></label></div>
         <div class="time-block"><h4>Early afternoon (12&#8211;3)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early afternoon functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyAfternoonScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early afternoon functionality score">+</button></div></label><label>What I was doing: <input type="text" id="earlyAfternoonActivity" /></label><label>Symptoms / how it felt: <textarea id="earlyAfternoonSymptoms" rows="2"></textarea></label></div>
         <div class="time-block"><h4>Late afternoon (3&#8211;6)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late afternoon functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateAfternoonScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late afternoon functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateAfternoonActivity" /></label><label>Symptoms / how it felt: <textarea id="lateAfternoonSymptoms" rows="2"></textarea></label></div>
-        <div class="time-block"><h4>Early evening (6&#8211;9)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early evening functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyEveningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early evening functionality score">+</button></div></label><label>What I was doing: <input type="text" id="earlyEveningActivity" /></label><label>Symptoms / how it felt: <textarea id="earlyEveningSymptoms" rows="2"></textarea></label></div>
-        <div class="time-block"><h4>Late evening (9&#8211;12)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late evening functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateEveningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late evening functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateEveningActivity" /></label><label>Symptoms / how it felt: <textarea id="lateEveningSymptoms" rows="2"></textarea></label></div>
+        <div class="time-block"><h4>Evening (6&#8211;9)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease evening functionality score">&#8722;</button><input type="number" min="1" max="10" id="eveningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase evening functionality score">+</button></div></label><label>What I was doing: <input type="text" id="eveningActivity" /></label><label>Symptoms / how it felt: <textarea id="eveningSymptoms" rows="2"></textarea></label></div>
+        <div class="time-block"><h4>Night (9 pm+)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease night functionality score">&#8722;</button><input type="number" min="1" max="10" id="nightScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase night functionality score">+</button></div></label><label>What I was doing: <input type="text" id="nightActivity" /></label><label>Symptoms / how it felt: <textarea id="nightSymptoms" rows="2"></textarea></label></div>
       </div>
     </details>
     <details class="entry-section" open>
-      <summary class="entry-section-summary"><span class="entry-section-title">Sleep (previous night)</span><svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary>
+      <summary class="entry-section-summary"><span class="entry-section-title">Pain</span><svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary>
       <div class="entry-section-body card">
-        <div class="sleep-time-grid"><label class="time-widget-label-wrap"><span class="time-widget-label">Bedtime</span><input type="time" id="bedtimeInput" step="900" class="time-input-single" aria-label="Bedtime" /></label><label class="time-widget-label-wrap"><span class="time-widget-label">Wake time</span><input type="time" id="wakeTimeInput" step="900" class="time-input-single" aria-label="Wake time" /></label></div>
-        <div class="sleep-total-display" aria-live="polite"><span class="sleep-total-label">Total hours slept</span><span id="hoursSleptDisplay" class="sleep-total-value">&#8212;</span><input type="hidden" id="hoursSleptInput" /></div>
-        <label>Sleep Quality (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease sleep quality score">&#8722;</button><input type="number" min="1" max="10" id="sleepQualityInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase sleep quality score">+</button></div></label>
-        <label>Number of awakenings<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease number of awakenings">&#8722;</button><input type="number" min="0" max="20" id="awakeningsInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase number of awakenings">+</button></div></label>
-        <label>Sleep notes <textarea id="sleepNotesInput" rows="2"></textarea></label>
+        <label>Overall pain score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease pain score">&#8722;</button><input type="number" min="1" max="10" id="painScoreInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase pain score">+</button></div></label>
+        <label>Pain description: <textarea id="painDescInput" rows="2" placeholder="Burning, aching, stabbing, widespread, etc."></textarea></label>
+        <label>Pain locations:</label>
+        <div id="painBodyCompact" class="pain-body-compact-container" aria-label="Select pain locations on body diagram" role="group"></div>
+        <p class="pain-body-hint">Tap a region to mark it as a pain location. Tap again to clear.</p>
+        <div id="painLocationsSelected" class="pain-locations-selected"></div>
       </div>
     </details>
     <details class="entry-section" open>
-      <summary class="entry-section-summary"><span class="entry-section-title">Exercise / Activity</span><svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary>
+      <summary class="entry-section-summary"><span class="entry-section-title">Sleep</span><svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary>
+      <div class="entry-section-body card">
+        <label>Sleep quality (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease sleep quality score">&#8722;</button><input type="number" min="1" max="10" id="sleepQualityInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase sleep quality score">+</button></div></label>
+        <div class="sleep-time-row">
+          <label>Bedtime <input type="time" id="bedtimeInput" /></label>
+          <label>Wake time <input type="time" id="wakeTimeInput" /></label>
+          <span class="hours-slept-display">Hours slept: <strong id="hoursSleptDisplay">&#8212;</strong></span>
+          <input type="hidden" id="hoursSleptInput" />
+        </div>
+        <label>Sleep notes: <textarea id="sleepNotesInput" rows="2" placeholder="Restless, nightmares, woke early, etc."></textarea></label>
+      </div>
+    </details>
+    <details class="entry-section" open>
+      <summary class="entry-section-summary"><span class="entry-section-title">Fatigue &amp; Energy</span><svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary>
+      <div class="entry-section-body card">
+        <label>Fatigue level (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease fatigue level">&#8722;</button><input type="number" min="1" max="10" id="fatigueLevelInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase fatigue level">+</button></div></label>
+        <label>Energy level (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease energy level">&#8722;</button><input type="number" min="1" max="10" id="energyLevelInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase energy level">+</button></div></label>
+        <label>Fatigue / energy notes: <textarea id="fatigueNotesInput" rows="2"></textarea></label>
+      </div>
+    </details>
+    <details class="entry-section" open>
+      <summary class="entry-section-summary"><span class="entry-section-title">Brain Fog &amp; Cognition</span><svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary>
+      <div class="entry-section-body card">
+        <label>Brain fog level (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease brain fog level">&#8722;</button><input type="number" min="1" max="10" id="brainFogLevelInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase brain fog level">+</button></div></label>
+        <label>Cognition notes: <textarea id="cognitiveNotesInput" rows="2" placeholder="Trouble concentrating, word-finding issues, memory lapses, etc."></textarea></label>
+      </div>
+    </details>
+    <details class="entry-section" open>
+      <summary class="entry-section-summary"><span class="entry-section-title">Additional Symptoms</span><svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary>
+      <div class="entry-section-body card">
+        <label>Headache / migraine: <select id="headacheInput"><option value="none">None</option><option value="mild">Mild</option><option value="moderate">Moderate</option><option value="severe">Severe</option></select></label>
+        <label>GI symptoms: <select id="giInput"><option value="none">None</option><option value="mild">Mild</option><option value="moderate">Moderate</option><option value="severe">Severe</option></select></label>
+        <label>Sensory sensitivity: <select id="sensoryInput"><option value="none">None</option><option value="mild">Mild</option><option value="moderate">Moderate</option><option value="severe">Severe</option></select></label>
+        <label>Dizziness / balance: <select id="dizzinessInput"><option value="none">None</option><option value="mild">Mild</option><option value="moderate">Moderate</option><option value="severe">Severe</option></select></label>
+        <label>Swelling: <select id="swellingInput"><option value="none">None</option><option value="mild">Mild</option><option value="moderate">Moderate</option><option value="severe">Severe</option></select></label>
+        <label>Other symptoms / notes: <textarea id="otherSymptomsInput" rows="2"></textarea></label>
+      </div>
+    </details>
+    <details class="entry-section" open>
+      <summary class="entry-section-summary"><span class="entry-section-title">Activity &amp; Exercise</span><svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary>
       <div class="entry-section-body card">
         <label>Did you do planned exercise or notable activity? <select id="didExerciseInput"><option value="no">No</option><option value="yes">Yes</option></select></label>
-        <div id="exerciseDetails"><label>Type:<select id="exerciseTypeInput"><option value="">Select...</option><option value="walk">Walk</option><option value="stretching">Stretching</option><option value="pt">Physical therapy</option><option value="strength">Strength</option><option value="yoga">Yoga</option><option value="other">Other</option></select></label><label>Duration (minutes): <input type="number" min="0" id="exerciseMinutesInput" /></label><label>Intensity:<select id="exerciseIntensityInput"><option value="">Select...</option><option value="gentle">Gentle</option><option value="moderate">Moderate</option><option value="overdid">Pushed too hard</option></select></label><label>Timing:<select id="exerciseTimingInput"><option value="">Select...</option><option value="morning">Morning</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option></select></label><label>Exercise notes: <textarea id="exerciseNotesInput" rows="2"></textarea></label></div>
+        <label>Activity description: <textarea id="activityDescInput" rows="2" placeholder="Walk, stretching, PT exercises, etc."></textarea></label>
+        <label>Post-activity symptom change: <select id="postActivityInput"><option value="">&#8212;</option><option value="better">Better</option><option value="same">Same</option><option value="worse">Worse</option></select></label>
       </div>
     </details>
     <details class="entry-section" open>
-      <summary class="entry-section-summary"><span class="entry-section-title">Quick Tags (optional)</span><svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary>
+      <summary class="entry-section-summary"><span class="entry-section-title">Medications Taken Today</span><svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary>
       <div class="entry-section-body card">
-        <div id="tagsContainer">
-          <label><input type="checkbox" value="flare" /> Flare</label>
-          <label><input type="checkbox" value="crash" /> Crash / post-exertional</label>
-          <label><input type="checkbox" value="better" /> Better than usual</label>
-          <label><input type="checkbox" value="poor_sleep" /> Poor sleep</label>
-          <label><input type="checkbox" value="high_stress" /> High stress</label>
-          <label><input type="checkbox" value="weather_change" /> Weather change</label>
-        </div>
+        <p style="font-size:0.85rem;color:#666;margin-bottom:0.5rem;">Quick-log a dose from your medication list:</p>
+        <div id="medQuickLogBtns" class="med-quick-log-list"></div>
+        <div id="medLogList" class="med-log-list"></div>
       </div>
     </details>
+    <div style="text-align:center;margin-top:1rem;">
+      <button id="saveDayBtn" class="save-btn">Save Day</button>
+      <span id="saveStatus2"></span>
+    </div>
   </section>
 
   <!-- Journal Tab -->
   <section id="journal-tab" class="tab">
     <h2>Journal</h2>
-    <div id="journalHeatmap" class="journal-heatmap-wrap"></div>
-    <div id="journalOutput" class="journal-output">No journal entry yet.</div>
+    <div id="journalContainer"></div>
   </section>
 
   <!-- History Tab -->
   <section id="history-tab" class="tab">
     <h2>History</h2>
-    <div class="history-controls">
-      <div><label for="historyFrom">From</label><input type="date" id="historyFrom" /></div>
-      <div><label for="historyTo">To</label><input type="date" id="historyTo" /></div>
-      <button id="loadHistoryBtn" class="btn btn-primary">Load History</button>
-    </div>
-    <ul id="historyList" class="history-list"></ul>
+    <div id="historyContainer"></div>
   </section>
 
   <!-- Trends Tab -->
   <section id="trends-tab" class="tab">
     <h2>Trends</h2>
-    <p>Average daily functionality (all six time blocks combined).</p>
-    <canvas id="functionalityChart" height="200"></canvas>
+    <div id="trendsContainer"></div>
   </section>
 
   <!-- Mood Tab -->
   <section id="mood-tab" class="tab">
     <h2>Mood</h2>
-    <div id="moodContent">
       <div class="card"><h3>14-Day Mood Summary</h3><table class="mood-summary-table"><thead><tr><th>Date</th><th>Day</th><th>Score</th><th>Notes</th></tr></thead><tbody id="moodSummaryBody"><tr><td colspan="4" class="mood-table-empty">Loading&#8230;</td></tr></tbody></table></div>
-      <div class="card">
-        <h3 id="atrFormTitle">New Automatic Thought Record</h3>
-        <label>Date: <input type="date" id="atrDateInput" /></label>
-        <label>Situation: <textarea id="atrSituationInput" rows="2" placeholder="What were you doing / what happened?"></textarea></label>
-        <label>Emotions: <input type="text" id="atrEmotionsInput" placeholder="e.g. anxious, sad, angry" /></label>
-        <label>Intensity (0&#8211;100):
-          <div style="display:flex;align-items:center;gap:0.5rem;"><input type="range" id="atrIntensityRange" min="0" max="100" value="50" style="flex:1;" /><span id="atrIntensityDisplay" style="min-width:2rem;text-align:right;">50</span></div>
-        </label>
-        <label>Automatic thought: <textarea id="atrAutoThoughtInput" rows="2" placeholder="What went through your mind?"></textarea></label>
-        <label>Alternative / balanced thought: <textarea id="atrAltThoughtInput" rows="2" placeholder="A more balanced way of seeing it (optional)"></textarea></label>
-        <input type="hidden" id="atrEditingId" />
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem;">
-          <button id="saveAtrBtn" class="save-btn">Save Record</button>
-          <button id="cancelAtrEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
-        </div>
-      </div>
-      <div class="card"><h3>Thought Records</h3><div id="atrList"><p class="atr-empty">No records yet.</p></div></div>
-    </div>
   </section>
 
   <!-- Medications Tab -->
   <section id="medications-tab" class="tab">
-    <h2>Medications</h2>
+    <h2>Medications &amp; Supplements</h2>
     <div class="med-sub-tabs">
       <button class="med-sub-tab-btn active" data-med-view="medListView">Medications</button>
       <button class="med-sub-tab-btn" data-med-view="suppListView">Supplements</button>
       <button class="med-sub-tab-btn" data-med-view="medHistoryView">Change History</button>
       <button class="med-sub-tab-btn" data-med-view="medPrintView">Print / Export</button>
     </div>
-    <div id="medListView" class="med-view">
-      <div class="card"><h3 id="medFormTitle">Add Medication</h3><label>Name: <input type="text" id="medNameInput" placeholder="e.g. Gabapentin" /></label><label>Dose: <input type="text" id="medDoseInput" placeholder="e.g. 300 mg" /></label><label>Frequency: <select id="medFrequencyInput"><option value="">Select...</option><option value="daily">Daily</option><option value="twice_daily">Twice daily</option><option value="three_times_daily">Three times daily</option><option value="as_needed">As needed (PRN)</option><option value="weekly">Weekly</option><option value="other">Other</option></select></label><label>Prescribing doctor: <input type="text" id="medDoctorInput" placeholder="e.g. Dr. Smith" /></label><label>Notes: <textarea id="medNotesInput" rows="2" placeholder="Side effects, instructions, etc."></textarea></label><input type="hidden" id="medEditingId" /><div style="display:flex;gap:0.5rem;flex-wrap:wrap;"><button id="saveMedBtn" class="save-btn">Add Medication</button><button id="cancelMedEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button></div></div>
-      <div class="card"><h3>My Medications</h3><ul id="medList"></ul></div>
-    </div>
-    <div id="suppListView" class="med-view" style="display:none;">
-      <div class="card"><h3 id="suppFormTitle">Add Supplement</h3><label>Name: <input type="text" id="suppNameInput" placeholder="e.g. Magnesium" /></label><label>Dose: <input type="text" id="suppDoseInput" placeholder="e.g. 400 mg" /></label><label>Frequency: <select id="suppFrequencyInput"><option value="">Select...</option><option value="daily">Daily</option><option value="twice_daily">Twice daily</option><option value="three_times_daily">Three times daily</option><option value="as_needed">As needed</option><option value="weekly">Weekly</option><option value="other">Other</option></select></label><label>Brand: <input type="text" id="suppBrandInput" placeholder="e.g. Nature Made" /></label><label>Notes: <textarea id="suppNotesInput" rows="2" placeholder="Why you take it, effects, etc."></textarea></label><input type="hidden" id="suppEditingId" /><div style="display:flex;gap:0.5rem;flex-wrap:wrap;"><button id="saveSuppBtn" class="save-btn">Add Supplement</button><button id="cancelSuppEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button></div></div>
-      <div class="card"><h3>My Supplements</h3><ul id="suppList"></ul></div>
-    </div>
-    <div id="medHistoryView" class="med-view" style="display:none;"><div class="card"><h3>Medication &amp; Supplement Change History</h3><ul id="medHistoryList"></ul></div></div>
-    <div id="medPrintView" class="med-view" style="display:none;">
+    <div id="medListView"     class="med-view"></div>
+    <div id="suppListView"    class="med-view" style="display:none;"></div>
+    <div id="medHistoryView"  class="med-view" style="display:none;"></div>
+    <div id="medPrintView"    class="med-view" style="display:none;">
       <div class="card"><h3>Print / Save as PDF</h3><p style="font-size:0.875rem;color:var(--color-text-muted);margin-bottom:1rem;">Generates a compact, print-ready list of all your medications and supplements.</p><button id="printMedBtn" class="save-btn">Print / Save PDF</button></div>
       <div class="card"><h3>Medications Preview</h3><table class="med-print-table"><thead><tr><th>Name</th><th>Dose</th><th>Frequency</th><th>Doctor</th><th>Notes</th></tr></thead><tbody id="medPrintTableBody"><tr><td colspan="5">Loading&#8230;</td></tr></tbody></table></div>
       <div class="card"><h3>Supplements Preview</h3><table class="med-print-table"><thead><tr><th>Name</th><th>Dose</th><th>Frequency</th><th>Brand</th><th>Notes</th></tr></thead><tbody id="suppPrintTableBody"><tr><td colspan="5">Loading&#8230;</td></tr></tbody></table></div>
     </div>
   </section>
 
-  <!-- ============================================================
-       CARE TEAM TAB
-       ============================================================ -->
+  <!-- Care Team Tab -->
   <section id="careteam-tab" class="tab">
     <h2>Care Team</h2>
 
@@ -393,6 +399,15 @@
 <script src="journal.js"></script>
 <script src="mood.js"></script>
 <script src="careteam.js"></script>
+<script type="module">
+  import { initFirebase } from './firebase-init.js';
+  import { setupAuth }    from './auth.js';
+  const { db, auth } = initFirebase();
+  setupAuth(
+    (user) => initApp(db, auth, user),
+    ()     => { /* signed out — overlay shown by setupAuth */ }
+  );
+</script>
 
 <script>
 (function () {
