@@ -5,6 +5,18 @@
 //   appointments    — appointment records (linked to careTeam docs)
 // ============================================================
 
+// Defensive escHtml fallback in case ui.js hasn't loaded yet
+if (typeof escHtml !== 'function') {
+  window.escHtml = function(str) {
+    return String(str ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  };
+}
+
 // ---- Sub-tab switching ----
 function setupCareTeamTab() {
   document.querySelectorAll('.ct-sub-tab-btn').forEach(btn => {
@@ -16,7 +28,10 @@ function setupCareTeamTab() {
         view.style.display = view.id === targetViewId ? '' : 'none';
       });
       if (targetViewId === 'ctProvidersView') refreshProviderList();
-      if (targetViewId === 'ctAppointmentsView') refreshAppointmentList();
+      if (targetViewId === 'ctAppointmentsView') {
+        populateProviderDropdown();
+        refreshAppointmentList();
+      }
     });
   });
 
@@ -142,6 +157,34 @@ function startEditProvider(id, p) {
   document.getElementById('ctProviderFormTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+// Fetches the next upcoming appointment date for a given provider ID
+async function getNextAppointmentDate(providerId) {
+  const today = new Date().toISOString().slice(0, 10);
+  try {
+    const snapshot = await db.collection('appointments')
+      .where('providerId', '==', providerId)
+      .where('status', '==', 'upcoming')
+      .where('date', '>=', today)
+      .orderBy('date', 'asc')
+      .limit(1)
+      .get();
+    if (snapshot.empty) return null;
+    return snapshot.docs[0].data().date;
+  } catch (err) {
+    // Silently fail — next appt is supplemental info
+    return null;
+  }
+}
+
+function formatApptDate(dateStr) {
+  if (!dateStr) return null;
+  const [y, mo, dy] = dateStr.split('-').map(Number);
+  if (!y || !mo || !dy) return dateStr;
+  return new Date(y, mo - 1, dy).toLocaleDateString(undefined, {
+    weekday: 'short', month: 'short', day: 'numeric'
+  });
+}
+
 async function refreshProviderList() {
   const list = document.getElementById('ctProviderList');
   if (!list) return;
@@ -158,11 +201,21 @@ async function refreshProviderList() {
       return;
     }
     list.innerHTML = '';
-    snapshot.forEach(doc => {
-      const p = doc.data();
+
+    // Fetch all provider cards, then asynchronously annotate next appt dates
+    const items = [];
+    snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
+
+    for (const p of items) {
       const typeLabel   = PROVIDER_TYPE_LABELS[p.providerType] || p.providerType || '';
       const statusLabel = PROVIDER_STATUS_LABELS[p.status] || p.status || '';
       const statusClass = 'ct-status-' + (p.status || 'active');
+
+      // Fetch next appointment date in parallel
+      const nextApptDate = await getNextAppointmentDate(p.id);
+      const nextApptLabel = nextApptDate
+        ? `<div class="ct-provider-next-appt">&#x1F4C5; Next: ${escHtml(formatApptDate(nextApptDate))}</div>`
+        : '';
 
       const li = document.createElement('li');
       li.className = 'ct-provider-item';
@@ -181,6 +234,7 @@ async function refreshProviderList() {
           ${p.portalUrl ? `<a class="ct-meta-link" href="${escHtml(p.portalUrl)}" target="_blank" rel="noopener noreferrer">&#x1F517; Portal</a>` : ''}
           ${p.symptomFocus ? `<span class="ct-meta-text">Treats: ${escHtml(p.symptomFocus)}</span>` : ''}
         </div>
+        ${nextApptLabel}
         ${p.notes ? `<div class="ct-provider-notes">${escHtml(p.notes)}</div>` : ''}
         <div class="ct-item-actions">
           <button class="ct-edit-btn">Edit</button>
@@ -188,17 +242,17 @@ async function refreshProviderList() {
           <button class="ct-delete-btn danger">Remove</button>
         </div>`;
 
-      li.querySelector('.ct-edit-btn').addEventListener('click', () => startEditProvider(doc.id, p));
-      li.querySelector('.ct-delete-btn').addEventListener('click', () => deleteProvider(doc.id, p.displayName));
+      li.querySelector('.ct-edit-btn').addEventListener('click', () => startEditProvider(p.id, p));
+      li.querySelector('.ct-delete-btn').addEventListener('click', () => deleteProvider(p.id, p.displayName));
       li.querySelector('.ct-appt-btn').addEventListener('click', () => {
         document.querySelector('.ct-sub-tab-btn[data-ct-view="ctAppointmentsView"]')?.click();
         const sel = document.getElementById('ctApptProvider');
-        if (sel) sel.value = doc.id;
+        if (sel) sel.value = p.id;
         document.getElementById('ctApptFormTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
 
       list.appendChild(li);
-    });
+    }
   } catch (err) {
     console.error('Error loading providers:', err);
     list.innerHTML = '<li class="ct-empty">&#x26A0; Failed to load care team.</li>';
