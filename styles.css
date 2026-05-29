@@ -70,7 +70,7 @@ body {
   position: relative;
 }
 
-/* ---- Clickable date picker button ---- */
+/* ---- Clickable date picker button (header variant — kept for legacy) ---- */
 .date-picker-btn {
   display: inline-flex;
   align-items: center;
@@ -402,6 +402,132 @@ h4 {
   margin-bottom: 1.25rem;
   box-shadow: 0 4px 14px rgba(0,0,0,0.06);
   border: 1px solid #e7eaf3;
+}
+
+/* ================================================================
+   ENTRY-TAB DATE NAVIGATION BAR
+   ================================================================ */
+
+.entry-date-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-bottom: 1.1rem;
+  padding: 0.55rem 0.75rem;
+  background: #ffffff;
+  border: 1px solid #e7eaf3;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  position: relative;
+}
+
+/* Prev / next arrow buttons */
+.entry-date-nav-btn {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1;
+  border: 1px solid #ced3ea;
+  border-radius: 50%;
+  background: #f3f4f8;
+  color: #3f51b5;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.entry-date-nav-btn:hover {
+  background: #e8eaf6;
+  border-color: #9fa8da;
+}
+
+.entry-date-nav-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(63,81,181,0.22);
+}
+
+.entry-date-nav-btn:active {
+  background: #c5cae9;
+}
+
+/* Centre clickable date display */
+.entry-date-picker-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.38rem 0.9rem;
+  background: #f0f2ff;
+  color: #2b2f42;
+  border: 1px solid #c5cae9;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  line-height: 1.35;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.entry-date-picker-btn:hover {
+  background: #e8eaf6;
+  border-color: #9fa8da;
+}
+
+.entry-date-picker-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(63,81,181,0.22);
+}
+
+.entry-date-picker-btn:active {
+  background: #c5cae9;
+}
+
+.entry-dow {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #7986cb;
+  white-space: nowrap;
+}
+
+.entry-date-text {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #2f3c8f;
+  white-space: nowrap;
+}
+
+.entry-date-picker-btn svg {
+  flex-shrink: 0;
+  color: #9fa8da;
+}
+
+/* Mobile: slightly compact */
+@media (max-width: 480px) {
+  .entry-date-bar {
+    gap: 0.3rem;
+    padding: 0.45rem 0.5rem;
+  }
+  .entry-date-nav-btn {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    font-size: 1.4rem;
+  }
+  .entry-date-picker-btn {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.85rem;
+  }
+  .entry-dow {
+    display: none;
+  }
 }
 
 /* ================================================================
