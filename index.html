@@ -4,473 +4,517 @@
   <meta charset="UTF-8" />
   <title>Symptom Tracker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 </head>
 <body>
-  <div id="authOverlay" class="auth-overlay">
-    <div class="auth-box">
-      <h1 class="auth-title">Fibro Symptom Tracker</h1>
-      <p class="auth-subtitle">Sign in to access your personal health data</p>
-      <button id="googleSignInBtn" class="google-btn">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
-          <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
-          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
-        </svg>
-        Sign in with Google
+
+<!-- Auth overlay -->
+<div id="authOverlay" style="position:fixed; inset:0; background:#f7f6f2; z-index:1000; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem;">
+  <h2 style="font-size:1.5rem; margin-bottom:0.5rem;">Symptom Tracker</h2>
+  <p style="color:#666;">Sign in to access your data.</p>
+  <button id="googleSignInBtn" style="padding:0.75rem 1.5rem; font-size:1rem; background:#4285F4; color:white; border:none; border-radius:6px; cursor:pointer;">Sign in with Google</button>
+  <p id="authError" style="color:red; font-size:0.875rem;"></p>
+</div>
+
+<header class="app-header">
+
+  <!-- DESKTOP: single row with title | date nav | sign-out -->
+  <!-- MOBILE: hidden; replaced by the three mobile rows below -->
+  <div class="header-desktop">
+    <h1 class="header-title">Symptom Tracker</h1>
+
+    <div class="header-date-nav">
+      <button type="button" id="prevDayBtn" class="date-nav-btn icon-btn" aria-label="Previous day" title="Previous day">&#8249;</button>
+      <button type="button" id="datePickerBtn" class="date-picker-btn" aria-label="Pick a date" title="Click to choose a date">
+        <span id="dayOfWeekDisplay" class="day-of-week-display"></span>
+        <span id="dateDisplay" class="date-display-text"></span>
+        <svg class="date-cal-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       </button>
-      <p id="authError" class="auth-error" style="display:none;"></p>
+      <input type="date" id="dateInput" aria-label="Entry date" class="sr-date-input" tabindex="-1" aria-hidden="true">
+      <button type="button" id="nextDayBtn" class="date-nav-btn icon-btn" aria-label="Next day" title="Next day">&#8250;</button>
     </div>
+
+    <button id="signOutBtn" class="header-signout-btn" style="display:none;">Sign Out</button>
   </div>
 
-  <div id="appShell" style="display:none;">
-    <header class="app-header">
-      <div class="header-left">
-        <span class="app-title">🌿 Fibro Tracker</span>
-      </div>
-      <div class="header-right">
-        <span id="headerUserName" class="header-user"></span>
-        <button id="signOutBtn" class="sign-out-btn">Sign Out</button>
-      </div>
-    </header>
-
-    <nav class="tab-nav" role="tablist">
-      <button class="tab-btn active" data-tab="todayTab" role="tab" aria-selected="true">Today</button>
-      <button class="tab-btn" data-tab="historyTab" role="tab" aria-selected="false">History</button>
-      <button class="tab-btn" data-tab="trendsTab" role="tab" aria-selected="false">Trends</button>
-      <button class="tab-btn" data-tab="journalTab" role="tab" aria-selected="false">Journal</button>
-      <button class="tab-btn" data-tab="moodTab" role="tab" aria-selected="false">Mood</button>
-      <button class="tab-btn" data-tab="medicationsTab" role="tab" aria-selected="false">Medications</button>
+  <!-- DESKTOP: tab strip row -->
+  <div class="header-row2">
+    <nav id="tabs" class="header-tabs">
+      <button class="tab-button active" data-tab="entry-tab">Daily Entry</button>
+      <button class="tab-button" data-tab="journal-tab">Journal</button>
+      <button class="tab-button" data-tab="history-tab">History</button>
+      <button class="tab-button" data-tab="trends-tab">Trends</button>
+      <button class="tab-button" data-tab="mood-tab">Mood</button>
+      <button class="tab-button" data-tab="medications-tab">Medications</button>
     </nav>
+  </div>
 
-    <!-- TODAY TAB -->
-    <div id="todayTab" class="tab-panel active" role="tabpanel">
-      <div class="tab-content">
-        <div class="today-header">
-          <h2 id="todayDateLabel" class="today-date"></h2>
-          <div class="today-nav">
-            <button id="prevDayBtn" class="nav-btn" aria-label="Previous day">&#8592;</button>
-            <button id="todayBtn" class="nav-btn today-jump-btn">Today</button>
-            <button id="nextDayBtn" class="nav-btn" aria-label="Next day">&#8594;</button>
-          </div>
-        </div>
+  <!-- MOBILE ROWS: shown only on small screens -->
+  <div class="header-mobile">
 
-        <section class="card" aria-label="Pain Levels">
-          <h3 class="card-title">Pain Levels</h3>
-          <div class="pain-grid">
-            <div class="pain-item">
-              <label class="pain-label" for="overallPain">Overall</label>
-              <input type="range" id="overallPain" class="pain-slider" min="0" max="10" value="0" />
-              <span class="pain-value" id="overallPainVal">0</span>
-            </div>
-            <div class="pain-item">
-              <label class="pain-label" for="headPain">Head</label>
-              <input type="range" id="headPain" class="pain-slider" min="0" max="10" value="0" />
-              <span class="pain-value" id="headPainVal">0</span>
-            </div>
-            <div class="pain-item">
-              <label class="pain-label" for="neckPain">Neck</label>
-              <input type="range" id="neckPain" class="pain-slider" min="0" max="10" value="0" />
-              <span class="pain-value" id="neckPainVal">0</span>
-            </div>
-            <div class="pain-item">
-              <label class="pain-label" for="shoulderPain">Shoulders</label>
-              <input type="range" id="shoulderPain" class="pain-slider" min="0" max="10" value="0" />
-              <span class="pain-value" id="shoulderPainVal">0</span>
-            </div>
-            <div class="pain-item">
-              <label class="pain-label" for="backPain">Back</label>
-              <input type="range" id="backPain" class="pain-slider" min="0" max="10" value="0" />
-              <span class="pain-value" id="backPainVal">0</span>
-            </div>
-            <div class="pain-item">
-              <label class="pain-label" for="hipPain">Hips</label>
-              <input type="range" id="hipPain" class="pain-slider" min="0" max="10" value="0" />
-              <span class="pain-value" id="hipPainVal">0</span>
-            </div>
-            <div class="pain-item">
-              <label class="pain-label" for="kneePain">Knees</label>
-              <input type="range" id="kneePain" class="pain-slider" min="0" max="10" value="0" />
-              <span class="pain-value" id="kneePainVal">0</span>
-            </div>
-            <div class="pain-item">
-              <label class="pain-label" for="handPain">Hands</label>
-              <input type="range" id="handPain" class="pain-slider" min="0" max="10" value="0" />
-              <span class="pain-value" id="handPainVal">0</span>
-            </div>
-          </div>
-        </section>
-
-        <section class="card" aria-label="Fatigue & Sleep">
-          <h3 class="card-title">Fatigue &amp; Sleep</h3>
-          <div class="pain-grid">
-            <div class="pain-item">
-              <label class="pain-label" for="fatigue">Fatigue</label>
-              <input type="range" id="fatigue" class="pain-slider" min="0" max="10" value="0" />
-              <span class="pain-value" id="fatigueVal">0</span>
-            </div>
-            <div class="pain-item">
-              <label class="pain-label" for="sleepHours">Sleep (hrs)</label>
-              <input type="range" id="sleepHours" class="pain-slider" min="0" max="12" step="0.5" value="7" />
-              <span class="pain-value" id="sleepHoursVal">7</span>
-            </div>
-            <div class="pain-item">
-              <label class="pain-label" for="sleepQuality">Sleep Quality</label>
-              <input type="range" id="sleepQuality" class="pain-slider" min="0" max="10" value="5" />
-              <span class="pain-value" id="sleepQualityVal">5</span>
-            </div>
-          </div>
-        </section>
-
-        <section class="card" aria-label="Mood">
-          <h3 class="card-title">Mood</h3>
-          <div class="pain-grid">
-            <div class="pain-item">
-              <label class="pain-label" for="mood">Mood</label>
-              <input type="range" id="mood" class="pain-slider" min="0" max="10" value="5" />
-              <span class="pain-value" id="moodVal">5</span>
-            </div>
-          </div>
-          <div class="notes-row">
-            <label class="notes-label" for="moodNotes">Mood Notes</label>
-            <textarea id="moodNotes" class="notes-input" rows="2" placeholder="How are you feeling today?"></textarea>
-          </div>
-        </section>
-
-        <section class="card" aria-label="Symptoms">
-          <h3 class="card-title">Symptoms</h3>
-          <div class="symptom-grid" id="symptomCheckboxes">
-            <label class="symptom-item"><input type="checkbox" value="brain_fog" /> Brain Fog</label>
-            <label class="symptom-item"><input type="checkbox" value="headache" /> Headache</label>
-            <label class="symptom-item"><input type="checkbox" value="nausea" /> Nausea</label>
-            <label class="symptom-item"><input type="checkbox" value="dizziness" /> Dizziness</label>
-            <label class="symptom-item"><input type="checkbox" value="ibs" /> IBS / GI</label>
-            <label class="symptom-item"><input type="checkbox" value="anxiety" /> Anxiety</label>
-            <label class="symptom-item"><input type="checkbox" value="depression" /> Depression</label>
-            <label class="symptom-item"><input type="checkbox" value="sensitivity" /> Sensitivity</label>
-            <label class="symptom-item"><input type="checkbox" value="restless_legs" /> Restless Legs</label>
-            <label class="symptom-item"><input type="checkbox" value="numbness" /> Numbness/Tingling</label>
-            <label class="symptom-item"><input type="checkbox" value="weakness" /> Weakness</label>
-            <label class="symptom-item"><input type="checkbox" value="palpitations" /> Palpitations</label>
-          </div>
-        </section>
-
-        <section class="card" aria-label="Notes">
-          <h3 class="card-title">Notes</h3>
-          <div class="notes-row">
-            <label class="notes-label" for="generalNotes">General Notes</label>
-            <textarea id="generalNotes" class="notes-input" rows="3" placeholder="Anything else to note today?"></textarea>
-          </div>
-          <div class="notes-row">
-            <label class="notes-label" for="medicationNotes">Medication Notes</label>
-            <textarea id="medicationNotes" class="notes-input" rows="2" placeholder="Medications taken, changes, reactions..."></textarea>
-          </div>
-          <div class="notes-row">
-            <label class="notes-label" for="activityNotes">Activity / Exercise</label>
-            <textarea id="activityNotes" class="notes-input" rows="2" placeholder="Activity level, exercise, steps..."></textarea>
-          </div>
-          <div class="notes-row">
-            <label class="notes-label" for="weatherNotes">Weather / Environment</label>
-            <textarea id="weatherNotes" class="notes-input" rows="2" placeholder="Weather, temperature, barometric changes..."></textarea>
-          </div>
-        </section>
-
-        <div class="save-row">
-          <button id="saveEntryBtn" class="save-btn">Save Entry</button>
-          <span id="saveStatus" class="save-status"></span>
-        </div>
-      </div>
+    <!-- Mobile Row 1: title (centered) + sign-out (right) -->
+    <div class="header-mobile-row1">
+      <span class="header-mobile-title">Symptom Tracker</span>
+      <button id="signOutBtnMobile" class="header-signout-btn" style="display:none;">Sign Out</button>
     </div>
 
-    <!-- HISTORY TAB -->
-    <div id="historyTab" class="tab-panel" role="tabpanel" style="display:none;">
-      <div class="tab-content">
-        <h2 class="section-title">History</h2>
-        <div class="history-controls">
-          <label for="historyStartDate">From:</label>
-          <input type="date" id="historyStartDate" />
-          <label for="historyEndDate">To:</label>
-          <input type="date" id="historyEndDate" />
-          <button id="loadHistoryBtn" class="load-btn">Load</button>
-        </div>
-        <div id="historyTableContainer"></div>
-      </div>
+    <!-- Mobile Row 2: date nav (centered) -->
+    <div class="header-mobile-row2">
+      <button type="button" id="prevDayBtnMobile" class="date-nav-btn icon-btn" aria-label="Previous day">&#8249;</button>
+      <button type="button" id="datePickerBtnMobile" class="date-picker-btn" aria-label="Pick a date">
+        <span id="dayOfWeekDisplayMobile" class="day-of-week-display"></span>
+        <span id="dateDisplayMobile" class="date-display-text"></span>
+        <svg class="date-cal-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </button>
+      <input type="date" id="dateInputMobile" aria-label="Entry date" class="sr-date-input" tabindex="-1" aria-hidden="true">
+      <button type="button" id="nextDayBtnMobile" class="date-nav-btn icon-btn" aria-label="Next day">&#8250;</button>
     </div>
 
-    <!-- TRENDS TAB -->
-    <div id="trendsTab" class="tab-panel" role="tabpanel" style="display:none;">
-      <div class="tab-content">
-        <h2 class="section-title">Trends</h2>
-        <div class="history-controls">
-          <label for="trendsStartDate">From:</label>
-          <input type="date" id="trendsStartDate" />
-          <label for="trendsEndDate">To:</label>
-          <input type="date" id="trendsEndDate" />
-          <button id="loadTrendsBtn" class="load-btn">Load</button>
-        </div>
-        <div id="trendsContainer"></div>
-      </div>
+    <!-- Mobile Row 3: tab dropdown (left-aligned) -->
+    <div class="header-mobile-row3">
+      <select id="tabSelect" class="tab-select" aria-label="Select section">
+        <option value="entry-tab">Daily Entry</option>
+        <option value="journal-tab">Journal</option>
+        <option value="history-tab">History</option>
+        <option value="trends-tab">Trends</option>
+        <option value="mood-tab">Mood</option>
+        <option value="medications-tab">Medications</option>
+      </select>
     </div>
 
-    <!-- JOURNAL TAB -->
-    <div id="journalTab" class="tab-panel" role="tabpanel" style="display:none;">
-      <div class="tab-content">
-        <h2 class="section-title">Journal</h2>
-        <div class="journal-layout">
-          <div class="journal-form-col">
-            <h3 id="journalFormTitle" class="subsection-title">New Entry</h3>
-            <div class="form-group">
-              <label class="form-label" for="journalDateInput">Date</label>
-              <input type="date" id="journalDateInput" class="form-input" />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="journalTitleInput">Title</label>
-              <input type="text" id="journalTitleInput" class="form-input" placeholder="Entry title (optional)" />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="journalTagsInput">Tags</label>
-              <input type="text" id="journalTagsInput" class="form-input" placeholder="e.g. flare, good day, treatment" />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="journalBodyInput">Journal Entry</label>
-              <textarea id="journalBodyInput" class="notes-input journal-body-input" rows="10" placeholder="Write your journal entry here..."></textarea>
-            </div>
-            <input type="hidden" id="journalEditingId" />
-            <div class="form-actions">
-              <button id="saveJournalBtn" class="save-btn">Save Entry</button>
-              <button id="cancelJournalEditBtn" class="cancel-btn" style="display:none;">Cancel</button>
-            </div>
+  </div>
+
+</header>
+
+<main>
+  <p id="saveStatus"></p>
+
+  <!-- Daily Entry Tab -->
+  <section id="entry-tab" class="tab active">
+    <!-- Floating Save Day button -->
+    <button id="saveDayFloat" class="save-day-float primary" aria-label="Save Day">&#128190; Save Day</button>
+
+    <h2>Daily Entry</h2>
+
+    <!-- Day Info — open by default -->
+    <details class="entry-section" open>
+      <summary class="entry-section-summary">
+        <span class="entry-section-title">Day Info</span>
+        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="entry-section-body card">
+        <label>Day title (optional):
+          <input type="text" id="dayTitleInput" placeholder="Flare day, Better day, etc." />
+        </label>
+        <label>Overall notes:
+          <textarea id="overallNotesInput" rows="2" placeholder="Big events, stress, weather, etc."></textarea>
+        </label>
+      </div>
+    </details>
+
+    <!-- Mood -->
+    <details class="entry-section" open>
+      <summary class="entry-section-summary">
+        <span class="entry-section-title">Mood</span>
+        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="entry-section-body card">
+        <label>Mood score (1&#8211;10)
+          <div class="number-stepper">
+            <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease mood score">&#8722;</button>
+            <input type="number" min="1" max="10" id="moodScoreInput" inputmode="numeric" />
+            <button type="button" class="stepper-btn" data-step="1" aria-label="Increase mood score">+</button>
           </div>
-          <div class="journal-list-col">
-            <div class="journal-list-header">
-              <h3 class="subsection-title">Past Entries</h3>
-              <div class="journal-filter-row">
-                <input type="text" id="journalSearchInput" class="form-input journal-search" placeholder="Search entries..." />
-                <input type="text" id="journalTagFilterInput" class="form-input journal-search" placeholder="Filter by tag..." />
-              </div>
-            </div>
-            <div id="journalList" class="journal-list"></div>
-          </div>
+        </label>
+        <label>Mood notes:
+          <textarea id="moodNotesInput" rows="2" placeholder="Anxious, low, ok, calm, etc."></textarea>
+        </label>
+      </div>
+    </details>
+
+    <!-- Functionality by Time of Day -->
+    <details class="entry-section" open>
+      <summary class="entry-section-summary">
+        <span class="entry-section-title">Functionality by Time of Day</span>
+        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="entry-section-body card">
+        <div class="time-block"><h4>Early morning (5&#8211;9 am)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early morning functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyMorningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early morning functionality score">+</button></div></label><label>What I was doing: <input type="text" id="earlyMorningActivity" /></label><label>Symptoms / how it felt: <textarea id="earlyMorningSymptoms" rows="2"></textarea></label></div>
+        <div class="time-block"><h4>Late morning (9&#8211;12)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late morning functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateMorningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late morning functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateMorningActivity" /></label><label>Symptoms / how it felt: <textarea id="lateMorningSymptoms" rows="2"></textarea></label></div>
+        <div class="time-block"><h4>Early afternoon (12&#8211;3)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early afternoon functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyAfternoonScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early afternoon functionality score">+</button></div></label><label>What I was doing: <input type="text" id="earlyAfternoonActivity" /></label><label>Symptoms / how it felt: <textarea id="earlyAfternoonSymptoms" rows="2"></textarea></label></div>
+        <div class="time-block"><h4>Late afternoon (3&#8211;6)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late afternoon functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateAfternoonScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late afternoon functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateAfternoonActivity" /></label><label>Symptoms / how it felt: <textarea id="lateAfternoonSymptoms" rows="2"></textarea></label></div>
+        <div class="time-block"><h4>Early evening (6&#8211;9)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early evening functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyEveningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early evening functionality score">+</button></div></label><label>What I was doing: <input type="text" id="earlyEveningActivity" /></label><label>Symptoms / how it felt: <textarea id="earlyEveningSymptoms" rows="2"></textarea></label></div>
+        <div class="time-block"><h4>Late evening (9&#8211;12)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late evening functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateEveningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late evening functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateEveningActivity" /></label><label>Symptoms / how it felt: <textarea id="lateEveningSymptoms" rows="2"></textarea></label></div>
+      </div>
+    </details>
+
+    <!-- Sleep -->
+    <details class="entry-section" open>
+      <summary class="entry-section-summary">
+        <span class="entry-section-title">Sleep (previous night)</span>
+        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="entry-section-body card">
+        <div class="sleep-time-grid">
+          <label class="time-widget-label-wrap">
+            <span class="time-widget-label">Bedtime</span>
+            <input type="time" id="bedtimeInput" step="900" class="time-input-single" aria-label="Bedtime" />
+          </label>
+          <label class="time-widget-label-wrap">
+            <span class="time-widget-label">Wake time</span>
+            <input type="time" id="wakeTimeInput" step="900" class="time-input-single" aria-label="Wake time" />
+          </label>
+        </div>
+        <div class="sleep-total-display" aria-live="polite">
+          <span class="sleep-total-label">Total hours slept</span>
+          <span id="hoursSleptDisplay" class="sleep-total-value">&#8212;</span>
+          <input type="hidden" id="hoursSleptInput" />
+        </div>
+        <label>Sleep Quality (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease sleep quality score">&#8722;</button><input type="number" min="1" max="10" id="sleepQualityInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase sleep quality score">+</button></div></label>
+        <label>Number of awakenings<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease number of awakenings">&#8722;</button><input type="number" min="0" max="20" id="awakeningsInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase number of awakenings">+</button></div></label>
+        <label>Sleep notes <textarea id="sleepNotesInput" rows="2"></textarea></label>
+      </div>
+    </details>
+
+    <!-- Exercise / Activity -->
+    <details class="entry-section" open>
+      <summary class="entry-section-summary">
+        <span class="entry-section-title">Exercise / Activity</span>
+        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="entry-section-body card">
+        <label>Did you do planned exercise or notable activity?
+          <select id="didExerciseInput"><option value="no">No</option><option value="yes">Yes</option></select>
+        </label>
+        <div id="exerciseDetails">
+          <label>Type:<select id="exerciseTypeInput"><option value="">Select...</option><option value="walk">Walk</option><option value="stretching">Stretching</option><option value="pt">Physical therapy</option><option value="strength">Strength</option><option value="yoga">Yoga</option><option value="other">Other</option></select></label>
+          <label>Duration (minutes): <input type="number" min="0" id="exerciseMinutesInput" /></label>
+          <label>Intensity:<select id="exerciseIntensityInput"><option value="">Select...</option><option value="gentle">Gentle</option><option value="moderate">Moderate</option><option value="overdid">Pushed too hard</option></select></label>
+          <label>Timing:<select id="exerciseTimingInput"><option value="">Select...</option><option value="morning">Morning</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option></select></label>
+          <label>Exercise notes: <textarea id="exerciseNotesInput" rows="2"></textarea></label>
         </div>
       </div>
-    </div>
+    </details>
 
-    <!-- MOOD TAB -->
-    <div id="moodTab" class="tab-panel" role="tabpanel" style="display:none;">
-      <div class="tab-content">
-        <h2 class="section-title">Mood &amp; Mental Health</h2>
-        <div class="mood-layout">
-          <div class="mood-sidebar">
-            <h3 class="subsection-title">14-Day Mood</h3>
-            <table class="mood-summary-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Day</th>
-                  <th>Score</th>
-                  <th>Notes</th>
-                </tr>
-              </thead>
-              <tbody id="moodSummaryBody">
-                <tr><td colspan="4" class="mood-table-empty">Loading&hellip;</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="mood-main">
-            <section class="card">
-              <h3 id="atrFormTitle" class="card-title">New Automatic Thought Record</h3>
-              <div class="form-group">
-                <label class="form-label" for="atrDateInput">Date</label>
-                <input type="date" id="atrDateInput" class="form-input" />
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="atrSituationInput">Situation</label>
-                <textarea id="atrSituationInput" class="notes-input" rows="2" placeholder="Describe the situation that triggered the thought..."></textarea>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="atrEmotionsInput">Emotions</label>
-                <input type="text" id="atrEmotionsInput" class="form-input" placeholder="e.g. anxious, sad, frustrated" />
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="atrIntensityRange">Intensity: <span id="atrIntensityDisplay">50</span>/100</label>
-                <input type="range" id="atrIntensityRange" class="pain-slider" min="0" max="100" value="50" />
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="atrAutoThoughtInput">Automatic Thought</label>
-                <textarea id="atrAutoThoughtInput" class="notes-input" rows="2" placeholder="What thought went through your mind?"></textarea>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="atrAltThoughtInput">Alternative / Balanced Thought</label>
-                <textarea id="atrAltThoughtInput" class="notes-input" rows="2" placeholder="What is a more balanced way to see this?"></textarea>
-              </div>
-              <input type="hidden" id="atrEditingId" />
-              <div class="form-actions">
-                <button id="saveAtrBtn" class="save-btn">Save Record</button>
-                <button id="cancelAtrEditBtn" class="cancel-btn" style="display:none;">Cancel</button>
-              </div>
-            </section>
-            <section class="card">
-              <h3 class="card-title">Thought Records</h3>
-              <div id="atrList"></div>
-            </section>
-          </div>
+    <!-- Quick Tags -->
+    <details class="entry-section" open>
+      <summary class="entry-section-summary">
+        <span class="entry-section-title">Quick Tags (optional)</span>
+        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="entry-section-body card">
+        <div id="tagsContainer">
+          <label><input type="checkbox" value="flare" /> Flare</label>
+          <label><input type="checkbox" value="crash" /> Crash / post-exertional</label>
+          <label><input type="checkbox" value="better" /> Better than usual</label>
+          <label><input type="checkbox" value="poor_sleep" /> Poor sleep</label>
+          <label><input type="checkbox" value="high_stress" /> High stress</label>
+          <label><input type="checkbox" value="weather_change" /> Weather change</label>
         </div>
       </div>
+    </details>
+
+  </section>
+
+  <!-- Journal Tab -->
+  <section id="journal-tab" class="tab">
+    <h2>Journal</h2>
+    <div id="journalHeatmap" class="journal-heatmap-wrap"></div>
+    <div id="journalOutput" class="journal-output">No journal entry yet.</div>
+  </section>
+
+  <!-- History Tab -->
+  <section id="history-tab" class="tab">
+    <h2>History</h2>
+    <div class="history-controls">
+      <div>
+        <label for="historyFrom">From</label>
+        <input type="date" id="historyFrom" />
+      </div>
+      <div>
+        <label for="historyTo">To</label>
+        <input type="date" id="historyTo" />
+      </div>
+      <button id="loadHistoryBtn" class="btn btn-primary">Load History</button>
     </div>
+    <ul id="historyList" class="history-list"></ul>
+  </section>
 
-    <!-- MEDICATIONS TAB -->
-    <div id="medicationsTab" class="tab-panel" role="tabpanel" style="display:none;">
-      <div class="tab-content">
-        <h2 class="section-title">Medications &amp; Supplements</h2>
-        <div class="med-sub-tabs">
-          <button class="med-sub-tab-btn active" data-med-view="medListView">Medications</button>
-          <button class="med-sub-tab-btn" data-med-view="suppListView">Supplements</button>
-          <button class="med-sub-tab-btn" data-med-view="medHistoryView">Change History</button>
-          <button class="med-sub-tab-btn" data-med-view="medPrintView">Print View</button>
-        </div>
+  <!-- Trends Tab -->
+  <section id="trends-tab" class="tab">
+    <h2>Trends</h2>
+    <p>Average daily functionality (all six time blocks combined).</p>
+    <canvas id="functionalityChart" height="200"></canvas>
+  </section>
 
-        <!-- Medications View -->
-        <div id="medListView" class="med-view">
-          <section class="card">
-            <h3 id="medFormTitle" class="card-title">Add Medication</h3>
-            <div class="form-group">
-              <label class="form-label" for="medNameInput">Medication Name</label>
-              <input type="text" id="medNameInput" class="form-input" placeholder="e.g. Lyrica, Cymbalta" />
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label" for="medDoseInput">Dose</label>
-                <input type="text" id="medDoseInput" class="form-input" placeholder="e.g. 75mg" />
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="medFrequencyInput">Frequency</label>
-                <select id="medFrequencyInput" class="form-input">
-                  <option value="">Select...</option>
-                  <option value="once_daily">Once daily</option>
-                  <option value="twice_daily">Twice daily</option>
-                  <option value="three_daily">3x daily</option>
-                  <option value="four_daily">4x daily</option>
-                  <option value="every_other">Every other day</option>
-                  <option value="weekly">Weekly</option>
-                  <option value="as_needed">As needed</option>
-                  <option value="bedtime">At bedtime</option>
-                  <option value="morning">Morning</option>
-                  <option value="with_food">With food</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="medDoctorInput">Prescribing Doctor</label>
-              <input type="text" id="medDoctorInput" class="form-input" placeholder="Doctor's name" />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="medNotesInput">Notes</label>
-              <textarea id="medNotesInput" class="notes-input" rows="2" placeholder="Side effects, instructions, etc."></textarea>
-            </div>
-            <input type="hidden" id="medEditingId" />
-            <div class="form-actions">
-              <button id="saveMedBtn" class="save-btn">Add Medication</button>
-              <button id="cancelMedEditBtn" class="cancel-btn" style="display:none;">Cancel</button>
-            </div>
-          </section>
-          <section class="card">
-            <h3 class="card-title">Current Medications</h3>
-            <ul id="medList" class="med-list"></ul>
-          </section>
-        </div>
-
-        <!-- Supplements View -->
-        <div id="suppListView" class="med-view" style="display:none;">
-          <section class="card">
-            <h3 id="suppFormTitle" class="card-title">Add Supplement</h3>
-            <div class="form-group">
-              <label class="form-label" for="suppNameInput">Supplement Name</label>
-              <input type="text" id="suppNameInput" class="form-input" placeholder="e.g. Magnesium, Vitamin D3" />
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label" for="suppDoseInput">Dose</label>
-                <input type="text" id="suppDoseInput" class="form-input" placeholder="e.g. 400mg" />
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="suppFrequencyInput">Frequency</label>
-                <select id="suppFrequencyInput" class="form-input">
-                  <option value="">Select...</option>
-                  <option value="once_daily">Once daily</option>
-                  <option value="twice_daily">Twice daily</option>
-                  <option value="three_daily">3x daily</option>
-                  <option value="every_other">Every other day</option>
-                  <option value="weekly">Weekly</option>
-                  <option value="as_needed">As needed</option>
-                  <option value="bedtime">At bedtime</option>
-                  <option value="morning">Morning</option>
-                  <option value="with_food">With food</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="suppBrandInput">Brand</label>
-              <input type="text" id="suppBrandInput" class="form-input" placeholder="Brand name (optional)" />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="suppNotesInput">Notes</label>
-              <textarea id="suppNotesInput" class="notes-input" rows="2" placeholder="Notes, benefits observed, etc."></textarea>
-            </div>
-            <input type="hidden" id="suppEditingId" />
-            <div class="form-actions">
-              <button id="saveSuppBtn" class="save-btn">Add Supplement</button>
-              <button id="cancelSuppEditBtn" class="cancel-btn" style="display:none;">Cancel</button>
-            </div>
-          </section>
-          <section class="card">
-            <h3 class="card-title">Current Supplements</h3>
-            <ul id="suppList" class="med-list"></ul>
-          </section>
-        </div>
-
-        <!-- Change History View -->
-        <div id="medHistoryView" class="med-view" style="display:none;">
-          <section class="card">
-            <h3 class="card-title">Medication Change History</h3>
-            <div id="medHistoryList"></div>
-          </section>
-        </div>
-
-        <!-- Print View -->
-        <div id="medPrintView" class="med-view" style="display:none;">
-          <section class="card">
-            <div class="print-header-row">
-              <h3 class="card-title">Medication &amp; Supplement Summary</h3>
-              <button onclick="window.print()" class="load-btn">🖨 Print</button>
-            </div>
-            <h4 class="print-sub-heading">Medications</h4>
-            <table class="med-print-table">
-              <thead><tr><th>Name</th><th>Dose</th><th>Frequency</th><th>Doctor</th><th>Notes</th></tr></thead>
-              <tbody id="medPrintTableBody"></tbody>
-            </table>
-            <h4 class="print-sub-heading" style="margin-top:1.5rem;">Supplements</h4>
-            <table class="med-print-table">
-              <thead><tr><th>Name</th><th>Dose</th><th>Frequency</th><th>Brand</th><th>Notes</th></tr></thead>
-              <tbody id="suppPrintTableBody"></tbody>
-            </table>
-          </section>
+  <!-- Mood Tab -->
+  <section id="mood-tab" class="tab">
+    <h2>Mood</h2>
+    <div id="moodContent">
+      <div class="card">
+        <h3>14-Day Mood Summary</h3>
+        <table class="mood-summary-table">
+          <thead>
+            <tr><th>Date</th><th>Day</th><th>Score</th><th>Notes</th></tr>
+          </thead>
+          <tbody id="moodSummaryBody">
+            <tr><td colspan="4" class="mood-table-empty">Loading&#8230;</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3 id="atrFormTitle">New Automatic Thought Record</h3>
+        <label>Date: <input type="date" id="atrDateInput" /></label>
+        <label>Situation:
+          <textarea id="atrSituationInput" rows="2" placeholder="What were you doing / what happened?"></textarea>
+        </label>
+        <label>Emotions:
+          <input type="text" id="atrEmotionsInput" placeholder="e.g. anxious, sad, angry" />
+        </label>
+        <label>Intensity (0&#8211;100):
+          <div style="display:flex;align-items:center;gap:0.5rem;">
+            <input type="range" id="atrIntensityRange" min="0" max="100" value="50" style="flex:1;" />
+            <span id="atrIntensityDisplay" style="min-width:2rem;text-align:right;">50</span>
+          </div>
+        </label>
+        <label>Automatic thought:
+          <textarea id="atrAutoThoughtInput" rows="2" placeholder="What went through your mind?"></textarea>
+        </label>
+        <label>Alternative / balanced thought:
+          <textarea id="atrAltThoughtInput" rows="2" placeholder="A more balanced way of seeing it (optional)"></textarea>
+        </label>
+        <input type="hidden" id="atrEditingId" />
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem;">
+          <button id="saveAtrBtn" class="save-btn">Save Record</button>
+          <button id="cancelAtrEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
         </div>
       </div>
+      <div class="card">
+        <h3>Thought Records</h3>
+        <div id="atrList"><p class="atr-empty">No records yet.</p></div>
+      </div>
     </div>
+  </section>
 
-  </div><!-- end #appShell -->
+  <!-- Medications Tab -->
+  <section id="medications-tab" class="tab">
+    <h2>Medications</h2>
+    <div class="med-sub-tabs">
+      <button class="med-sub-tab-btn active" data-med-view="medListView">Medications</button>
+      <button class="med-sub-tab-btn" data-med-view="suppListView">Supplements</button>
+      <button class="med-sub-tab-btn" data-med-view="medHistoryView">Change History</button>
+      <button class="med-sub-tab-btn" data-med-view="medPrintView">Print / Export</button>
+    </div>
+    <div id="medListView" class="med-view">
+      <div class="card">
+        <h3 id="medFormTitle">Add Medication</h3>
+        <label>Name: <input type="text" id="medNameInput" placeholder="e.g. Gabapentin" /></label>
+        <label>Dose: <input type="text" id="medDoseInput" placeholder="e.g. 300 mg" /></label>
+        <label>Frequency:
+          <select id="medFrequencyInput">
+            <option value="">Select...</option>
+            <option value="daily">Daily</option>
+            <option value="twice_daily">Twice daily</option>
+            <option value="three_times_daily">Three times daily</option>
+            <option value="as_needed">As needed (PRN)</option>
+            <option value="weekly">Weekly</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+        <label>Prescribing doctor: <input type="text" id="medDoctorInput" placeholder="e.g. Dr. Smith" /></label>
+        <label>Notes: <textarea id="medNotesInput" rows="2" placeholder="Side effects, instructions, etc."></textarea></label>
+        <input type="hidden" id="medEditingId" />
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <button id="saveMedBtn" class="save-btn">Add Medication</button>
+          <button id="cancelMedEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
+        </div>
+      </div>
+      <div class="card"><h3>My Medications</h3><ul id="medList"></ul></div>
+    </div>
+    <div id="suppListView" class="med-view" style="display:none;">
+      <div class="card">
+        <h3 id="suppFormTitle">Add Supplement</h3>
+        <label>Name: <input type="text" id="suppNameInput" placeholder="e.g. Magnesium" /></label>
+        <label>Dose: <input type="text" id="suppDoseInput" placeholder="e.g. 400 mg" /></label>
+        <label>Frequency:
+          <select id="suppFrequencyInput">
+            <option value="">Select...</option>
+            <option value="daily">Daily</option>
+            <option value="twice_daily">Twice daily</option>
+            <option value="three_times_daily">Three times daily</option>
+            <option value="as_needed">As needed</option>
+            <option value="weekly">Weekly</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+        <label>Brand: <input type="text" id="suppBrandInput" placeholder="e.g. Nature Made" /></label>
+        <label>Notes: <textarea id="suppNotesInput" rows="2" placeholder="Why you take it, effects, etc."></textarea></label>
+        <input type="hidden" id="suppEditingId" />
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <button id="saveSuppBtn" class="save-btn">Add Supplement</button>
+          <button id="cancelSuppEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
+        </div>
+      </div>
+      <div class="card"><h3>My Supplements</h3><ul id="suppList"></ul></div>
+    </div>
+    <div id="medHistoryView" class="med-view" style="display:none;">
+      <div class="card"><h3>Medication &amp; Supplement Change History</h3><ul id="medHistoryList"></ul></div>
+    </div>
+    <div id="medPrintView" class="med-view" style="display:none;">
+      <div class="card">
+        <h3>Print / Save as PDF</h3>
+        <p style="font-size:0.875rem;color:var(--color-text-muted);margin-bottom:1rem;">Generates a compact, print-ready list of all your medications and supplements.</p>
+        <button id="printMedBtn" class="save-btn">Print / Save PDF</button>
+      </div>
+      <div class="card">
+        <h3>Medications Preview</h3>
+        <table class="med-print-table">
+          <thead><tr><th>Name</th><th>Dose</th><th>Frequency</th><th>Doctor</th><th>Notes</th></tr></thead>
+          <tbody id="medPrintTableBody"><tr><td colspan="5">Loading&#8230;</td></tr></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Supplements Preview</h3>
+        <table class="med-print-table">
+          <thead><tr><th>Name</th><th>Dose</th><th>Frequency</th><th>Brand</th><th>Notes</th></tr></thead>
+          <tbody id="suppPrintTableBody"><tr><td colspan="5">Loading&#8230;</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
 
-  <script src="firebase-init.js"></script>
-  <script src="auth.js"></script>
-  <script src="date.js"></script>
-  <script src="cloud.js"></script>
-  <script src="entry.js"></script>
-  <script src="history.js"></script>
-  <script src="trends.js"></script>
-  <script src="journal.js"></script>
-  <script src="mood.js"></script>
-  <script src="medications.js"></script>
-  <script src="app.js"></script>
+<footer class="build-footer" id="buildFooter" aria-label="Build information">
+  <span class="build-footer-label">Build</span>
+  <a class="build-footer-sha" id="buildSha" href="#" target="_blank" rel="noopener noreferrer" title="View commit on GitHub">loading&hellip;</a>
+  <span class="build-footer-sep">&middot;</span>
+  <span class="build-footer-msg" id="buildMsg"></span>
+  <span class="build-footer-sep">&middot;</span>
+  <time class="build-footer-date" id="buildDate"></time>
+</footer>
+
+<script src="app.js"></script>
+<script src="journal.js"></script>
+<script src="mood.js"></script>
+
+<script>
+(function () {
+  // ── Mobile-specific wiring ──────────────────────────────────────────────────
+  var signOutBtnMobile = document.getElementById('signOutBtnMobile');
+  if (signOutBtnMobile) {
+    signOutBtnMobile.addEventListener('click', function () {
+      var main = document.getElementById('signOutBtn');
+      if (main) main.click();
+    });
+  }
+
+  var signOutBtnDesktop = document.getElementById('signOutBtn');
+  if (signOutBtnDesktop && signOutBtnMobile) {
+    var obs = new MutationObserver(function () {
+      signOutBtnMobile.style.display = signOutBtnDesktop.style.display;
+    });
+    obs.observe(signOutBtnDesktop, { attributes: true, attributeFilter: ['style'] });
+  }
+
+  document.getElementById('prevDayBtnMobile')?.addEventListener('click', function () {
+    document.getElementById('prevDayBtn').click();
+  });
+  document.getElementById('nextDayBtnMobile')?.addEventListener('click', function () {
+    document.getElementById('nextDayBtn').click();
+  });
+  document.getElementById('datePickerBtnMobile')?.addEventListener('click', function () {
+    document.getElementById('datePickerBtn').click();
+  });
+
+  function mirrorDateDisplay() {
+    var dowSrc  = document.getElementById('dayOfWeekDisplay');
+    var dateSrc = document.getElementById('dateDisplay');
+    var dowDst  = document.getElementById('dayOfWeekDisplayMobile');
+    var dateDst = document.getElementById('dateDisplayMobile');
+    if (dowDst  && dowSrc)  dowDst.textContent  = dowSrc.textContent;
+    if (dateDst && dateSrc) dateDst.textContent = dateSrc.textContent;
+  }
+
+  var dowSrc  = document.getElementById('dayOfWeekDisplay');
+  var dateSrc = document.getElementById('dateDisplay');
+  if (dowSrc)  new MutationObserver(mirrorDateDisplay).observe(dowSrc,  { childList: true, characterData: true, subtree: true });
+  if (dateSrc) new MutationObserver(mirrorDateDisplay).observe(dateSrc, { childList: true, characterData: true, subtree: true });
+  mirrorDateDisplay();
+
+  var tabSelect = document.getElementById('tabSelect');
+  document.querySelectorAll('#tabs .tab-button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (tabSelect) tabSelect.value = btn.getAttribute('data-tab');
+    });
+  });
+  if (tabSelect) {
+    tabSelect.addEventListener('change', function () {
+      var btn = document.querySelector('#tabs .tab-button[data-tab="' + tabSelect.value + '"]');
+      if (btn) btn.click();
+    });
+  }
+}());
+</script>
+
+<script>
+(function () {
+  ['bedtimeInput', 'wakeTimeInput'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('change', recalcSleep);
+  });
+  function recalcSleep() {
+    var bed  = document.getElementById('bedtimeInput').value;
+    var wake = document.getElementById('wakeTimeInput').value;
+    var disp = document.getElementById('hoursSleptDisplay');
+    var hid  = document.getElementById('hoursSleptInput');
+    if (!bed || !wake) { if (disp) disp.textContent = '\u2014'; return; }
+    var bParts = bed.split(':').map(Number);
+    var wParts = wake.split(':').map(Number);
+    var bMins  = bParts[0] * 60 + bParts[1];
+    var wMins  = wParts[0] * 60 + wParts[1];
+    if (wMins <= bMins) wMins += 1440;
+    var total  = (wMins - bMins) / 60;
+    if (disp) disp.textContent = total.toFixed(1) + ' hrs';
+    if (hid)  hid.value = total.toFixed(2);
+  }
+}());
+</script>
+
+<script>
+(function () {
+  var REPO = 'dennismzanetti/FibroSymptomTracker';
+  var API  = 'https://api.github.com/repos/' + REPO + '/commits/main';
+  fetch(API, { headers: { Accept: 'application/vnd.github.v3+json' } })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function (data) {
+      var sha     = data.sha.slice(0, 7);
+      var msg     = data.commit.message.split('\n')[0];
+      var isoDate = data.commit.author.date;
+      var d = new Date(isoDate);
+      var formatted = d.toLocaleString(undefined, {
+        year: 'numeric', month: 'short', day: 'numeric',
+        hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
+      });
+      var shaEl  = document.getElementById('buildSha');
+      var msgEl  = document.getElementById('buildMsg');
+      var dateEl = document.getElementById('buildDate');
+      shaEl.textContent = sha;
+      shaEl.href = 'https://github.com/' + REPO + '/commit/' + data.sha;
+      msgEl.textContent = msg;
+      dateEl.textContent = formatted;
+      dateEl.setAttribute('datetime', isoDate);
+    })
+    .catch(function () {
+      var footer = document.getElementById('buildFooter');
+      if (footer) footer.style.display = 'none';
+    });
+}());
+</script>
+
 </body>
 </html>

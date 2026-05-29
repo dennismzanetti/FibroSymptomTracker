@@ -4,32 +4,58 @@ export function todayStr() {
 }
 
 export function localDateStr(d) {
-  const year  = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day   = String(d.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${dd}`;
+}
+
+export function parseDateLocal(str) {
+  // Parse YYYY-MM-DD as local date (not UTC)
+  const [y, m, d] = str.split('-').map(Number);
+  return new Date(y, m - 1, d);
 }
 
 export function formatDateLong(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(dateStr + 'T12:00:00');
-  return d.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  const d = parseDateLocal(dateStr);
+  return d.toLocaleDateString(undefined, {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
 }
 
-export function datesInRange(startStr, endStr) {
+export function formatDateShort(dateStr) {
+  const d = parseDateLocal(dateStr);
+  return d.toLocaleDateString(undefined, {
+    month: 'short', day: 'numeric'
+  });
+}
+
+export function addDays(dateStr, n) {
+  const d = parseDateLocal(dateStr);
+  d.setDate(d.getDate() + n);
+  return localDateStr(d);
+}
+
+export function dayOfWeekShort(dateStr) {
+  const d = parseDateLocal(dateStr);
+  return d.toLocaleDateString(undefined, { weekday: 'short' });
+}
+
+export function dayOfWeekLong(dateStr) {
+  const d = parseDateLocal(dateStr);
+  return d.toLocaleDateString(undefined, { weekday: 'long' });
+}
+
+export function datesInRange(from, to) {
   const dates = [];
-  let current = new Date(startStr + 'T12:00:00');
-  const end   = new Date(endStr   + 'T12:00:00');
-  while (current <= end) {
-    dates.push(localDateStr(current));
-    current.setDate(current.getDate() + 1);
+  let cur = from;
+  while (cur <= to) {
+    dates.push(cur);
+    cur = addDays(cur, 1);
   }
   return dates;
 }
 
-export function defaultRangeStr(days = 30) {
-  const end   = new Date();
-  const start = new Date();
-  start.setDate(end.getDate() - (days - 1));
-  return { start: localDateStr(start), end: localDateStr(end) };
+export function nDaysAgo(n) {
+  return addDays(todayStr(), -n);
 }
