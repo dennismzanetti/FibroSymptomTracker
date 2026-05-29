@@ -13,30 +13,12 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 // ---- Auth ----
-// Auth is fully handled by auth.js (mobile redirect + desktop popup).
-// The sign-in button, onAuthStateChanged, and getRedirectResult are all
-// managed there. Only the post-auth app initialisation lives here.
 const auth = firebase.auth();
 
 const signOutBtn = document.getElementById("signOutBtn");
 const appMain = document.querySelector("main");
 
 if (appMain) appMain.style.display = "none";
-
-// ---- window.load / auth race guard ----
-// On desktop, onAuthStateChanged can resolve synchronously (popup auth is
-// very fast) BEFORE window.load fires, so the DOM setup functions haven't
-// run yet when we would call loadTodayDate / loadDayFromCloud.
-// On mobile (redirect auth) load always finishes first, which is why it
-// worked there but not on desktop.
-//
-// Strategy:
-//   _windowLoaded  — flipped to true inside the window "load" handler,
-//                    after all setup functions have been called.
-//   _pendingSetup  — set to true when auth beats load; the load handler
-//                    will call runPostLoadSetup() to finish the job.
-//   runPostLoadSetup() — called from EITHER path, but only executes
-//                    when BOTH flags are satisfied.
 
 let _windowLoaded = false;
 let _pendingSetup = false;
@@ -48,8 +30,6 @@ function runPostLoadSetup() {
   loadDayFromCloud(currentDateStr);
 }
 
-// Track whether the app has been initialised for this session so that
-// onAuthStateChanged (which can fire multiple times) only runs setup once.
 let _appInitialised = false;
 
 auth.onAuthStateChanged((user) => {
@@ -112,7 +92,7 @@ function showToast(message, isError = false) {
   }, 3000);
 }
 
-// ---- Local storage helpers (graceful degradation for sandboxed environments) ----
+// ---- Local storage helpers ----
 const STORAGE_KEY = "fibroDaysLocal";
 function loadAllDays() {
   try {
@@ -135,7 +115,7 @@ function numberOrNull(val) {
   return isNaN(n) ? null : n;
 }
 
-// ---- Module-level current date (authoritative source of truth) ----
+// ---- Module-level current date ----
 let currentDateStr = "";
 
 function todayStr() {
@@ -146,14 +126,12 @@ function todayStr() {
   return `${y}-${m}-${d}`;
 }
 
-/** Sync the date input to currentDateStr and refresh derived UI. */
 function syncDateInput() {
   const dateInput = document.getElementById("dateInput");
   if (dateInput) dateInput.value = currentDateStr;
   updateDateDisplay();
 }
 
-// ---- Date display in header button ----
 function updateDateDisplay() {
   const val = currentDateStr;
   const dowEl = document.getElementById("dayOfWeekDisplay");
@@ -172,7 +150,6 @@ function updateDateDisplay() {
 
 function updateDayOfWeek() { updateDateDisplay(); }
 
-// ---- Date helpers for journal headers ----
 function getJournalDayOfWeek(dateStr) {
   if (!dateStr) return "";
   const [year, month, day] = dateStr.split("-").map(Number);
@@ -199,6 +176,7 @@ window.addEventListener("load", () => {
   setupSleepCalculation();
   setupNumberSteppers();
   setupMedicationsTab();
+  setupCareTeamTab();
   setupAtrForm();
 
   const dateInput = document.getElementById("dateInput");
@@ -249,6 +227,7 @@ function setupTabs() {
       if (target === "journal-tab") renderJournal();
       if (target === "trends-tab") refreshTrends();
       if (target === "mood-tab") refreshMoodTab();
+      if (target === "careteam-tab") refreshProviderList();
       if (target === "medications-tab") {
         const activeView = document.querySelector(".med-view:not([style*='display:none']):not([style*='display: none'])");
         if (activeView) refreshMedView(activeView.id);
@@ -448,7 +427,6 @@ function collectFormData() {
   return { date, dayTitle, overallNotes, functionality, sleep, didExercise, exercise, tags, avgFunctionality, mood: { score: moodScore, notes: moodNotes } };
 }
 
-// ---- Score chip helper ----
 function scoreChipClass(score) {
   if (score == null) return "";
   if (score <= 3) return "score-low";
@@ -674,7 +652,4 @@ async function refreshTrends() {
 
 // ============================================================
 // MOOD TAB — owned entirely by mood.js
-// refreshMoodTab(), refreshMoodSummaryTable(), setupAtrForm(),
-// saveAtr(), and refreshAtrList() are defined in mood.js.
-// DO NOT add duplicate versions of these functions here.
 // ============================================================

@@ -95,10 +95,10 @@ async function saveProvider() {
   const now = new Date().toISOString();
   try {
     if (editingId) {
-      await window._db.collection('careTeam').doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
+      await db.collection('careTeam').doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
       showToast('\u2713 Provider updated');
     } else {
-      await window._db.collection('careTeam').add({ ...data, createdAt: now, updatedAt: now });
+      await db.collection('careTeam').add({ ...data, createdAt: now, updatedAt: now });
       showToast('\u2713 Team member added');
     }
     resetProviderForm();
@@ -113,7 +113,7 @@ async function saveProvider() {
 async function deleteProvider(id, name) {
   if (!window.confirm(`Remove "${name}" from your care team?\n\nTheir appointments will remain in the Appointments list.`)) return;
   try {
-    await window._db.collection('careTeam').doc(id).delete();
+    await db.collection('careTeam').doc(id).delete();
     refreshProviderList();
     populateProviderDropdown();
     showToast('Team member removed');
@@ -147,11 +147,11 @@ async function refreshProviderList() {
   if (!list) return;
   list.innerHTML = '<li class="ct-empty">Loading\u2026</li>';
   try {
-    const snapshot = await window._db.collection('careTeam').orderBy('displayName').get();
+    const snapshot = await db.collection('careTeam').orderBy('displayName').get();
     if (snapshot.empty) {
       list.innerHTML = `
         <li class="ct-empty-state">
-          <div class="ct-empty-icon">\u{1FA7A}</div>
+          <div class="ct-empty-icon">&#x1FA7A;</div>
           <h3>Build your care team</h3>
           <p>Add the doctors, specialists, therapists, and clinics involved in your fibro care.</p>
         </li>`;
@@ -177,8 +177,8 @@ async function refreshProviderList() {
         </div>
         ${p.organization ? `<div class="ct-provider-org">${escHtml(p.organization)}</div>` : ''}
         <div class="ct-provider-meta">
-          ${p.phone    ? `<a class="ct-meta-link" href="tel:${escHtml(p.phone)}">\u{1F4DE} ${escHtml(p.phone)}</a>` : ''}
-          ${p.portalUrl ? `<a class="ct-meta-link" href="${escHtml(p.portalUrl)}" target="_blank" rel="noopener noreferrer">\u{1F517} Portal</a>` : ''}
+          ${p.phone    ? `<a class="ct-meta-link" href="tel:${escHtml(p.phone)}">&#x1F4DE; ${escHtml(p.phone)}</a>` : ''}
+          ${p.portalUrl ? `<a class="ct-meta-link" href="${escHtml(p.portalUrl)}" target="_blank" rel="noopener noreferrer">&#x1F517; Portal</a>` : ''}
           ${p.symptomFocus ? `<span class="ct-meta-text">Treats: ${escHtml(p.symptomFocus)}</span>` : ''}
         </div>
         ${p.notes ? `<div class="ct-provider-notes">${escHtml(p.notes)}</div>` : ''}
@@ -201,7 +201,7 @@ async function refreshProviderList() {
     });
   } catch (err) {
     console.error('Error loading providers:', err);
-    list.innerHTML = '<li class="ct-empty">\u26A0 Failed to load care team.</li>';
+    list.innerHTML = '<li class="ct-empty">&#x26A0; Failed to load care team.</li>';
   }
 }
 
@@ -222,7 +222,7 @@ async function populateProviderDropdown() {
   const currentVal = sel.value;
   sel.innerHTML = '<option value="">Select provider\u2026</option>';
   try {
-    const snapshot = await window._db.collection('careTeam').orderBy('displayName').get();
+    const snapshot = await db.collection('careTeam').orderBy('displayName').get();
     snapshot.forEach(doc => {
       const p = doc.data();
       const opt = document.createElement('option');
@@ -278,10 +278,10 @@ async function saveAppointment() {
   const now = new Date().toISOString();
   try {
     if (editingId) {
-      await window._db.collection('appointments').doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
+      await db.collection('appointments').doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
       showToast('\u2713 Appointment updated');
     } else {
-      await window._db.collection('appointments').add({ ...data, createdAt: now, updatedAt: now });
+      await db.collection('appointments').add({ ...data, createdAt: now, updatedAt: now });
       showToast('\u2713 Appointment added');
     }
     resetApptForm();
@@ -295,7 +295,7 @@ async function saveAppointment() {
 async function deleteAppointment(id, label) {
   if (!window.confirm(`Delete this appointment?\n\n${label}`)) return;
   try {
-    await window._db.collection('appointments').doc(id).delete();
+    await db.collection('appointments').doc(id).delete();
     refreshAppointmentList();
     showToast('Appointment deleted');
   } catch (err) {
@@ -330,7 +330,7 @@ async function refreshAppointmentList() {
   pastList.innerHTML     = '<li class="ct-empty">Loading\u2026</li>';
 
   try {
-    const snapshot = await window._db.collection('appointments').orderBy('date', 'desc').get();
+    const snapshot = await db.collection('appointments').orderBy('date', 'desc').get();
     const today = new Date().toISOString().slice(0, 10);
     const upcoming = [], past = [];
 
@@ -361,11 +361,11 @@ async function refreshAppointmentList() {
           </div>
           <span class="ct-badge ${statusClass}">${escHtml(statusLabel)}</span>
         </div>
-        ${a.location ? `<div class="ct-appt-detail">\u{1F4CD} ${escHtml(a.location)}</div>` : ''}
+        ${a.location ? `<div class="ct-appt-detail">&#x1F4CD; ${escHtml(a.location)}</div>` : ''}
         ${a.purpose  ? `<div class="ct-appt-detail">Purpose: ${escHtml(a.purpose)}</div>` : ''}
         ${a.prepNotes ? `<div class="ct-appt-notes"><span class="ct-notes-label">Prep notes:</span> ${escHtml(a.prepNotes)}</div>` : ''}
         ${a.postNotes ? `<div class="ct-appt-notes"><span class="ct-notes-label">Visit notes:</span> ${escHtml(a.postNotes)}</div>` : ''}
-        ${a.followUpNeeded ? `<div class="ct-followup-flag">\u2691 Follow-up needed</div>` : ''}
+        ${a.followUpNeeded ? `<div class="ct-followup-flag">&#x2691; Follow-up needed</div>` : ''}
         <div class="ct-item-actions">
           <button class="ct-edit-btn">Edit</button>
           <button class="ct-delete-btn danger">Delete</button>
@@ -392,7 +392,7 @@ async function refreshAppointmentList() {
 
   } catch (err) {
     console.error('Error loading appointments:', err);
-    upcomingList.innerHTML = '<li class="ct-empty">\u26A0 Failed to load appointments.</li>';
+    upcomingList.innerHTML = '<li class="ct-empty">&#x26A0; Failed to load appointments.</li>';
     pastList.innerHTML = '';
   }
 }
