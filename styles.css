@@ -341,13 +341,11 @@ body {
     font-size: 1rem;
   }
 
-  /* Fix: prevent extra white space when user zooms out on mobile.
-     Use overflow-x: clip instead of hidden so that position:fixed children
-     (toasts, floating buttons) are NOT trapped in a new stacking context. */
+  /* Fix: prevent extra white space when user zooms out on mobile. */
   main {
     max-width: 100%;
     width: 100%;
-    overflow-x: clip;
+    overflow-x: hidden;
     box-sizing: border-box;
   }
 
