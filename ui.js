@@ -47,7 +47,7 @@ function showToast(msg, isError = false) {
   toast._timer = setTimeout(() => { toast.style.display = 'none'; }, 3000);
 }
 
-// ---- Mobile wiring ----
+// ---- Mobile wiring — sign-out sync + tab select ----
 (function () {
   var signOutBtnMobile  = document.getElementById('signOutBtnMobile');
   var signOutBtnDesktop = document.getElementById('signOutBtn');
@@ -64,31 +64,6 @@ function showToast(msg, isError = false) {
     });
     obs.observe(signOutBtnDesktop, { attributes: true, attributeFilter: ['style'] });
   }
-
-  document.getElementById('prevDayBtnMobile')?.addEventListener('click', function () {
-    document.getElementById('prevDayBtn')?.click();
-  });
-  document.getElementById('nextDayBtnMobile')?.addEventListener('click', function () {
-    document.getElementById('nextDayBtn')?.click();
-  });
-  document.getElementById('datePickerBtnMobile')?.addEventListener('click', function () {
-    document.getElementById('datePickerBtn')?.click();
-  });
-
-  function mirrorDateDisplay() {
-    var dowSrc  = document.getElementById('dayOfWeekDisplay');
-    var dateSrc = document.getElementById('dateDisplay');
-    var dowDst  = document.getElementById('dayOfWeekDisplayMobile');
-    var dateDst = document.getElementById('dateDisplayMobile');
-    if (dowDst  && dowSrc)  dowDst.textContent  = dowSrc.textContent;
-    if (dateDst && dateSrc) dateDst.textContent = dateSrc.textContent;
-  }
-
-  var dowSrc  = document.getElementById('dayOfWeekDisplay');
-  var dateSrc = document.getElementById('dateDisplay');
-  if (dowSrc)  new MutationObserver(mirrorDateDisplay).observe(dowSrc,  { childList: true, characterData: true, subtree: true });
-  if (dateSrc) new MutationObserver(mirrorDateDisplay).observe(dateSrc, { childList: true, characterData: true, subtree: true });
-  mirrorDateDisplay();
 
   var tabSelect = document.getElementById('tabSelect');
   document.querySelectorAll('#tabs .tab-button').forEach(function (btn) {
