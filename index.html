@@ -395,13 +395,21 @@
   <time class="build-footer-date" id="buildDate"></time>
 </footer>
 
-<!-- Load order: Firebase compat globals first, then firebase-init, then auth, then app scripts -->
+<!-- Load order: Firebase compat globals → firebase-init → auth → feature modules → app (last, calls initApp) -->
 <script src="firebase-init.js"></script>
 <script src="auth.js"></script>
-<script src="app.js"></script>
+<script src="ui.js"></script>
+<script src="date.js"></script>
+<script src="entry.js"></script>
+<script src="history.js"></script>
+<script src="trends.js"></script>
+<script src="medications.js"></script>
 <script src="journal.js"></script>
 <script src="mood.js"></script>
 <script src="careteam.js"></script>
+<script src="print.js"></script>
+<script src="cloud.js"></script>
+<script src="app.js"></script>
 
 <script>
 // Wire up auth after all scripts are loaded
