@@ -710,15 +710,15 @@ textarea:focus {
   box-shadow: 0 3px 12px rgba(0,0,0,0.15);
 }
 
-/* On desktop: anchor to main content area, not full viewport */
+/* On desktop: fixed to viewport bottom-right, above build footer */
 @media (min-width: 641px) {
   .save-day-float {
-    position: sticky;
+    position: fixed;
     bottom: 3rem;
-    float: right;
-    margin-right: 0;
-    margin-bottom: 1rem;
-    z-index: 10;
+    right: 1.5rem;
+    float: none;
+    margin: 0;
+    z-index: 150;
   }
 }
 
