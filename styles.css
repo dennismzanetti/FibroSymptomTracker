@@ -2267,7 +2267,7 @@ input[type="range"] {
 }
 
 /* ================================================================
-   ATR (Automatic Thought Record) LIST
+   ATR (Automatic Thought Record) LIST — Legacy .atr-item family
    ================================================================ */
 
 .atr-empty {
@@ -2340,6 +2340,109 @@ input[type="range"] {
 .atr-delete-btn { background: #fce8f3; color: #c0105c; }
 .atr-edit-btn:hover   { background: #c5cae9; }
 .atr-delete-btn:hover { background: #f5c6e0; }
+
+/* ================================================================
+   ATR — NEW CARD SYSTEM (.atr-record family, rendered by mood.js)
+   ================================================================ */
+
+.atr-record {
+  background: #fff;
+  border: 1px solid #e7eaf3;
+  border-radius: 10px;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.atr-record-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding: 0.65rem 1rem;
+  background: #f7f8fc;
+  border-bottom: 1px solid #e7eaf3;
+}
+
+.atr-record-date {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #2f3c8f;
+  flex-shrink: 0;
+}
+
+.atr-record-emotions {
+  font-size: 0.78rem;
+  color: #5a5f7a;
+  font-style: italic;
+  flex: 1;
+  min-width: 0;
+}
+
+.atr-intensity-badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #fce4ec;
+  color: #ad1457;
+  border: 1px solid #f48fb1;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.atr-record-actions {
+  display: flex;
+  gap: 0.35rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.atr-record-body {
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.atr-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.atr-field p {
+  font-size: 0.875rem;
+  color: #3a3f5c;
+  line-height: 1.5;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.atr-field-alt p {
+  color: #2e7d32;
+  font-style: italic;
+}
+
+.atr-field-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9ba3bf;
+}
+
+.atr-delete-btn.danger {
+  background: #fce8f3;
+  color: #c0105c;
+}
+.atr-delete-btn.danger:hover { background: #f5c6e0; }
+
+@media (max-width: 480px) {
+  .atr-record-header { flex-direction: column; align-items: flex-start; }
+  .atr-record-actions { margin-left: 0; }
+}
 
 /* ================================================================
    MEDICATION PRINT TABLE
