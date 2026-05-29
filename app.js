@@ -43,6 +43,8 @@ auth.onAuthStateChanged((user) => {
     if (!_appInitialised) {
       _appInitialised = true;
       _pendingSetup = true;
+      setupMedicationsTab();
+      setupCareTeamTab();
       runPostLoadSetup();
     }
   } else {
@@ -175,8 +177,6 @@ window.addEventListener("load", () => {
   setupDatePicker();
   setupSleepCalculation();
   setupNumberSteppers();
-  setupMedicationsTab();
-  setupCareTeamTab();
   setupAtrForm();
 
   const dateInput = document.getElementById("dateInput");
