@@ -199,7 +199,6 @@ window.addEventListener("load", () => {
   setupSleepCalculation();
   setupNumberSteppers();
   setupMedicationsTab();
-  setupPrint();
   setupAtrForm();
 
   const dateInput = document.getElementById("dateInput");
@@ -234,141 +233,6 @@ function setupDatePicker() {
       input.click();
     }
   });
-}
-
-// ---- Print support ----
-
-const FREQ_LABELS = {
-  daily: "Daily",
-  twice_daily: "2\u00D7/day",
-  three_times_daily: "3\u00D7/day",
-  as_needed: "PRN",
-  weekly: "Weekly",
-  other: "Other"
-};
-
-function setupPrint() {
-  const printBtn = document.getElementById("printMedBtn");
-  if (printBtn) {
-    printBtn.removeAttribute("onclick");
-    printBtn.addEventListener("click", printMedList);
-  }
-}
-
-async function printMedList() {
-  const printBtn = document.getElementById("printMedBtn");
-  if (printBtn) { printBtn.disabled = true; printBtn.textContent = "Loading\u2026"; }
-
-  try {
-    const [medSnap, suppSnap] = await Promise.all([
-      db.collection("medications").orderBy("name").get(),
-      db.collection("supplements").orderBy("name").get()
-    ]);
-
-    const dateStr = new Date().toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
-    const user = auth.currentUser;
-    const userName = user?.displayName || "";
-
-    function buildRows(snapshot, extraLabel) {
-      if (snapshot.empty) {
-        return `<tr><td colspan="5" class="empty">None on file.</td></tr>`;
-      }
-      let html = "";
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        const freq = FREQ_LABELS[d.frequency] || d.frequency || "\u2014";
-        html += `<tr>
-          <td>${escHtml(d.name || "")}</td>
-          <td class="c">${escHtml(d.dose || "\u2014")}</td>
-          <td class="c">${escHtml(freq)}</td>
-          <td>${escHtml(d[extraLabel] || "\u2014")}</td>
-          <td class="notes">${escHtml(d.notes || "")}</td>
-        </tr>`;
-      });
-      return html;
-    }
-
-    const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Meds &amp; Supplements</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Arial, sans-serif; font-size: 8pt; color: #111; }
-    .page { padding: 0.35in 0.4in 0.3in; }
-    .doc-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.5px solid #3f51b5; padding-bottom: 4px; margin-bottom: 8px; }
-    .doc-header h1 { font-size: 11pt; font-weight: 800; color: #1c1d22; }
-    .doc-header .meta { font-size: 7pt; color: #555; text-align: right; line-height: 1.4; }
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    h2 { font-size: 7.5pt; font-weight: 700; color: #3f51b5; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
-    table { width: 100%; border-collapse: collapse; font-size: 7.5pt; }
-    thead th { background: #3f51b5; color: #fff; padding: 3px 5px; text-align: left; font-size: 6.5pt; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; }
-    thead th.c { text-align: center; }
-    tbody td { padding: 2px 5px; border-bottom: 1px solid #e8e8e8; vertical-align: top; line-height: 1.3; }
-    tbody td.c { text-align: center; }
-    tbody td.notes { color: #555; font-style: italic; max-width: 90px; }
-    tbody td.empty { text-align: center; color: #888; font-style: italic; padding: 6px; }
-    tbody tr:nth-child(even) td { background: #f5f7ff; }
-    .footer { margin-top: 8px; font-size: 6.5pt; color: #aaa; border-top: 1px solid #e0e0e0; padding-top: 4px; display: flex; justify-content: space-between; }
-    @media print { body { font-size: 8pt; } @page { margin: 0.35in 0.4in; size: letter portrait; } .page { padding: 0; } }
-  </style>
-</head>
-<body>
-  <div class="page">
-    <div class="doc-header">
-      <h1>Medication &amp; Supplement List</h1>
-      <div class="meta">${userName ? escHtml(userName) + "<br>" : ""}${escHtml(dateStr)}</div>
-    </div>
-    <div class="two-col">
-      <div>
-        <h2>Medications</h2>
-        <table>
-          <thead><tr><th>Name</th><th class="c">Dose</th><th class="c">Freq</th><th>Doctor</th><th>Notes</th></tr></thead>
-          <tbody>${buildRows(medSnap, "doctor")}</tbody>
-        </table>
-      </div>
-      <div>
-        <h2>Supplements</h2>
-        <table>
-          <thead><tr><th>Name</th><th class="c">Dose</th><th class="c">Freq</th><th>Brand</th><th>Notes</th></tr></thead>
-          <tbody>${buildRows(suppSnap, "brand")}</tbody>
-        </table>
-      </div>
-    </div>
-    <div class="footer">
-      <span>Fibromyalgia Symptom Tracker</span>
-      <span>Bring this list to all medical appointments.</span>
-    </div>
-  </div>
-  <script>window.onload=function(){window.print();window.onafterprint=function(){window.close();};};<\/script>
-</body>
-</html>`;
-
-    const win = window.open("", "_blank");
-    if (!win) {
-      alert("Pop-up was blocked. Please allow pop-ups for this site and try again.");
-      return;
-    }
-    win.document.open();
-    win.document.write(html);
-    win.document.close();
-
-  } catch (err) {
-    console.error("Print error:", err);
-    alert("Failed to load data for printing. Please try again.");
-  } finally {
-    if (printBtn) { printBtn.disabled = false; printBtn.textContent = "Print / Save PDF"; }
-  }
-}
-
-/** Escape HTML special chars for safe inline insertion */
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 function setupTabs() {
@@ -626,7 +490,7 @@ async function refreshHistory() {
     if (!days.length) {
       list.innerHTML = `
         <li class="history-empty">
-          <span class="history-empty-icon">📋</span>
+          <span class="history-empty-icon">&#x1F4CB;</span>
           <span>No entries yet. Start by saving a day in the Daily Entry tab.</span>
         </li>`;
       return;
@@ -655,7 +519,7 @@ async function refreshHistory() {
           ? `<span class="score-chip ${scoreChipClass(sleepQuality)}">Sleep ${sleepQuality}</span>`
           : "",
         d.didExercise
-          ? `<span class="score-chip score-low">🏃 Exercise</span>`
+          ? `<span class="score-chip score-low">&#x1F3C3; Exercise</span>`
           : ""
       ].filter(Boolean).join("");
 
@@ -667,10 +531,10 @@ async function refreshHistory() {
       li.innerHTML = `
         <div class="history-item-header">
           <span class="history-date-label">${dow ? dow + " \u00B7 " : ""}${dateLabel}</span>
-          ${d.dayTitle ? `<span class="history-day-title">${escHtml(d.dayTitle)}</span>` : ""}
+          ${d.dayTitle ? `<span class="history-day-title">${d.dayTitle}</span>` : ""}
           <div class="history-scores">${chipsHtml}</div>
         </div>
-        ${notesPreview ? `<div class="history-notes-preview">${escHtml(notesPreview)}</div>` : ""}
+        ${notesPreview ? `<div class="history-notes-preview">${notesPreview}</div>` : ""}
         <div class="history-item-actions" style="display:flex;gap:0.5rem;margin-top:0.6rem;">
           <button class="history-load-btn">Load into entry</button>
           <button class="history-delete-btn danger">Delete</button>
@@ -705,7 +569,7 @@ async function refreshHistory() {
     });
   } catch (err) {
     console.error("Error loading history:", err);
-    list.innerHTML = '<li class="history-error">⚠️ Could not load history. Please check your connection.</li>';
+    list.innerHTML = '<li class="history-error">&#x26A0;&#xFE0F; Could not load history. Please check your connection.</li>';
   }
 }
 
@@ -787,38 +651,6 @@ function switchToTab(tabId) {
 function formatScore(value) { return typeof value === "number" ? value : "not recorded"; }
 function formatText(value, fallback = "Not recorded.") { return value && String(value).trim() ? value : fallback; }
 
-async function renderJournal() {
-  const container = document.getElementById("journalOutput");
-  if (!container) return;
-  container.innerHTML = `<p class="journal-muted">Loading journal entries...</p>`;
-  try {
-    const snapshot = await db.collection("days").orderBy(firebase.firestore.FieldPath.documentId()).get();
-    const days = [];
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      days.push({ date: data.date || doc.id, dayTitle: data.dayTitle || "", overallNotes: data.overallNotes || "", functionality: data.functionality || {}, sleep: data.sleep || {}, didExercise: data.didExercise || false, exercise: data.exercise || null, tags: data.tags || [], avgFunctionality: data.avgFunctionality ?? null, mood: data.mood || {} });
-    });
-    days.sort((a, b) => b.date.localeCompare(a.date));
-    if (!days.length) { container.innerHTML = `<p class="journal-muted">No journal entries yet.</p>`; return; }
-    container.innerHTML = days.map((data) => {
-      const title = data.dayTitle?.trim() || "";
-      const avgFunctionality = typeof data.avgFunctionality === "number" ? `${data.avgFunctionality.toFixed(1)}/10` : "Not recorded";
-      const moodScore = typeof data.mood?.score === "number" ? `${data.mood.score}/10` : "Not recorded";
-      const sleepHours = typeof data.sleep?.hours === "number" ? `${data.sleep.hours} hours` : "Not recorded";
-      const sleepQuality = typeof data.sleep?.quality === "number" ? `${data.sleep.quality}/10` : "Not recorded";
-      const awakenings = typeof data.sleep?.awakenings === "number" ? data.sleep.awakenings : "Not recorded";
-      const tagsHtml = data.tags?.length ? `<div class="journal-tags">${data.tags.map(tag => `<span class="journal-tag">${tag}</span>`).join("")}</div>` : `<p class="journal-muted">No tags recorded.</p>`;
-      const exerciseHtml = data.didExercise && data.exercise ? `<p><span class="journal-label">Type:</span> ${formatText(data.exercise.type, "not recorded")}</p><p><span class="journal-label">Minutes:</span> ${data.exercise.minutes ?? "not recorded"}</p><p><span class="journal-label">Intensity:</span> ${formatText(data.exercise.intensity, "not recorded")}</p><p><span class="journal-label">Timing:</span> ${formatText(data.exercise.timing, "not recorded")}</p><p>${formatText(data.exercise.notes, "No exercise notes recorded.")}</p>` : `<p>No exercise recorded.</p>`;
-      const dayOfWeek = getJournalDayOfWeek(data.date);
-      const dateLine = getJournalDateLine(data.date);
-      return `<article class="journal-entry"><header class="journal-day-header"><div><p class="journal-dow">${dayOfWeek}</p><p class="journal-date">${dateLine}</p>${title ? `<p class="journal-title">${title}</p>` : ""}</div><div class="journal-score-pill"><span class="journal-score-label">Avg function</span><strong>${avgFunctionality}</strong></div></header><section class="journal-section"><h4>Mood</h4><p><span class="journal-label">Score:</span> ${moodScore}</p><p>${formatText(data.mood?.notes, "No mood notes recorded.")}</p></section><section class="journal-section"><h4>Sleep summary</h4><div class="sleep-summary"><div class="sleep-stat"><span class="journal-label">Bedtime</span><strong>${formatText(data.sleep?.bedtime, "not recorded")}</strong></div><div class="sleep-stat"><span class="journal-label">Wake time</span><strong>${formatText(data.sleep?.wakeTime, "not recorded")}</strong></div><div class="sleep-stat"><span class="journal-label">Hours slept</span><strong>${sleepHours}</strong></div><div class="sleep-stat"><span class="journal-label">Sleep quality</span><strong>${sleepQuality}</strong></div><div class="sleep-stat"><span class="journal-label">Awakenings</span><strong>${awakenings}</strong></div></div><p class="sleep-notes">${formatText(data.sleep?.notes, "No sleep notes recorded.")}</p></section><section class="journal-section"><h4>Functionality through the day</h4><div class="function-grid"><div class="function-card"><div class="function-card-head"><span>Early morning</span><strong>${formatScore(data.functionality?.earlyMorning?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.earlyMorning?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.earlyMorning?.symptoms, "none recorded")}</p></div><div class="function-card"><div class="function-card-head"><span>Late morning</span><strong>${formatScore(data.functionality?.lateMorning?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.lateMorning?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.lateMorning?.symptoms, "none recorded")}</p></div><div class="function-card"><div class="function-card-head"><span>Early afternoon</span><strong>${formatScore(data.functionality?.earlyAfternoon?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.earlyAfternoon?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.earlyAfternoon?.symptoms, "none recorded")}</p></div><div class="function-card"><div class="function-card-head"><span>Late afternoon</span><strong>${formatScore(data.functionality?.lateAfternoon?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.lateAfternoon?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.lateAfternoon?.symptoms, "none recorded")}</p></div><div class="function-card"><div class="function-card-head"><span>Early evening</span><strong>${formatScore(data.functionality?.earlyEvening?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.earlyEvening?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.earlyEvening?.symptoms, "none recorded")}</p></div><div class="function-card"><div class="function-card-head"><span>Late evening</span><strong>${formatScore(data.functionality?.lateEvening?.score)}</strong></div><p><span class="journal-label">Activity:</span> ${formatText(data.functionality?.lateEvening?.activity, "none recorded")}</p><p><span class="journal-label">Symptoms:</span> ${formatText(data.functionality?.lateEvening?.symptoms, "none recorded")}</p></div></div></section><section class="journal-section"><h4>Exercise</h4>${exerciseHtml}</section><section class="journal-section"><h4>Tags</h4>${tagsHtml}</section><section class="journal-section"><h4>Overall notes</h4><p>${formatText(data.overallNotes, "No overall notes recorded.")}</p></section></article>`;
-    }).join("");
-  } catch (err) {
-    console.error("Error loading journal:", err);
-    container.innerHTML = `<p class="journal-muted">Cloud journal load failed.</p>`;
-  }
-}
-
 let functionalityChart = null;
 async function refreshTrends() {
   const canvas = document.getElementById("functionalityChart");
@@ -838,357 +670,6 @@ async function refreshTrends() {
       options: { scales: { y: { suggestedMin: 0, suggestedMax: 10 } } }
     });
   } catch (err) { console.error("Error loading trends:", err); }
-}
-
-// ============================================================
-// MEDICATIONS TAB
-// ============================================================
-
-function setupMedicationsTab() {
-  document.getElementById("saveMedBtn")?.addEventListener("click", saveMedication);
-  document.getElementById("cancelMedEditBtn")?.addEventListener("click", resetMedForm);
-  document.getElementById("saveSuppBtn")?.addEventListener("click", saveSupplement);
-  document.getElementById("cancelSuppEditBtn")?.addEventListener("click", resetSuppForm);
-
-  document.querySelectorAll(".med-sub-tab-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const targetViewId = btn.getAttribute("data-med-view");
-      document.querySelectorAll(".med-sub-tab-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      document.querySelectorAll(".med-view").forEach(view => {
-        view.style.display = view.id === targetViewId ? "" : "none";
-      });
-      refreshMedView(targetViewId);
-    });
-  });
-
-  refreshMedList();
-}
-
-function refreshMedView(viewId) {
-  if (viewId === "medListView") refreshMedList();
-  else if (viewId === "suppListView") refreshSuppList();
-  else if (viewId === "medHistoryView") refreshMedHistory();
-  else if (viewId === "medPrintView") { refreshMedPrintTable(); refreshSuppPrintTable(); }
-}
-
-// ---- Medications CRUD ----
-
-function getMedFormData() {
-  return {
-    name: document.getElementById("medNameInput").value.trim(),
-    dose: document.getElementById("medDoseInput").value.trim(),
-    frequency: document.getElementById("medFrequencyInput").value,
-    doctor: document.getElementById("medDoctorInput").value.trim(),
-    notes: document.getElementById("medNotesInput").value.trim()
-  };
-}
-
-function resetMedForm() {
-  document.getElementById("medNameInput").value = "";
-  document.getElementById("medDoseInput").value = "";
-  document.getElementById("medFrequencyInput").value = "";
-  document.getElementById("medDoctorInput").value = "";
-  document.getElementById("medNotesInput").value = "";
-  document.getElementById("medEditingId").value = "";
-  document.getElementById("medFormTitle").textContent = "Add Medication";
-  document.getElementById("saveMedBtn").textContent = "Add Medication";
-  document.getElementById("cancelMedEditBtn").style.display = "none";
-}
-
-async function saveMedication() {
-  const data = getMedFormData();
-  if (!data.name) { alert("Please enter a medication name."); return; }
-  const editingId = document.getElementById("medEditingId").value;
-  const now = new Date().toISOString();
-  if (editingId) {
-    const oldDoc = await db.collection("medications").doc(editingId).get();
-    const oldData = oldDoc.exists ? oldDoc.data() : {};
-    await db.collection("medications").doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
-    const changes = [];
-    if (oldData.name !== data.name) changes.push(`Name: "${oldData.name}" \u2192 "${data.name}"`);
-    if (oldData.dose !== data.dose) changes.push(`Dose: "${oldData.dose}" \u2192 "${data.dose}"`);
-    if (oldData.frequency !== data.frequency) changes.push(`Frequency: "${oldData.frequency}" \u2192 "${data.frequency}"`);
-    if (oldData.doctor !== data.doctor) changes.push(`Doctor: "${oldData.doctor}" \u2192 "${data.doctor}"`);
-    if (oldData.notes !== data.notes) changes.push(`Notes updated`);
-    await db.collection("medicationHistory").add({
-      type: "medication", action: "edited", medicationId: editingId, medicationName: data.name,
-      changes: changes.length ? changes : ["No field changes detected"],
-      snapshot: { ...data }, timestamp: now
-    });
-  } else {
-    const docRef = await db.collection("medications").add({ ...data, createdAt: now, updatedAt: now });
-    await db.collection("medicationHistory").add({
-      type: "medication", action: "added", medicationId: docRef.id, medicationName: data.name,
-      changes: [`Added: ${data.name}${data.dose ? ` ${data.dose}` : ""}`],
-      snapshot: { ...data }, timestamp: now
-    });
-  }
-  resetMedForm();
-  refreshMedList();
-}
-
-async function deleteMedication(id, name) {
-  if (!window.confirm(`Delete "${name}" from your medication list?\n\nThis will be recorded in the change history.`)) return;
-  const now = new Date().toISOString();
-  const oldDoc = await db.collection("medications").doc(id).get();
-  const oldData = oldDoc.exists ? oldDoc.data() : {};
-  await db.collection("medications").doc(id).delete();
-  await db.collection("medicationHistory").add({
-    type: "medication", action: "deleted", medicationId: id, medicationName: name,
-    changes: [`Deleted: ${name}${oldData.dose ? ` ${oldData.dose}` : ""}`],
-    snapshot: { ...oldData }, timestamp: now
-  });
-  refreshMedList();
-}
-
-function startEditMedication(id, med) {
-  document.getElementById("medNameInput").value = med.name || "";
-  document.getElementById("medDoseInput").value = med.dose || "";
-  document.getElementById("medFrequencyInput").value = med.frequency || "";
-  document.getElementById("medDoctorInput").value = med.doctor || "";
-  document.getElementById("medNotesInput").value = med.notes || "";
-  document.getElementById("medEditingId").value = id;
-  document.getElementById("medFormTitle").textContent = "Edit Medication";
-  document.getElementById("saveMedBtn").textContent = "Save Changes";
-  document.getElementById("cancelMedEditBtn").style.display = "inline-block";
-  document.getElementById("medFormTitle").scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-async function refreshMedList() {
-  const list = document.getElementById("medList");
-  if (!list) return;
-  list.innerHTML = "<li class='med-empty'>Loading...</li>";
-  try {
-    const snapshot = await db.collection("medications").orderBy("name").get();
-    if (snapshot.empty) {
-      list.innerHTML = "<li class='med-empty'>No medications added yet.</li>";
-      return;
-    }
-    list.innerHTML = "";
-    snapshot.forEach(doc => {
-      const med = doc.data();
-      const li = document.createElement("li");
-      li.className = "med-item";
-      const freq = FREQ_LABELS[med.frequency] || med.frequency || "";
-      li.innerHTML = `
-        <div class="med-item-info">
-          <span class="med-item-name">${escHtml(med.name || "")}</span>
-          ${med.dose ? `<span class="med-item-detail">${escHtml(med.dose)}</span>` : ""}
-          ${freq ? `<span class="med-item-detail">${escHtml(freq)}</span>` : ""}
-          ${med.doctor ? `<span class="med-item-detail">Dr. ${escHtml(med.doctor)}</span>` : ""}
-          ${med.notes ? `<span class="med-item-notes">${escHtml(med.notes)}</span>` : ""}
-        </div>
-        <div class="med-item-actions">
-          <button class="med-edit-btn">Edit</button>
-          <button class="med-delete-btn danger">Delete</button>
-        </div>`;
-      li.querySelector(".med-edit-btn").addEventListener("click", () => startEditMedication(doc.id, med));
-      li.querySelector(".med-delete-btn").addEventListener("click", () => deleteMedication(doc.id, med.name));
-      list.appendChild(li);
-    });
-  } catch (err) {
-    console.error("Error loading medications:", err);
-    list.innerHTML = "<li class='med-empty'>Failed to load medications.</li>";
-  }
-}
-
-// ---- Supplements CRUD ----
-
-function getSuppFormData() {
-  return {
-    name: document.getElementById("suppNameInput").value.trim(),
-    dose: document.getElementById("suppDoseInput").value.trim(),
-    frequency: document.getElementById("suppFrequencyInput").value,
-    brand: document.getElementById("suppBrandInput").value.trim(),
-    notes: document.getElementById("suppNotesInput").value.trim()
-  };
-}
-
-function resetSuppForm() {
-  document.getElementById("suppNameInput").value = "";
-  document.getElementById("suppDoseInput").value = "";
-  document.getElementById("suppFrequencyInput").value = "";
-  document.getElementById("suppBrandInput").value = "";
-  document.getElementById("suppNotesInput").value = "";
-  document.getElementById("suppEditingId").value = "";
-  document.getElementById("suppFormTitle").textContent = "Add Supplement";
-  document.getElementById("saveSuppBtn").textContent = "Add Supplement";
-  document.getElementById("cancelSuppEditBtn").style.display = "none";
-}
-
-async function saveSupplement() {
-  const data = getSuppFormData();
-  if (!data.name) { alert("Please enter a supplement name."); return; }
-  const editingId = document.getElementById("suppEditingId").value;
-  const now = new Date().toISOString();
-  if (editingId) {
-    const oldDoc = await db.collection("supplements").doc(editingId).get();
-    const oldData = oldDoc.exists ? oldDoc.data() : {};
-    await db.collection("supplements").doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
-    const changes = [];
-    if (oldData.name !== data.name) changes.push(`Name: "${oldData.name}" \u2192 "${data.name}"`);
-    if (oldData.dose !== data.dose) changes.push(`Dose: "${oldData.dose}" \u2192 "${data.dose}"`);
-    if (oldData.frequency !== data.frequency) changes.push(`Frequency: "${oldData.frequency}" \u2192 "${data.frequency}"`);
-    if (oldData.brand !== data.brand) changes.push(`Brand: "${oldData.brand}" \u2192 "${data.brand}"`);
-    if (oldData.notes !== data.notes) changes.push(`Notes updated`);
-    await db.collection("medicationHistory").add({
-      type: "supplement", action: "edited", medicationId: editingId, medicationName: data.name,
-      changes: changes.length ? changes : ["No field changes detected"],
-      snapshot: { ...data }, timestamp: now
-    });
-  } else {
-    const docRef = await db.collection("supplements").add({ ...data, createdAt: now, updatedAt: now });
-    await db.collection("medicationHistory").add({
-      type: "supplement", action: "added", medicationId: docRef.id, medicationName: data.name,
-      changes: [`Added: ${data.name}${data.dose ? ` ${data.dose}` : ""}`],
-      snapshot: { ...data }, timestamp: now
-    });
-  }
-  resetSuppForm();
-  refreshSuppList();
-}
-
-async function deleteSupplement(id, name) {
-  if (!window.confirm(`Delete "${name}" from your supplement list?\n\nThis will be recorded in the change history.`)) return;
-  const now = new Date().toISOString();
-  const oldDoc = await db.collection("supplements").doc(id).get();
-  const oldData = oldDoc.exists ? oldDoc.data() : {};
-  await db.collection("supplements").doc(id).delete();
-  await db.collection("medicationHistory").add({
-    type: "supplement", action: "deleted", medicationId: id, medicationName: name,
-    changes: [`Deleted: ${name}${oldData.dose ? ` ${oldData.dose}` : ""}`],
-    snapshot: { ...oldData }, timestamp: now
-  });
-  refreshSuppList();
-}
-
-function startEditSupplement(id, supp) {
-  document.getElementById("suppNameInput").value = supp.name || "";
-  document.getElementById("suppDoseInput").value = supp.dose || "";
-  document.getElementById("suppFrequencyInput").value = supp.frequency || "";
-  document.getElementById("suppBrandInput").value = supp.brand || "";
-  document.getElementById("suppNotesInput").value = supp.notes || "";
-  document.getElementById("suppEditingId").value = id;
-  document.getElementById("suppFormTitle").textContent = "Edit Supplement";
-  document.getElementById("saveSuppBtn").textContent = "Save Changes";
-  document.getElementById("cancelSuppEditBtn").style.display = "inline-block";
-  document.getElementById("suppFormTitle").scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-async function refreshSuppList() {
-  const list = document.getElementById("suppList");
-  if (!list) return;
-  list.innerHTML = "<li class='med-empty'>Loading...</li>";
-  try {
-    const snapshot = await db.collection("supplements").orderBy("name").get();
-    if (snapshot.empty) {
-      list.innerHTML = "<li class='med-empty'>No supplements added yet.</li>";
-      return;
-    }
-    list.innerHTML = "";
-    snapshot.forEach(doc => {
-      const supp = doc.data();
-      const li = document.createElement("li");
-      li.className = "med-item";
-      const freq = FREQ_LABELS[supp.frequency] || supp.frequency || "";
-      li.innerHTML = `
-        <div class="med-item-info">
-          <span class="med-item-name">${escHtml(supp.name || "")}</span>
-          ${supp.dose ? `<span class="med-item-detail">${escHtml(supp.dose)}</span>` : ""}
-          ${freq ? `<span class="med-item-detail">${escHtml(freq)}</span>` : ""}
-          ${supp.brand ? `<span class="med-item-detail">${escHtml(supp.brand)}</span>` : ""}
-          ${supp.notes ? `<span class="med-item-notes">${escHtml(supp.notes)}</span>` : ""}
-        </div>
-        <div class="med-item-actions">
-          <button class="med-edit-btn">Edit</button>
-          <button class="med-delete-btn danger">Delete</button>
-        </div>`;
-      li.querySelector(".med-edit-btn").addEventListener("click", () => startEditSupplement(doc.id, supp));
-      li.querySelector(".med-delete-btn").addEventListener("click", () => deleteSupplement(doc.id, supp.name));
-      list.appendChild(li);
-    });
-  } catch (err) {
-    console.error("Error loading supplements:", err);
-    list.innerHTML = "<li class='med-empty'>Failed to load supplements.</li>";
-  }
-}
-
-// ---- Medication History ----
-
-async function refreshMedHistory() {
-  const list = document.getElementById("medHistoryList");
-  if (!list) return;
-  list.innerHTML = "<li class='med-empty'>Loading...</li>";
-  try {
-    const snapshot = await db.collection("medicationHistory")
-      .orderBy("timestamp", "desc")
-      .limit(50)
-      .get();
-    if (snapshot.empty) {
-      list.innerHTML = "<li class='med-empty'>No medication changes recorded yet.</li>";
-      return;
-    }
-    list.innerHTML = "";
-    snapshot.forEach(doc => {
-      const h = doc.data();
-      const li = document.createElement("li");
-      li.className = "med-history-item";
-      const ts = h.timestamp ? new Date(h.timestamp).toLocaleString() : "Unknown time";
-      const actionLabel = { added: "Added", edited: "Edited", deleted: "Deleted" }[h.action] || h.action;
-      const typeLabel = h.type === "supplement" ? "Supplement" : "Medication";
-      li.innerHTML = `
-        <div class="med-history-header">
-          <span class="med-history-action med-history-${h.action}">${actionLabel}</span>
-          <span class="med-history-type">${typeLabel}</span>
-          <span class="med-history-name">${escHtml(h.medicationName || "")}</span>
-          <span class="med-history-ts">${ts}</span>
-        </div>
-        ${h.changes?.length ? `<ul class="med-history-changes">${h.changes.map(c => `<li>${escHtml(c)}</li>`).join("")}</ul>` : ""}`;
-      list.appendChild(li);
-    });
-  } catch (err) {
-    console.error("Error loading medication history:", err);
-    list.innerHTML = "<li class='med-empty'>Failed to load history.</li>";
-  }
-}
-
-// ---- Print view tables ----
-
-async function refreshMedPrintTable() {
-  const tbody = document.getElementById("medPrintTableBody");
-  if (!tbody) return;
-  tbody.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
-  try {
-    const snapshot = await db.collection("medications").orderBy("name").get();
-    if (snapshot.empty) { tbody.innerHTML = "<tr><td colspan='5' class='med-empty'>No medications on file.</td></tr>"; return; }
-    tbody.innerHTML = "";
-    snapshot.forEach(doc => {
-      const m = doc.data();
-      const freq = FREQ_LABELS[m.frequency] || m.frequency || "\u2014";
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${escHtml(m.name||"")}</td><td>${escHtml(m.dose||"\u2014")}</td><td>${escHtml(freq)}</td><td>${escHtml(m.doctor||"\u2014")}</td><td>${escHtml(m.notes||"")}</td>`;
-      tbody.appendChild(tr);
-    });
-  } catch (err) { tbody.innerHTML = "<tr><td colspan='5'>Failed to load.</td></tr>"; }
-}
-
-async function refreshSuppPrintTable() {
-  const tbody = document.getElementById("suppPrintTableBody");
-  if (!tbody) return;
-  tbody.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
-  try {
-    const snapshot = await db.collection("supplements").orderBy("name").get();
-    if (snapshot.empty) { tbody.innerHTML = "<tr><td colspan='5' class='med-empty'>No supplements on file.</td></tr>"; return; }
-    tbody.innerHTML = "";
-    snapshot.forEach(doc => {
-      const s = doc.data();
-      const freq = FREQ_LABELS[s.frequency] || s.frequency || "\u2014";
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${escHtml(s.name||"")}</td><td>${escHtml(s.dose||"\u2014")}</td><td>${escHtml(freq)}</td><td>${escHtml(s.brand||"\u2014")}</td><td>${escHtml(s.notes||"")}</td>`;
-      tbody.appendChild(tr);
-    });
-  } catch (err) { tbody.innerHTML = "<tr><td colspan='5'>Failed to load.</td></tr>"; }
 }
 
 // ============================================================
