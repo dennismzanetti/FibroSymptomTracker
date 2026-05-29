@@ -395,18 +395,20 @@
   <time class="build-footer-date" id="buildDate"></time>
 </footer>
 
+<!-- Load order: Firebase compat globals first, then firebase-init, then auth, then app scripts -->
+<script src="firebase-init.js"></script>
+<script src="auth.js"></script>
 <script src="app.js"></script>
 <script src="journal.js"></script>
 <script src="mood.js"></script>
 <script src="careteam.js"></script>
-<script type="module">
-  import { initFirebase } from './firebase-init.js';
-  import { setupAuth }    from './auth.js';
-  const { db, auth } = initFirebase();
-  setupAuth(
-    (user) => initApp(db, auth, user),
-    ()     => { /* signed out — overlay shown by setupAuth */ }
-  );
+
+<script>
+// Wire up auth after all scripts are loaded
+setupAuth(
+  function (user) { initApp(window._db, window._auth, user); },
+  function () { /* signed out - overlay shown by setupAuth */ }
+);
 </script>
 
 <script>
