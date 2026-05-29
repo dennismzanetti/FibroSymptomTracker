@@ -4,12 +4,13 @@
   window._firebaseInitialized = true;
 
   var config = {
-    apiKey: "AIzaSyD7bnVAfclKhMjfqX3VQ1FP-EKyQIMV5Kc",
+    apiKey: "AIzaSyD75EQyz7w9ZYuK8iDewQDzI5Z2RUzMk1k",
     authDomain: "fibrosymptomtracker.firebaseapp.com",
     projectId: "fibrosymptomtracker",
-    storageBucket: "fibrosymptomtracker.appspot.com",
-    messagingSenderId: "399399538093",
-    appId: "1:399399538093:web:8a0d4d90e0f81a5e8bb22a"
+    storageBucket: "fibrosymptomtracker.firebasestorage.app",
+    messagingSenderId: "729903386531",
+    appId: "1:729903386531:web:b73385c230369ac53b9416",
+    measurementId: "G-N20WEFRW9Y"
   };
 
   firebase.initializeApp(config);
