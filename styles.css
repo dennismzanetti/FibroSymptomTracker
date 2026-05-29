@@ -931,12 +931,85 @@ textarea:focus {
   width: auto;
 }
 
+/* Mobile: stack filter controls full-width */
+@media (max-width: 640px) {
+  .history-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .history-controls div {
+    width: 100%;
+  }
+
+  .history-controls input[type="date"] {
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.55rem 0.75rem;
+  }
+
+  .history-controls .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.65rem 1rem;
+    font-size: 0.95rem;
+  }
+}
+
 .history-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
+/* Loading state */
+.history-loading {
+  text-align: center;
+  color: #9ba3bf;
+  font-size: 0.92rem;
+  padding: 2rem 0;
+  font-style: italic;
+  list-style: none;
+}
+
+/* Empty state */
+.history-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2.5rem 1rem;
+  text-align: center;
+  list-style: none;
+  color: #9ba3bf;
+}
+
+.history-empty-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.history-empty p {
+  margin: 0;
+  font-size: 0.92rem;
+  color: #9ba3bf;
+  max-width: 28ch;
+}
+
+/* Error state */
+.history-error {
+  text-align: center;
+  color: #c62828;
+  font-size: 0.88rem;
+  padding: 1.5rem 1rem;
+  list-style: none;
+  background: #fff3f3;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+}
+
+/* History entry card */
 .history-item {
   background: #fff;
   border: 1px solid #e7eaf3;
@@ -944,6 +1017,106 @@ textarea:focus {
   padding: 0.85rem 1rem;
   margin-bottom: 0.65rem;
   box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.history-item:hover {
+  box-shadow: 0 4px 14px rgba(0,0,0,0.09);
+  border-color: #c5cae9;
+}
+
+/* Card header row: date + title + scores */
+.history-item-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+/* Date label */
+.history-date-label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #2f3c8f;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Optional day title */
+.history-day-title {
+  font-size: 0.82rem;
+  color: #6b7280;
+  font-style: italic;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Scores row — wraps to its own line on small screens */
+.history-scores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-left: auto;
+}
+
+@media (max-width: 480px) {
+  .history-item-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .history-scores {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+/* Score chips */
+.score-chip {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.score-low {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-color: #a5d6a7;
+}
+
+.score-mid {
+  background: #fff8e1;
+  color: #f57f17;
+  border-color: #ffe082;
+}
+
+.score-high {
+  background: #ffebee;
+  color: #c62828;
+  border-color: #ef9a9a;
+}
+
+/* Notes preview */
+.history-notes-preview {
+  font-size: 0.82rem;
+  color: #6b7280;
+  line-height: 1.45;
+  margin-top: 0.15rem;
+  /* Clamp to 2 lines so long notes don't dominate */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .history-item h4 {
