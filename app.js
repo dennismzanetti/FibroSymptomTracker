@@ -239,7 +239,8 @@ function setupTabs() {
 
 function setupExerciseToggle() {
   const didExerciseInput = document.getElementById("didExerciseInput");
-  const exerciseDetails = document.getElementById("exerciseDetails");
+  const exerciseDetails  = document.getElementById("exerciseDetails");
+  if (!didExerciseInput || !exerciseDetails) return;
   function updateVisibility() {
     exerciseDetails.style.display = didExerciseInput.value === "yes" ? "block" : "none";
   }
