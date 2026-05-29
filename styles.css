@@ -341,6 +341,16 @@ body {
     font-size: 1rem;
   }
 
+  /* Fix: prevent extra white space when user zooms out on mobile.
+     Clamp main width to the viewport and hide any overflow caused
+     by the layout switching to desktop rules at wider effective widths. */
+  main {
+    max-width: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
 }
 
 /* ================================================================
