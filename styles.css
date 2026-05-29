@@ -1116,6 +1116,47 @@ input[type="range"] {
 }
 
 /* ================================================================
+   SHARED SUB-TAB STRIP
+   (used by both .med-sub-tabs and the Care Team sub-tabs)
+   ================================================================ */
+
+.med-sub-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Shared pill button — applies to both Medications and Care Team sub-tabs */
+.med-sub-tab-btn,
+.ct-sub-tab-btn {
+  padding: 0.45rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: 1.5px solid #9fa8da;
+  border-radius: 999px;
+  background: #fff;
+  color: #5a5f7a;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.med-sub-tab-btn:hover,
+.ct-sub-tab-btn:hover {
+  background: #e8eaf6;
+  border-color: #7986cb;
+  color: #3f51b5;
+}
+
+.med-sub-tab-btn.active,
+.ct-sub-tab-btn.active {
+  background: #3f51b5;
+  border-color: #3f51b5;
+  color: #fff;
+}
+
+/* ================================================================
    MEDICATIONS TAB
    ================================================================ */
 
@@ -1359,33 +1400,6 @@ input[type="range"] {
 /* ================================================================
    CARE TEAM TAB
    ================================================================ */
-
-/* --- Sub-tab strip (reuses .med-sub-tabs pattern) --- */
-
-.ct-sub-tab-btn {
-  padding: 0.45rem 1.1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  border: 1.5px solid #9fa8da;
-  border-radius: 999px;
-  background: #fff;
-  color: #5a5f7a;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
-  white-space: nowrap;
-}
-
-.ct-sub-tab-btn:hover {
-  background: #e8eaf6;
-  border-color: #7986cb;
-  color: #3f51b5;
-}
-
-.ct-sub-tab-btn.active {
-  background: #3f51b5;
-  border-color: #3f51b5;
-  color: #fff;
-}
 
 /* --- Provider list --- */
 
