@@ -2,6 +2,15 @@ html {
   overflow-x: hidden;
 }
 
+/* ================================================================
+   CSS CUSTOM PROPERTIES
+   ================================================================ */
+
+:root {
+  --color-error:   #c0105c;
+  --color-success: #2e7d32;
+}
+
 input[type="text"],
 input[type="number"],
 input[type="time"],
@@ -427,12 +436,15 @@ h4 {
   width: 34px;
   height: 34px;
   min-width: 34px;
+  padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.35rem;
-  font-weight: 700;
+  /* ‹ › glyphs need a generous font-size and line-height: 1 to render sharply */
+  font-size: 1.5rem;
+  font-weight: 400;
   line-height: 1;
+  overflow: visible;
   border: 1px solid #ced3ea;
   border-radius: 50%;
   background: #f3f4f8;
@@ -440,6 +452,8 @@ h4 {
   cursor: pointer;
   flex-shrink: 0;
   transition: background 0.15s ease, border-color 0.15s ease;
+  /* Prevent the entity from being clipped by the border-radius */
+  user-select: none;
 }
 
 .entry-date-nav-btn:hover {
@@ -490,6 +504,17 @@ h4 {
   background: #c5cae9;
 }
 
+/* Calendar SVG icon inside the picker button */
+.entry-date-picker-btn svg {
+  display: block;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  color: #9fa8da;
+  stroke: currentColor;
+  overflow: visible;
+}
+
 .entry-dow {
   font-size: 0.78rem;
   font-weight: 600;
@@ -504,11 +529,6 @@ h4 {
   white-space: nowrap;
 }
 
-.entry-date-picker-btn svg {
-  flex-shrink: 0;
-  color: #9fa8da;
-}
-
 /* Mobile: slightly compact */
 @media (max-width: 480px) {
   .entry-date-bar {
@@ -519,7 +539,7 @@ h4 {
     width: 38px;
     height: 38px;
     min-width: 38px;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
   }
   .entry-date-picker-btn {
     padding: 0.35rem 0.6rem;
@@ -2745,47 +2765,4 @@ input[type="range"] {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: #9ba3bf;
-}
-
-.atr-delete-btn.danger {
-  background: #fce8f3;
-  color: #c0105c;
-}
-.atr-delete-btn.danger:hover { background: #f5c6e0; }
-
-@media (max-width: 480px) {
-  .atr-record-header { flex-direction: column; align-items: flex-start; }
-  .atr-record-actions { margin-left: 0; }
-}
-
-/* ================================================================
-   MEDICATION PRINT TABLE
-   ================================================================ */
-
-.med-print-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.85rem;
-}
-
-.med-print-table th {
-  text-align: left;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #9ba3bf;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.4rem 0.6rem;
-  border-bottom: 1px solid #e7eaf3;
-}
-
-.med-print-table td {
-  padding: 0.45rem 0.6rem;
-  border-bottom: 1px solid #f0f2fa;
-  color: #3a3f5c;
-  vertical-align: top;
-}
-
-.med-print-table tr:last-child td {
-  border-bottom: none;
 }
