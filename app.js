@@ -365,6 +365,15 @@ function clearFormFieldsExceptDate() {
   document.getElementById("exerciseNotesInput").value = "";
   document.getElementById("moodScoreInput").value = "";
   document.getElementById("moodNotesInput").value = "";
+  // Clear pain & fatigue fields
+  const painScoreEl = document.getElementById("painScoreInput");
+  if (painScoreEl) painScoreEl.value = "";
+  const painNotesEl = document.getElementById("painNotesInput");
+  if (painNotesEl) painNotesEl.value = "";
+  const fatigueScoreEl = document.getElementById("fatigueScoreInput");
+  if (fatigueScoreEl) fatigueScoreEl.value = "";
+  const fatigueNotesEl = document.getElementById("fatigueNotesInput");
+  if (fatigueNotesEl) fatigueNotesEl.value = "";
   document.querySelectorAll("#tagsContainer input[type=checkbox]").forEach(cb => cb.checked = false);
 }
 
@@ -372,7 +381,9 @@ function loadDayFromCloud(date) {
   if (!date) return;
   db.collection("days").doc(date).get().then((doc) => {
     if (doc.exists) {
-      fillFormFromData(doc.data());
+      // Merge the doc ID as the date so fillFormFromData always has it
+      const data = Object.assign({ date: doc.id }, doc.data());
+      fillFormFromData(data);
       showToast("\u2601 Updated from cloud");
     } else {
       clearFormFieldsExceptDate();
@@ -424,7 +435,21 @@ function collectFormData() {
   const avgFunctionality = scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
   const moodScore = numberOrNull(document.getElementById("moodScoreInput").value);
   const moodNotes = document.getElementById("moodNotesInput").value;
-  return { date, dayTitle, overallNotes, functionality, sleep, didExercise, exercise, tags, avgFunctionality, mood: { score: moodScore, notes: moodNotes } };
+  // Collect pain & fatigue fields
+  const painScoreEl = document.getElementById("painScoreInput");
+  const painNotesEl = document.getElementById("painNotesInput");
+  const fatigueScoreEl = document.getElementById("fatigueScoreInput");
+  const fatigueNotesEl = document.getElementById("fatigueNotesInput");
+  const painScore = painScoreEl ? numberOrNull(painScoreEl.value) : null;
+  const painNotes = painNotesEl ? painNotesEl.value : "";
+  const fatigueScore = fatigueScoreEl ? numberOrNull(fatigueScoreEl.value) : null;
+  const fatigueNotes = fatigueNotesEl ? fatigueNotesEl.value : "";
+  return {
+    date, dayTitle, overallNotes, functionality, sleep,
+    didExercise, exercise, tags, avgFunctionality,
+    mood: { score: moodScore, notes: moodNotes },
+    painScore, painNotes, fatigueScore, fatigueNotes
+  };
 }
 
 function scoreChipClass(score) {
@@ -458,7 +483,11 @@ async function refreshHistory() {
         exercise: data.exercise || null,
         tags: data.tags || [],
         overallNotes: data.overallNotes || "",
-        mood: data.mood || {}
+        mood: data.mood || {},
+        painScore: data.painScore ?? null,
+        painNotes: data.painNotes || "",
+        fatigueScore: data.fatigueScore ?? null,
+        fatigueNotes: data.fatigueNotes || ""
       });
     });
 
@@ -593,6 +622,15 @@ function fillFormFromData(d) {
     document.getElementById("moodScoreInput").value = "";
     document.getElementById("moodNotesInput").value = "";
   }
+  // Restore pain & fatigue fields
+  const painScoreEl = document.getElementById("painScoreInput");
+  if (painScoreEl) painScoreEl.value = d.painScore ?? "";
+  const painNotesEl = document.getElementById("painNotesInput");
+  if (painNotesEl) painNotesEl.value = d.painNotes || "";
+  const fatigueScoreEl = document.getElementById("fatigueScoreInput");
+  if (fatigueScoreEl) fatigueScoreEl.value = d.fatigueScore ?? "";
+  const fatigueNotesEl = document.getElementById("fatigueNotesInput");
+  if (fatigueNotesEl) fatigueNotesEl.value = d.fatigueNotes || "";
   updateSleepDuration();
   renderJournal();
   const tagsSet = new Set(d.tags || []);
