@@ -342,12 +342,12 @@ body {
   }
 
   /* Fix: prevent extra white space when user zooms out on mobile.
-     Clamp main width to the viewport and hide any overflow caused
-     by the layout switching to desktop rules at wider effective widths. */
+     Use overflow-x: clip instead of hidden so that position:fixed children
+     (toasts, floating buttons) are NOT trapped in a new stacking context. */
   main {
     max-width: 100%;
     width: 100%;
-    overflow-x: hidden;
+    overflow-x: clip;
     box-sizing: border-box;
   }
 
