@@ -73,10 +73,10 @@ async function refreshMoodSummaryTable() {
 
       rows += `
         <tr style="opacity:${rowOpacity};">
-          <td style="white-space:nowrap;font-size:0.82rem;color:var(--color-text);">${dateLbl}</td>
-          <td style="font-size:0.82rem;color:var(--color-text-muted);">${dow}</td>
+          <td style="white-space:nowrap;font-size:0.82rem;color:#1c1d22;">${dateLbl}</td>
+          <td style="font-size:0.82rem;color:#5a5f7a;">${dow}</td>
           <td>${pillHtml}</td>
-          <td style="font-size:0.78rem;color:var(--color-text-muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${notes.replace(/"/g,'&quot;')}">${notes || "&#8212;"}</td>
+          <td style="font-size:0.78rem;color:#5a5f7a;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${notes.replace(/"/g,'&quot;')}">${notes || "&#8212;"}</td>
         </tr>`;
     });
 
