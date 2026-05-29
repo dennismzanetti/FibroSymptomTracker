@@ -1,1 +1,476 @@
-placeholder_index
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Symptom Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="authOverlay" class="auth-overlay">
+    <div class="auth-box">
+      <h1 class="auth-title">Fibro Symptom Tracker</h1>
+      <p class="auth-subtitle">Sign in to access your personal health data</p>
+      <button id="googleSignInBtn" class="google-btn">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+          <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+        </svg>
+        Sign in with Google
+      </button>
+      <p id="authError" class="auth-error" style="display:none;"></p>
+    </div>
+  </div>
+
+  <div id="appShell" style="display:none;">
+    <header class="app-header">
+      <div class="header-left">
+        <span class="app-title">🌿 Fibro Tracker</span>
+      </div>
+      <div class="header-right">
+        <span id="headerUserName" class="header-user"></span>
+        <button id="signOutBtn" class="sign-out-btn">Sign Out</button>
+      </div>
+    </header>
+
+    <nav class="tab-nav" role="tablist">
+      <button class="tab-btn active" data-tab="todayTab" role="tab" aria-selected="true">Today</button>
+      <button class="tab-btn" data-tab="historyTab" role="tab" aria-selected="false">History</button>
+      <button class="tab-btn" data-tab="trendsTab" role="tab" aria-selected="false">Trends</button>
+      <button class="tab-btn" data-tab="journalTab" role="tab" aria-selected="false">Journal</button>
+      <button class="tab-btn" data-tab="moodTab" role="tab" aria-selected="false">Mood</button>
+      <button class="tab-btn" data-tab="medicationsTab" role="tab" aria-selected="false">Medications</button>
+    </nav>
+
+    <!-- TODAY TAB -->
+    <div id="todayTab" class="tab-panel active" role="tabpanel">
+      <div class="tab-content">
+        <div class="today-header">
+          <h2 id="todayDateLabel" class="today-date"></h2>
+          <div class="today-nav">
+            <button id="prevDayBtn" class="nav-btn" aria-label="Previous day">&#8592;</button>
+            <button id="todayBtn" class="nav-btn today-jump-btn">Today</button>
+            <button id="nextDayBtn" class="nav-btn" aria-label="Next day">&#8594;</button>
+          </div>
+        </div>
+
+        <section class="card" aria-label="Pain Levels">
+          <h3 class="card-title">Pain Levels</h3>
+          <div class="pain-grid">
+            <div class="pain-item">
+              <label class="pain-label" for="overallPain">Overall</label>
+              <input type="range" id="overallPain" class="pain-slider" min="0" max="10" value="0" />
+              <span class="pain-value" id="overallPainVal">0</span>
+            </div>
+            <div class="pain-item">
+              <label class="pain-label" for="headPain">Head</label>
+              <input type="range" id="headPain" class="pain-slider" min="0" max="10" value="0" />
+              <span class="pain-value" id="headPainVal">0</span>
+            </div>
+            <div class="pain-item">
+              <label class="pain-label" for="neckPain">Neck</label>
+              <input type="range" id="neckPain" class="pain-slider" min="0" max="10" value="0" />
+              <span class="pain-value" id="neckPainVal">0</span>
+            </div>
+            <div class="pain-item">
+              <label class="pain-label" for="shoulderPain">Shoulders</label>
+              <input type="range" id="shoulderPain" class="pain-slider" min="0" max="10" value="0" />
+              <span class="pain-value" id="shoulderPainVal">0</span>
+            </div>
+            <div class="pain-item">
+              <label class="pain-label" for="backPain">Back</label>
+              <input type="range" id="backPain" class="pain-slider" min="0" max="10" value="0" />
+              <span class="pain-value" id="backPainVal">0</span>
+            </div>
+            <div class="pain-item">
+              <label class="pain-label" for="hipPain">Hips</label>
+              <input type="range" id="hipPain" class="pain-slider" min="0" max="10" value="0" />
+              <span class="pain-value" id="hipPainVal">0</span>
+            </div>
+            <div class="pain-item">
+              <label class="pain-label" for="kneePain">Knees</label>
+              <input type="range" id="kneePain" class="pain-slider" min="0" max="10" value="0" />
+              <span class="pain-value" id="kneePainVal">0</span>
+            </div>
+            <div class="pain-item">
+              <label class="pain-label" for="handPain">Hands</label>
+              <input type="range" id="handPain" class="pain-slider" min="0" max="10" value="0" />
+              <span class="pain-value" id="handPainVal">0</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" aria-label="Fatigue & Sleep">
+          <h3 class="card-title">Fatigue &amp; Sleep</h3>
+          <div class="pain-grid">
+            <div class="pain-item">
+              <label class="pain-label" for="fatigue">Fatigue</label>
+              <input type="range" id="fatigue" class="pain-slider" min="0" max="10" value="0" />
+              <span class="pain-value" id="fatigueVal">0</span>
+            </div>
+            <div class="pain-item">
+              <label class="pain-label" for="sleepHours">Sleep (hrs)</label>
+              <input type="range" id="sleepHours" class="pain-slider" min="0" max="12" step="0.5" value="7" />
+              <span class="pain-value" id="sleepHoursVal">7</span>
+            </div>
+            <div class="pain-item">
+              <label class="pain-label" for="sleepQuality">Sleep Quality</label>
+              <input type="range" id="sleepQuality" class="pain-slider" min="0" max="10" value="5" />
+              <span class="pain-value" id="sleepQualityVal">5</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" aria-label="Mood">
+          <h3 class="card-title">Mood</h3>
+          <div class="pain-grid">
+            <div class="pain-item">
+              <label class="pain-label" for="mood">Mood</label>
+              <input type="range" id="mood" class="pain-slider" min="0" max="10" value="5" />
+              <span class="pain-value" id="moodVal">5</span>
+            </div>
+          </div>
+          <div class="notes-row">
+            <label class="notes-label" for="moodNotes">Mood Notes</label>
+            <textarea id="moodNotes" class="notes-input" rows="2" placeholder="How are you feeling today?"></textarea>
+          </div>
+        </section>
+
+        <section class="card" aria-label="Symptoms">
+          <h3 class="card-title">Symptoms</h3>
+          <div class="symptom-grid" id="symptomCheckboxes">
+            <label class="symptom-item"><input type="checkbox" value="brain_fog" /> Brain Fog</label>
+            <label class="symptom-item"><input type="checkbox" value="headache" /> Headache</label>
+            <label class="symptom-item"><input type="checkbox" value="nausea" /> Nausea</label>
+            <label class="symptom-item"><input type="checkbox" value="dizziness" /> Dizziness</label>
+            <label class="symptom-item"><input type="checkbox" value="ibs" /> IBS / GI</label>
+            <label class="symptom-item"><input type="checkbox" value="anxiety" /> Anxiety</label>
+            <label class="symptom-item"><input type="checkbox" value="depression" /> Depression</label>
+            <label class="symptom-item"><input type="checkbox" value="sensitivity" /> Sensitivity</label>
+            <label class="symptom-item"><input type="checkbox" value="restless_legs" /> Restless Legs</label>
+            <label class="symptom-item"><input type="checkbox" value="numbness" /> Numbness/Tingling</label>
+            <label class="symptom-item"><input type="checkbox" value="weakness" /> Weakness</label>
+            <label class="symptom-item"><input type="checkbox" value="palpitations" /> Palpitations</label>
+          </div>
+        </section>
+
+        <section class="card" aria-label="Notes">
+          <h3 class="card-title">Notes</h3>
+          <div class="notes-row">
+            <label class="notes-label" for="generalNotes">General Notes</label>
+            <textarea id="generalNotes" class="notes-input" rows="3" placeholder="Anything else to note today?"></textarea>
+          </div>
+          <div class="notes-row">
+            <label class="notes-label" for="medicationNotes">Medication Notes</label>
+            <textarea id="medicationNotes" class="notes-input" rows="2" placeholder="Medications taken, changes, reactions..."></textarea>
+          </div>
+          <div class="notes-row">
+            <label class="notes-label" for="activityNotes">Activity / Exercise</label>
+            <textarea id="activityNotes" class="notes-input" rows="2" placeholder="Activity level, exercise, steps..."></textarea>
+          </div>
+          <div class="notes-row">
+            <label class="notes-label" for="weatherNotes">Weather / Environment</label>
+            <textarea id="weatherNotes" class="notes-input" rows="2" placeholder="Weather, temperature, barometric changes..."></textarea>
+          </div>
+        </section>
+
+        <div class="save-row">
+          <button id="saveEntryBtn" class="save-btn">Save Entry</button>
+          <span id="saveStatus" class="save-status"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORY TAB -->
+    <div id="historyTab" class="tab-panel" role="tabpanel" style="display:none;">
+      <div class="tab-content">
+        <h2 class="section-title">History</h2>
+        <div class="history-controls">
+          <label for="historyStartDate">From:</label>
+          <input type="date" id="historyStartDate" />
+          <label for="historyEndDate">To:</label>
+          <input type="date" id="historyEndDate" />
+          <button id="loadHistoryBtn" class="load-btn">Load</button>
+        </div>
+        <div id="historyTableContainer"></div>
+      </div>
+    </div>
+
+    <!-- TRENDS TAB -->
+    <div id="trendsTab" class="tab-panel" role="tabpanel" style="display:none;">
+      <div class="tab-content">
+        <h2 class="section-title">Trends</h2>
+        <div class="history-controls">
+          <label for="trendsStartDate">From:</label>
+          <input type="date" id="trendsStartDate" />
+          <label for="trendsEndDate">To:</label>
+          <input type="date" id="trendsEndDate" />
+          <button id="loadTrendsBtn" class="load-btn">Load</button>
+        </div>
+        <div id="trendsContainer"></div>
+      </div>
+    </div>
+
+    <!-- JOURNAL TAB -->
+    <div id="journalTab" class="tab-panel" role="tabpanel" style="display:none;">
+      <div class="tab-content">
+        <h2 class="section-title">Journal</h2>
+        <div class="journal-layout">
+          <div class="journal-form-col">
+            <h3 id="journalFormTitle" class="subsection-title">New Entry</h3>
+            <div class="form-group">
+              <label class="form-label" for="journalDateInput">Date</label>
+              <input type="date" id="journalDateInput" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="journalTitleInput">Title</label>
+              <input type="text" id="journalTitleInput" class="form-input" placeholder="Entry title (optional)" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="journalTagsInput">Tags</label>
+              <input type="text" id="journalTagsInput" class="form-input" placeholder="e.g. flare, good day, treatment" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="journalBodyInput">Journal Entry</label>
+              <textarea id="journalBodyInput" class="notes-input journal-body-input" rows="10" placeholder="Write your journal entry here..."></textarea>
+            </div>
+            <input type="hidden" id="journalEditingId" />
+            <div class="form-actions">
+              <button id="saveJournalBtn" class="save-btn">Save Entry</button>
+              <button id="cancelJournalEditBtn" class="cancel-btn" style="display:none;">Cancel</button>
+            </div>
+          </div>
+          <div class="journal-list-col">
+            <div class="journal-list-header">
+              <h3 class="subsection-title">Past Entries</h3>
+              <div class="journal-filter-row">
+                <input type="text" id="journalSearchInput" class="form-input journal-search" placeholder="Search entries..." />
+                <input type="text" id="journalTagFilterInput" class="form-input journal-search" placeholder="Filter by tag..." />
+              </div>
+            </div>
+            <div id="journalList" class="journal-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOOD TAB -->
+    <div id="moodTab" class="tab-panel" role="tabpanel" style="display:none;">
+      <div class="tab-content">
+        <h2 class="section-title">Mood &amp; Mental Health</h2>
+        <div class="mood-layout">
+          <div class="mood-sidebar">
+            <h3 class="subsection-title">14-Day Mood</h3>
+            <table class="mood-summary-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Day</th>
+                  <th>Score</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody id="moodSummaryBody">
+                <tr><td colspan="4" class="mood-table-empty">Loading&hellip;</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mood-main">
+            <section class="card">
+              <h3 id="atrFormTitle" class="card-title">New Automatic Thought Record</h3>
+              <div class="form-group">
+                <label class="form-label" for="atrDateInput">Date</label>
+                <input type="date" id="atrDateInput" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="atrSituationInput">Situation</label>
+                <textarea id="atrSituationInput" class="notes-input" rows="2" placeholder="Describe the situation that triggered the thought..."></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="atrEmotionsInput">Emotions</label>
+                <input type="text" id="atrEmotionsInput" class="form-input" placeholder="e.g. anxious, sad, frustrated" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="atrIntensityRange">Intensity: <span id="atrIntensityDisplay">50</span>/100</label>
+                <input type="range" id="atrIntensityRange" class="pain-slider" min="0" max="100" value="50" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="atrAutoThoughtInput">Automatic Thought</label>
+                <textarea id="atrAutoThoughtInput" class="notes-input" rows="2" placeholder="What thought went through your mind?"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="atrAltThoughtInput">Alternative / Balanced Thought</label>
+                <textarea id="atrAltThoughtInput" class="notes-input" rows="2" placeholder="What is a more balanced way to see this?"></textarea>
+              </div>
+              <input type="hidden" id="atrEditingId" />
+              <div class="form-actions">
+                <button id="saveAtrBtn" class="save-btn">Save Record</button>
+                <button id="cancelAtrEditBtn" class="cancel-btn" style="display:none;">Cancel</button>
+              </div>
+            </section>
+            <section class="card">
+              <h3 class="card-title">Thought Records</h3>
+              <div id="atrList"></div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEDICATIONS TAB -->
+    <div id="medicationsTab" class="tab-panel" role="tabpanel" style="display:none;">
+      <div class="tab-content">
+        <h2 class="section-title">Medications &amp; Supplements</h2>
+        <div class="med-sub-tabs">
+          <button class="med-sub-tab-btn active" data-med-view="medListView">Medications</button>
+          <button class="med-sub-tab-btn" data-med-view="suppListView">Supplements</button>
+          <button class="med-sub-tab-btn" data-med-view="medHistoryView">Change History</button>
+          <button class="med-sub-tab-btn" data-med-view="medPrintView">Print View</button>
+        </div>
+
+        <!-- Medications View -->
+        <div id="medListView" class="med-view">
+          <section class="card">
+            <h3 id="medFormTitle" class="card-title">Add Medication</h3>
+            <div class="form-group">
+              <label class="form-label" for="medNameInput">Medication Name</label>
+              <input type="text" id="medNameInput" class="form-input" placeholder="e.g. Lyrica, Cymbalta" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="medDoseInput">Dose</label>
+                <input type="text" id="medDoseInput" class="form-input" placeholder="e.g. 75mg" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="medFrequencyInput">Frequency</label>
+                <select id="medFrequencyInput" class="form-input">
+                  <option value="">Select...</option>
+                  <option value="once_daily">Once daily</option>
+                  <option value="twice_daily">Twice daily</option>
+                  <option value="three_daily">3x daily</option>
+                  <option value="four_daily">4x daily</option>
+                  <option value="every_other">Every other day</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="as_needed">As needed</option>
+                  <option value="bedtime">At bedtime</option>
+                  <option value="morning">Morning</option>
+                  <option value="with_food">With food</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="medDoctorInput">Prescribing Doctor</label>
+              <input type="text" id="medDoctorInput" class="form-input" placeholder="Doctor's name" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="medNotesInput">Notes</label>
+              <textarea id="medNotesInput" class="notes-input" rows="2" placeholder="Side effects, instructions, etc."></textarea>
+            </div>
+            <input type="hidden" id="medEditingId" />
+            <div class="form-actions">
+              <button id="saveMedBtn" class="save-btn">Add Medication</button>
+              <button id="cancelMedEditBtn" class="cancel-btn" style="display:none;">Cancel</button>
+            </div>
+          </section>
+          <section class="card">
+            <h3 class="card-title">Current Medications</h3>
+            <ul id="medList" class="med-list"></ul>
+          </section>
+        </div>
+
+        <!-- Supplements View -->
+        <div id="suppListView" class="med-view" style="display:none;">
+          <section class="card">
+            <h3 id="suppFormTitle" class="card-title">Add Supplement</h3>
+            <div class="form-group">
+              <label class="form-label" for="suppNameInput">Supplement Name</label>
+              <input type="text" id="suppNameInput" class="form-input" placeholder="e.g. Magnesium, Vitamin D3" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="suppDoseInput">Dose</label>
+                <input type="text" id="suppDoseInput" class="form-input" placeholder="e.g. 400mg" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="suppFrequencyInput">Frequency</label>
+                <select id="suppFrequencyInput" class="form-input">
+                  <option value="">Select...</option>
+                  <option value="once_daily">Once daily</option>
+                  <option value="twice_daily">Twice daily</option>
+                  <option value="three_daily">3x daily</option>
+                  <option value="every_other">Every other day</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="as_needed">As needed</option>
+                  <option value="bedtime">At bedtime</option>
+                  <option value="morning">Morning</option>
+                  <option value="with_food">With food</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="suppBrandInput">Brand</label>
+              <input type="text" id="suppBrandInput" class="form-input" placeholder="Brand name (optional)" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="suppNotesInput">Notes</label>
+              <textarea id="suppNotesInput" class="notes-input" rows="2" placeholder="Notes, benefits observed, etc."></textarea>
+            </div>
+            <input type="hidden" id="suppEditingId" />
+            <div class="form-actions">
+              <button id="saveSuppBtn" class="save-btn">Add Supplement</button>
+              <button id="cancelSuppEditBtn" class="cancel-btn" style="display:none;">Cancel</button>
+            </div>
+          </section>
+          <section class="card">
+            <h3 class="card-title">Current Supplements</h3>
+            <ul id="suppList" class="med-list"></ul>
+          </section>
+        </div>
+
+        <!-- Change History View -->
+        <div id="medHistoryView" class="med-view" style="display:none;">
+          <section class="card">
+            <h3 class="card-title">Medication Change History</h3>
+            <div id="medHistoryList"></div>
+          </section>
+        </div>
+
+        <!-- Print View -->
+        <div id="medPrintView" class="med-view" style="display:none;">
+          <section class="card">
+            <div class="print-header-row">
+              <h3 class="card-title">Medication &amp; Supplement Summary</h3>
+              <button onclick="window.print()" class="load-btn">🖨 Print</button>
+            </div>
+            <h4 class="print-sub-heading">Medications</h4>
+            <table class="med-print-table">
+              <thead><tr><th>Name</th><th>Dose</th><th>Frequency</th><th>Doctor</th><th>Notes</th></tr></thead>
+              <tbody id="medPrintTableBody"></tbody>
+            </table>
+            <h4 class="print-sub-heading" style="margin-top:1.5rem;">Supplements</h4>
+            <table class="med-print-table">
+              <thead><tr><th>Name</th><th>Dose</th><th>Frequency</th><th>Brand</th><th>Notes</th></tr></thead>
+              <tbody id="suppPrintTableBody"></tbody>
+            </table>
+          </section>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end #appShell -->
+
+  <script src="firebase-init.js"></script>
+  <script src="auth.js"></script>
+  <script src="date.js"></script>
+  <script src="cloud.js"></script>
+  <script src="entry.js"></script>
+  <script src="history.js"></script>
+  <script src="trends.js"></script>
+  <script src="journal.js"></script>
+  <script src="mood.js"></script>
+  <script src="medications.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
