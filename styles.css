@@ -775,6 +775,7 @@ input[type="range"] {
   margin: 0;
 }
 
+/* Legacy card selectors kept for compatibility */
 .history-item {
   padding: 1rem;
   background: #fff;
@@ -829,6 +830,214 @@ input[type="range"] {
   font-weight: 600;
   background: #e8eaf6;
   color: #3f51b5;
+}
+
+/* ----------------------------------------------------------------
+   HISTORY TABLE  (rendered by history.js loadAndRenderHistory)
+   ---------------------------------------------------------------- */
+
+/* Outer wrapper — enables horizontal scroll on small screens */
+.history-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  border: 1px solid #e7eaf3;
+  background: #fff;
+  /* Subtle fade hint on right edge to signal scrollability */
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 2rem), transparent 100%);
+  mask-image: linear-gradient(to right, black calc(100% - 2rem), transparent 100%);
+}
+
+/* Remove the scroll-fade on desktop where overflow is unlikely */
+@media (min-width: 900px) {
+  .history-scroll {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  min-width: 420px; /* forces scroll on narrow viewports */
+}
+
+/* Header row */
+.history-table thead tr {
+  background: #3f51b5;
+  color: #fff;
+}
+
+.history-table thead th {
+  padding: 0.65rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.15);
+}
+
+.history-table thead th:first-child {
+  text-align: left;
+  border-right: 1px solid rgba(255,255,255,0.25);
+  min-width: 130px;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: #3f51b5;
+}
+
+.history-table thead th:last-child {
+  border-right: none;
+}
+
+/* Body rows */
+.history-table tbody tr {
+  border-bottom: 1px solid #f0f2fa;
+  transition: background 0.12s ease;
+}
+
+.history-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.history-table tbody tr:nth-child(even) {
+  background: #f7f8fc;
+}
+
+.history-table tbody tr:hover {
+  background: #eef0fb;
+}
+
+/* Body cells */
+.history-table tbody td {
+  padding: 0.55rem 0.85rem;
+  color: #3a3f5c;
+  text-align: center;
+  border-right: 1px solid #f0f2fa;
+  vertical-align: top;
+  line-height: 1.45;
+}
+
+.history-table tbody td:last-child {
+  border-right: none;
+}
+
+/* Sticky left "Field" column */
+.history-field-label {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: #f7f8fc;
+  text-align: left !important;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #2f3c8f;
+  white-space: nowrap;
+  border-right: 2px solid #e7eaf3 !important;
+  min-width: 130px;
+}
+
+/* Make sure the even-row tint doesn't bleed into the sticky col */
+.history-table tbody tr:nth-child(even) .history-field-label {
+  background: #eff1f9;
+}
+
+.history-table tbody tr:hover .history-field-label {
+  background: #e5e8f7;
+}
+
+/* Numeric data cells — tabular figures */
+.history-table tbody td:not(.history-field-label):not(.symptoms-cell):not(.notes-cell) {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: #1c1d22;
+  font-size: 0.9rem;
+}
+
+/* Em-dash placeholders */
+.history-table tbody td:not(.history-field-label) {
+  color: #3a3f5c;
+}
+
+/* Symptom tag chips */
+.symptoms-cell {
+  text-align: left !important;
+  vertical-align: top;
+}
+
+.sym-tag {
+  display: inline-block;
+  padding: 0.18rem 0.55rem;
+  margin: 0.15rem 0.2rem 0.15rem 0;
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 700;
+  background: #e8eaf6;
+  color: #3f51b5;
+  border: 1px solid #c5cae9;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+/* Notes cells — readable wrap, constrained width */
+.notes-cell {
+  text-align: left !important;
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: #5a5f7a;
+  white-space: pre-wrap;
+  max-width: 220px;
+  min-width: 100px;
+  line-height: 1.5;
+  vertical-align: top;
+}
+
+/* Empty / error / loading states */
+.history-empty,
+.history-error,
+.history-loading {
+  display: block;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #9ba3bf;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e7eaf3;
+}
+
+.history-error {
+  color: #ad1457;
+  background: #fdf4f8;
+  border-color: #f5c6e0;
+}
+
+/* ================================================================
+   HISTORY CONTROLS
+   ================================================================ */
+
+.history-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.history-controls label {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.history-controls input[type="date"] {
+  margin-top: 0.2rem;
 }
 
 /* Modal overlay */
@@ -2204,27 +2413,6 @@ input[type="range"] {
 .time-block:last-child {
   border-bottom: none;
   padding-bottom: 0;
-}
-
-/* ================================================================
-   HISTORY CONTROLS
-   ================================================================ */
-
-.history-controls {
-  display: flex;
-  align-items: flex-end;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.25rem;
-}
-
-.history-controls label {
-  margin: 0;
-  font-size: 0.85rem;
-}
-
-.history-controls input[type="date"] {
-  margin-top: 0.2rem;
 }
 
 /* ================================================================
