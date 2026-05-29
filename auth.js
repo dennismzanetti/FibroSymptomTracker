@@ -1,14 +1,11 @@
-import { initFirebase } from './firebase-init.js';
+// auth.js — plain script, depends on firebase-init.js being loaded first
+function setupAuth(onSignIn, onSignOut) {
+  var overlay    = document.getElementById('authOverlay');
+  var signInBtn  = document.getElementById('googleSignInBtn');
+  var signOutBtn = document.getElementById('signOutBtn');
+  var authError  = document.getElementById('authError');
 
-const { auth, googleProvider } = initFirebase();
-
-export function setupAuth(onSignIn, onSignOut) {
-  const overlay     = document.getElementById('authOverlay');
-  const signInBtn   = document.getElementById('googleSignInBtn');
-  const signOutBtn  = document.getElementById('signOutBtn');
-  const authError   = document.getElementById('authError');
-
-  auth.onAuthStateChanged(user => {
+  window._auth.onAuthStateChanged(function (user) {
     if (user) {
       overlay.style.display = 'none';
       signOutBtn.style.display = '';
@@ -20,14 +17,15 @@ export function setupAuth(onSignIn, onSignOut) {
     }
   });
 
-  signInBtn.addEventListener('click', async () => {
+  signInBtn.addEventListener('click', function () {
     authError.textContent = '';
-    try {
-      await auth.signInWithPopup(googleProvider);
-    } catch (err) {
-      authError.textContent = 'Sign-in failed: ' + err.message;
-    }
+    window._auth.signInWithPopup(window._googleProvider)
+      .catch(function (err) {
+        authError.textContent = 'Sign-in failed: ' + err.message;
+      });
   });
 
-  signOutBtn.addEventListener('click', () => auth.signOut());
+  signOutBtn.addEventListener('click', function () {
+    window._auth.signOut();
+  });
 }

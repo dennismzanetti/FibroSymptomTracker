@@ -1,9 +1,9 @@
-let _app, _db, _auth, _googleProvider;
+// firebase-init.js — plain script, uses firebase compat global
+(function () {
+  if (window._firebaseInitialized) return;
+  window._firebaseInitialized = true;
 
-export function initFirebase() {
-  if (_app) return { app: _app, db: _db, auth: _auth, googleProvider: _googleProvider };
-
-  const config = {
+  var config = {
     apiKey: "AIzaSyD7bnVAfclKhMjfqX3VQ1FP-EKyQIMV5Kc",
     authDomain: "fibrosymptomtracker.firebaseapp.com",
     projectId: "fibrosymptomtracker",
@@ -12,10 +12,8 @@ export function initFirebase() {
     appId: "1:399399538093:web:8a0d4d90e0f81a5e8bb22a"
   };
 
-  _app           = firebase.initializeApp(config);
-  _db            = firebase.firestore();
-  _auth          = firebase.auth();
-  _googleProvider = new firebase.auth.GoogleAuthProvider();
-
-  return { app: _app, db: _db, auth: _auth, googleProvider: _googleProvider };
-}
+  firebase.initializeApp(config);
+  window._db             = firebase.firestore();
+  window._auth           = firebase.auth();
+  window._googleProvider = new firebase.auth.GoogleAuthProvider();
+}());
