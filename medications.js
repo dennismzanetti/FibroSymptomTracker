@@ -14,10 +14,11 @@ function setupMedicationsTab() {
   document.getElementById("saveSuppBtn")?.addEventListener("click", saveSupplement);
   document.getElementById("cancelSuppEditBtn")?.addEventListener("click", resetSuppForm);
 
-  document.querySelectorAll(".med-sub-tab-btn").forEach(btn => {
+  // Use ct-sub-tab-btn class (same style as Care Team sub-tabs) scoped to medications-tab
+  document.querySelectorAll("#medications-tab .ct-sub-tab-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       const targetViewId = btn.getAttribute("data-med-view");
-      document.querySelectorAll(".med-sub-tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll("#medications-tab .ct-sub-tab-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       document.querySelectorAll(".med-view").forEach(view => {
         view.style.display = view.id === targetViewId ? "" : "none";
