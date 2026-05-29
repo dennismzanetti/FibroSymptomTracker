@@ -13,21 +13,15 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 // ---- Auth ----
+// Auth is fully handled by auth.js (mobile redirect + desktop popup).
+// The sign-in button, onAuthStateChanged, and getRedirectResult are all
+// managed there. Only the post-auth app initialisation lives here.
 const auth = firebase.auth();
-const provider = new firebase.auth.GoogleAuthProvider();
 
-const authOverlay = document.getElementById("authOverlay");
-const googleSignInBtn = document.getElementById("googleSignInBtn");
 const signOutBtn = document.getElementById("signOutBtn");
 const appMain = document.querySelector("main");
 
 if (appMain) appMain.style.display = "none";
-
-// Detect mobile browsers (iOS Safari, Android Chrome/WebView, etc.)
-// These environments block signInWithPopup, so we use signInWithRedirect instead.
-function isMobileBrowser() {
-  return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-}
 
 // ---- window.load / auth race guard ----
 // On desktop, onAuthStateChanged can resolve synchronously (popup auth is
@@ -49,7 +43,7 @@ let _pendingSetup = false;
 
 function runPostLoadSetup() {
   if (!_windowLoaded || !_pendingSetup) return;
-  _pendingSetup = false;          // consume the pending request
+  _pendingSetup = false;
   loadTodayDate();
   loadDayFromCloud(currentDateStr);
 }
@@ -60,6 +54,7 @@ let _appInitialised = false;
 
 auth.onAuthStateChanged((user) => {
   if (user) {
+    const authOverlay = document.getElementById("authOverlay");
     if (authOverlay) authOverlay.style.display = "none";
     if (appMain) appMain.style.display = "";
     if (signOutBtn) signOutBtn.style.display = "inline-block";
@@ -67,14 +62,11 @@ auth.onAuthStateChanged((user) => {
 
     if (!_appInitialised) {
       _appInitialised = true;
-      // Signal that we want post-load setup to run.
-      // If window.load has already fired this is a no-op guard and
-      // runPostLoadSetup() executes immediately; if not, the load
-      // handler will pick it up.
       _pendingSetup = true;
       runPostLoadSetup();
     }
   } else {
+    const authOverlay = document.getElementById("authOverlay");
     if (authOverlay) authOverlay.style.display = "flex";
     if (appMain) appMain.style.display = "none";
     if (signOutBtn) signOutBtn.style.display = "none";
@@ -83,40 +75,9 @@ auth.onAuthStateChanged((user) => {
   }
 });
 
-// Handle the result of a redirect sign-in (mobile flow).
-// Must be called on every page load so the auth token is consumed after redirect.
-auth.getRedirectResult().then((result) => {
-  // result.user will be null if there was no pending redirect — that's fine.
-  if (result && result.user) {
-    console.log("Redirect sign-in complete:", result.user.displayName);
-  }
-}).catch((err) => {
-  console.error("Redirect sign-in error:", err);
-  const authError = document.getElementById("authError");
-  if (authError) authError.textContent = "Sign-in failed. Please try again.";
-});
-
-googleSignInBtn?.addEventListener("click", () => {
-  const authError = document.getElementById("authError");
-  if (authError) authError.textContent = "";
-
-  if (isMobileBrowser()) {
-    auth.signInWithRedirect(provider).catch((err) => {
-      console.error("Redirect sign-in error:", err);
-      if (authError) authError.textContent = "Sign-in failed. Please try again.";
-    });
-  } else {
-    auth.signInWithPopup(provider).catch((err) => {
-      console.error("Sign-in error:", err);
-      if (authError) authError.textContent = "Sign-in failed. Please try again.";
-    });
-  }
-});
-
 signOutBtn?.addEventListener("click", () => auth.signOut());
 
 // ---- Toast notification ----
-// Uses .toast-success / .toast-error CSS classes defined in styles.css.
 let _toastTimer = null;
 function showToast(message, isError = false) {
   let toast = document.getElementById("appToast");
@@ -127,14 +88,12 @@ function showToast(message, isError = false) {
     document.body.appendChild(toast);
   }
 
-  // Reset: remove both state classes and any inline fade
   toast.classList.remove("toast-success", "toast-error", "toast--hide");
   toast.style.opacity = "";
   toast.style.transition = "";
-  // Remove and re-add to restart the CSS keyframe animation
   toast.style.animation = "none";
   // eslint-disable-next-line no-unused-expressions
-  toast.offsetHeight; // force reflow
+  toast.offsetHeight;
   toast.style.animation = "";
 
   toast.textContent = message;
@@ -142,7 +101,6 @@ function showToast(message, isError = false) {
   toast.style.display = "block";
 
   if (_toastTimer) clearTimeout(_toastTimer);
-  // After 3 s, fade out over 0.4 s, then hide
   _toastTimer = setTimeout(() => {
     toast.style.transition = "opacity 0.4s ease";
     toast.style.opacity = "0";
@@ -169,7 +127,7 @@ function saveAllDays(days) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(days));
   } catch {
-    // localStorage unavailable (sandboxed iframe, private mode, etc.) — silently ignore.
+    // localStorage unavailable — silently ignore.
   }
 }
 function numberOrNull(val) {
@@ -212,7 +170,6 @@ function updateDateDisplay() {
   if (dateEl) dateEl.textContent = date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
 }
 
-// Keep legacy reference used in setupTabs → syncDateInput already calls updateDateDisplay
 function updateDayOfWeek() { updateDateDisplay(); }
 
 // ---- Date helpers for journal headers ----
@@ -260,7 +217,6 @@ window.addEventListener("load", () => {
   refreshHistory();
   refreshTrends();
 
-  // All DOM setup is done — mark load complete and run any pending auth setup.
   _windowLoaded = true;
   runPostLoadSetup();
 });
