@@ -1,5 +1,16 @@
 // ---- Medications & Supplements ----
 
+const FREQ_LABELS = {
+  "once-daily":  "Once daily",
+  "twice-daily": "Twice daily",
+  "three-daily": "Three times daily",
+  "four-daily":  "Four times daily",
+  "as-needed":   "As needed",
+  "weekly":      "Weekly",
+  "bi-weekly":   "Bi-weekly",
+  "monthly":     "Monthly"
+};
+
 function escHtml(str) {
   return String(str)
     .replace(/&/g, "&amp;")
