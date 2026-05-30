@@ -1,0 +1,101 @@
+/* JOURNAL STYLES — FibroSymptomTracker */
+
+.journal-form { margin-bottom: 1.5rem; }
+
+.journal-list { list-style: none; padding: 0; margin: 0; }
+
+.journal-entry {
+  padding: 1rem;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #e7eaf3;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.journal-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.journal-entry-meta { font-size: 0.8rem; color: #9ba3bf; }
+.journal-entry-title { font-weight: 700; font-size: 0.97rem; color: #1c1d22; margin-bottom: 0.35rem; }
+.journal-entry-body { font-size: 0.88rem; color: #3a3f5c; white-space: pre-wrap; line-height: 1.55; }
+
+.journal-entry-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; }
+.journal-tag { padding: 0.15rem 0.5rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; background: #e8eaf6; color: #3f51b5; }
+
+.journal-entry-actions { display: flex; gap: 0.35rem; margin-top: 0.6rem; }
+.journal-edit-btn, .journal-delete-btn { padding: 0.2rem 0.55rem; font-size: 0.75rem; font-weight: 600; border: none; border-radius: 5px; cursor: pointer; transition: background 0.15s; }
+.journal-edit-btn   { background: #e8eaf6; color: #3f51b5; }
+.journal-delete-btn { background: #fce8f3; color: #c0105c; }
+.journal-edit-btn:hover   { background: #c5cae9; }
+.journal-delete-btn:hover { background: #f5c6e0; }
+
+/* JV2 Card System */
+.journal-heatmap-wrap { background: #fff; border: 1px solid #e7eaf3; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow-x: auto; }
+.journal-output { margin-top: 0; }
+
+.jv2-filter-bar { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; }
+.jv2-filter-label { font-size: 0.85rem; font-weight: 600; color: #5a5f7a; margin: 0; }
+.jv2-filter-select { padding: 0.3rem 0.7rem; border: 1px solid #ced3ea; border-radius: 8px; font-size: 0.85rem; font-weight: 600; background: #fff; color: #1c1d22; cursor: pointer; }
+.jv2-loading { text-align: center; color: #9ba3bf; font-size: 0.9rem; padding: 2rem 0; }
+
+.jv2-card { display: flex; background: #fff; border: 1px solid #e7eaf3; border-radius: 12px; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden; }
+.jv2-card-accent { width: 5px; flex-shrink: 0; border-radius: 12px 0 0 12px; }
+.jv2-card-inner { flex: 1; min-width: 0; padding: 1rem 1.1rem; }
+
+.jv2-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+.jv2-date-block { display: flex; flex-direction: column; gap: 0.1rem; }
+.jv2-dow { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #9ba3bf; }
+.jv2-date { font-size: 1rem; font-weight: 700; color: #2b2f42; }
+.jv2-title { font-size: 0.82rem; color: #5a5f7a; font-style: italic; }
+
+.jv2-header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem; }
+.jv2-stat-row { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: flex-end; }
+.jv2-stat-chip { display: inline-flex; align-items: center; gap: 0.3rem; background: #f3f4f8; border: 1px solid #e7eaf3; border-radius: 8px; padding: 0.25rem 0.55rem; }
+.jv2-stat-icon { font-size: 0.9rem; line-height: 1; }
+.jv2-stat-body { display: flex; flex-direction: column; gap: 0; }
+.jv2-stat-label { font-size: 0.65rem; font-weight: 600; color: #9ba3bf; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.2; }
+.jv2-stat-value { font-size: 0.82rem; font-weight: 700; color: #2b2f42; line-height: 1.2; }
+
+.jv2-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.jv2-tag { padding: 0.15rem 0.5rem; border-radius: 999px; font-size: 0.72rem; font-weight: 600; background: #e8eaf6; color: #3f51b5; }
+
+.jv2-score-pill { display: inline-flex; align-items: baseline; gap: 0.1rem; padding: 0.1rem 0.45rem; border-radius: 999px; font-size: 0.82rem; font-weight: 700; border: 1px solid transparent; line-height: 1.4; }
+.jv2-score-denom { font-size: 0.65rem; font-weight: 600; opacity: 0.75; }
+.jv2-dash { color: #c4c8dc; font-size: 0.9rem; }
+
+.jv2-sections { display: flex; flex-direction: column; gap: 0.35rem; }
+.jv2-section { border: 1px solid #e7eaf3; border-radius: 8px; overflow: hidden; }
+.jv2-section-header { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0.55rem 0.85rem; background: #f7f8fc; border: none; cursor: pointer; text-align: left; transition: background 0.15s; gap: 0.5rem; }
+.jv2-section-header:hover { background: #eef0f8; }
+.jv2-section-title { font-size: 0.82rem; font-weight: 700; color: #2f3c8f; }
+.jv2-section-chevron { flex-shrink: 0; color: #9fa8da; transition: transform 0.2s ease; }
+.jv2-section-body { padding: 0.75rem 0.85rem; background: #fff; border-top: 1px solid #e7eaf3; }
+
+.jv2-func-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.5rem; }
+.jv2-func-card { border: 1px solid #e7eaf3; border-radius: 8px; padding: 0.6rem 0.75rem; background: #fafbff; }
+.jv2-func-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.4rem; margin-bottom: 0.35rem; }
+.jv2-func-card-label { display: flex; flex-direction: column; gap: 0.05rem; }
+.jv2-func-name { font-size: 0.82rem; font-weight: 700; color: #2b2f42; }
+.jv2-func-time { font-size: 0.7rem; color: #9ba3bf; }
+.jv2-func-detail { font-size: 0.78rem; color: #5a5f7a; line-height: 1.4; margin-top: 0.2rem; }
+
+.jv2-sleep-grid { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin-bottom: 0.5rem; }
+.jv2-sleep-stat { display: flex; flex-direction: column; gap: 0.05rem; }
+.jv2-detail-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #9ba3bf; display: block; }
+
+.jv2-notes-text { font-size: 0.85rem; color: #3a3f5c; line-height: 1.55; white-space: pre-wrap; margin: 0; }
+.jv2-empty { font-size: 0.82rem; color: #b0b8cc; font-style: italic; margin: 0; }
+
+@media (max-width: 500px) {
+  .jv2-func-grid { grid-template-columns: 1fr; }
+  .jv2-card-header { flex-direction: column; align-items: flex-start; }
+  .jv2-header-right { align-items: flex-start; }
+  .jv2-stat-row { justify-content: flex-start; }
+}
