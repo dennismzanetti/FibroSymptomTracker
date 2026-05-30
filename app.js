@@ -63,7 +63,16 @@ if (signOutBtnMobile) signOutBtnMobile.addEventListener('click', () => auth.sign
 // ---- Init (called after sign-in) ----
 function init() {
   const dateInput = document.getElementById("dateInput");
-  if (dateInput) dateInput.value = currentDateStr;
+  if (dateInput) {
+    dateInput.value = currentDateStr;
+    dateInput.addEventListener("change", () => {
+      const v = dateInput.value;
+      if (!v) return;
+      currentDateStr = v;
+      updateDateDisplay(v);
+      loadEntry(v);
+    });
+  }
   updateDateDisplay(currentDateStr);
   loadEntry(currentDateStr);
   setupTabs();
@@ -72,17 +81,6 @@ function init() {
   setupNumberSteppers();
   setupAtrForm();
 
-  const dateInput2 = document.getElementById("dateInput");
-  if (dateInput2) {
-    dateInput2.addEventListener("change", () => {
-      const v = dateInput2.value;
-      if (!v) return;
-      currentDateStr = v;
-      updateDateDisplay(v);
-      loadEntry(v);
-    });
-  }
-
   const prevBtn = document.getElementById("prevDayBtn");
   const nextBtn = document.getElementById("nextDayBtn");
   if (prevBtn) prevBtn.addEventListener("click", () => shiftDay(-1));
@@ -90,11 +88,6 @@ function init() {
 
   const saveDayFloat = document.getElementById("saveDayFloat");
   if (saveDayFloat) saveDayFloat.addEventListener("click", saveDay);
-
-  const signOutBtn2 = document.getElementById('signOutBtn');
-  const signOutBtnMobile2 = document.getElementById('signOutBtnMobile');
-  if (signOutBtn2) signOutBtn2.style.display = '';
-  if (signOutBtnMobile2) signOutBtnMobile2.style.display = '';
 
   loadBuildInfo();
   initMoodTab();
