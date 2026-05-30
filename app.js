@@ -41,6 +41,12 @@ auth.onAuthStateChanged(user => {
   } else {
     currentUser = null;
     document.getElementById('authOverlay').style.display = 'flex';
+    // Reset sign-in button in case it was in loading state
+    const signInBtn = document.getElementById('googleSignInBtn');
+    if (signInBtn) {
+      signInBtn.disabled = false;
+      signInBtn.textContent = 'Sign in with Google';
+    }
     const signOutBtn = document.getElementById('signOutBtn');
     const signOutBtnMobile = document.getElementById('signOutBtnMobile');
     if (signOutBtn) signOutBtn.style.display = 'none';
@@ -48,28 +54,45 @@ auth.onAuthStateChanged(user => {
   }
 });
 
+// Sign-in: only reset button label on failure.
+// On success, onAuthStateChanged hides the overlay — no .finally() needed.
 document.getElementById('googleSignInBtn').addEventListener('click', () => {
   const btn = document.getElementById('googleSignInBtn');
   const errEl = document.getElementById('authError');
+  errEl.textContent = '';
   btn.disabled = true;
   btn.textContent = 'Signing in\u2026';
   const provider = new firebase.auth.GoogleAuthProvider();
   auth.signInWithPopup(provider)
     .catch(err => {
+      // Silently ignore user-initiated popup dismissals
       if (err.code !== 'auth/cancelled-popup-request' && err.code !== 'auth/popup-closed-by-user') {
         errEl.textContent = err.message;
       }
-    })
-    .finally(() => {
+      // Only reset the button on failure; success is handled by onAuthStateChanged
       btn.disabled = false;
       btn.textContent = 'Sign in with Google';
     });
 });
 
+// Sign-out: show loading state, handle errors, let onAuthStateChanged reset UI on success.
+function handleSignOut(btn) {
+  const origText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Signing out\u2026';
+  auth.signOut()
+    .catch(err => {
+      console.error('Sign-out error:', err);
+      btn.disabled = false;
+      btn.textContent = origText;
+    });
+  // On success, onAuthStateChanged fires and hides the sign-out buttons
+}
+
 const signOutBtn = document.getElementById('signOutBtn');
 const signOutBtnMobile = document.getElementById('signOutBtnMobile');
-if (signOutBtn) signOutBtn.addEventListener('click', () => auth.signOut());
-if (signOutBtnMobile) signOutBtnMobile.addEventListener('click', () => auth.signOut());
+if (signOutBtn) signOutBtn.addEventListener('click', () => handleSignOut(signOutBtn));
+if (signOutBtnMobile) signOutBtnMobile.addEventListener('click', () => handleSignOut(signOutBtnMobile));
 
 // ---- Init (called after sign-in) ----
 function init() {
