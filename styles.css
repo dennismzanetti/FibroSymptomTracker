@@ -880,3 +880,57 @@ button.danger:hover { background: #f9c4d8; }
   .card { box-shadow: none; border: 1px solid #ccc; }
   #buildMsg { display: none; }
 }
+
+/* ================================================================
+   BUILD FOOTER
+   ================================================================ */
+
+.build-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1rem calc(0.6rem + env(safe-area-inset-bottom, 0px));
+  background: #dde1ea;
+  border-top: 1px solid #c2c8d8;
+  color: #1f5fae;
+  font-size: 0.78rem;
+  font-family: var(--font);
+  line-height: 1.35;
+}
+
+.build-footer-label {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #1f5fae;
+}
+
+.build-footer-sep {
+  color: #7a93c0;
+}
+
+.build-footer-msg,
+.build-footer-date {
+  color: #1f5fae;
+}
+
+.build-footer-sha {
+  color: #1f5fae;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.build-footer-sha:hover,
+.build-footer-sha:focus-visible {
+  color: #154985;
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .build-footer {
+    font-size: 0.72rem;
+    padding-inline: 0.75rem;
+  }
+}
