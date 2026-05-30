@@ -1,0 +1,64 @@
+/* CARETEAM STYLES — FibroSymptomTracker */
+
+/* Provider list */
+.ct-provider-list { list-style: none; padding: 0; margin: 0; }
+.ct-provider-item { background: #fff; border: 1px solid #e7eaf3; border-radius: 10px; padding: 0.9rem 1rem; margin-bottom: 0.65rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: box-shadow 0.15s; }
+.ct-provider-item:hover { box-shadow: 0 4px 14px rgba(63,81,181,0.1); }
+.ct-provider-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.3rem; flex-wrap: wrap; }
+.ct-provider-identity { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; min-width: 0; }
+.ct-provider-name { font-size: 0.97rem; font-weight: 700; color: #1c1d22; }
+.ct-provider-specialty { font-size: 0.8rem; color: #5a5f7a; }
+.ct-provider-org { font-size: 0.82rem; color: #5a5f7a; margin-bottom: 0.35rem; }
+.ct-provider-meta { display: flex; flex-wrap: wrap; gap: 0.5rem 0.9rem; font-size: 0.82rem; margin-bottom: 0.35rem; }
+.ct-meta-link { color: #3f51b5; text-decoration: none; font-weight: 500; transition: color 0.15s; }
+.ct-meta-link:hover { color: #303f9f; text-decoration: underline; }
+.ct-meta-text { color: #5a5f7a; }
+.ct-provider-next-appt { font-size: 0.82rem; font-weight: 600; color: #2e7d32; margin-bottom: 0.3rem; }
+.ct-provider-notes { font-size: 0.82rem; color: #5a5f7a; font-style: italic; margin-bottom: 0.35rem; line-height: 1.45; }
+
+/* Badges */
+.ct-badge { display: inline-block; padding: 0.18rem 0.55rem; font-size: 0.73rem; font-weight: 700; border-radius: 999px; letter-spacing: 0.02em; white-space: nowrap; flex-shrink: 0; }
+.ct-badge-type { background: #e8eaf6; color: #3f51b5; }
+.ct-status-active        { background: #e8f5e9; color: #2e7d32; }
+.ct-status-upcoming      { background: #e3f2fd; color: #1565c0; }
+.ct-status-referred      { background: #fff8e1; color: #f57f17; }
+.ct-status-need_followup { background: #fce4ec; color: #ad1457; }
+.ct-status-former        { background: #f5f5f5; color: #757575; }
+.ct-status-completed     { background: #e8f5e9; color: #2e7d32; }
+.ct-status-cancelled     { background: #fce4ec; color: #ad1457; }
+.ct-status-rescheduled   { background: #fff8e1; color: #f57f17; }
+
+/* Item actions */
+.ct-item-actions { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.55rem; }
+.ct-edit-btn, .ct-appt-btn, .ct-delete-btn { padding: 0.22rem 0.6rem; font-size: 0.77rem; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: background 0.15s; }
+.ct-edit-btn   { background: #e8eaf6; color: #3f51b5; }
+.ct-edit-btn:hover   { background: #c5cae9; }
+.ct-appt-btn   { background: #e3f2fd; color: #1565c0; }
+.ct-appt-btn:hover   { background: #bbdefb; }
+.ct-delete-btn { background: #fce8f3; color: #c0105c; }
+.ct-delete-btn:hover { background: #f5c6e0; }
+
+/* Add/Edit form */
+.ct-form-card { background: #f7f8fc; border: 1px solid #e7eaf3; border-radius: 12px; padding: 1.1rem 1.25rem; margin-bottom: 1.5rem; }
+.ct-form-card h3 { margin: 0 0 1rem 0; border-bottom: none; padding-bottom: 0; font-size: 1rem; color: #2f3c8f; }
+.ct-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
+@media (max-width: 500px) { .ct-form-row { grid-template-columns: 1fr; } }
+.ct-form-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+
+/* Appointments */
+.ct-appt-list { list-style: none; padding: 0; margin: 0; }
+.ct-appt-item { background: #fff; border: 1px solid #e7eaf3; border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 0.6rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+.ct-appt-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.3rem; flex-wrap: wrap; }
+.ct-appt-datetime { font-size: 0.95rem; font-weight: 700; color: #2f3c8f; }
+.ct-appt-provider { font-size: 0.85rem; font-weight: 600; color: #3a3f5c; margin-bottom: 0.2rem; }
+.ct-appt-type { font-size: 0.82rem; color: #5a5f7a; margin-bottom: 0.2rem; }
+.ct-appt-notes { font-size: 0.82rem; color: #5a5f7a; font-style: italic; line-height: 1.45; }
+.ct-appt-actions { display: flex; gap: 0.35rem; margin-top: 0.55rem; }
+.ct-appt-edit-btn, .ct-appt-delete-btn { padding: 0.2rem 0.55rem; font-size: 0.75rem; font-weight: 600; border: none; border-radius: 5px; cursor: pointer; transition: background 0.15s; }
+.ct-appt-edit-btn   { background: #e8eaf6; color: #3f51b5; }
+.ct-appt-edit-btn:hover   { background: #c5cae9; }
+.ct-appt-delete-btn { background: #fce8f3; color: #c0105c; }
+.ct-appt-delete-btn:hover { background: #f5c6e0; }
+
+/* Empty states */
+.ct-empty { display: block; padding: 2rem 1rem; text-align: center; font-size: 0.9rem; font-style: italic; color: #9ba3bf; background: #fff; border-radius: 12px; border: 1px solid #e7eaf3; }
