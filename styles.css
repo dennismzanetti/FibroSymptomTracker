@@ -414,6 +414,27 @@ h4 {
 }
 
 /* ================================================================
+   DAILY ENTRY TAB — heading & day-of-week label
+   ================================================================ */
+
+/* Tighten the space above the Daily Entry h2 */
+#entry-tab > h2.entry-tab-heading {
+  margin-top: 0;
+  margin-bottom: 0.15rem;
+}
+
+/* Day-of-week label between h2 and date bar */
+.entry-day-label {
+  margin: 0 0 0.5rem 0;
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #3f51b5;
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+}
+
+/* ================================================================
    ENTRY-TAB DATE NAVIGATION BAR
    ================================================================ */
 
@@ -450,8 +471,7 @@ h4 {
   color: #3f51b5;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.15s ease, border-color 0.15s ease;
-  user-select: none;
+  transition: background 0.18s ease, border-color 0.18s ease;
 }
 
 .entry-date-nav-btn:hover {
@@ -461,88 +481,1342 @@ h4 {
 
 .entry-date-nav-btn:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(63,81,181,0.22);
+  box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.3);
 }
 
-.entry-date-nav-btn:active {
-  background: #c5cae9;
-}
-
-/* Centre clickable date display */
-.entry-date-picker-btn {
+/* Date display button in entry-date-bar */
+.entry-date-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.38rem 0.9rem;
-  background: #f0f2ff;
-  color: #2b2f42;
+  gap: 0.35rem;
+  padding: 0.3rem 0.9rem;
+  background: #e8eaf6;
+  color: #3f51b5;
   border: 1px solid #c5cae9;
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
-  transition: background 0.15s ease, border-color 0.15s ease;
-  line-height: 1.35;
-  flex: 0 1 auto;
-  min-width: 0;
+  transition: background 0.18s ease;
+  line-height: 1.4;
 }
 
-.entry-date-picker-btn:hover {
-  background: #e8eaf6;
-  border-color: #9fa8da;
-}
-
-.entry-date-picker-btn:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(63,81,181,0.22);
-}
-
-.entry-date-picker-btn:active {
+.entry-date-btn:hover {
   background: #c5cae9;
 }
 
-/* Calendar SVG icon inside the picker button */
-.entry-date-picker-btn svg {
-  display: block;
-  flex-shrink: 0;
-  width: 14px;
-  height: 14px;
-  color: #9fa8da;
-  stroke: currentColor;
-  overflow: visible;
+.entry-date-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.3);
 }
 
-.entry-dow {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: #7986cb;
+/* ================================================================
+   SAVE DAY FLOATING BUTTON
+   ================================================================ */
+
+.save-day-float {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 300;
+  padding: 0.65rem 1.3rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 999px;
+  box-shadow: 0 4px 18px rgba(63,81,181,0.35);
+  background: #3f51b5;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
   white-space: nowrap;
 }
 
-.entry-date-text {
-  font-size: 0.92rem;
+.save-day-float:hover {
+  background: #303f9f;
+  box-shadow: 0 6px 24px rgba(63,81,181,0.45);
+  transform: translateY(-1px);
+}
+
+.save-day-float:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 640px) {
+  .save-day-float {
+    bottom: 1rem;
+    right: 1rem;
+    padding: 0.55rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* ================================================================
+   SAVE STATUS / FEEDBACK
+   ================================================================ */
+
+#saveStatus {
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  min-height: 1.2em;
+  text-align: center;
+}
+
+/* ================================================================
+   FORM LABELS & INPUTS — general
+   ================================================================ */
+
+label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #444;
+  margin-bottom: 0.3rem;
+}
+
+input[type="number"],
+input[type="text"],
+input[type="time"],
+input[type="date"],
+select,
+textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ced3ea;
+  border-radius: 8px;
+  background: #fafbff;
+  color: #1c1d22;
+  font-size: 0.93rem;
+  box-sizing: border-box;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus,
+input[type="time"]:focus,
+input[type="date"]:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #3f51b5;
+  box-shadow: 0 0 0 3px rgba(63,81,181,0.18);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* ================================================================
+   NUMBER STEPPERS  (+/- buttons around number input)
+   ================================================================ */
+
+.number-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.number-stepper input[type="number"] {
+  width: 3.5rem;
+  text-align: center;
+  padding: 0.45rem 0.4rem;
+  font-size: 1rem;
+  border-radius: 8px;
+}
+
+.stepper-btn {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1;
+  border: 1px solid #ced3ea;
+  border-radius: 50%;
+  background: #f3f4f8;
+  color: #3f51b5;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.stepper-btn:hover { background: #e8eaf6; }
+.stepper-btn:active { background: #c5cae9; }
+
+/* ================================================================
+   MOBILE: slightly compact
+   ================================================================ */
+
+@media (max-width: 480px) {
+  .number-stepper input[type="number"] {
+    width: 3rem;
+    font-size: 0.95rem;
+  }
+  .stepper-btn {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    font-size: 1.1rem;
+  }
+}
+
+/* ================================================================
+   COLLAPSIBLE ENTRY SECTIONS (Daily Entry tab)
+   ================================================================ */
+
+.entry-section {
+  margin-bottom: 0.6rem;
+  border-radius: 12px;
+  border: 1px solid #e7eaf3;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+/* Remove the default browser disclosure triangle */
+.entry-section > summary {
+  list-style: none;
+}
+.entry-section > summary::-webkit-details-marker {
+  display: none;
+}
+
+.entry-section-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  cursor: pointer;
+  user-select: none;
+  background: #ffffff;
+  transition: background 0.15s ease;
+  gap: 0.75rem;
+}
+
+.entry-section-summary:hover {
+  background: #f3f4f8;
+}
+
+.entry-section-title {
+  font-size: 1.0rem;
   font-weight: 700;
   color: #2f3c8f;
-  white-space: nowrap;
+  flex: 1;
+}
+
+.entry-section-chevron {
+  flex-shrink: 0;
+  color: #9fa8da;
+  transition: transform 0.22s ease;
+}
+
+/* Rotate chevron when open */
+.entry-section[open] > .entry-section-summary .entry-section-chevron {
+  transform: rotate(180deg);
+}
+
+.entry-section-body {
+  padding: 0.75rem 1.25rem 1rem 1.25rem;
+  border-top: 1px solid #eef0f8;
+  background: #fafbff;
+}
+
+/* ================================================================
+   ATR FORM (Adverse Treatment Reaction)
+   ================================================================ */
+
+#atrFormContainer {
+  display: none;
+}
+
+#atrFormContainer.visible {
+  display: block;
+}
+
+.atr-form-card {
+  background: #fff8f8;
+  border: 1.5px solid #e57373;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 0.5rem;
+}
+
+.atr-form-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #c62828;
+  margin-bottom: 0.75rem;
+}
+
+.atr-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1rem;
 }
 
 @media (max-width: 480px) {
-  .entry-date-bar {
-    gap: 0.3rem;
-    padding: 0.3rem 0;
+  .atr-form-grid {
+    grid-template-columns: 1fr;
   }
-  .entry-date-nav-btn {
-    width: 38px;
-    height: 38px;
-    min-width: 38px;
-    font-size: 1.6rem;
+}
+
+.atr-btn-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  justify-content: flex-end;
+}
+
+/* ================================================================
+   BUTTONS — general
+   ================================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.18s ease, box-shadow 0.18s ease;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: #3f51b5;
+  color: white;
+}
+.btn-primary:hover { background: #303f9f; }
+
+.btn-secondary {
+  background: #e8eaf6;
+  color: #3f51b5;
+  border: 1px solid #c5cae9;
+}
+.btn-secondary:hover { background: #c5cae9; }
+
+.btn-danger {
+  background: #fce4ec;
+  color: #c62828;
+  border: 1px solid #ef9a9a;
+}
+.btn-danger:hover { background: #ffcdd2; }
+
+.btn-sm {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+}
+
+/* ================================================================
+   SAVE BAR (bottom of entry form)
+   ================================================================ */
+
+.save-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.5rem;
+}
+
+.save-bar-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ================================================================
+   TOAST NOTIFICATION
+   ================================================================ */
+
+.toast {
+  position: fixed;
+  bottom: 4.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  min-width: 220px;
+  max-width: 360px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-size: 0.93rem;
+  font-weight: 600;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+  animation: toast-in 0.28s ease;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.toast-success {
+  background: #e8f5e9;
+  color: #1b5e20;
+  border: 1px solid #a5d6a7;
+}
+
+.toast-error {
+  background: #fce4ec;
+  color: #880e4f;
+  border: 1px solid #f48fb1;
+}
+
+/* ================================================================
+   TAB VISIBILITY
+   ================================================================ */
+
+.tab {
+  display: none;
+}
+.tab.active {
+  display: block;
+}
+
+/* ================================================================
+   BODY PAIN MAP
+   ================================================================ */
+
+.pain-map-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pain-map-views {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.pain-map-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pain-map-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pain-map-svg {
+  width: 150px;
+  height: auto;
+  cursor: crosshair;
+  border-radius: 8px;
+}
+
+.pain-point {
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.pain-point:hover {
+  opacity: 0.85;
+}
+
+.pain-map-legend {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.legend-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* ================================================================
+   HISTORY TAB
+   ================================================================ */
+
+#historyList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.history-entry-card {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #e7eaf3;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+/* Clickable header row */
+.history-entry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  background: white;
+  transition: background 0.15s ease;
+  gap: 0.5rem;
+  user-select: none;
+}
+
+.history-entry-header:hover {
+  background: #f5f6fb;
+}
+
+.history-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.history-date-chip {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #3f51b5;
+  background: #e8eaf6;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.history-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.history-chip {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.chip-pain   { background: #fce4ec; color: #880e4f; }
+.chip-sleep  { background: #e8eaf6; color: #283593; }
+.chip-fatigue{ background: #fff3e0; color: #bf360c; }
+.chip-mood   { background: #f3e5f5; color: #6a1b9a; }
+.chip-steps  { background: #e8f5e9; color: #1b5e20; }
+
+.history-expand-icon {
+  font-size: 0.75rem;
+  color: #9e9e9e;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.history-expand-icon.open {
+  transform: rotate(180deg);
+}
+
+/* Detail body (hidden by default) */
+.history-entry-detail {
+  padding: 0 1rem 0.75rem 1rem;
+  border-top: 1px solid #eef0f8;
+  background: #fafbff;
+  display: none;
+}
+
+.history-entry-detail.open {
+  display: block;
+}
+
+.history-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.4rem 1rem;
+  margin-bottom: 0.75rem;
+  padding-top: 0.6rem;
+}
+
+.history-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.history-detail-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #9e9e9e;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.history-detail-value {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1c1d22;
+}
+
+.history-detail-notes {
+  font-size: 0.85rem;
+  color: #444;
+  margin-bottom: 0.5rem;
+  white-space: pre-line;
+}
+
+.history-detail-actions {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: flex-end;
+}
+
+/* Empty state */
+.history-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2.5rem 1rem;
+  color: #9e9e9e;
+  text-align: center;
+}
+
+.history-empty svg {
+  opacity: 0.35;
+}
+
+.history-empty p {
+  font-size: 0.9rem;
+  max-width: 32ch;
+  line-height: 1.5;
+}
+
+/* ================================================================
+   HISTORY TABLE  (inside collapsible detail row)
+   ================================================================ */
+
+/* Wrapper for horizontal scroll on small screens */
+.history-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  min-width: 480px;         /* force scroll before columns collapse */
+}
+
+.history-table thead th {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #7986cb;
+  background: #f5f6fb;
+  border-bottom: 2px solid #e3e6f0;
+  white-space: nowrap;
+}
+
+/* Sticky first column (date) */
+.history-table thead th:first-child,
+.history-table tbody td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: inherit;
+}
+
+.history-table thead th:first-child {
+  background: #f5f6fb;
+}
+
+.history-table tbody td:first-child {
+  background: white;
+}
+
+.history-table tbody tr:nth-child(even) td:first-child {
+  background: #fafbff;
+}
+
+.history-table tbody tr {
+  transition: background 0.12s ease;
+}
+
+.history-table tbody tr:nth-child(even) {
+  background: #fafbff;
+}
+
+.history-table tbody tr:hover {
+  background: #eef0f8;
+}
+
+.history-table tbody td {
+  padding: 0.45rem 0.75rem;
+  border-bottom: 1px solid #eef0f8;
+  color: #2b2f42;
+  vertical-align: top;
+}
+
+.history-table tbody td:first-child {
+  font-weight: 700;
+  color: #3f51b5;
+  white-space: nowrap;
+  font-size: 0.8rem;
+}
+
+/* Inline chips within table cells */
+.history-table .chip-pain,
+.history-table .chip-sleep,
+.history-table .chip-fatigue,
+.history-table .chip-mood,
+.history-table .chip-steps,
+.history-table .chip-generic {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.chip-generic { background: #f5f6fb; color: #444; }
+
+/* Journal snippet styling inside table */
+.history-table .journal-snippet {
+  font-style: italic;
+  color: #666;
+  font-size: 0.8rem;
+  max-width: 28ch;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ================================================================
+   JOURNAL TAB
+   ================================================================ */
+
+.journal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.journal-entry-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid #e7eaf3;
+}
+
+.journal-entry-date {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #3f51b5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4rem;
+}
+
+.journal-entry-text {
+  font-size: 0.9rem;
+  color: #2b2f42;
+  line-height: 1.65;
+  white-space: pre-line;
+}
+
+.journal-empty {
+  text-align: center;
+  color: #9e9e9e;
+  padding: 2rem;
+  font-size: 0.9rem;
+}
+
+/* ================================================================
+   TRENDS TAB
+   ================================================================ */
+
+.trends-chart-wrap {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  border: 1px solid #e7eaf3;
+}
+
+/* ================================================================
+   MOOD TAB
+   ================================================================ */
+
+.mood-summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.mood-summary-table th {
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #7986cb;
+  background: #f5f6fb;
+  padding: 0.4rem 0.75rem;
+  border-bottom: 2px solid #e3e6f0;
+}
+
+.mood-summary-table td {
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid #eef0f8;
+  color: #2b2f42;
+}
+
+.mood-summary-table tr:nth-child(even) td {
+  background: #fafbff;
+}
+
+.mood-table-empty {
+  text-align: center;
+  color: #9e9e9e;
+  padding: 1.5rem;
+  font-style: italic;
+}
+
+.mood-color-indicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  vertical-align: middle;
+  margin-right: 0.35rem;
+}
+
+/* ================================================================
+   MEDICATIONS & CARE TEAM — sub-tabs
+   ================================================================ */
+
+.med-sub-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.ct-sub-tab-btn {
+  padding: 0.3rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1px solid #c5cae9;
+  border-radius: 999px;
+  background: #f3f4f8;
+  color: #3f51b5;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  white-space: nowrap;
+}
+
+.ct-sub-tab-btn:hover {
+  background: #e8eaf6;
+}
+
+.ct-sub-tab-btn.active {
+  background: #3f51b5;
+  color: white;
+  border-color: #3f51b5;
+}
+
+/* ================================================================
+   MEDICATIONS TAB
+   ================================================================ */
+
+.med-view {
+  /* views shown/hidden via JS */
+}
+
+.med-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.med-item {
+  background: white;
+  border: 1px solid #e7eaf3;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.med-item-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.med-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #2b2f42;
+}
+
+.med-dose-line {
+  font-size: 0.82rem;
+  color: #555;
+}
+
+.med-note-line {
+  font-size: 0.78rem;
+  color: #888;
+  font-style: italic;
+}
+
+.med-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.med-badge-active   { background: #e8f5e9; color: #1b5e20; }
+.med-badge-inactive { background: #f5f5f5; color: #757575; }
+.med-badge-hold     { background: #fff3e0; color: #e65100; }
+
+.med-actions {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.med-empty {
+  text-align: center;
+  color: #9e9e9e;
+  padding: 1.5rem;
+  font-style: italic;
+}
+
+/* ---- Medication form ---- */
+.med-form-card {
+  background: #fafbff;
+  border: 1px solid #c5cae9;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.med-form-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #2f3c8f;
+  margin-bottom: 0.75rem;
+}
+
+.med-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1rem;
+}
+
+@media (max-width: 480px) {
+  .med-form-grid {
+    grid-template-columns: 1fr;
   }
-  .entry-date-picker-btn {
-    padding: 0.35rem 0.6rem;
-    font-size: 0.85rem;
+}
+
+.med-form-row {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* ---- Medication history ---- */
+.med-history-table-wrap {
+  overflow-x: auto;
+}
+
+.med-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.med-history-table th {
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #7986cb;
+  background: #f5f6fb;
+  padding: 0.4rem 0.75rem;
+  border-bottom: 2px solid #e3e6f0;
+  white-space: nowrap;
+}
+
+.med-history-table td {
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid #eef0f8;
+  color: #2b2f42;
+  vertical-align: top;
+}
+
+.med-history-table tr:nth-child(even) td {
+  background: #fafbff;
+}
+
+.med-history-empty {
+  text-align: center;
+  color: #9e9e9e;
+  padding: 1.5rem;
+  font-style: italic;
+  font-size: 0.88rem;
+}
+
+/* ---- Med print/export view ---- */
+.med-print-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.med-print-table th {
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #7986cb;
+  background: #f5f6fb;
+  padding: 0.4rem 0.75rem;
+  border-bottom: 2px solid #e3e6f0;
+  white-space: nowrap;
+}
+
+.med-print-table td {
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid #eef0f8;
+  color: #2b2f42;
+}
+
+.med-print-table tr:nth-child(even) td {
+  background: #fafbff;
+}
+
+/* ================================================================
+   CARE TEAM TAB
+   ================================================================ */
+
+/* Providers list */
+.ct-provider-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ct-provider-card {
+  background: white;
+  border: 1px solid #e7eaf3;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.ct-provider-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.ct-provider-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #2b2f42;
+}
+
+.ct-provider-specialty {
+  font-size: 0.82rem;
+  color: #3f51b5;
+  font-weight: 600;
+}
+
+.ct-provider-meta {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.75rem;
+}
+
+.ct-provider-actions {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  margin-top: 0.4rem;
+}
+
+.ct-provider-empty {
+  text-align: center;
+  color: #9e9e9e;
+  padding: 1.5rem;
+  font-style: italic;
+}
+
+/* Provider form */
+.ct-form-card {
+  background: #fafbff;
+  border: 1px solid #c5cae9;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ct-form-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #2f3c8f;
+  margin-bottom: 0.75rem;
+}
+
+.ct-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1rem;
+}
+
+@media (max-width: 480px) {
+  .ct-form-grid {
+    grid-template-columns: 1fr;
   }
-  .entry-dow {
+}
+
+.ct-form-row {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Appointments */
+.ct-appt-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ct-appt-card {
+  background: white;
+  border: 1px solid #e7eaf3;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.ct-appt-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.ct-appt-date {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #3f51b5;
+  background: #e8eaf6;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.ct-appt-provider {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #2b2f42;
+}
+
+.ct-appt-type {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.ct-appt-notes {
+  font-size: 0.78rem;
+  color: #888;
+  font-style: italic;
+  margin-top: 0.15rem;
+}
+
+.ct-appt-empty {
+  text-align: center;
+  color: #9e9e9e;
+  padding: 1.5rem;
+  font-style: italic;
+}
+
+/* Appointment form */
+.ct-appt-form-card {
+  background: #fafbff;
+  border: 1px solid #c5cae9;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ct-appt-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1rem;
+}
+
+@media (max-width: 480px) {
+  .ct-appt-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Appointment actions */
+.ct-appt-actions {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-top: 0.4rem;
+}
+
+/* ================================================================
+   PRINT STYLES
+   ================================================================ */
+
+@media print {
+  .app-header,
+  .save-day-float,
+  #saveStatus,
+  .med-sub-tabs,
+  .ct-sub-tab-btn,
+  .med-actions,
+  .ct-provider-actions,
+  .ct-appt-actions {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+
+  .card, .med-form-card, .ct-form-card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+}
+
+/* ================================================================
+   BUILD FOOTER
+   ================================================================ */
+
+#buildFooter {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(243,244,248,0.97);
+  border-top: 1px solid #dde0f0;
+  padding: 0.25rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  color: #7986cb;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+#buildFooter a {
+  color: #3f51b5;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+#buildFooter a:hover {
+  text-decoration: underline;
+}
+
+.build-sep {
+  opacity: 0.4;
+}
+
+@media (max-width: 640px) {
+  #buildFooter {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+  }
+  #buildMsg {
     display: none;
   }
 }
