@@ -1,68 +1,140 @@
-/* MEDICATIONS & SHARED STYLES — FibroSymptomTracker */
+/* MEDICATIONS STYLES — FibroSymptomTracker */
 
-/* Build footer */
-.build-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.3rem 1rem; background: rgba(248,249,253,0.95); border-top: 1px solid #e3e6f0; font-size: 0.72rem; color: #9ba3bf; backdrop-filter: blur(6px); white-space: nowrap; overflow: hidden; }
-.build-footer-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.65rem; color: #c4c8dc; }
-.build-footer-sha { font-family: "SF Mono","Fira Code","Consolas",monospace; font-size: 0.72rem; color: #3f51b5; text-decoration: none; font-weight: 600; }
-.build-footer-sha:hover { text-decoration: underline; }
-.build-footer-sep { color: #d0d4e8; }
-.build-footer-msg { color: #7a80a0; font-weight: 500; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
-.build-footer-date { color: #9ba3bf; }
-@media (max-width: 420px) { .build-footer-msg { display: none; } }
+/* ================================================================
+   MEDICATIONS TAB
+   ================================================================ */
 
-/* Shared sub-tab strip */
-.med-sub-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
-.med-sub-tab-btn, .ct-sub-tab-btn { padding: 0.45rem 1.1rem; font-size: 0.875rem; font-weight: 600; border: 1.5px solid #9fa8da; border-radius: 999px; background: #fff; color: #5a5f7a; cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s; white-space: nowrap; }
-.med-sub-tab-btn:hover, .ct-sub-tab-btn:hover { background: #e8eaf6; border-color: #7986cb; color: #3f51b5; }
-.med-sub-tab-btn.active, .ct-sub-tab-btn.active { background: #3f51b5; border-color: #3f51b5; color: #fff; }
+/* --- Medication List --- */
 
-/* Medication list */
-.med-list { list-style: none; padding: 0; margin: 0 0 1.5rem 0; }
-.med-item { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; padding: 0.85rem 1rem; background: #fff; border: 1px solid #e7eaf3; border-radius: 10px; margin-bottom: 0.6rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
-.med-item-info { flex: 1; min-width: 0; }
-.med-item-name { font-size: 0.95rem; font-weight: 700; color: #1c1d22; margin-bottom: 0.2rem; }
-.med-item-detail { font-size: 0.82rem; color: #5a5f7a; margin-bottom: 0.15rem; }
-.med-item-actions { display: flex; gap: 0.35rem; flex-shrink: 0; }
-.med-edit-btn, .med-delete-btn { padding: 0.2rem 0.55rem; font-size: 0.75rem; font-weight: 600; border: none; border-radius: 5px; cursor: pointer; transition: background 0.15s; }
-.med-edit-btn { background: #e8eaf6; color: #3f51b5; }
-.med-delete-btn { background: #fce8f3; color: #c0105c; }
-.med-edit-btn:hover { background: #c5cae9; }
-.med-delete-btn:hover { background: #f5c6e0; }
+.med-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 
-/* Add/Edit form */
-.med-form-card { background: #f7f8fc; border: 1px solid #e7eaf3; border-radius: 12px; padding: 1.1rem 1.25rem; margin-bottom: 1.5rem; }
-.med-form-card h3 { margin: 0 0 1rem 0; border-bottom: none; padding-bottom: 0; font-size: 1rem; color: #2f3c8f; }
-.med-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
-@media (max-width: 500px) { .med-form-row { grid-template-columns: 1fr; } }
-.med-form-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+.med-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #fff;
+  border: 1px solid #e7eaf3;
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
 
-/* Medication log */
-.med-log-list { list-style: none; padding: 0; margin: 0; }
-.med-log-item { display: flex; align-items: center; gap: 0.65rem; padding: 0.5rem 0.75rem; border-bottom: 1px solid #f0f2fa; font-size: 0.88rem; }
-.med-log-item:last-child { border-bottom: none; }
-.med-log-time { font-size: 0.8rem; color: #9ba3bf; white-space: nowrap; flex-shrink: 0; }
-.med-log-name { font-weight: 600; color: #1c1d22; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.med-log-dose { font-size: 0.82rem; color: #5a5f7a; white-space: nowrap; flex-shrink: 0; }
-.med-log-delete-btn { padding: 0.15rem 0.45rem; font-size: 0.72rem; font-weight: 600; border: none; border-radius: 4px; cursor: pointer; background: #fce8f3; color: #c0105c; transition: background 0.15s; flex-shrink: 0; }
-.med-log-delete-btn:hover { background: #f5c6e0; }
+.med-item-name {
+  flex: 1; min-width: 0;
+}
 
-/* Quick-log */
-.med-quick-log-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
-.med-quick-log-btn { padding: 0.4rem 0.9rem; font-size: 0.85rem; font-weight: 600; border: 1.5px solid #9fa8da; border-radius: 999px; background: #e8eaf6; color: #3f51b5; cursor: pointer; transition: background 0.15s, border-color 0.15s; white-space: nowrap; }
-.med-quick-log-btn:hover { background: #c5cae9; border-color: #7986cb; }
+.med-item-actions {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
 
-/* Buttons */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.5rem 1.1rem; font-size: 0.9rem; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; white-space: nowrap; transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.1s ease; line-height: 1.3; }
-.btn-primary { background: #3f51b5; color: white; }
-.btn-primary:hover { background: #303f9f; box-shadow: 0 2px 10px rgba(63,81,181,0.3); }
-.btn-secondary { background: #e8eaf6; color: #3f51b5; }
-.btn-secondary:hover { background: #c5cae9; }
-.btn-danger { background: #fce8f3; color: #c0105c; }
-.btn-danger:hover { background: #f5c6e0; }
-.btn:active { transform: scale(0.97); }
+.med-edit-btn,
+.med-delete-btn {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.6rem;
+}
 
-/* Print */
-@media print {
-  .app-header, .save-day-float, .build-footer, #saveStatus, .toast { display: none !important; }
-  main { padding: 0; margin: 0; max-width: 100%; }
+/* --- Add / Edit Medication Form --- */
+
+.med-form-card {
+  background: #fff;
+  border: 1px solid #e7eaf3;
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.med-form-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* --- Medication Log --- */
+
+.med-log-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.med-log-item {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.med-log-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1c1d22;
+}
+
+.med-log-time {
+  font-size: 0.8rem;
+  color: #9ba3bf;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* --- Quick-log buttons --- */
+
+.med-quick-log-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.med-quick-log-btn {
+  padding: 0.38rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1px solid #c5cae9;
+  border-radius: 999px;
+  background: #f0f2ff;
+  color: #3f51b5;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.med-quick-log-btn:hover {
+  background: #e8eaf6;
+  border-color: #9fa8da;
+}
+
+/* ================================================================
+   SAVE BUTTON (shared)
+   ================================================================ */
+
+.save-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: #3f51b5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.save-btn:hover {
+  background: #303f9f;
+  box-shadow: 0 2px 8px rgba(63,81,181,0.3);
+}
+
+.save-btn:active {
+  background: #283593;
 }

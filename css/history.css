@@ -1,5 +1,4 @@
 /* HISTORY STYLES — FibroSymptomTracker */
-/* Auto-split from styles.css — source of truth: commit 0e195b6 */
 
 /* ================================================================
    HISTORY TAB
@@ -11,7 +10,6 @@
   margin: 0;
 }
 
-/* Legacy card selectors kept for compatibility */
 .history-item {
   padding: 1rem;
   background: #fff;
@@ -68,10 +66,7 @@
   color: #3f51b5;
 }
 
-/* ----------------------------------------------------------------
-   HISTORY TABLE  (rendered by history.js loadAndRenderHistory)
-   ---------------------------------------------------------------- */
-
+/* Outer wrapper */
 .history-scroll {
   width: 100%;
   overflow-x: auto;
@@ -98,6 +93,7 @@
   min-width: 420px;
 }
 
+/* Header row */
 .history-table thead tr {
   background: #3f51b5;
   color: #fff;
@@ -128,6 +124,7 @@
   border-right: none;
 }
 
+/* Body rows */
 .history-table tbody tr {
   border-bottom: 1px solid #f0f2fa;
   transition: background 0.12s ease;
@@ -145,6 +142,7 @@
   background: #eef0fb;
 }
 
+/* Body cells */
 .history-table tbody td {
   padding: 0.55rem 0.85rem;
   color: #3a3f5c;
@@ -158,6 +156,7 @@
   border-right: none;
 }
 
+/* Sticky left column */
 .history-field-label {
   position: sticky;
   left: 0;
@@ -180,6 +179,7 @@
   background: #e5e8f7;
 }
 
+/* Numeric data cells */
 .history-table tbody td:not(.history-field-label):not(.symptoms-cell):not(.notes-cell) {
   font-variant-numeric: tabular-nums;
   font-weight: 600;
@@ -191,6 +191,7 @@
   color: #3a3f5c;
 }
 
+/* Symptom tag chips */
 .symptoms-cell {
   text-align: left !important;
   vertical-align: top;
@@ -210,6 +211,7 @@
   letter-spacing: 0.01em;
 }
 
+/* Notes cells */
 .notes-cell {
   text-align: left !important;
   font-size: 0.82rem;
@@ -222,6 +224,7 @@
   vertical-align: top;
 }
 
+/* Empty / error / loading states */
 .history-empty,
 .history-error,
 .history-loading {
@@ -263,6 +266,7 @@
   margin-top: 0.2rem;
 }
 
+/* Modal overlay */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -302,3 +306,7 @@
   line-height: 1;
   padding: 0;
 }
+
+/* ================================================================
+   (end of history styles)
+   ================================================================ */
