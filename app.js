@@ -49,10 +49,21 @@ auth.onAuthStateChanged(user => {
 });
 
 document.getElementById('googleSignInBtn').addEventListener('click', () => {
+  const btn = document.getElementById('googleSignInBtn');
+  const errEl = document.getElementById('authError');
+  btn.disabled = true;
+  btn.textContent = 'Signing in\u2026';
   const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).catch(err => {
-    document.getElementById('authError').textContent = err.message;
-  });
+  auth.signInWithPopup(provider)
+    .catch(err => {
+      if (err.code !== 'auth/cancelled-popup-request' && err.code !== 'auth/popup-closed-by-user') {
+        errEl.textContent = err.message;
+      }
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.textContent = 'Sign in with Google';
+    });
 });
 
 const signOutBtn = document.getElementById('signOutBtn');
@@ -101,7 +112,6 @@ function init() {
 // Clicking anywhere on the button hits the native date input directly — no showPicker() needed.
 function setupDatePicker() {
   // No additional click wiring needed; the overlay handles it natively.
-  // Keep function present so call-sites don't error.
 }
 
 function setupTabs() {
@@ -308,7 +318,7 @@ function saveDay() {
   const docRef = db.collection('users').doc(currentUser.uid)
                    .collection('entries').doc(date);
   const status = document.getElementById('saveStatus');
-  if (status) { status.textContent = 'Saving…'; status.style.color = 'var(--color-text-muted)'; }
+  if (status) { status.textContent = 'Saving\u2026'; status.style.color = 'var(--color-text-muted)'; }
   docRef.set(data, { merge: true }).then(() => {
     if (status) { status.textContent = 'Saved!'; status.style.color = 'var(--color-success)'; }
     setTimeout(() => { if (status) status.textContent = ''; }, 3000);
@@ -380,7 +390,7 @@ document.getElementById('loadHistoryBtn') && document.getElementById('loadHistor
   const to   = document.getElementById('historyTo').value;
   if (!from || !to) { alert('Please select both From and To dates.'); return; }
   const list = document.getElementById('historyList');
-  list.innerHTML = '<li>Loading…</li>';
+  list.innerHTML = '<li>Loading\u2026</li>';
   db.collection('users').doc(currentUser.uid)
     .collection('entries')
     .where(firebase.firestore.FieldPath.documentId(), '>=', from)
