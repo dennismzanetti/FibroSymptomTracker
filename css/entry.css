@@ -1,5 +1,4 @@
 /* ENTRY STYLES — FibroSymptomTracker */
-/* Auto-split from styles.css — source of truth: commit 0e195b6 */
 
 /* ================================================================
    DAILY ENTRY TAB — heading & day-of-week label
@@ -40,7 +39,6 @@
   position: relative;
 }
 
-/* Prev / next arrow buttons */
 .entry-date-nav-btn {
   width: 34px;
   height: 34px;
@@ -77,7 +75,6 @@
   background: #c5cae9;
 }
 
-/* Centre clickable date display */
 .entry-date-picker-btn {
   display: inline-flex;
   align-items: center;
@@ -111,7 +108,6 @@
   background: #c5cae9;
 }
 
-/* Calendar SVG icon inside the picker button */
 .entry-date-picker-btn svg {
   display: block;
   flex-shrink: 0;
@@ -136,7 +132,6 @@
   white-space: nowrap;
 }
 
-/* Mobile: slightly compact */
 @media (max-width: 480px) {
   .entry-date-bar {
     gap: 0.3rem;
@@ -170,7 +165,6 @@
   overflow: hidden;
 }
 
-/* Remove the default browser disclosure triangle */
 .entry-section > summary {
   list-style: none;
 }
@@ -207,12 +201,10 @@
   transition: transform 0.22s ease;
 }
 
-/* Rotate chevron when open */
 .entry-section[open] > .entry-section-summary .entry-section-chevron {
   transform: rotate(180deg);
 }
 
-/* Body: remove card's own margin/border-radius since the <details> wraps it */
 .entry-section-body.card {
   border-radius: 0;
   border: none;
@@ -226,12 +218,10 @@
    ================================================================ */
 
 @media (min-width: 768px) {
-  /* Force open, hide arrow, remove pointer */
   .entry-section[open],
   .entry-section:not([open]) { display: block; }
   .entry-section > summary   { display: none; }
 
-  /* Restore card-like appearance */
   .entry-section-body.card {
     border-radius: 12px;
     border: 1px solid #e7eaf3;
@@ -242,7 +232,6 @@
 
 /* ================================================================
    SAVE STATUS BAR  (#saveStatus)
-   Used by showStatus() in ui.js — plain inline text, no fixed position
    ================================================================ */
 
 #saveStatus {
@@ -252,17 +241,16 @@
   font-weight: 600;
   text-align: center;
   padding: 0.25rem 0;
-  color: #2e7d32; /* default success colour; overridden inline by showStatus() */
+  color: #2e7d32;
 }
 
 /* ================================================================
    TOAST NOTIFICATIONS  (#appToast)
-   Used by showToast() in ui.js
    ================================================================ */
 
 .toast {
   position: fixed;
-  bottom: 4rem;       /* clears the build footer */
+  bottom: 4rem;
   left: 50%;
   transform: translateX(-50%);
   padding: 0.55rem 1.4rem;
