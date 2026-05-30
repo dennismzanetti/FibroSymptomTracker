@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Symptom Tracker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -71,7 +71,8 @@
     <!-- Floating Save Day button -->
     <button id="saveDayFloat" class="save-day-float primary" aria-label="Save Day">&#128190; Save Day</button>
 
-    <h2>Daily Entry</h2>
+    <h2 class="entry-tab-heading">Daily Entry</h2>
+    <p id="entryDayLabel" class="entry-day-label"></p>
 
     <!-- DATE BAR: shown only when Daily Entry tab is active -->
     <div class="entry-date-bar">

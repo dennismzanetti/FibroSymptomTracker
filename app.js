@@ -138,16 +138,20 @@ function updateDateDisplay() {
   const val = currentDateStr;
   const dowEl = document.getElementById("dayOfWeekDisplay");
   const dateEl = document.getElementById("dateDisplay");
+  const entryDayLabel = document.getElementById("entryDayLabel");
   if (!val) {
     if (dowEl) dowEl.textContent = "";
     if (dateEl) dateEl.textContent = "";
+    if (entryDayLabel) entryDayLabel.textContent = "";
     return;
   }
   const [year, month, day] = val.split("-").map(Number);
   const date = new Date(year, month - 1, day);
   if (isNaN(date.getTime())) return;
-  if (dowEl) dowEl.textContent = date.toLocaleDateString(undefined, { weekday: "long" });
+  const fullDow = date.toLocaleDateString(undefined, { weekday: "long" });
+  if (dowEl) dowEl.textContent = fullDow;
   if (dateEl) dateEl.textContent = date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+  if (entryDayLabel) entryDayLabel.textContent = fullDow;
 }
 
 function updateDayOfWeek() { updateDateDisplay(); }
