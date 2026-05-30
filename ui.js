@@ -9,11 +9,13 @@ function setupTabs() {
   const tabBtns  = document.querySelectorAll('.tab-button');
   const tabs     = document.querySelectorAll('.tab');
   const floatBtn = document.getElementById('saveDayFloat');
+  const header   = document.querySelector('.app-header');
 
   function activate(id) {
     tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === id));
     tabs.forEach(t => t.classList.toggle('active', t.id === id));
     if (floatBtn) floatBtn.style.display = (id === 'entry-tab') ? '' : 'none';
+    if (header) header.classList.toggle('entry-tab-active', id === 'entry-tab');
   }
 
   tabBtns.forEach(btn => {
