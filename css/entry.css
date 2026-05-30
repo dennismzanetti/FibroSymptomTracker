@@ -4,18 +4,16 @@
    DAILY ENTRY TAB — heading & day-of-week label
    ================================================================ */
 
-/* Tighten the space above the Daily Entry h2 */
 #entry-tab > h2.entry-tab-heading {
   margin-top: 0;
   margin-bottom: 0.15rem;
 }
 
-/* Day-of-week label between h2 and date bar */
 .entry-day-label {
   margin: 0 0 0.5rem 0;
   text-align: center;
-  font-size: 1.05rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 500;
   color: #3f51b5;
   letter-spacing: 0.01em;
   line-height: 1.3;
@@ -85,7 +83,7 @@
   border: 1px solid #c5cae9;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 600;
   white-space: nowrap;
   transition: background 0.15s ease, border-color 0.15s ease;
@@ -119,41 +117,28 @@
 }
 
 .entry-dow {
-  font-size: 0.78rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 500;
   color: #7986cb;
   white-space: nowrap;
 }
 
 .entry-date-text {
-  font-size: 0.92rem;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #2f3c8f;
   white-space: nowrap;
 }
 
 @media (max-width: 480px) {
-  .entry-date-bar {
-    gap: 0.3rem;
-    padding: 0.3rem 0;
-  }
-  .entry-date-nav-btn {
-    width: 38px;
-    height: 38px;
-    min-width: 38px;
-    font-size: 1.6rem;
-  }
-  .entry-date-picker-btn {
-    padding: 0.35rem 0.6rem;
-    font-size: 0.85rem;
-  }
-  .entry-dow {
-    display: none;
-  }
+  .entry-date-bar { gap: 0.3rem; padding: 0.3rem 0; }
+  .entry-date-nav-btn { width: 38px; height: 38px; min-width: 38px; font-size: 1.6rem; }
+  .entry-date-picker-btn { padding: 0.35rem 0.6rem; font-size: 0.825rem; }
+  .entry-dow { display: none; }
 }
 
 /* ================================================================
-   COLLAPSIBLE ENTRY SECTIONS (Daily Entry tab)
+   COLLAPSIBLE ENTRY SECTIONS
    ================================================================ */
 
 .entry-section {
@@ -165,12 +150,8 @@
   overflow: hidden;
 }
 
-.entry-section > summary {
-  list-style: none;
-}
-.entry-section > summary::-webkit-details-marker {
-  display: none;
-}
+.entry-section > summary { list-style: none; }
+.entry-section > summary::-webkit-details-marker { display: none; }
 
 .entry-section-summary {
   display: flex;
@@ -184,13 +165,12 @@
   gap: 0.75rem;
 }
 
-.entry-section-summary:hover {
-  background: #f3f4f8;
-}
+.entry-section-summary:hover { background: #f3f4f8; }
 
 .entry-section-title {
-  font-size: 1.0rem;
-  font-weight: 700;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
   color: #2f3c8f;
   flex: 1;
 }
@@ -213,15 +193,10 @@
   margin-bottom: 0;
 }
 
-/* ================================================================
-   DESKTOP: always-expanded entry sections (>=768px)
-   ================================================================ */
-
 @media (min-width: 768px) {
   .entry-section[open],
   .entry-section:not([open]) { display: block; }
   .entry-section > summary   { display: none; }
-
   .entry-section-body.card {
     border-radius: 12px;
     border: 1px solid #e7eaf3;
@@ -231,21 +206,21 @@
 }
 
 /* ================================================================
-   SAVE STATUS BAR  (#saveStatus)
+   SAVE STATUS BAR
    ================================================================ */
 
 #saveStatus {
   display: block;
   min-height: 1.4em;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 500;
   text-align: center;
   padding: 0.25rem 0;
   color: #2e7d32;
 }
 
 /* ================================================================
-   TOAST NOTIFICATIONS  (#appToast)
+   TOAST NOTIFICATIONS
    ================================================================ */
 
 .toast {
@@ -256,7 +231,7 @@
   padding: 0.55rem 1.4rem;
   border-radius: 999px;
   font-size: 0.875rem;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
   max-width: 90vw;
   text-align: center;
@@ -271,26 +246,19 @@
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-.toast-success {
-  background: #1b5e20;
-  color: #fff;
-}
-
-.toast-error {
-  background: #880e4f;
-  color: #fff;
-}
+.toast-success { background: #1b5e20; color: #fff; }
+.toast-error   { background: #880e4f; color: #fff; }
 
 /* ================================================================
-   DAILY ENTRY FORM
+   FORM LABELS & INPUTS — aligned to global standard
    ================================================================ */
 
 label {
   display: block;
   margin-bottom: 0.75rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #3a3f5c;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #3d3f4e;
 }
 
 label input,
@@ -302,11 +270,12 @@ label textarea {
   padding: 0.5rem 0.75rem;
   border: 1px solid #ced3ea;
   border-radius: 8px;
-  font-size: 0.9rem;
+  font-size: 0.9375rem;
+  font-weight: 400;
   background: #fafbff;
   color: #1c1d22;
   box-sizing: border-box;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 label input:focus,
@@ -314,18 +283,23 @@ label select:focus,
 label textarea:focus {
   outline: none;
   border-color: #3f51b5;
+  box-shadow: 0 0 0 3px rgba(63,81,181,0.15);
   background: #fff;
 }
 
+/* ================================================================
+   FLOATING SAVE BUTTON
+   ================================================================ */
+
 .save-day-float {
   position: fixed;
-  /* Raised above the 1.8rem build footer with extra breathing room */
   bottom: 2.75rem;
   right: 1.25rem;
   z-index: 100;
   padding: 0.55rem 1.25rem;
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.005em;
   border: none;
   border-radius: 999px;
   cursor: pointer;
@@ -345,20 +319,14 @@ label textarea:focus {
   box-shadow: 0 6px 20px rgba(63,81,181,0.35);
 }
 
-.save-day-float.primary:active {
-  transform: scale(0.96);
-}
+.save-day-float.primary:active { transform: scale(0.96); }
 
 /* ================================================================
    TAB VISIBILITY
    ================================================================ */
 
-.tab {
-  display: none;
-}
-.tab.active {
-  display: block;
-}
+.tab { display: none; }
+.tab.active { display: block; }
 
 /* ================================================================
    NUMBER STEPPER
@@ -379,7 +347,7 @@ label textarea:focus {
   background: #f3f4f8;
   color: #3f51b5;
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -398,7 +366,7 @@ label textarea:focus {
   text-align: center;
   padding: 0.3rem 0.4rem;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 600;
   border: 1px solid #ced3ea;
   border-radius: 6px;
   background: #fff;
@@ -435,7 +403,7 @@ label textarea:focus {
 }
 
 .time-widget-label {
-  font-size: 0.82rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 500;
   color: #5a5f7a;
 }

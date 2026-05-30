@@ -4,8 +4,6 @@
    MEDICATIONS TAB
    ================================================================ */
 
-/* --- Medication List --- */
-
 .med-list {
   list-style: none;
   padding: 0;
@@ -25,7 +23,8 @@
 }
 
 .med-item-name {
-  flex: 1; min-width: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .med-item-actions {
@@ -41,7 +40,7 @@
   margin-top: 0.6rem;
 }
 
-/* --- Add / Edit Medication Form --- */
+/* --- Add / Edit Form --- */
 
 .med-form-card {
   background: #fff;
@@ -60,12 +59,7 @@
 
 /* --- Medication Log --- */
 
-.med-log-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
+.med-log-list,
 .med-log-item {
   list-style: none;
   padding: 0;
@@ -73,13 +67,13 @@
 }
 
 .med-log-name {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #1c1d22;
 }
 
 .med-log-time {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: #9ba3bf;
   white-space: nowrap;
   flex-shrink: 0;
@@ -95,9 +89,10 @@
 }
 
 .med-quick-log-btn {
-  padding: 0.38rem 0.85rem;
-  font-size: 0.82rem;
+  padding: 0.3rem 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
+  letter-spacing: 0.005em;
   border: 1px solid #c5cae9;
   border-radius: 999px;
   background: #f0f2ff;
@@ -112,29 +107,29 @@
 }
 
 /* ================================================================
-   SAVE BUTTON (shared)
+   SAVE BUTTON — aligned to global .save-btn in styles.css
    ================================================================ */
 
 .save-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.5rem 1.1rem;
-  font-size: 0.9rem;
-  font-weight: 700;
+  padding: 0.45rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.005em;
   background: #3f51b5;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.15s ease;
+  white-space: nowrap;
 }
 
 .save-btn:hover {
   background: #303f9f;
-  box-shadow: 0 2px 8px rgba(63,81,181,0.3);
+  box-shadow: 0 2px 8px rgba(63,81,181,0.25);
 }
 
-.save-btn:active {
-  background: #283593;
-}
+.save-btn:active { background: #283593; }
