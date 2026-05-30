@@ -1,0 +1,418 @@
+/* ============================================================
+   LAYOUT — app shell, header, tabs, main, sidebar
+   ============================================================ */
+
+/* ---- App Shell ---- */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+main {
+  flex: 1;
+  max-width: 820px;
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-4) var(--space-16);
+  box-sizing: border-box;
+}
+
+/* ---- Header ---- */
+.app-header {
+  background: var(--color-primary);
+  color: #fff;
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+/* Desktop header: single row */
+.header-desktop {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-6);
+}
+.header-title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.header-tabs {
+  display: flex;
+  flex: 1;
+  gap: var(--space-1);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.header-tabs::-webkit-scrollbar { display: none; }
+
+/* Mobile header: hidden by default */
+.header-mobile { display: none; }
+
+@media (max-width: 700px) {
+  .header-desktop { display: none; }
+  .header-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .header-mobile-row1 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-2) var(--space-4);
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+  .header-mobile-title {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: #fff;
+  }
+  .header-mobile-row3 {
+    padding: var(--space-2) var(--space-4);
+  }
+}
+
+/* ---- Tab Buttons (desktop nav) ---- */
+.tab-button {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.78);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+.tab-button:hover {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+}
+.tab-button.active {
+  background: rgba(255,255,255,0.22);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ---- Sign Out Button ---- */
+.header-signout-btn {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.header-signout-btn:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+/* ---- Mobile Tab Select ---- */
+.tab-select-wrap {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+.tab-select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  padding: var(--space-2) var(--space-8) var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.tab-select option {
+  background: var(--color-primary);
+  color: #fff;
+}
+.tab-select-chevron {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: rgba(255,255,255,0.7);
+  font-size: 0.65rem;
+}
+
+/* ---- Tab Sections ---- */
+.tab { display: none; }
+.tab.active { display: block; }
+
+/* ---- Save Status ---- */
+#saveStatus {
+  font-size: var(--text-sm);
+  color: var(--color-success);
+  min-height: 1.5em;
+  padding: var(--space-1) 0 0;
+  text-align: center;
+}
+
+/* ---- Cards ---- */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  margin-bottom: var(--space-4);
+}
+.card h3 {
+  font-size: var(--text-base);
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+  color: var(--color-text);
+}
+
+/* ---- Buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+.save-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-5);
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.save-btn:hover { background: var(--color-primary-hover); }
+
+/* ---- Forms ---- */
+label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: var(--space-3);
+}
+label:last-child { margin-bottom: 0; }
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+input[type="tel"],
+input[type="url"],
+input[type="email"],
+select,
+textarea {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  box-sizing: border-box;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-highlight);
+}
+textarea { resize: vertical; min-height: 60px; }
+
+/* ---- Number Stepper ---- */
+.number-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: var(--space-1);
+}
+.number-stepper input[type="number"] {
+  width: 56px;
+  text-align: center;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  -moz-appearance: textfield;
+}
+.number-stepper input[type="number"]::-webkit-inner-spin-button,
+.number-stepper input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+.stepper-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface-offset);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.12s;
+  flex-shrink: 0;
+}
+.stepper-btn:first-child { border-radius: var(--radius-md) 0 0 var(--radius-md); }
+.stepper-btn:last-child  { border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+.stepper-btn:hover { background: var(--color-surface-dynamic); }
+
+/* ---- Date bar ---- */
+.entry-date-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  padding: var(--space-2) 0;
+}
+
+/* Hidden native date input — overlaid on the picker button */
+.sr-date-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.date-picker-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.38rem 0.85rem;
+  background: rgba(255,255,255,0.18);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.date-picker-btn:hover { background: rgba(255,255,255,0.28); }
+.date-picker-btn svg { color: rgba(255,255,255,0.8); }
+
+/* ---- Floating Save Day ---- */
+.save-day-float {
+  position: fixed;
+  bottom: var(--space-6);
+  right: var(--space-4);
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-full);
+  font-size: var(--text-base);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  transition: background 0.15s, transform 0.1s;
+}
+.save-day-float:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+.save-day-float:active { transform: translateY(0); }
+
+/* ---- Build footer ---- */
+.build-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: #dde1ea;
+  border-top: 1px solid #c5ccd9;
+  font-size: var(--text-xs);
+  color: #1f5fae;
+}
+.build-footer-label { font-weight: 600; }
+.build-footer-sha {
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  color: #1f5fae;
+  text-decoration: none;
+  font-weight: 500;
+}
+.build-footer-sha:hover { color: #154985; text-decoration: underline; }
+.build-footer-sep { color: #1f5fae; opacity: 0.5; }
+.build-footer-msg { color: #1f5fae; }
+.build-footer-date { color: #1f5fae; opacity: 0.8; }
+@media (max-width: 640px) {
+  .build-footer { font-size: 0.7rem; gap: var(--space-1); }
+}
+
+/* ---- Sub-tab buttons (meds, care team) ---- */
+.med-sub-tabs,
+.ct-sub-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+.ct-sub-tab-btn {
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.ct-sub-tab-btn:hover {
+  background: var(--color-surface-offset);
+  color: var(--color-text);
+}
+.ct-sub-tab-btn.active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+  font-weight: 600;
+}
