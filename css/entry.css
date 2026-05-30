@@ -319,7 +319,8 @@ label textarea:focus {
 
 .save-day-float {
   position: fixed;
-  bottom: 1.25rem;
+  /* Raised above the 1.8rem build footer with extra breathing room */
+  bottom: 2.75rem;
   right: 1.25rem;
   z-index: 100;
   padding: 0.55rem 1.25rem;
