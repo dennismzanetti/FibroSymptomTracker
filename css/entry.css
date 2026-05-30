@@ -223,6 +223,7 @@
    TOAST NOTIFICATIONS
    ================================================================ */
 
+/* Default (desktop): bottom-center, above any nav chrome */
 .toast {
   position: fixed;
   bottom: 4rem;
@@ -244,6 +245,20 @@
 @keyframes toastIn {
   from { opacity: 0; transform: translateX(-50%) translateY(8px); }
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Mobile: move to top so it never overlaps the floating save button */
+@media (max-width: 767px) {
+  .toast {
+    bottom: auto;
+    top: calc(var(--header-h, 100px) + 0.75rem);
+    animation: toastInTop 0.22s ease;
+  }
+
+  @keyframes toastInTop {
+    from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
 }
 
 .toast-success { background: #1b5e20; color: #fff; }
