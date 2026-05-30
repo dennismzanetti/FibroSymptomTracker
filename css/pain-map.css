@@ -1,0 +1,136 @@
+/* PAIN MAP STYLES — FibroSymptomTracker */
+/* Auto-split from styles.css — source of truth: commit 0e195b6 */
+
+/* ================================================================
+   BODY PAIN MAP
+   ================================================================ */
+
+.pain-map-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0 0.25rem;
+}
+
+.pain-map-svg-container {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+}
+
+.pain-map-svg-container svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.pain-region {
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+.pain-region:hover { opacity: 0.8; }
+.pain-region.selected { stroke: #1a237e; stroke-width: 1.5px; }
+
+.pain-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.75rem;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: #3a3d52;
+  max-width: 340px;
+  padding-bottom: 0.25rem;
+}
+
+.pain-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.pain-legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid rgba(0,0,0,0.15);
+  flex-shrink: 0;
+}
+
+/* ================================================================
+   COMPACT PAIN BODY MAP (History tab)
+   ================================================================ */
+
+.pain-map-compact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+.pain-map-compact svg {
+  width: 80px;
+  height: auto;
+  display: block;
+}
+.pain-map-compact .pain-map-label {
+  font-size: 0.65rem;
+  color: #7a7d96;
+  text-align: center;
+}
+
+/* ================================================================
+   RANGE SLIDERS
+   ================================================================ */
+
+input[type="range"] {
+  width: 100%;
+  accent-color: #3f51b5;
+}
+
+/* ================================================================
+   SCORE DISPLAY
+   ================================================================ */
+
+.score-badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: #e8eaf6;
+  color: #3f51b5;
+}
+.score-badge.high   { background: #fce4ec; color: #c62828; }
+.score-badge.medium { background: #fff8e1; color: #f57f17; }
+.score-badge.low    { background: #e8f5e9; color: #2e7d32; }
+
+.score-label {
+  font-size: 0.78rem;
+  color: #5a5f7a;
+  font-weight: 500;
+}
+
+/* ================================================================
+   WEATHER WIDGET
+   ================================================================ */
+
+#weatherWidget {
+  background: #e8eaf6;
+  border-radius: 10px;
+  padding: 0.55rem 0.9rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  color: #3a3d52;
+  min-height: 2.5rem;
+}
+#weatherWidget .weather-icon { font-size: 1.5rem; line-height: 1; }
+#weatherWidget .weather-info { display: flex; flex-direction: column; gap: 0.1rem; }
+#weatherWidget .weather-temp { font-weight: 700; font-size: 0.95rem; }
+#weatherWidget .weather-desc { font-size: 0.75rem; color: #5a5f7a; }
+#weatherWidget .weather-detail { font-size: 0.72rem; color: #7a7d96; }
+
+@media (max-width: 640px) {
+  .pain-map-svg-container { max-width: 300px; }
+}
