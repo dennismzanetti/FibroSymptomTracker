@@ -11,19 +11,24 @@
 }
 
 .history-item {
-  padding: 1rem;
+  padding: 1rem 1.1rem;
   background: #fff;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 1px solid #e7eaf3;
   margin-bottom: 0.75rem;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-  transition: box-shadow 0.15s ease;
+  transition: box-shadow 0.15s ease, background 0.15s ease;
 }
 
 .history-item:hover {
   box-shadow: 0 4px 14px rgba(63,81,181,0.1);
+  background: #fafbff;
 }
+
+/* ================================================================
+   HISTORY ITEM HEADER ROW
+   ================================================================ */
 
 .history-item-header {
   display: flex;
@@ -31,30 +36,150 @@
   align-items: center;
   margin-bottom: 0.35rem;
   flex-wrap: wrap;
-  gap: 0.25rem;
+  gap: 0.3rem;
 }
 
-.history-date {
+/* Date label — was .history-date (orphaned), now matches JS class */
+.history-date-label {
+  font-size: 0.9375rem;
   font-weight: 700;
-  font-size: 0.95rem;
   color: #2f3c8f;
+  white-space: nowrap;
 }
 
-.history-score-badge {
+/* Optional day title shown next to date */
+.history-day-title {
+  font-size: 0.82rem;
+  font-weight: 500;
+  font-style: italic;
+  color: #7986cb;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+/* Score chips row */
+.history-scores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+/* ================================================================
+   SCORE CHIPS  (.score-chip + colour variants)
+   ================================================================ */
+
+.score-chip {
+  display: inline-flex;
+  align-items: center;
   padding: 0.18rem 0.6rem;
   border-radius: 999px;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+/* Colour variants — mirrors scoreChipClass() in app.js */
+.chip-good  { background: #e8f5e9; color: #2e7d32; }
+.chip-ok    { background: #fff8e1; color: #f57f17; }
+.chip-tough { background: #fce4ec; color: #ad1457; }
+
+/* Legacy badge classes kept for backward compat */
+.badge-good  { background: #e8f5e9; color: #2e7d32; }
+.badge-ok    { background: #fff8e1; color: #f57f17; }
+.badge-tough { background: #fce4ec; color: #ad1457; }
+
+.history-score-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
   font-weight: 700;
 }
 
-.badge-good    { background: #e8f5e9; color: #2e7d32; }
-.badge-ok      { background: #fff8e1; color: #f57f17; }
-.badge-tough   { background: #fce4ec; color: #ad1457; }
+/* ================================================================
+   NOTES PREVIEW
+   ================================================================ */
+
+.history-notes-preview {
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: #5a5f7a;
+  line-height: 1.5;
+  margin-top: 0.25rem;
+  margin-bottom: 0.1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* ================================================================
+   HISTORY ITEM ACTION BUTTONS
+   ================================================================ */
+
+.history-item-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.history-load-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid #c5cae9;
+  border-radius: 6px;
+  background: #e8eaf6;
+  color: #3f51b5;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.history-load-btn:hover {
+  background: #c5cae9;
+  border-color: #9fa8da;
+}
+
+.history-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid #f8bbd0;
+  border-radius: 6px;
+  background: #fce4ec;
+  color: #c0105c;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.history-delete-btn:hover {
+  background: #f8bbd0;
+  border-color: #f48fb1;
+}
+
+/* ================================================================
+   LEGACY TAG CHIPS  (history-item-tags / history-tag)
+   ================================================================ */
 
 .history-item-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.3rem;
+  margin-top: 0.3rem;
 }
 
 .history-tag {
@@ -66,7 +191,10 @@
   color: #3f51b5;
 }
 
-/* Outer wrapper */
+/* ================================================================
+   TABLE VIEW — history-scroll / history-table
+   ================================================================ */
+
 .history-scroll {
   width: 100%;
   overflow-x: auto;
@@ -93,7 +221,6 @@
   min-width: 420px;
 }
 
-/* Header row */
 .history-table thead tr {
   background: #3f51b5;
   color: #fff;
@@ -120,29 +247,17 @@
   background: #3f51b5;
 }
 
-.history-table thead th:last-child {
-  border-right: none;
-}
+.history-table thead th:last-child { border-right: none; }
 
-/* Body rows */
 .history-table tbody tr {
   border-bottom: 1px solid #f0f2fa;
   transition: background 0.12s ease;
 }
 
-.history-table tbody tr:last-child {
-  border-bottom: none;
-}
+.history-table tbody tr:last-child { border-bottom: none; }
+.history-table tbody tr:nth-child(even) { background: #f7f8fc; }
+.history-table tbody tr:hover { background: #eef0fb; }
 
-.history-table tbody tr:nth-child(even) {
-  background: #f7f8fc;
-}
-
-.history-table tbody tr:hover {
-  background: #eef0fb;
-}
-
-/* Body cells */
 .history-table tbody td {
   padding: 0.55rem 0.85rem;
   color: #3a3f5c;
@@ -152,11 +267,8 @@
   line-height: 1.45;
 }
 
-.history-table tbody td:last-child {
-  border-right: none;
-}
+.history-table tbody td:last-child { border-right: none; }
 
-/* Sticky left column */
 .history-field-label {
   position: sticky;
   left: 0;
@@ -171,15 +283,9 @@
   min-width: 130px;
 }
 
-.history-table tbody tr:nth-child(even) .history-field-label {
-  background: #eff1f9;
-}
+.history-table tbody tr:nth-child(even) .history-field-label { background: #eff1f9; }
+.history-table tbody tr:hover .history-field-label { background: #e5e8f7; }
 
-.history-table tbody tr:hover .history-field-label {
-  background: #e5e8f7;
-}
-
-/* Numeric data cells */
 .history-table tbody td:not(.history-field-label):not(.symptoms-cell):not(.notes-cell) {
   font-variant-numeric: tabular-nums;
   font-weight: 600;
@@ -187,11 +293,8 @@
   font-size: 0.9rem;
 }
 
-.history-table tbody td:not(.history-field-label) {
-  color: #3a3f5c;
-}
+.history-table tbody td:not(.history-field-label) { color: #3a3f5c; }
 
-/* Symptom tag chips */
 .symptoms-cell {
   text-align: left !important;
   vertical-align: top;
@@ -211,7 +314,6 @@
   letter-spacing: 0.01em;
 }
 
-/* Notes cells */
 .notes-cell {
   text-align: left !important;
   font-size: 0.82rem;
@@ -224,14 +326,17 @@
   vertical-align: top;
 }
 
-/* Empty / error / loading states */
+/* ================================================================
+   EMPTY / ERROR / LOADING STATES
+   ================================================================ */
+
 .history-empty,
 .history-error,
 .history-loading {
   display: block;
   padding: 2.5rem 1.5rem;
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-style: italic;
   color: #9ba3bf;
   background: #fff;
@@ -259,14 +364,17 @@
 
 .history-controls label {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
 }
 
 .history-controls input[type="date"] {
   margin-top: 0.2rem;
 }
 
-/* Modal overlay */
+/* ================================================================
+   MODAL
+   ================================================================ */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -293,7 +401,9 @@
   margin: 0 0 1rem 0;
   border: none;
   padding: 0;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2f3c8f;
 }
 
 .modal-close {
