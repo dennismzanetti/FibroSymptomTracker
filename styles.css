@@ -545,7 +545,7 @@ h4 {
 
 @media (max-width: 640px) {
   .save-day-float {
-    bottom: 7rem;
+    bottom: 4.5rem;
     right: 1rem;
     padding: 0.55rem 1rem;
     font-size: 0.85rem;
@@ -841,7 +841,7 @@ textarea {
 
 .toast {
   position: fixed;
-  bottom: 7rem;
+  bottom: 4.5rem;
   right: 1.5rem;
   z-index: 9999;
   min-width: 220px;
