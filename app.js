@@ -696,3 +696,152 @@ async function refreshTrends() {
 // ============================================================
 // MOOD TAB — owned entirely by mood.js
 // ============================================================
+
+// ================================================================
+//  EXPORT / IMPORT DATA
+// ================================================================
+
+async function exportAllData() {
+  const statusEl = document.getElementById("exportImportStatus");
+  const btn = document.getElementById("exportDataBtn");
+
+  statusEl.style.display = "block";
+  statusEl.className = "settings-status settings-status-info";
+  statusEl.textContent = "Exporting… please wait.";
+  btn.disabled = true;
+
+  try {
+    const collections = [
+      "days",
+      "medications",
+      "supplements",
+      "medicationHistory",
+      "careTeam",
+      "appointments",
+      "automaticThoughtRecords"
+    ];
+
+    const backup = {
+      exportedAt: new Date().toISOString(),
+      appVersion: "FibroSymptomTracker",
+      collections: {}
+    };
+
+    for (const col of collections) {
+      const snap = await db.collection(col).get();
+      backup.collections[col] = {};
+      snap.forEach(doc => {
+        backup.collections[col][doc.id] = doc.data();
+      });
+      const count = snap.size;
+      statusEl.textContent = `Exporting ${col}… (${count} records)`;
+    }
+
+    const json = JSON.stringify(backup, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const dateStr = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `fibro-backup-${dateStr}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    let total = 0;
+    for (const col of collections) total += Object.keys(backup.collections[col]).length;
+    statusEl.className = "settings-status settings-status-success";
+    statusEl.textContent = `✓ Export complete — ${total} total records downloaded.`;
+  } catch (err) {
+    console.error("Export error:", err);
+    statusEl.className = "settings-status settings-status-error";
+    statusEl.textContent = "Export failed: " + err.message;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+let pendingImportData = null;
+
+function handleImportFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const statusEl = document.getElementById("exportImportStatus");
+  const confirmBox = document.getElementById("importConfirmBox");
+  const confirmMsg = document.getElementById("importConfirmMsg");
+
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    try {
+      const data = JSON.parse(evt.target.result);
+      if (!data.collections) throw new Error("Invalid backup file format.");
+
+      let total = 0;
+      const cols = Object.keys(data.collections);
+      cols.forEach(c => total += Object.keys(data.collections[c]).length);
+
+      pendingImportData = data;
+      confirmMsg.textContent = `Import ${total} records across ${cols.length} collections from backup dated ${data.exportedAt ? data.exportedAt.slice(0,10) : "unknown"}? This will overwrite existing matching records.`;
+      confirmBox.style.display = "block";
+      statusEl.style.display = "none";
+    } catch (err) {
+      statusEl.style.display = "block";
+      statusEl.className = "settings-status settings-status-error";
+      statusEl.textContent = "Could not read file: " + err.message;
+    }
+  };
+  reader.readAsText(file);
+  // Reset input so same file can be re-selected
+  e.target.value = "";
+}
+
+async function confirmImport() {
+  const statusEl = document.getElementById("exportImportStatus");
+  const confirmBox = document.getElementById("importConfirmBox");
+  const confirmBtn = document.getElementById("importConfirmBtn");
+
+  if (!pendingImportData) return;
+  confirmBox.style.display = "none";
+  statusEl.style.display = "block";
+  statusEl.className = "settings-status settings-status-info";
+  statusEl.textContent = "Importing… please wait.";
+  confirmBtn.disabled = true;
+
+  try {
+    const collections = pendingImportData.collections;
+    let total = 0;
+
+    for (const col of Object.keys(collections)) {
+      const docs = collections[col];
+      for (const [id, data] of Object.entries(docs)) {
+        await db.collection(col).doc(id).set(data, { merge: true });
+        total++;
+      }
+      statusEl.textContent = `Importing ${col}…`;
+    }
+
+    statusEl.className = "settings-status settings-status-success";
+    statusEl.textContent = `✓ Import complete — ${total} records restored.`;
+    pendingImportData = null;
+  } catch (err) {
+    console.error("Import error:", err);
+    statusEl.className = "settings-status settings-status-error";
+    statusEl.textContent = "Import failed: " + err.message;
+  } finally {
+    confirmBtn.disabled = false;
+  }
+}
+
+function cancelImport() {
+  pendingImportData = null;
+  document.getElementById("importConfirmBox").style.display = "none";
+  document.getElementById("importFileInput").value = "";
+}
+
+// Wire up export/import listeners after DOM ready
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("exportDataBtn")?.addEventListener("click", exportAllData);
+  document.getElementById("importFileInput")?.addEventListener("change", handleImportFile);
+  document.getElementById("importConfirmBtn")?.addEventListener("click", confirmImport);
+  document.getElementById("importCancelBtn")?.addEventListener("click", cancelImport);
+});
