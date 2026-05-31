@@ -1,1 +1,108 @@
-placeholder
+/* MOOD STYLES — FibroSymptomTracker */
+
+/* ================================================================
+   MOOD TAB
+   ================================================================ */
+
+.mood-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.mood-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.25rem;
+  border: 2px solid #e7eaf3;
+  border-radius: 10px;
+  background: #fafbff;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #5a5f7a;
+  text-align: center;
+}
+
+.mood-btn:hover {
+  border-color: #9fa8da;
+  background: #f0f2ff;
+}
+
+.mood-btn.selected {
+  border-color: #3f51b5;
+  background: #e8eaf6;
+  color: #3f51b5;
+}
+
+.mood-emoji {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.mood-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #5a5f7a;
+}
+
+/* Mood log */
+.mood-log-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mood-log-item {
+  display: flex;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.mood-log-emoji {
+  font-size: 1.6rem;
+}
+
+.mood-log-label {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2f3c8f;
+}
+
+.mood-log-time {
+  font-size: 0.8rem;
+  color: #9ba3bf;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.mood-log-note {
+  font-weight: 600;
+  color: #3f51b5;
+}
+
+.mood-log-delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #c0105c;
+  font-size: 1rem;
+  padding: 0 0.25rem;
+}
+
+.mood-log-delete-btn:hover {
+  color: #880e4f;
+}
+
+/* ================================================================
+   TRENDS TAB
+   ================================================================ */
+
+.trends-chart-wrap {
+  width: 100%;
+  overflow-x: auto;
+}

@@ -1,1 +1,260 @@
-placeholder
+/* CARE TEAM STYLES — FibroSymptomTracker */
+
+/* ================================================================
+   CARE TEAM TAB
+   ================================================================ */
+
+/* --- Provider list --- */
+
+.ct-provider-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ct-provider-item {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #e7eaf3;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.ct-provider-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.ct-provider-header:hover {
+  background: #f7f8fc;
+}
+
+.ct-provider-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1c1d22;
+}
+
+.ct-provider-specialty {
+  font-size: 0.82rem;
+  color: #5a5f7a;
+  margin-bottom: 0.15rem;
+}
+
+.ct-provider-org {
+  font-size: 0.8rem;
+  color: #9ba3bf;
+}
+
+.ct-provider-meta {
+  font-size: 0.82rem;
+  color: #5a5f7a;
+}
+
+.ct-provider-next-appt {
+  font-size: 0.8rem;
+  color: #9ba3bf;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ct-meta-text {
+  font-size: 0.82rem;
+  color: #5a5f7a;
+  margin-bottom: 0.2rem;
+}
+
+/* --- Appointment list items --- */
+
+.ct-appt-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ct-appt-item {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ct-appt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.ct-appt-date {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1c1d22;
+}
+
+.ct-appt-detail {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #2b2f42;
+}
+
+.ct-appt-notes {
+  font-size: 0.82rem;
+  color: #5a5f7a;
+  margin-bottom: 0.35rem;
+}
+
+.ct-appt-provider {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.ct-followup-flag {
+  font-weight: 600;
+  color: #3f51b5;
+}
+
+/* --- Item action buttons --- */
+
+.ct-item-actions {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 420px) {
+  .ct-item-actions {
+    flex-direction: column; align-items: flex-start;
+  }
+}
+
+.ct-edit-btn,
+.ct-appt-btn,
+.ct-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s ease;
+}
+
+.ct-appt-btn {
+  background: #e8eaf6;
+  color: #3f51b5;
+  border-color: #c5cae9;
+}
+
+.ct-appt-btn:hover {
+  background: #c5cae9;
+}
+
+.ct-edit-btn {
+  background: #e8eaf6;
+  color: #3f51b5;
+  border-color: #c5cae9;
+}
+
+.ct-edit-btn:hover {
+  background: #c5cae9;
+}
+
+.ct-delete-btn {
+  background: #fce4ec;
+  color: #c0105c;
+  border-color: #f8bbd0;
+}
+
+.ct-delete-btn:hover {
+  background: #f8bbd0;
+}
+
+/* Shared pill sub-tab button — applies to both Medications and Care Team */
+.med-sub-tab-btn.active,
+.ct-sub-tab-btn.active {
+  color: #3f51b5;
+  border-bottom-color: #3f51b5;
+  font-weight: 700;
+}
+
+.med-sub-tab-btn:hover,
+.ct-sub-tab-btn:hover {
+  color: #3f51b5;
+}
+
+/* Status badge colours */
+.ct-status-active   { background: #e8f5e9; color: #2e7d32; }
+.ct-status-inactive { background: #f3f4f8; color: #7986cb; }
+
+/* Empty state */
+.ct-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  color: #9ba3bf;
+}
+
+.ct-empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.7;
+}
+
+.ct-empty-state h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #3f51b5;
+  margin: 0 0 0.4rem 0;
+}
+
+.ct-empty-state p {
+  font-size: 0.82rem;
+  color: #5a5f7a;
+  margin: 0 0 1rem 0;
+}
+
+/* ================================================================
+   CARE TEAM — Appt-header & provider-header shared style
+   ================================================================ */
+
+.ct-provider-header,
+.ct-appt-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 420px) {
+  .ct-provider-header,
+  .ct-appt-header {
+    flex-direction: column; align-items: flex-start;
+  }
+}
+
+.ct-link {
+  color: #303f9f; text-decoration: underline;
+}
+
+.ct-link:hover { color: #1a237e; }
+
+/* ================================================================
+   (end of care team styles)
+   ================================================================ */
