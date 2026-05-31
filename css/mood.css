@@ -1,0 +1,40 @@
+/* MOOD STYLES — FibroSymptomTracker */
+
+/* =====================================================================
+   MOOD.CSS — ATR (Automatic Thought Record) tab styles
+   ===================================================================== */
+
+.mood-tab-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.atr-form-card .card {
+  background: var(--color-surface);
+}
+
+.atr-range-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+}
+.atr-range-wrap input[type="range"] {
+  flex: 1;
+}
+.atr-range-val {
+  font-weight: 700;
+  min-width: 1.5rem;
+  text-align: right;
+  color: var(--color-primary);
+}
+
+.atr-list-section h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  margin-bottom: 0.5rem;
+}
