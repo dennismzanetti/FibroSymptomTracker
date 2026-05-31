@@ -1,0 +1,138 @@
+/* BODY PAIN MAP — FibroSymptomTracker */
+
+/* =====================================================================
+   PAIN-MAP.CSS — body outline + location buttons
+   ===================================================================== */
+
+.pain-map-outer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.pain-map-figures {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pain-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.pain-figure-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9e9ea8;
+}
+
+.pain-map-wrap {
+  position: relative;
+  width: 110px;
+}
+
+.pain-map-wrap svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Location dot buttons */
+.pain-location-btn {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.85);
+  background: rgba(180,190,240,0.45);
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: background 0.12s, transform 0.1s;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+.pain-location-btn:hover {
+  background: rgba(90,110,210,0.6);
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+/* Severity 1 — mild (yellow) */
+.pain-location-btn[data-severity="1"] {
+  background: #fdd835;
+  border-color: white;
+}
+
+/* Severity 2 — moderate (orange) */
+.pain-location-btn[data-severity="2"] {
+  background: #fb8c00;
+  border-color: white;
+}
+
+/* Severity 3 — severe (red) */
+.pain-location-btn[data-severity="3"] {
+  background: #e53935;
+  border-color: white;
+}
+
+/* Legacy class names kept for backwards compat */
+.pain-location-btn.active   { background: #e53935; border-color: white; }
+.pain-location-btn.active-2 { background: #fb8c00; border-color: white; }
+.pain-location-btn.active-3 { background: #fdd835; border-color: white; }
+
+/* Severity legend */
+.pain-severity-legend {
+  display: flex;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: 0.72rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.pain-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.pain-legend-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+
+.pain-legend-none  { background: rgba(180,190,240,0.45); }
+.pain-legend-mild  { background: #fdd835; }
+.pain-legend-mod   { background: #fb8c00; }
+.pain-legend-sev   { background: #e53935; }
+
+/* Clear button */
+.pain-clear-btn {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid #c5cae9;
+  background: white;
+  color: #5c6bc0;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.pain-clear-btn:hover {
+  background: #e8eaf6;
+}
