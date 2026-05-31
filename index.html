@@ -43,6 +43,7 @@
       <button class="tab-button" data-tab="mood-tab">Mood</button>
       <button class="tab-button" data-tab="medications-tab">Medications</button>
       <button class="tab-button" data-tab="careteam-tab">Care Team</button>
+      <button class="tab-button" data-tab="settings-tab">Settings</button>
     </nav>
 
     <button id="signOutBtn" class="header-signout-btn" style="display:none;">Sign Out</button>
@@ -68,6 +69,7 @@
           <option value="mood-tab">Mood</option>
           <option value="medications-tab">Medications</option>
           <option value="careteam-tab">Care Team</option>
+          <option value="settings-tab">Settings</option>
         </select>
         <span class="tab-select-chevron" aria-hidden="true">&#9660;</span>
       </div>
@@ -483,6 +485,37 @@
         <ul id="ctPastAppts"></ul>
       </div>
     </div>
+  </section>
+
+  <!-- Settings Tab -->
+  <section id="settings-tab" class="tab">
+    <h2>Settings</h2>
+
+    <div class="card settings-card">
+      <h3 class="settings-section-title">&#128190; Data Backup &amp; Restore</h3>
+      <p class="settings-desc">Export all your data (daily entries, medications, supplements, care team, appointments, mood records) to a JSON file. You can import it later to restore your data.</p>
+
+      <div class="settings-actions">
+        <button id="exportDataBtn" class="btn-settings-primary">
+          &#11015; Export My Data
+        </button>
+        <label class="btn-settings-secondary" id="importDataLabel">
+          &#11014; Import Data
+          <input type="file" id="importFileInput" accept=".json" style="display:none;" />
+        </label>
+      </div>
+
+      <div id="exportImportStatus" class="settings-status" style="display:none;"></div>
+
+      <div id="importConfirmBox" class="settings-confirm-box" style="display:none;">
+        <p id="importConfirmMsg"></p>
+        <div class="settings-confirm-actions">
+          <button id="importConfirmBtn" class="btn-settings-primary">&#10003; Yes, Import</button>
+          <button id="importCancelBtn" class="btn-settings-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+
   </section>
 
 </main>

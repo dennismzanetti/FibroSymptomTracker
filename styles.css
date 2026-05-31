@@ -1820,3 +1820,145 @@ textarea {
     display: none;
   }
 }
+
+/* ================================================================
+   SETTINGS TAB
+   ================================================================ */
+
+.settings-card {
+  max-width: 560px;
+  margin: 1rem auto;
+  padding: 1.5rem;
+}
+
+.settings-section-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #2f3c8f;
+  margin-bottom: 0.6rem;
+}
+
+.settings-desc {
+  font-size: 0.88rem;
+  color: #5a5f7a;
+  line-height: 1.55;
+  margin-bottom: 1.25rem;
+}
+
+.settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.btn-settings-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.25rem;
+  background: #3f51b5;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 2px 8px rgba(63,81,181,0.25);
+}
+
+.btn-settings-primary:hover {
+  background: #303f9f;
+  box-shadow: 0 4px 14px rgba(63,81,181,0.35);
+}
+
+.btn-settings-primary:disabled {
+  background: #9fa8da;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-settings-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.25rem;
+  background: #f0f2ff;
+  color: #3f51b5;
+  border: 2px solid #c5cae9;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-settings-secondary:hover {
+  background: #e8eaf6;
+  border-color: #7986cb;
+}
+
+.btn-settings-cancel {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 1rem;
+  background: none;
+  color: #777;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-settings-cancel:hover {
+  background: #f5f5f5;
+}
+
+.settings-status {
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-top: 0.75rem;
+}
+
+.settings-status-info {
+  background: #e8eaf6;
+  color: #3949ab;
+}
+
+.settings-status-success {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+}
+
+.settings-status-error {
+  background: #fce4ec;
+  color: #880e4f;
+  border: 1px solid #f48fb1;
+}
+
+.settings-confirm-box {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 10px;
+}
+
+.settings-confirm-box p {
+  font-size: 0.88rem;
+  color: #5a4000;
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.settings-confirm-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
