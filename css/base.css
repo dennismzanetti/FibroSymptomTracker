@@ -13,7 +13,6 @@
   --color-primary-hover:    #303f9f;
   --color-primary-active:   #283593;
   --color-primary-dark:     #2f3c8f;  /* darker shade for headings/values */
-  --color-primary-deep:     #2b2f42;  /* near-black indigo for strong text */
   --color-primary-light:    #e8eaf6;
   --color-primary-light-2:  #f0f2ff;  /* lighter tint, used for hover/tag bg */
   --color-primary-border:   #c5cae9;
@@ -45,25 +44,16 @@
   --color-surface:          #ffffff;
   --color-surface-2:        #f0f2fa;
   --color-surface-3:        #f7f8fd;   /* very light surface, e.g. card hover */
-  --color-surface-4:        #fafbff;   /* near-white tinted surface */
-  --color-surface-5:        #eff1f9;   /* table row stripe */
 
   /* --- Borders --- */
   --color-border:           #e4e8f2;
-  --color-border-card:      #e7eaf3;   /* slightly cooler, used on cards */
   --color-border-input:     #d5daea;
-  --color-border-accent:    #ced3ea;   /* slightly more indigo-tinted border */
   --color-divider:          #e4e8f2;
 
   /* --- Text --- */
   --color-text:             #1c1d22;
   --color-text-muted:       #555b7a;
   --color-text-faint:       #9ba3bf;
-  --color-text-subtle:      #6b7194;   /* between muted and faint */
-  --color-text-label:       #3d435e;
-  --color-text-heading:     #333a56;
-  --color-text-meta:        #5a5f7a;   /* common metadata / secondary text */
-  --color-text-dark:        #2b2f42;   /* near-black for emphasized body text */
 
   /* --- Pain intensity scale (body map) --- */
   --color-pain-1:  #ffd54f;  /* mild   — warm yellow */
