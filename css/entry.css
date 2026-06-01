@@ -305,3 +305,46 @@
   color: #2f3c8f;
   font-size: 1rem;
 }
+
+/* ================================================================
+   QUICK TAGS — pill toggle chips
+   ================================================================ */
+
+#tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+#tagsContainer label {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.9rem;
+  border: 1.5px solid #c5cae9;
+  border-radius: 999px;
+  background: #f0f2ff;
+  color: #3949ab;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 0;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+#tagsContainer label:hover {
+  background: #e3e6f5;
+  border-color: #9fa8da;
+}
+
+/* Hide the native checkbox */
+#tagsContainer input[type="checkbox"] {
+  display: none;
+}
+
+/* Checked = filled pill */
+#tagsContainer label:has(input:checked) {
+  background: #3949ab;
+  color: #fff;
+  border-color: #3949ab;
+}
