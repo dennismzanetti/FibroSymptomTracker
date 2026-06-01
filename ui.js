@@ -46,7 +46,7 @@ function showToast(msg, isError = false) {
   toast.className = 'toast' + (isError ? ' toast-error' : ' toast-success');
   toast.style.display = 'block';
   clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => { toast.style.display = 'none'; }, 3000);
+  toast._timer = setTimeout(() => { toast.style.display = 'none'; }, 5000);
 }
 
 // ---- Mobile wiring — sign-out sync + tab select ----
