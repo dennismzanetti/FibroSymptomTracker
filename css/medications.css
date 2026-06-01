@@ -15,46 +15,52 @@
 .med-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  background: #fff;
-  border: 1px solid #e7eaf3;
-  border-radius: 10px;
-  margin-bottom: 0.5rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-2);
+  box-shadow: var(--shadow-sm);
 }
 
 .med-item-name {
-  flex: 1; min-width: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .med-item-actions {
   display: flex;
-  gap: 0.35rem;
-  margin-top: 0.5rem;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
 }
 
+/*
+  .med-edit-btn / .med-delete-btn — layout-only rows.
+  Visual styling is handled by .btn + .btn-secondary / .btn-danger
+  in styles.css. These selectors are kept for margin/gap compat.
+*/
 .med-edit-btn,
 .med-delete-btn {
   display: flex;
-  gap: 0.35rem;
-  margin-top: 0.6rem;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
 }
 
 /* --- Add / Edit Medication Form --- */
 
 .med-form-card {
-  background: #fff;
-  border: 1px solid #e7eaf3;
-  border-radius: 12px;
-  padding: 1rem 1.1rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-card);
 }
 
 .med-form-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-2);
   flex-wrap: wrap;
 }
 
@@ -73,14 +79,14 @@
 }
 
 .med-log-name {
-  font-size: 0.9rem;
+  font-size: var(--text-base);
   font-weight: 600;
-  color: #1c1d22;
+  color: var(--color-text);
 }
 
 .med-log-time {
-  font-size: 0.8rem;
-  color: #9ba3bf;
+  font-size: var(--text-sm);
+  color: var(--color-text-faint);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -90,51 +96,28 @@
 .med-quick-log-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
 }
 
 .med-quick-log-btn {
-  padding: 0.38rem 0.85rem;
-  font-size: 0.82rem;
+  padding: 0.38rem var(--space-3);
+  font-size: var(--text-sm);
   font-weight: 600;
-  border: 1px solid #c5cae9;
-  border-radius: 999px;
-  background: #f0f2ff;
-  color: #3f51b5;
+  border: 1px solid var(--color-primary-border);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-light-2);
+  color: var(--color-primary);
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
 }
 
 .med-quick-log-btn:hover {
-  background: #e8eaf6;
-  border-color: #9fa8da;
+  background: var(--color-primary-light);
+  border-color: var(--color-primary-faint);
 }
 
-/* ================================================================
-   SAVE BUTTON (shared)
-   ================================================================ */
-
-.save-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.5rem 1.1rem;
-  font-size: 0.9rem;
-  font-weight: 700;
-  background: #3f51b5;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.save-btn:hover {
-  background: #303f9f;
-  box-shadow: 0 2px 8px rgba(63,81,181,0.3);
-}
-
-.save-btn:active {
-  background: #283593;
-}
+/*
+  NOTE: .save-btn was removed — use .btn.btn-primary from styles.css instead.
+  Keeping this comment so the removal is documented.
+*/

@@ -5,13 +5,13 @@
    ================================================================ */
 
 .journal-form {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-6);
 }
 
 .journal-list {
   list-style: none;
   padding: 0;
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 var(--space-6) 0;
 }
 
 .journal-entry {
@@ -21,23 +21,24 @@
 }
 
 .journal-entry-title {
-  font-size: 0.95rem;
+  font-size: var(--text-md);
   font-weight: 700;
-  color: #1c1d22;
+  color: var(--color-text);
 }
 
 .journal-tag {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.3rem;
-  margin-top: 0.5rem;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
 }
 
+/* Legacy action button rows — no visual styles, kept for layout compat */
 .journal-edit-btn,
 .journal-delete-btn {
   display: flex;
-  gap: 0.35rem;
-  margin-top: 0.6rem;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
 }
 
 /* ================================================================
@@ -48,26 +49,26 @@
 .jv2-filter-bar {
   display: flex;
   align-items: flex-end;
-  gap: 0.75rem;
+  gap: var(--space-3);
   flex-wrap: wrap;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-4);
 }
 
 .jv2-filter-label {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--space-1);
   margin-bottom: 0;
 }
 
 .jv2-filter-select {
   padding: 0.35rem 0.7rem;
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   font-weight: 600;
-  border: 1px solid #ced3ea;
-  border-radius: 8px;
-  background: #fafbff;
-  color: #1c1d22;
+  border: 1px solid var(--color-border-accent);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-4);
+  color: var(--color-text);
   cursor: pointer;
 }
 
@@ -79,81 +80,76 @@
 }
 
 .jv2-section {
-  border: 1px solid #e7eaf3;
-  border-radius: 12px;
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  margin-bottom: 0.6rem;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  margin-bottom: var(--space-2);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
 }
 
 .jv2-section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1rem;
+  padding: var(--space-3) var(--space-4);
   cursor: pointer;
-  background: #3f51b5;
+  background: var(--color-primary);
   color: white;
   user-select: none;
-  border: 1px solid #e7eaf3;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   overflow: hidden;
 }
 
 .jv2-section-title {
-  font-size: 0.9rem;
+  font-size: var(--text-base);
   font-weight: 700;
   color: white;
 }
 
 .jv2-section-chevron {
   flex-shrink: 0;
-  color: #9fa8da;
-  transition: transform 0.2s ease;
+  color: var(--color-primary-faint);
+  transition: transform var(--transition-smooth);
 }
 
 .jv2-section-body {
-  padding: 0.75rem 1rem;
+  padding: var(--space-3) var(--space-4);
 }
 
 .jv2-section[open] > summary .jv2-section-chevron {
   transform: rotate(180deg);
 }
 
-/* Card header */
-.jv2-card-header {
-  flex: 1;
-  min-width: 0;
-  padding: 1rem 1.1rem;
-}
-
+/* Card */
 .jv2-card {
-  border: 1px solid #e7eaf3;
-  border-radius: 12px;
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  margin-bottom: 0.75rem;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  margin-bottom: var(--space-3);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
 }
 
 .jv2-card-header {
   display: flex;
   align-items: flex-start;
-  gap: 0.6rem;
-  padding: 0.85rem 1rem 0.5rem;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4) var(--space-2);
   cursor: pointer;
-  transition: background 0.12s ease;
+  transition: background var(--transition-fast);
+  flex: 1;
+  min-width: 0;
 }
 
 .jv2-card-header:hover {
-  background: #f7f8fc;
+  background: var(--color-surface-3);
 }
 
 .jv2-header-right {
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
+  gap: var(--space-1);
   min-width: 0;
 }
 
@@ -171,27 +167,27 @@
 .jv2-dow {
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
+  gap: var(--space-1);
 }
 
 .jv2-dash {
-  font-size: 0.65rem;
+  font-size: var(--text-xs);
   font-weight: 600;
   opacity: 0.75;
 }
 
 .jv2-title {
-  font-size: 1rem;
+  font-size: var(--text-lg);
   font-weight: 700;
-  color: #3f51b5;
-  margin: 0 0 0.4rem 0;
+  color: var(--color-primary);
+  margin: 0 0 var(--space-1) 0;
 }
 
 .jv2-stat-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-  margin-bottom: 0.5rem;
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-2);
 }
 
 .jv2-stat-chip {
@@ -201,64 +197,63 @@
 }
 
 .jv2-stat-label {
-  font-size: 0.7rem;
-  color: #9ba3bf;
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
 }
 
 .jv2-stat-body {
-  font-size: 0.82rem;
+  font-size: var(--text-sm);
   font-weight: 700;
-  color: #2b2f42;
+  color: var(--color-text-dark);
 }
 
 .jv2-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.3rem;
+  gap: var(--space-1);
 }
 
 .jv2-tag {
   display: inline-block;
-  padding: 0.15rem 0.5rem;
-  border-radius: 999px;
-  font-size: 0.73rem;
+  padding: 0.15rem var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
   font-weight: 700;
-  background: #e8eaf6;
-  color: #3f51b5;
-  border: 1px solid #c5cae9;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary-border);
 }
 
-/* Sleep / exercise stats grid */
 .jv2-sleep-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: var(--space-1);
   justify-content: flex-end;
 }
 
 .jv2-sleep-stat {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
 }
 
 .jv2-func-name {
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
+  gap: var(--space-1);
   min-width: 0;
 }
 
 .jv2-func-time {
-  font-size: 0.82rem;
+  font-size: var(--text-sm);
   font-weight: 700;
-  color: #2f3c8f;
+  color: var(--color-primary-dark);
 }
 
 .jv2-func-detail {
-  font-size: 0.82rem;
-  color: #5a5f7a;
+  font-size: var(--text-sm);
+  color: var(--color-text-meta);
   font-style: italic;
 }
 
@@ -270,11 +265,7 @@
 
 .jv2-loading {
   text-align: center;
-  padding: 2rem;
-  color: #9ba3bf;
+  padding: var(--space-8);
+  color: var(--color-text-faint);
   font-style: italic;
 }
-
-/* ================================================================
-   (end of journal styles)
-   ================================================================ */

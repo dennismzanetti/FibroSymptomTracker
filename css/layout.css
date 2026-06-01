@@ -4,14 +4,6 @@
    All values use CSS variables from css/base.css.
    ================================================================ */
 
-/* ----------------------------------------------------------------
-   LAYOUT TOKEN
-   ---------------------------------------------------------------- */
-
-:root {
-  --footer-h: 1.8rem;  /* build footer height — used by toast & float btn */
-}
-
 /* ================================================================
    STICKY HEADER
    ================================================================ */
@@ -72,7 +64,7 @@
 }
 
 .header-signout-btn:hover  { background: rgba(255,255,255,0.28); border-color: rgba(255,255,255,0.55); }
-.header-signout-btn:focus  { outline: none; box-shadow: 0 0 0 3px rgba(255,255,255,0.35); }
+.header-signout-btn:focus  { outline: none; box-shadow: var(--shadow-focus-white); }
 .header-signout-btn:active { background: rgba(255,255,255,0.22); }
 
 /* Tab pill strip */
@@ -176,9 +168,9 @@
 }
 
 /* Mobile date picker row overrides */
-.header-mobile-row2 .date-nav-btn   { width: 30px; height: 30px; min-width: 30px; font-size: 1.2rem; }
+.header-mobile-row2 .date-nav-btn    { width: 30px; height: 30px; min-width: 30px; font-size: 1.2rem; }
 .header-mobile-row2 .date-picker-btn { padding: var(--space-1) 0.65rem; font-size: var(--text-sm); }
-.header-mobile-row2 .day-of-week-display { font-size: 0.72rem; }
+.header-mobile-row2 .day-of-week-display { font-size: var(--text-xs); }
 
 /* ================================================================
    MOBILE TAB SELECT
@@ -209,7 +201,7 @@
   transition: background var(--transition-fast);
 }
 
-.tab-select:focus { outline: none; box-shadow: 0 0 0 3px rgba(255,255,255,0.35); }
+.tab-select:focus { outline: none; box-shadow: var(--shadow-focus-white); }
 .tab-select option { background: var(--color-primary); color: white; }
 
 .tab-select-chevron {
@@ -244,7 +236,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.38rem 0.85rem;
+  padding: 0.38rem var(--space-3);
   background: rgba(255,255,255,0.18);
   color: white;
   border: 1px solid rgba(255,255,255,0.4);
@@ -258,7 +250,7 @@
 }
 
 .date-picker-btn:hover  { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.6); }
-.date-picker-btn:focus  { outline: none; box-shadow: 0 0 0 3px rgba(255,255,255,0.35); }
+.date-picker-btn:focus  { outline: none; box-shadow: var(--shadow-focus-white); }
 .date-picker-btn:active { background: rgba(255,255,255,0.22); }
 
 .day-of-week-display {
@@ -316,7 +308,7 @@
 .icon-btn:hover  { background: rgba(255,255,255,0.28); }
 
 .date-nav-btn:focus,
-.icon-btn:focus  { outline: none; box-shadow: 0 0 0 3px rgba(255,255,255,0.35); }
+.icon-btn:focus  { outline: none; box-shadow: var(--shadow-focus-white); }
 
 .date-nav-btn:active,
 .icon-btn:active { background: rgba(255,255,255,0.22); }
@@ -327,7 +319,7 @@
 
 h1 {
   margin: 0;
-  font-size: 1.35rem;
+  font-size: var(--text-xl);
   font-weight: 800;
   color: white;
 }
@@ -348,16 +340,16 @@ h3 { margin-top: 0; }
    ================================================================ */
 
 main {
-  padding: 0.85rem var(--space-4);
-  padding-bottom: 3.5rem;
+  padding: var(--space-3) var(--space-4);
+  padding-bottom: calc(var(--space-8) + var(--footer-h));
   max-width: var(--content-max);
   margin: 0 auto;
 }
 
 @media (max-width: 640px) {
   main {
-    padding: var(--space-2) var(--space-2);
-    padding-bottom: 3.5rem;
+    padding: var(--space-2);
+    padding-bottom: calc(var(--space-8) + var(--footer-h));
   }
 }
 
@@ -392,59 +384,5 @@ main {
   font-weight: 600;
   z-index: 300;
   letter-spacing: 0.04em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-}
-
-.build-footer a,
-.build-footer-sha,
-.build-footer-msg a {
-  color: var(--color-primary-border);
-  text-decoration: none;
-}
-
-.build-footer a:hover,
-.build-footer-msg a:hover { text-decoration: underline; }
-
-/* ================================================================
-   SUB-TAB STRIP (Medications, Care Team)
-   ================================================================ */
-
-.subtab-strip {
-  display: flex;
-  gap: 0;
-  margin-bottom: var(--space-4);
-  border-bottom: 2px solid var(--color-border);
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.subtab-strip::-webkit-scrollbar { display: none; }
-
-.med-sub-tabs,
-.med-sub-tab-btn,
-.ct-sub-tab-btn {
-  padding: 0.45rem var(--space-4);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--color-primary-muted);
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: color var(--transition-fast), border-color var(--transition-fast);
-}
-
-.med-sub-tab-btn:hover,
-.ct-sub-tab-btn:hover  { color: var(--color-primary); }
-
-.med-sub-tab-btn.active,
-.ct-sub-tab-btn.active {
-  color: var(--color-primary);
-  border-bottom-color: var(--color-primary);
-  font-weight: 700;
+  opacity: 0.9;
 }
