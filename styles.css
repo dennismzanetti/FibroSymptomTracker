@@ -556,47 +556,12 @@ input[type="range"] {
 }
 
 /* ================================================================
-   TOAST NOTIFICATIONS
-   ================================================================ */
-
-#toast-container {
-  position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  z-index: 900;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  pointer-events: none;
-}
-
-.toast {
-  background: #1c1d22;
-  color: #f5f5f5;
-  padding: 0.65rem 1rem;
-  border-radius: 8px;
-  font-size: 0.88rem;
-  font-weight: 500;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.22);
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.22s ease, transform 0.22s ease;
-  pointer-events: auto;
-  max-width: 320px;
-}
-
-.toast.show { opacity: 1; transform: translateY(0); }
-.toast.toast-success { background: #1b5e20; }
-.toast.toast-error   { background: #b71c1c; }
-.toast.toast-warn    { background: #e65100; }
-
-/* ================================================================
    PRINT STYLES
    ================================================================ */
 
 @media print {
   .app-header, .save-bar, .save-day-float, .build-footer,
-  #toast-container, #saveStatus, .modal-overlay, .toast { display: none !important; }
+  #saveStatus, .modal-overlay, .toast { display: none !important; }
   body { background: white; color: black; }
   main { padding: 0; max-width: 100%; }
   .card, .entry-section { box-shadow: none; border: 1px solid #ccc; }
@@ -623,9 +588,6 @@ input[type="range"] {
   .entry-section-summary { padding: 0.7rem 1rem; }
   .entry-section-body { padding: 0.6rem 1rem 0.85rem 1rem; }
   .modal-box { padding: 1.25rem; }
-
-  #toast-container { bottom: 1rem; right: 0.75rem; left: 0.75rem; }
-  .toast { max-width: 100%; }
 }
 
 /* ================================================================
