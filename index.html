@@ -31,10 +31,25 @@
 
 <header class="app-header">
 
-  <!-- DESKTOP: single row with title | tabs | sign-out -->
+  <!-- DESKTOP -->
   <div class="header-desktop">
-    <h1 class="header-title">Symptom Tracker</h1>
 
+    <!-- Row 1: title + sign-out icon -->
+    <div class="header-row1">
+      <h1 class="header-title">Symptom Tracker</h1>
+      <button id="signOutBtn" class="header-signout-btn" style="display:none;"
+              aria-label="Sign out" title="Sign out">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Row 2: tab pills -->
     <nav id="tabs" class="header-tabs">
       <button class="tab-button active" data-tab="entry-tab">Daily Entry</button>
       <button class="tab-button" data-tab="journal-tab">Journal</button>
@@ -46,7 +61,6 @@
       <button class="tab-button" data-tab="settings-tab">Settings</button>
     </nav>
 
-    <button id="signOutBtn" class="header-signout-btn" style="display:none;">Sign Out</button>
   </div>
 
   <!-- MOBILE HEADER -->
@@ -55,7 +69,16 @@
     <!-- Row 1: title + sign-out -->
     <div class="header-mobile-row1">
       <span class="header-mobile-title">Symptom Tracker</span>
-      <button id="signOutBtnMobile" class="header-signout-btn" style="display:none;">Sign Out</button>
+      <button id="signOutBtnMobile" class="header-signout-btn" style="display:none;"
+              aria-label="Sign out" title="Sign out">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
     </div>
 
     <!-- Row 2: tab select dropdown -->
