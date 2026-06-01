@@ -153,67 +153,6 @@
 }
 
 /* ================================================================
-   COLLAPSIBLE ENTRY SECTIONS (Daily Entry tab)
-   ================================================================ */
-
-.entry-section {
-  margin-bottom: 0.6rem;
-  border-radius: 12px;
-  border: 1px solid #e7eaf3;
-  background: #ffffff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  overflow: hidden;
-}
-
-.entry-section > summary {
-  list-style: none;
-}
-.entry-section > summary::-webkit-details-marker {
-  display: none;
-}
-
-.entry-section-summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.85rem 1.25rem;
-  cursor: pointer;
-  user-select: none;
-  background: #ffffff;
-  transition: background 0.15s ease;
-  gap: 0.75rem;
-}
-
-.entry-section-summary:hover {
-  background: #f3f4f8;
-}
-
-.entry-section-title {
-  font-size: 1.0rem;
-  font-weight: 700;
-  color: #2f3c8f;
-  flex: 1;
-}
-
-.entry-section-chevron {
-  flex-shrink: 0;
-  color: #9fa8da;
-  transition: transform 0.22s ease;
-}
-
-.entry-section[open] > .entry-section-summary .entry-section-chevron {
-  transform: rotate(180deg);
-}
-
-.entry-section-body.card {
-  border-radius: 0;
-  border: none;
-  border-top: 1px solid #e7eaf3;
-  box-shadow: none;
-  margin-bottom: 0;
-}
-
-/* ================================================================
    DESKTOP: always-expanded entry sections (>=768px)
    ================================================================ */
 
@@ -282,44 +221,11 @@
 }
 
 /* ================================================================
-   DAILY ENTRY FORM
+   FLOATING SAVE BUTTON
    ================================================================ */
-
-label {
-  display: block;
-  margin-bottom: 0.75rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #3a3f5c;
-}
-
-label input,
-label select,
-label textarea {
-  display: block;
-  width: 100%;
-  margin-top: 0.3rem;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #ced3ea;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  background: #fafbff;
-  color: #1c1d22;
-  box-sizing: border-box;
-  transition: border-color 0.2s ease;
-}
-
-label input:focus,
-label select:focus,
-label textarea:focus {
-  outline: none;
-  border-color: #3f51b5;
-  background: #fff;
-}
 
 .save-day-float {
   position: fixed;
-  /* Raised above the 1.8rem build footer with extra breathing room */
   bottom: 2.75rem;
   right: 1.25rem;
   z-index: 100;
@@ -350,69 +256,6 @@ label textarea:focus {
 }
 
 /* ================================================================
-   TAB VISIBILITY
-   ================================================================ */
-
-.tab {
-  display: none;
-}
-.tab.active {
-  display: block;
-}
-
-/* ================================================================
-   NUMBER STEPPER
-   ================================================================ */
-
-.number-stepper {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 0.3rem;
-}
-
-.stepper-btn {
-  width: 32px;
-  height: 32px;
-  border: 1px solid #ced3ea;
-  border-radius: 6px;
-  background: #f3f4f8;
-  color: #3f51b5;
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: background 0.15s, border-color 0.15s;
-}
-
-.stepper-btn:hover {
-  background: #e8eaf6;
-  border-color: #9fa8da;
-}
-
-.number-stepper input[type="number"] {
-  width: 60px;
-  text-align: center;
-  padding: 0.3rem 0.4rem;
-  font-size: 1rem;
-  font-weight: 700;
-  border: 1px solid #ced3ea;
-  border-radius: 6px;
-  background: #fff;
-  color: #1c1d22;
-  -moz-appearance: textfield;
-}
-
-.number-stepper input[type="number"]::-webkit-inner-spin-button,
-.number-stepper input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* ================================================================
    SLEEP TIME GRID
    ================================================================ */
 
@@ -438,4 +281,27 @@ label textarea:focus {
   font-size: 0.82rem;
   font-weight: 600;
   color: #5a5f7a;
+}
+
+/* ================================================================
+   SLEEP TOTAL DISPLAY
+   ================================================================ */
+
+.sleep-total-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.sleep-total-label {
+  color: #555b7a;
+  font-weight: 600;
+}
+
+.sleep-total-value {
+  font-weight: 700;
+  color: #2f3c8f;
+  font-size: 1rem;
 }
