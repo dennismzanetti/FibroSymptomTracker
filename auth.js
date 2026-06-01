@@ -1,13 +1,12 @@
-import { initFirebase } from './firebase-init.js';
-
-const { auth, googleProvider } = initFirebase();
+// auth.js — plain script (no import/export)
+// Firebase compat SDK is loaded via CDN and initialised in app.js before this runs.
 
 function isMobile() {
   return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 }
 
-// Must be called on every page load to consume the redirect token after sign-in
-auth.getRedirectResult().then(result => {
+// Consume any pending redirect result on page load
+firebase.auth().getRedirectResult().then(result => {
   if (result && result.user) {
     console.log('Redirect sign-in complete:', result.user.displayName);
   }
@@ -17,11 +16,13 @@ auth.getRedirectResult().then(result => {
   if (authError) authError.textContent = 'Sign-in failed. Please try again.';
 });
 
-export function setupAuth(onSignIn, onSignOut) {
-  const overlay    = document.getElementById('authOverlay');
-  const signInBtn  = document.getElementById('googleSignInBtn');
-  const signOutBtn = document.getElementById('signOutBtn');
-  const authError  = document.getElementById('authError');
+function setupAuth(onSignIn, onSignOut) {
+  const auth        = firebase.auth();
+  const provider    = new firebase.auth.GoogleAuthProvider();
+  const overlay     = document.getElementById('authOverlay');
+  const signInBtn   = document.getElementById('googleSignInBtn');
+  const signOutBtn  = document.getElementById('signOutBtn');
+  const authError   = document.getElementById('authError');
 
   auth.onAuthStateChanged(user => {
     if (user) {
@@ -38,12 +39,12 @@ export function setupAuth(onSignIn, onSignOut) {
   signInBtn.addEventListener('click', () => {
     authError.textContent = '';
     if (isMobile()) {
-      auth.signInWithRedirect(googleProvider).catch(err => {
+      auth.signInWithRedirect(provider).catch(err => {
         console.error('Redirect sign-in error:', err);
         authError.textContent = 'Sign-in failed. Please try again.';
       });
     } else {
-      auth.signInWithPopup(googleProvider).catch(err => {
+      auth.signInWithPopup(provider).catch(err => {
         console.error('Sign-in error:', err);
         authError.textContent = 'Sign-in failed. Please try again.';
       });
