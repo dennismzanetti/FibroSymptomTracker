@@ -1,80 +1,100 @@
 /* BODY PAIN MAP — FibroSymptomTracker */
 
 /* ================================================================
-   BODY PAIN MAP
+   PAIN MAP TAB
    ================================================================ */
 
-.pain-map-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-4);
-}
+/* --- SVG body map container --- */
 
-.pain-figures {
+.pain-map-svg-wrap {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.pain-figure {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-6);
   justify-content: center;
+  margin-bottom: var(--space-4);
 }
 
-.pain-figure figcaption {
-  font-size: var(--text-sm);
-  font-weight: 700;
-  color: var(--color-text-dark);
-  margin-top: var(--space-1);
-  text-align: center;
-}
-
-.pain-region {
-  fill: var(--color-primary-light);
-  cursor: pointer;
-  transition: fill var(--transition-smooth);
-}
-
-.pain-region:hover {
-  fill: var(--color-primary-border);
-}
-
-/* Pain intensity — uses semantic tokens defined in base.css */
-.pain-region.selected-1 { fill: var(--color-pain-1); }
-.pain-region.selected-2 { fill: var(--color-pain-2); }
-.pain-region.selected-3 { fill: var(--color-pain-3); }
-.pain-region.selected-4 { fill: var(--color-pain-4); }
-
-.pain-intensity-row {
-  margin-top: var(--space-1);
-  font-size: var(--text-sm);
-  color: var(--color-text-meta);
-  font-weight: 600;
-}
-
-/* ================================================================
-   COMPACT PAIN BODY MAP (History tab)
-   ================================================================ */
-
-.pain-body-compact-svg {
-  display: block;
-  max-width: 140px;
+.pain-map-svg {
+  width: 100%;
+  max-width: 360px;
   height: auto;
 }
 
-.pain-body-compact-svg:hover {
-  opacity: 0.85;
+/* --- Pain region hotspots --- */
+
+.pain-hotspot {
+  cursor: pointer;
+  fill: var(--color-surface-2);
+  stroke: var(--color-border);
+  stroke-width: 1.5;
+  transition: fill var(--transition-fast), stroke var(--transition-fast);
 }
 
-.pain-body-compact-region {
+.pain-hotspot:hover {
   fill: var(--color-primary-light);
-  transition: fill var(--transition-smooth);
+  stroke: var(--color-primary-border);
 }
 
-.pain-body-compact-region.selected-1 { fill: var(--color-pain-1); }
-.pain-body-compact-region.selected-2 { fill: var(--color-pain-2); }
-.pain-body-compact-region.selected-3 { fill: var(--color-pain-3); }
-.pain-body-compact-region.selected-4 { fill: var(--color-pain-4); }
+.pain-hotspot.level-1 { fill: var(--color-pain-1); stroke: var(--color-pain-1); }
+.pain-hotspot.level-2 { fill: var(--color-pain-2); stroke: var(--color-pain-2); }
+.pain-hotspot.level-3 { fill: var(--color-pain-3); stroke: var(--color-pain-3); }
+.pain-hotspot.level-4 { fill: var(--color-pain-4); stroke: var(--color-pain-4); }
+
+/* --- Region label overlay --- */
+
+.pain-region-label {
+  font-size: var(--text-xs);
+  fill: var(--color-text);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* --- Region intensity picker --- */
+
+.pain-intensity-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.pain-intensity-btn {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: opacity var(--transition-fast), border-color var(--transition-fast);
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+
+.pain-intensity-btn:hover { opacity: 0.85; }
+.pain-intensity-btn.active { border-color: var(--color-text); }
+
+/* --- Pain region list (text summary below map) --- */
+
+.pain-region-summary {
+  margin-top: var(--space-3);
+}
+
+.pain-region-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.pain-region-row:last-child { border-bottom: none; }
+
+.pain-region-name {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.pain-region-level {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}

@@ -1,346 +1,304 @@
 /* ENTRY STYLES — FibroSymptomTracker */
 
 /* ================================================================
-   DAILY ENTRY TAB — heading & day-of-week label
+   ENTRY TAB
    ================================================================ */
 
-#entry-tab > h2.entry-tab-heading {
-  margin-top: 0;
-  margin-bottom: var(--space-1);
-}
+/* --- Symptom rows --- */
 
-.entry-day-label {
-  margin: 0 0 var(--space-2) 0;
-  text-align: center;
-  font-size: var(--text-xl);
-  font-weight: 600;
-  color: var(--color-primary);
-  letter-spacing: 0.01em;
-  line-height: 1.3;
-}
-
-/* ================================================================
-   ENTRY-TAB DATE NAVIGATION BAR
-   ================================================================ */
-
-.entry-date-bar {
+.symptom-row {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  margin-bottom: var(--space-3);
-  padding: var(--space-1) 0;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-  position: relative;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-divider);
+  flex-wrap: wrap;
 }
 
-.entry-date-nav-btn {
-  width: 34px;
-  height: 34px;
-  min-width: 34px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  font-weight: 400;
-  line-height: 1;
-  overflow: visible;
-  border: 1px solid var(--color-border-accent);
-  border-radius: 50%;
-  background: var(--color-surface-2);
-  color: var(--color-primary);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background var(--transition-fast), border-color var(--transition-fast);
-  user-select: none;
-}
+.symptom-row:last-child { border-bottom: none; }
 
-.entry-date-nav-btn:hover {
-  background: var(--color-primary-light);
-  border-color: var(--color-primary-faint);
-}
-
-.entry-date-nav-btn:focus {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
-.entry-date-nav-btn:active {
-  background: var(--color-primary-border);
-}
-
-.entry-date-picker-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.38rem var(--space-3);
-  background: var(--color-primary-light-2);
-  color: var(--color-text-dark);
-  border: 1px solid var(--color-primary-border);
-  border-radius: var(--radius-md);
-  cursor: pointer;
+.symptom-label {
   font-size: var(--text-base);
   font-weight: 600;
-  white-space: nowrap;
-  transition: background var(--transition-fast), border-color var(--transition-fast);
-  line-height: 1.35;
-  flex: 0 1 auto;
+  color: var(--color-text);
+  flex: 1;
   min-width: 0;
 }
 
-.entry-date-picker-btn:hover {
+.symptom-value {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  min-width: 2.5rem;
+  text-align: right;
+}
+
+/* --- Symptom tags (inline selectors) --- */
+
+.symptom-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+}
+
+.symptom-tag {
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--color-border-accent);
+  background: var(--color-primary-light-2);
+  color: var(--color-primary);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.symptom-tag:hover {
   background: var(--color-primary-light);
-  border-color: var(--color-primary-faint);
+  border-color: var(--color-primary-border);
 }
 
-.entry-date-picker-btn:focus {
-  outline: none;
-  box-shadow: var(--shadow-focus);
+.symptom-tag.selected {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
 }
 
-.entry-date-picker-btn:active {
-  background: var(--color-primary-border);
+/* --- Symptom cards (expandable details) --- */
+
+.symptom-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--space-2);
+  background: var(--color-surface);
 }
 
-.entry-date-picker-btn svg {
-  display: block;
-  flex-shrink: 0;
-  width: 14px;
-  height: 14px;
-  color: var(--color-primary-faint);
-  stroke: currentColor;
-  overflow: visible;
+.symptom-card > summary { list-style: none; }
+.symptom-card > summary::-webkit-details-marker { display: none; }
+
+.symptom-card-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  user-select: none;
+  background: var(--color-surface);
+  transition: background var(--transition-fast);
+  gap: var(--space-2);
 }
 
-.entry-dow {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--color-primary-muted);
-  white-space: nowrap;
-}
+.symptom-card-summary:hover { background: var(--color-surface-2); }
 
-.entry-date-text {
-  font-size: var(--text-md);
+.symptom-card[open] > .symptom-card-summary { background: var(--color-surface-2); }
+
+.symptom-card-title {
+  font-size: var(--text-base);
   font-weight: 700;
-  color: var(--color-primary-dark);
-  white-space: nowrap;
+  color: var(--color-primary);
+  flex: 1;
+}
+
+.symptom-card-body {
+  padding: var(--space-2) var(--space-3) var(--space-3) var(--space-3);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+/* --- Sleep section --- */
+
+.sleep-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2) var(--space-4);
 }
 
 @media (max-width: 480px) {
-  .entry-date-bar {
-    gap: var(--space-1);
-    padding: var(--space-1) 0;
-  }
-  .entry-date-nav-btn {
-    width: 38px;
-    height: 38px;
-    min-width: 38px;
-    font-size: 1.6rem;
-  }
-  .entry-date-picker-btn {
-    padding: 0.35rem var(--space-2);
-    font-size: var(--text-sm);
-  }
-  .entry-dow {
-    display: none;
-  }
+  .sleep-grid { grid-template-columns: 1fr; }
 }
 
-/* ================================================================
-   DESKTOP: always-expanded entry sections (>=768px)
-   ================================================================ */
+/* --- Fatigue section --- */
 
-@media (min-width: 768px) {
-  .entry-section[open],
-  .entry-section:not([open]) { display: block; }
-  .entry-section > summary   { display: none; }
-
-  .entry-section-body.card {
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border-card);
-    box-shadow: var(--shadow-card);
-    margin-bottom: var(--space-2);
-  }
-}
-
-/* ================================================================
-   SAVE STATUS BAR  (#saveStatus)
-   ================================================================ */
-
-#saveStatus {
-  display: block;
-  min-height: 1.4em;
-  font-size: var(--text-sm);
-  font-weight: 600;
-  text-align: center;
-  padding: var(--space-1) 0;
-  color: var(--color-success);
-}
-
-/* ================================================================
-   TOAST NOTIFICATIONS  (#appToast)
-   ================================================================ */
-
-.toast {
-  position: fixed;
-  bottom: calc(var(--space-8) + var(--footer-h));
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 0.55rem var(--space-5);
-  border-radius: var(--radius-full);
-  font-size: var(--text-sm);
-  font-weight: 700;
-  white-space: nowrap;
-  max-width: 90vw;
-  text-align: center;
-  box-shadow: var(--shadow-lg);
-  z-index: 9999;
-  pointer-events: none;
-  animation: toastIn 0.22s ease;
-}
-
-@keyframes toastIn {
-  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
-  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-}
-
-.toast-success {
-  background: var(--color-success-deep);
-  color: var(--color-surface);
-}
-
-.toast-error {
-  background: var(--color-pink-deep);
-  color: var(--color-surface);
-}
-
-/* ================================================================
-   FLOATING SAVE BUTTON
-   ================================================================ */
-
-.save-day-float {
-  position: fixed;
-  bottom: calc(var(--space-6) + var(--footer-h));
-  right: var(--space-5);
-  z-index: 100;
-  padding: 0.55rem var(--space-5);
-  font-size: var(--text-base);
-  font-weight: 700;
-  border: none;
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  box-shadow: var(--shadow-lg);
-  background: var(--color-border);  /* default/unsaved state */
-  color: var(--color-text-muted);
-  transition: background var(--transition-base), transform var(--transition-fast), box-shadow var(--transition-base);
-}
-
-.save-day-float.primary {
-  background: var(--color-primary);
-  color: white;
-}
-
-.save-day-float.primary:hover {
-  background: var(--color-primary-hover);
-  box-shadow: 0 6px 20px rgba(63,81,181,0.35);
-}
-
-.save-day-float.primary:active {
-  transform: scale(0.96);
-}
-
-/* ================================================================
-   SLEEP TIME GRID
-   ================================================================ */
-
-.sleep-time-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-3);
-  margin-bottom: var(--space-3);
-}
-
-@media (max-width: 400px) {
-  .sleep-time-grid { grid-template-columns: 1fr; }
-}
-
-.time-widget-label-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  margin-bottom: 0;
-}
-
-.time-widget-label {
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--color-text-meta);
-}
-
-/* ================================================================
-   SLEEP TOTAL DISPLAY
-   ================================================================ */
-
-.sleep-total-display {
+.fatigue-scale {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  margin-bottom: var(--space-3);
-  font-size: var(--text-base);
 }
 
-.sleep-total-label {
-  color: var(--color-text-muted);
-  font-weight: 600;
+.fatigue-scale input[type="range"] {
+  flex: 1;
 }
 
-.sleep-total-value {
+.fatigue-value {
+  font-size: var(--text-xl);
   font-weight: 700;
-  color: var(--color-primary-dark);
-  font-size: var(--text-lg);
+  color: var(--color-primary);
+  min-width: 2.5rem;
+  text-align: right;
 }
 
-/* ================================================================
-   QUICK TAGS — pill toggle chips
-   ================================================================ */
+/* --- Cognitive section --- */
 
-#tagsContainer {
+.cog-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2) var(--space-4);
+}
+
+@media (max-width: 480px) {
+  .cog-grid { grid-template-columns: 1fr; }
+}
+
+/* --- Activity section --- */
+
+.activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.activity-item:last-child { border-bottom: none; }
+
+.activity-name {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text);
+  flex: 1;
+}
+
+.activity-duration {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* --- Triggers section --- */
+
+.trigger-grid {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
 }
 
-#tagsContainer label {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.35rem var(--space-3);
-  border: 1.5px solid var(--color-primary-border);
+.trigger-btn {
+  padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-full);
-  background: var(--color-primary-light-2);
-  color: var(--color-primary);
   font-size: var(--text-sm);
   font-weight: 600;
   cursor: pointer;
-  user-select: none;
-  margin-bottom: 0;
+  border: 1.5px solid var(--color-border-input);
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
   transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
 }
 
-#tagsContainer label:hover {
+.trigger-btn:hover {
   background: var(--color-primary-light);
-  border-color: var(--color-primary-faint);
+  border-color: var(--color-primary-border);
+  color: var(--color-primary);
 }
 
-#tagsContainer input[type="checkbox"] {
-  display: none;
-}
-
-#tagsContainer label:has(input:checked) {
+.trigger-btn.active {
   background: var(--color-primary);
-  color: var(--color-surface);
+  color: white;
   border-color: var(--color-primary);
+}
+
+/* --- Medications taken row --- */
+
+.med-taken-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-divider);
+  flex-wrap: wrap;
+}
+
+.med-taken-row:last-child { border-bottom: none; }
+
+.med-taken-name {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.med-taken-dose {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* --- Flare card --- */
+
+.flare-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.flare-indicator.active {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger-border);
+}
+
+.flare-indicator.inactive {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+/* --- Overall score display --- */
+
+.overall-score-display {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-primary-light);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-primary-border);
+  margin-top: var(--space-3);
+}
+
+.overall-score-value {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--color-primary);
+  min-width: 2.5rem;
+  text-align: center;
+}
+
+.overall-score-label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.overall-score-desc {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* ================================================================
+   ENTRY TAB — responsive
+   ================================================================ */
+
+@media (max-width: 640px) {
+  .symptom-row { flex-direction: column; align-items: flex-start; }
+  .symptom-value { text-align: left; }
 }
