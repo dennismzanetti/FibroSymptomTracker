@@ -1,28 +1,27 @@
 // auth.js — plain script (no import/export)
-// Firebase compat SDK is loaded via CDN and initialised in app.js before this runs.
+// Firebase compat SDK is loaded via CDN and initialised in app.js before setupAuth() is called.
 
 function isMobile() {
   return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 }
 
-// Consume any pending redirect result on page load
-firebase.auth().getRedirectResult().then(result => {
-  if (result && result.user) {
-    console.log('Redirect sign-in complete:', result.user.displayName);
-  }
-}).catch(err => {
-  console.error('Redirect sign-in error:', err);
-  const authError = document.getElementById('authError');
-  if (authError) authError.textContent = 'Sign-in failed. Please try again.';
-});
-
 function setupAuth(onSignIn, onSignOut) {
-  const auth        = firebase.auth();
-  const provider    = new firebase.auth.GoogleAuthProvider();
-  const overlay     = document.getElementById('authOverlay');
-  const signInBtn   = document.getElementById('googleSignInBtn');
-  const signOutBtn  = document.getElementById('signOutBtn');
-  const authError   = document.getElementById('authError');
+  const auth       = firebase.auth();
+  const provider   = new firebase.auth.GoogleAuthProvider();
+  const overlay    = document.getElementById('authOverlay');
+  const signInBtn  = document.getElementById('googleSignInBtn');
+  const signOutBtn = document.getElementById('signOutBtn');
+  const authError  = document.getElementById('authError');
+
+  // Consume any pending redirect result now that Firebase is initialised
+  auth.getRedirectResult().then(result => {
+    if (result && result.user) {
+      console.log('Redirect sign-in complete:', result.user.displayName);
+    }
+  }).catch(err => {
+    console.error('Redirect sign-in error:', err);
+    if (authError) authError.textContent = 'Sign-in failed. Please try again.';
+  });
 
   auth.onAuthStateChanged(user => {
     if (user) {
