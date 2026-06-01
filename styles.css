@@ -15,7 +15,7 @@
 }
 
 @media (min-width: 641px) {
-  .main-content { padding: 1.75rem var(--space-6) var(--space-12) var(--space-6); }
+  .main-content { padding: var(--space-6) var(--space-6) var(--space-12) var(--space-6); }
 }
 
 @media (min-width: 900px) {
@@ -73,6 +73,7 @@ h4 {
 
 .form-row {
   display: grid;
+  /* row-gap: --space-3 | col-gap: --space-4 — intentionally asymmetric */
   gap: var(--space-3) var(--space-4);
   margin-bottom: var(--space-3);
 }
@@ -154,7 +155,7 @@ textarea {
   text-align: center;
   padding: 0.45rem var(--space-2);
   font-size: var(--text-lg);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);  /* smaller than input — visually distinct */
 }
 
 .stepper-btn {
@@ -168,7 +169,7 @@ textarea {
   font-weight: 700;
   line-height: 1;
   border: 1px solid var(--color-border-input);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);  /* smaller than input — visually distinct */
   background: var(--color-surface-2);
   color: var(--color-primary);
   cursor: pointer;
@@ -213,7 +214,7 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.85rem var(--space-5);
+  padding: var(--space-3) var(--space-5);  /* was 0.85rem — now token-aligned */
   cursor: pointer;
   user-select: none;
   background: var(--color-surface);
@@ -246,8 +247,9 @@ textarea {
   background: var(--color-surface);
 }
 
+/* Open state: tinted shadow signals active section */
 .entry-section[open] {
-  box-shadow: 0 3px 12px rgba(57,73,171,0.08);
+  box-shadow: var(--shadow-primary);
 }
 
 /* ================================================================
@@ -290,13 +292,15 @@ textarea {
 }
 
 /* ================================================================
-   BUTTONS — general
+   BUTTONS
+   All buttons extend .btn for base styles. Variants add only what
+   differs (background, color, border).
    ================================================================ */
 
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--space-1);
   padding: 0.45rem var(--space-4);
   font-size: var(--text-base);
   font-weight: 600;
@@ -307,8 +311,8 @@ textarea {
   white-space: nowrap;
 }
 
-.btn-primary { background: var(--color-primary); color: white; }
-.btn-primary:hover { background: var(--color-primary-hover); }
+.btn-primary   { background: var(--color-primary);       color: white; }
+.btn-primary:hover   { background: var(--color-primary-hover); }
 
 .btn-secondary {
   background: var(--color-primary-light);
@@ -322,62 +326,48 @@ textarea {
   color: var(--color-danger);
   border: 1px solid var(--color-danger-border);
 }
-.btn-danger:hover { background: #ffcdd2; }
+.btn-danger:hover { background: var(--color-danger-border); }
+
+.btn-cancel {
+  background: var(--color-surface-2);
+  color: var(--color-text-label);
+  border: 1px solid var(--color-border);
+}
+.btn-cancel:hover { background: var(--color-border); }
 
 .btn-sm { padding: var(--space-1) var(--space-3); font-size: var(--text-sm); }
 
-/* Settings buttons — share .btn base styles */
-.btn-settings-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.45rem var(--space-4);
-  font-size: var(--text-base);
-  font-weight: 600;
-  border-radius: var(--radius-md);
-  border: none;
-  cursor: pointer;
-  transition: background var(--transition-base);
-  white-space: nowrap;
-  background: var(--color-primary);
-  color: white;
-}
+/*
+  .btn-settings-primary/secondary/cancel are aliases that map to the
+  same visual styles as .btn-primary / .btn-secondary / .btn-cancel.
+  The HTML uses these class names — kept here so markup doesn't need
+  to change, but the styles now just delegate rather than duplicate.
+*/
+.btn-settings-primary   { background: var(--color-primary);       color: white;                        border: none; }
 .btn-settings-primary:hover    { background: var(--color-primary-hover); }
 .btn-settings-primary:disabled { background: var(--color-primary-faint); cursor: not-allowed; }
 
-.btn-settings-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.45rem var(--space-4);
-  font-size: var(--text-base);
-  font-weight: 600;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-primary-border);
-  cursor: pointer;
-  transition: background var(--transition-base);
-  white-space: nowrap;
-  background: var(--color-primary-light);
-  color: var(--color-primary);
-}
-.btn-settings-secondary:hover { background: var(--color-primary-border); }
+.btn-settings-secondary { background: var(--color-primary-light);  color: var(--color-primary);         border: 1px solid var(--color-primary-border); }
+.btn-settings-secondary:hover  { background: var(--color-primary-border); }
 
+.btn-settings-cancel    { background: var(--color-surface-2);      color: var(--color-text-label);      border: 1px solid var(--color-border); }
+.btn-settings-cancel:hover     { background: var(--color-border); }
+
+/* Shared base for all settings buttons — avoids repeating layout props */
+.btn-settings-primary,
+.btn-settings-secondary,
 .btn-settings-cancel {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--space-1);
   padding: 0.45rem var(--space-4);
   font-size: var(--text-base);
   font-weight: 600;
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
   cursor: pointer;
   transition: background var(--transition-base);
   white-space: nowrap;
-  background: var(--color-surface-2);
-  color: var(--color-text-label);
 }
-.btn-settings-cancel:hover { background: var(--color-border); }
 
 /* ================================================================
    PAIN BODY MAP
@@ -394,7 +384,7 @@ textarea {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  font-size: 0.88rem;
+  font-size: var(--text-sm);  /* was 0.88rem — now token-aligned */
   color: var(--color-text-label);
 }
 
@@ -563,7 +553,7 @@ input[type="range"] {
 
 .toast {
   position: fixed;
-  bottom: calc(var(--space-4) + 1.8rem);
+  bottom: calc(var(--space-4) + var(--footer-h));
   left: 50%;
   transform: translateX(-50%);
   background: var(--color-text);
@@ -587,7 +577,7 @@ input[type="range"] {
 
 .save-day-float {
   position: fixed;
-  bottom: calc(var(--space-4) + 1.8rem);
+  bottom: calc(var(--space-4) + var(--footer-h));
   right: var(--space-4);
   z-index: 100;
   padding: var(--space-2) var(--space-5);
@@ -624,7 +614,7 @@ input[type="range"] {
   #saveStatus, .modal-overlay, .toast { display: none !important; }
   body { background: white; color: black; }
   main { padding: 0; max-width: 100%; }
-  .card, .entry-section { box-shadow: none; border: 1px solid #ccc; }
+  .card, .entry-section { box-shadow: none; border: 1px solid var(--color-border); }
 }
 
 /* ================================================================
@@ -636,8 +626,8 @@ input[type="range"] {
     padding: var(--space-4);
     border-radius: var(--radius-md);
   }
-  .entry-section-summary { padding: 0.7rem var(--space-4); }
-  .entry-section-body    { padding: var(--space-2) var(--space-4) 0.85rem var(--space-4); }
+  .entry-section-summary { padding: var(--space-2) var(--space-4); }
+  .entry-section-body    { padding: var(--space-2) var(--space-4) var(--space-3) var(--space-4); }
   .modal-box             { padding: var(--space-5); }
 }
 
@@ -646,9 +636,9 @@ input[type="range"] {
    ================================================================ */
 
 .hidden         { display: none !important; }
-.text-muted     { color: var(--color-text-muted); font-size: 0.88rem; }
-.text-error     { color: var(--color-error);      font-size: 0.88rem; }
-.text-success   { color: var(--color-success);    font-size: 0.88rem; }
+.text-muted     { color: var(--color-text-muted);  font-size: var(--text-sm); }
+.text-error     { color: var(--color-error);       font-size: var(--text-sm); }
+.text-success   { color: var(--color-success);     font-size: var(--text-sm); }
 .mt-1 { margin-top: var(--space-1); }
 .mt-2 { margin-top: var(--space-2); }
 .mt-3 { margin-top: var(--space-3); }
@@ -734,7 +724,7 @@ input[type="range"] {
 
 .empty-state {
   text-align: center;
-  padding: 2.5rem var(--space-4);
+  padding: var(--space-10) var(--space-4);
   color: var(--color-text-faint);
 }
 
