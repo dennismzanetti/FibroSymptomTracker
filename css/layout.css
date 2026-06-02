@@ -12,6 +12,7 @@
   position: sticky;
   top: 0;
   z-index: 200;
+  width: 100%;
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-muted) 100%);
   color: white;
   padding: 0;
@@ -344,6 +345,7 @@ main {
   padding-bottom: calc(var(--space-8) + var(--footer-h));
   max-width: var(--content-max);
   margin: 0 auto;
+  /* overflow-x guard already set in base.css */
 }
 
 @media (max-width: 640px) {
@@ -364,6 +366,17 @@ main {
   margin-bottom: var(--space-4);
   box-shadow: var(--shadow-md);
   border: 1px solid var(--color-border);
+  min-width: 0;       /* prevent card from blowing out flex/grid parents */
+  overflow: hidden;   /* clip any child that overflows the card boundary */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: var(--space-3) var(--space-3);
+    border-radius: var(--radius-md);
+  }
 }
 
 /* ================================================================
@@ -385,4 +398,6 @@ main {
   z-index: 300;
   letter-spacing: 0.04em;
   opacity: 0.9;
+  width: 100%;  /* ensure footer spans full viewport width */
+  box-sizing: border-box;
 }
