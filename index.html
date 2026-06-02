@@ -4,7 +4,16 @@
   <meta charset="UTF-8" />
   <title>Symptom Tracker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/entry.css">
+  <link rel="stylesheet" href="css/pain-map.css">
+  <link rel="stylesheet" href="css/history.css">
+  <link rel="stylesheet" href="css/journal.css">
+  <link rel="stylesheet" href="css/mood.css">
+  <link rel="stylesheet" href="css/medications.css">
+  <link rel="stylesheet" href="css/careteam.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -101,19 +110,21 @@
     <!-- Floating Save Day button -->
     <button id="saveDayFloat" class="save-day-float primary" aria-label="Save Day">&#128190; Save Day</button>
 
-    <h2 class="entry-tab-heading">Daily Entry</h2>
-    <p id="entryDayLabel" class="entry-day-label"></p>
+    <!-- TITLE ROW: heading + date navigation on same line -->
+    <div class="entry-title-row">
+      <h2 class="entry-tab-heading">Daily Entry</h2>
 
-    <!-- DATE BAR: shown only on Daily Entry tab -->
-    <div class="entry-date-bar">
-      <button type="button" id="prevDayBtn" class="entry-date-nav-btn" aria-label="Previous day" title="Previous day">&#8249;</button>
-      <button type="button" id="datePickerBtn" class="entry-date-picker-btn" aria-label="Pick a date" title="Click to choose a date">
-        <span id="dayOfWeekDisplay" class="entry-dow"></span>
-        <span id="dateDisplay" class="entry-date-text"></span>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      </button>
-      <input type="date" id="dateInput" aria-label="Entry date" class="sr-date-input" tabindex="-1" aria-hidden="true">
-      <button type="button" id="nextDayBtn" class="entry-date-nav-btn" aria-label="Next day" title="Next day">&#8250;</button>
+      <!-- DATE BAR -->
+      <div class="entry-date-bar">
+        <button type="button" id="prevDayBtn" class="entry-date-nav-btn" aria-label="Previous day" title="Previous day">&#8249;</button>
+        <button type="button" id="datePickerBtn" class="entry-date-picker-btn" aria-label="Pick a date" title="Click to choose a date">
+          <span id="dayOfWeekDisplay" class="entry-dow"></span>
+          <span id="dateDisplay" class="entry-date-text"></span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </button>
+        <input type="date" id="dateInput" aria-label="Entry date" class="sr-date-input" tabindex="-1" aria-hidden="true">
+        <button type="button" id="nextDayBtn" class="entry-date-nav-btn" aria-label="Next day" title="Next day">&#8250;</button>
+      </div>
     </div>
 
     <!-- Day Info -->
@@ -224,12 +235,43 @@
       </summary>
       <div class="entry-section-body card">
         <div id="tagsContainer">
-          <label><input type="checkbox" value="flare" /> Flare</label>
-          <label><input type="checkbox" value="crash" /> Crash / post-exertional</label>
-          <label><input type="checkbox" value="better" /> Better than usual</label>
-          <label><input type="checkbox" value="poor_sleep" /> Poor sleep</label>
-          <label><input type="checkbox" value="high_stress" /> High stress</label>
-          <label><input type="checkbox" value="weather_change" /> Weather change</label>
+
+          <label class="tag-pill tag-flare">
+            <input type="checkbox" value="flare" />
+            <span class="tag-pill-icon" aria-hidden="true">🔥</span>
+            <span class="tag-pill-label">Flare</span>
+          </label>
+
+          <label class="tag-pill tag-crash">
+            <input type="checkbox" value="crash" />
+            <span class="tag-pill-icon" aria-hidden="true">⚡</span>
+            <span class="tag-pill-label">Crash / post-exertional</span>
+          </label>
+
+          <label class="tag-pill tag-better">
+            <input type="checkbox" value="better" />
+            <span class="tag-pill-icon" aria-hidden="true">✨</span>
+            <span class="tag-pill-label">Better than usual</span>
+          </label>
+
+          <label class="tag-pill tag-poor-sleep">
+            <input type="checkbox" value="poor_sleep" />
+            <span class="tag-pill-icon" aria-hidden="true">🌙</span>
+            <span class="tag-pill-label">Poor sleep</span>
+          </label>
+
+          <label class="tag-pill tag-stress">
+            <input type="checkbox" value="high_stress" />
+            <span class="tag-pill-icon" aria-hidden="true">💢</span>
+            <span class="tag-pill-label">High stress</span>
+          </label>
+
+          <label class="tag-pill tag-weather">
+            <input type="checkbox" value="weather_change" />
+            <span class="tag-pill-icon" aria-hidden="true">🌧️</span>
+            <span class="tag-pill-label">Weather change</span>
+          </label>
+
         </div>
       </div>
     </details>
@@ -257,7 +299,6 @@
       </div>
       <button id="loadHistoryBtn" class="btn btn-primary">Load History</button>
     </div>
-    <div id="historyTableContainer"></div>
     <ul id="historyList" class="history-list"></ul>
   </section>
 
@@ -547,7 +588,6 @@
 <!-- Script load order: ui.js first (globals), then app and feature modules -->
 <script src="ui.js"></script>
 <script src="firebase-init.js"></script>
-<script src="auth.js"></script>
 <script src="app.js"></script>
 <script src="journal.js"></script>
 <script src="mood.js"></script>
