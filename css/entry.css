@@ -295,6 +295,28 @@
 }
 
 /* ================================================================
+   ENTRY TITLE ROW — heading + date bar on same line
+   ================================================================ */
+
+.entry-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* On mobile, stack title above date bar */
+@media (max-width: 480px) {
+  .entry-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+}
+
+/* ================================================================
    DATE NAVIGATION BAR
    ================================================================ */
 
@@ -303,7 +325,8 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  margin-bottom: var(--space-4);
+  /* margin-bottom removed — now handled by .entry-title-row */
+  flex-shrink: 0;
 }
 
 .entry-date-nav-btn {
