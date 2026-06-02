@@ -43,15 +43,25 @@ function showToast(msg, isError = false) {
     toast.className = 'toast';
     document.body.appendChild(toast);
   }
-  toast.textContent = msg;
+
+  // Reset to hidden state synchronously so opacity:0 is painted before we show
+  toast.classList.remove('show');
   toast.className = 'toast' + (isError ? ' toast-error' : '');
-  // Force reflow so re-triggering the animation works
-  void toast.offsetWidth;
-  toast.classList.add('show');
+  toast.textContent = msg;
+
+  // Clear any pending dismiss timer
   clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => {
-    toast.classList.remove('show');
-  }, 3000);
+
+  // Double rAF ensures the browser has painted opacity:0 before adding .show,
+  // which makes the CSS transition actually fire.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      toast.classList.add('show');
+      toast._timer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    });
+  });
 }
 
 // ---- Mobile wiring — sign-out sync + tab select ----
