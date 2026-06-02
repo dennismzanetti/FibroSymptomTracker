@@ -1,10 +1,8 @@
 /* JOURNAL STYLES — FibroSymptomTracker */
 
 /* ================================================================
-   JOURNAL TAB
+   JOURNAL TAB (legacy classes kept for compatibility)
    ================================================================ */
-
-/* --- Write panel --- */
 
 .journal-write-panel {
   background: var(--color-surface);
@@ -71,13 +69,7 @@
 
 .journal-save-btn:hover { background: var(--color-primary-hover); }
 
-/* --- Entry list --- */
-
-.journal-entry-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+.journal-entry-list { list-style: none; padding: 0; margin: 0; }
 
 .journal-entry-card {
   background: var(--color-surface);
@@ -97,96 +89,33 @@
   margin-bottom: var(--space-1);
 }
 
-.journal-entry-date {
-  font-size: var(--text-sm);
-  font-weight: 700;
-  color: var(--color-primary);
-}
+.journal-entry-date { font-size: var(--text-sm); font-weight: 700; color: var(--color-primary); }
+.journal-entry-mood { font-size: var(--text-xl); line-height: 1; }
+.journal-entry-body { font-size: var(--text-base); color: var(--color-text); white-space: pre-line; margin-bottom: var(--space-2); }
 
-.journal-entry-mood {
-  font-size: var(--text-xl);
-  line-height: 1;
-}
+.journal-entry-tags { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-top: var(--space-1); }
 
-.journal-entry-body {
-  font-size: var(--text-base);
-  color: var(--color-text);
-  white-space: pre-line;
-  margin-bottom: var(--space-2);
-}
+.journal-filter-bar { display: flex; gap: var(--space-2); margin-bottom: var(--space-3); flex-wrap: wrap; }
+.journal-filter-bar input, .journal-filter-bar select { flex: 1; min-width: 120px; max-width: 220px; }
 
-.journal-entry-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1);
-  margin-top: var(--space-1);
-}
+.journal-empty { text-align: center; padding: var(--space-10) var(--space-4); color: var(--color-text-faint); }
+.journal-empty p { font-size: var(--text-base); margin: 0; color: var(--color-text-muted); }
 
-/* --- Search / filter bar --- */
-
-.journal-filter-bar {
-  display: flex;
-  gap: var(--space-2);
-  margin-bottom: var(--space-3);
-  flex-wrap: wrap;
-}
-
-.journal-filter-bar input,
-.journal-filter-bar select {
-  flex: 1;
-  min-width: 120px;
-  max-width: 220px;
-}
-
-/* --- Empty state --- */
-
-.journal-empty {
-  text-align: center;
-  padding: var(--space-10) var(--space-4);
-  color: var(--color-text-faint);
-}
-
-.journal-empty p {
-  font-size: var(--text-base);
-  margin: 0;
-  color: var(--color-text-muted);
-}
-
-/* --- Mood summary bar --- */
-
-.journal-mood-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1);
-  margin-bottom: var(--space-3);
-}
-
+.journal-mood-bar { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-bottom: var(--space-3); }
 .journal-mood-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  padding: 0.2rem var(--space-2);
-  border-radius: var(--radius-full);
-  font-size: var(--text-xs);
-  font-weight: 600;
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-muted);
+  display: inline-flex; align-items: center; gap: var(--space-1);
+  padding: 0.2rem var(--space-2); border-radius: var(--radius-full);
+  font-size: var(--text-xs); font-weight: 600;
+  background: var(--color-surface-2); border: 1px solid var(--color-border); color: var(--color-text-muted);
 }
-
-/* --- Preview text (truncated) --- */
 
 .journal-preview {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 320px;
+  font-size: var(--text-sm); color: var(--color-text-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px;
 }
 
 /* ================================================================
-   JV2 CARD STYLES
+   JV2 CARD
    ================================================================ */
 
 .jv2-card {
@@ -211,15 +140,10 @@
   padding: var(--space-4);
 }
 
-/* --- Card header --- */
+/* --- Card header: date/title only, right side removed --- */
 
 .jv2-card-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-3);
-  margin-bottom: var(--space-3);
-  flex-wrap: wrap;
+  margin-bottom: var(--space-2);
 }
 
 .jv2-date-block {
@@ -250,78 +174,100 @@
   margin-top: 0.1rem;
 }
 
-.jv2-header-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--space-2);
-}
+/* ================================================================
+   ITEM 4 — TAGS (left-aligned under date)
+   ================================================================ */
 
-.jv2-stat-row {
+.jv2-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
-  justify-content: flex-end;
+  gap: var(--space-1);
 }
 
-/* --- Stat chips --- */
+.jv2-tags-left {
+  justify-content: flex-start;
+  margin-bottom: var(--space-3);
+}
 
-.jv2-stat-chip {
+.jv2-tag {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);
-  padding: 0.2rem var(--space-2);
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-border);
+  gap: 0.25rem;
+  padding: 0.2rem 0.55rem;
   border-radius: var(--radius-full);
   font-size: var(--text-xs);
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+  white-space: nowrap;
 }
 
-.jv2-stat-icon { font-size: 0.9em; line-height: 1; }
+/* ================================================================
+   ITEM 2 — SUMMARY STRIP
+   Full-width row: Avg Function | Sleep | Mood
+   ================================================================ */
 
-.jv2-stat-body {
+.jv2-summary-strip {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: var(--space-3);
+  background: var(--color-surface-2);
+}
+
+.jv2-summary-item {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0;
-  line-height: 1.2;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-2);
+  border-right: 1px solid var(--color-border);
+  text-align: center;
 }
 
-.jv2-stat-label {
-  font-size: 0.6rem;
+.jv2-summary-item:last-child {
+  border-right: none;
+}
+
+.jv2-summary-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.jv2-summary-label {
+  font-size: 0.62rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--color-text-faint);
+  line-height: 1;
 }
 
-.jv2-stat-value {
-  font-size: var(--text-xs);
-  font-weight: 700;
-  color: var(--color-text);
-}
-
-/* --- Score pill --- */
-
-.jv2-score-pill {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 1px;
-  padding: 0.1rem 0.4rem;
+.jv2-summary-value {
+  font-size: var(--text-base);
+  font-weight: 800;
+  line-height: 1.2;
+  /* coloured version gets inline style; neutral version below */
+  padding: 0.15rem 0.5rem;
   border-radius: var(--radius-full);
   border: 1px solid transparent;
-  font-size: var(--text-sm);
-  font-weight: 700;
-  line-height: 1.4;
 }
 
-.jv2-score-denom {
+.jv2-summary-neutral {
+  color: var(--color-text);
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+.jv2-summary-denom {
   font-size: 0.7em;
   font-weight: 500;
-  opacity: 0.75;
-}
-
-.jv2-dash {
-  color: var(--color-text-faint);
+  opacity: 0.7;
 }
 
 /* ================================================================
@@ -380,32 +326,6 @@
 }
 
 /* ================================================================
-   ITEM 4 — COLOURED TAGS
-   ================================================================ */
-
-/* Base jv2-tag — colour overridden inline per tag */
-.jv2-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.2rem 0.55rem;
-  border-radius: var(--radius-full);
-  font-size: var(--text-xs);
-  font-weight: 600;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface-2);
-  color: var(--color-text-muted);
-  white-space: nowrap;
-}
-
-.jv2-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1);
-  justify-content: flex-end;
-}
-
-/* ================================================================
    ITEM 7 — NOTES PREVIEW
    ================================================================ */
 
@@ -414,7 +334,6 @@
   color: var(--color-text-muted);
   font-style: italic;
   line-height: 1.5;
-  /* Clamp to 2 lines */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -447,10 +366,7 @@
   margin-top: var(--space-2);
 }
 
-.jv2-section {
-  border-bottom: 1px solid var(--color-divider);
-}
-
+.jv2-section { border-bottom: 1px solid var(--color-divider); }
 .jv2-section:last-child { border-bottom: none; }
 
 .jv2-section-header {
@@ -467,9 +383,7 @@
   color: var(--color-text);
 }
 
-.jv2-section-header:hover .jv2-section-title {
-  color: var(--color-primary);
-}
+.jv2-section-header:hover .jv2-section-title { color: var(--color-primary); }
 
 .jv2-section-title {
   font-size: var(--text-sm);
@@ -484,9 +398,7 @@
   transition: transform 0.2s ease;
 }
 
-.jv2-section-body {
-  padding-bottom: var(--space-3);
-}
+.jv2-section-body { padding-bottom: var(--space-3); }
 
 /* --- Functionality grid --- */
 
@@ -496,9 +408,7 @@
   gap: var(--space-2);
 }
 
-@media (max-width: 480px) {
-  .jv2-func-grid { grid-template-columns: 1fr; }
-}
+@media (max-width: 480px) { .jv2-func-grid { grid-template-columns: 1fr; } }
 
 .jv2-func-card {
   border: 1px solid var(--color-border);
@@ -515,29 +425,10 @@
   margin-bottom: var(--space-1);
 }
 
-.jv2-func-card-label {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.jv2-func-name {
-  font-size: var(--text-sm);
-  font-weight: 700;
-  color: var(--color-text);
-}
-
-.jv2-func-time {
-  font-size: 0.7rem;
-  color: var(--color-text-faint);
-}
-
-.jv2-func-detail {
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-  margin-top: var(--space-1);
-  line-height: 1.4;
-}
+.jv2-func-card-label { display: flex; flex-direction: column; gap: 1px; }
+.jv2-func-name { font-size: var(--text-sm); font-weight: 700; color: var(--color-text); }
+.jv2-func-time { font-size: 0.7rem; color: var(--color-text-faint); }
+.jv2-func-detail { font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--space-1); line-height: 1.4; }
 
 /* --- Sleep grid --- */
 
@@ -548,13 +439,7 @@
   margin-bottom: var(--space-2);
 }
 
-.jv2-sleep-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-/* --- Shared detail label --- */
+.jv2-sleep-stat { display: flex; flex-direction: column; gap: 1px; }
 
 .jv2-detail-label {
   display: block;
@@ -566,8 +451,6 @@
   margin-bottom: 1px;
 }
 
-/* --- Notes text --- */
-
 .jv2-notes-text {
   font-size: var(--text-sm);
   color: var(--color-text);
@@ -575,8 +458,6 @@
   white-space: pre-line;
   margin: 0;
 }
-
-/* --- Empty state --- */
 
 .jv2-empty {
   font-size: var(--text-sm);
@@ -586,13 +467,50 @@
   padding: var(--space-1) 0;
 }
 
-/* --- Loading --- */
-
 .jv2-loading {
   font-size: var(--text-base);
   color: var(--color-text-muted);
   padding: var(--space-6);
   text-align: center;
+}
+
+.jv2-score-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.jv2-score-denom { font-size: 0.7em; font-weight: 500; opacity: 0.75; }
+.jv2-dash { color: var(--color-text-faint); }
+
+/* ================================================================
+   ITEM 5 — EXPAND / COLLAPSE ALL BUTTON
+   ================================================================ */
+
+.jv2-expand-btn {
+  margin-left: auto;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-input);
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.jv2-expand-btn:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary-border);
+  color: var(--color-primary);
 }
 
 /* --- Filter bar --- */
@@ -632,8 +550,6 @@
   box-shadow: var(--shadow-card);
   overflow-x: auto;
 }
-
-/* --- Journal output container --- */
 
 .journal-output {
   display: flex;

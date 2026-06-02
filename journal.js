@@ -60,25 +60,14 @@ function scorePillHtml(score) {
   return `<span class="jv2-score-pill" style="background:${c.bg};color:${c.text};border-color:${c.border};">${score}<span class="jv2-score-denom">/10</span></span>`;
 }
 
-function statChipHtml(icon, label, value, colorStyle) {
-  return `<div class="jv2-stat-chip" style="${colorStyle || ''}">
-    <span class="jv2-stat-icon">${icon}</span>
-    <div class="jv2-stat-body">
-      <span class="jv2-stat-label">${label}</span>
-      <span class="jv2-stat-value">${value}</span>
-    </div>
-  </div>`;
-}
-
 // ================================================================
 // ITEM 3 — FUNCTIONALITY SPARKLINE
-// 6 colour-coded squares, one per time block, always visible
 // ================================================================
 
 function sparklineHtml(scores) {
   const cells = scores.map((s, i) => {
-    const t  = s !== null ? scoreTier(s) : 0;
-    const c  = t ? TIER_COLORS[t] : null;
+    const t      = s !== null ? scoreTier(s) : 0;
+    const c      = t ? TIER_COLORS[t] : null;
     const bg     = c ? c.bg     : "#f0f2fa";
     const border = c ? c.border : "#dde0ec";
     const label  = TIME_BLOCKS[i].short;
@@ -89,6 +78,48 @@ function sparklineHtml(scores) {
     </div>`;
   });
   return `<div class="jv2-sparkline" aria-label="Functionality by time of day">${cells.join("")}</div>`;
+}
+
+// ================================================================
+// ITEM 2 — SUMMARY STRIP (full-width, between header and sparkline)
+// ================================================================
+
+function summaryStripHtml(avg, sleep, mood) {
+  const items = [];
+
+  if (avg !== null) {
+    const t = scoreTier(avg);
+    const c = TIER_COLORS[t];
+    items.push(`
+      <div class="jv2-summary-item">
+        <span class="jv2-summary-icon">⚡</span>
+        <span class="jv2-summary-label">Avg Function</span>
+        <span class="jv2-summary-value" style="background:${c.bg};color:${c.text};border-color:${c.border};">${avg}<span class="jv2-summary-denom">/10</span></span>
+      </div>`);
+  }
+
+  if (typeof sleep?.hours === "number") {
+    items.push(`
+      <div class="jv2-summary-item">
+        <span class="jv2-summary-icon">😴</span>
+        <span class="jv2-summary-label">Sleep</span>
+        <span class="jv2-summary-value jv2-summary-neutral">${sleep.hours}h</span>
+      </div>`);
+  }
+
+  if (typeof mood?.score === "number") {
+    const t = scoreTier(mood.score);
+    const c = TIER_COLORS[t];
+    items.push(`
+      <div class="jv2-summary-item">
+        <span class="jv2-summary-icon">😌</span>
+        <span class="jv2-summary-label">Mood</span>
+        <span class="jv2-summary-value" style="background:${c.bg};color:${c.text};border-color:${c.border};">${mood.score}<span class="jv2-summary-denom">/10</span></span>
+      </div>`);
+  }
+
+  if (!items.length) return "";
+  return `<div class="jv2-summary-strip">${items.join("")}</div>`;
 }
 
 // ================================================================
@@ -207,8 +238,8 @@ async function renderHeatmap(allDocs) {
 function toggleJournalSection(btn) {
   const section = btn.closest(".jv2-section");
   if (!section) return;
-  const body  = section.querySelector(".jv2-section-body");
-  const icon  = section.querySelector(".jv2-section-chevron");
+  const body = section.querySelector(".jv2-section-body");
+  const icon = section.querySelector(".jv2-section-chevron");
   if (!body) return;
   const isOpen = body.style.display !== "none";
   body.style.display = isOpen ? "none" : "block";
@@ -224,6 +255,28 @@ function toggleJournalRow(expandId) {
   const isOpen = panel.style.display !== "none";
   panel.style.display = isOpen ? "none" : "block";
   if (chev) chev.style.transform = isOpen ? "" : "rotate(90deg)";
+}
+
+// ================================================================
+// ITEM 5 — EXPAND ALL / COLLAPSE ALL
+// ================================================================
+
+function setAllSections(expand) {
+  document.querySelectorAll(".jv2-section").forEach(section => {
+    const body = section.querySelector(".jv2-section-body");
+    const icon = section.querySelector(".jv2-section-chevron");
+    const btn  = section.querySelector(".jv2-section-header");
+    if (!body) return;
+    body.style.display = expand ? "block" : "none";
+    if (icon) icon.style.transform = expand ? "rotate(90deg)" : "";
+    if (btn)  btn.setAttribute("aria-expanded", expand ? "true" : "false");
+  });
+  // Update button label
+  const toggleBtn = document.getElementById("jv2-expand-all-btn");
+  if (toggleBtn) {
+    toggleBtn.textContent = expand ? "Collapse All" : "Expand All";
+    toggleBtn.dataset.expanded = expand ? "true" : "false";
+  }
 }
 
 // ================================================================
@@ -268,40 +321,29 @@ function buildJournalCard(dateStr, d) {
   });
   const valid = scores.filter(s => s !== null);
   const avg   = valid.length
-    ? parseFloat((valid.reduce((a,b)=>a+b,0)/valid.length).toFixed(1))
+    ? parseFloat((valid.reduce((a,b) => a+b, 0) / valid.length).toFixed(1))
     : null;
 
-  const date  = new Date(dateStr + "T12:00:00");
-  const DOWS  = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-  const MTHS  = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-  const dow   = DOWS[date.getDay()];
-  const dlbl  = `${MTHS[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+  const date = new Date(dateStr + "T12:00:00");
+  const DOWS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const MTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const dow  = DOWS[date.getDay()];
+  const dlbl = `${MTHS[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
   const barColor = tierBarColor(avg);
+  const title    = d.dayTitle?.trim() || "";
 
-  const title = d.dayTitle?.trim() || "";
-
-  // ---- Stat chips (always visible in header) ----
-  const avgFuncChip = avg !== null
-    ? statChipHtml("⚡", "Avg Function", scorePillHtml(avg), "")
+  // ---- ITEM 2: Tags left-aligned under date, header-right is clean ----
+  const tagsHtml = d.tags?.length
+    ? `<div class="jv2-tags jv2-tags-left">${d.tags.map(t => tagPillHtml(t)).join("")}</div>`
     : "";
 
-  const sleepChip = typeof d.sleep?.hours === "number"
-    ? statChipHtml("😴", "Sleep", `${d.sleep.hours}h`, "")
-    : "";
+  // ---- ITEM 2: Summary strip (full-width, replaces stat chips in header) ----
+  const summaryStrip = summaryStripHtml(avg, d.sleep, d.mood);
 
-  const moodChip = typeof d.mood?.score === "number"
-    ? statChipHtml("😌", "Mood", scorePillHtml(d.mood.score), "")
-    : "";
-
-  // ---- ITEM 3: Sparkline (always visible, above stat chips) ----
+  // ---- ITEM 3: Sparkline ----
   const sparkline = sparklineHtml(scores);
 
-  // ---- ITEM 4: Coloured tags ----
-  const tagsHtml = d.tags?.length
-    ? `<div class="jv2-tags">${d.tags.map(t => tagPillHtml(t)).join("")}</div>`
-    : "";
-
-  // ---- ITEM 7: Notes preview (always visible, truncated to 2 lines) ----
+  // ---- ITEM 7: Notes preview ----
   const notesPreview = d.overallNotes?.trim()
     ? `<p class="jv2-notes-preview">${d.overallNotes.trim()}</p>`
     : "";
@@ -343,11 +385,11 @@ function buildJournalCard(dateStr, d) {
   let sleepBody;
   if (hasSleep) {
     const sleepStats = [
-      sl.bedtime    ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Bedtime</span><strong>${sl.bedtime}</strong></div>` : "",
-      sl.wakeTime   ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Wake</span><strong>${sl.wakeTime}</strong></div>` : "",
-      sl.hours!=null? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Hours</span><strong>${sl.hours}h</strong></div>` : "",
-      sl.quality!=null?`<div class="jv2-sleep-stat"><span class="jv2-detail-label">Quality</span><strong>${scorePillHtml(sl.quality)}</strong></div>` : "",
-      sl.awakenings!=null?`<div class="jv2-sleep-stat"><span class="jv2-detail-label">Awakenings</span><strong>${sl.awakenings}</strong></div>` : ""
+      sl.bedtime     ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Bedtime</span><strong>${sl.bedtime}</strong></div>` : "",
+      sl.wakeTime    ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Wake</span><strong>${sl.wakeTime}</strong></div>` : "",
+      sl.hours!=null ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Hours</span><strong>${sl.hours}h</strong></div>` : "",
+      sl.quality!=null ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Quality</span><strong>${scorePillHtml(sl.quality)}</strong></div>` : "",
+      sl.awakenings!=null ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Awakenings</span><strong>${sl.awakenings}</strong></div>` : ""
     ].filter(Boolean).join("");
     sleepBody = `<div class="jv2-sleep-grid">${sleepStats}</div>${sl.notes ? `<p class="jv2-notes-text">${sl.notes}</p>` : ""}`;
   } else {
@@ -363,10 +405,10 @@ function buildJournalCard(dateStr, d) {
   if (didEx && d.exercise) {
     const e = d.exercise;
     const exStats = [
-      e.type      ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Type</span><strong>${e.type}</strong></div>` : "",
-      e.minutes!=null?`<div class="jv2-sleep-stat"><span class="jv2-detail-label">Duration</span><strong>${e.minutes} min</strong></div>` : "",
-      e.intensity ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Intensity</span><strong>${e.intensity}</strong></div>` : "",
-      e.timing    ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Timing</span><strong>${e.timing}</strong></div>` : ""
+      e.type       ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Type</span><strong>${e.type}</strong></div>` : "",
+      e.minutes!=null ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Duration</span><strong>${e.minutes} min</strong></div>` : "",
+      e.intensity  ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Intensity</span><strong>${e.intensity}</strong></div>` : "",
+      e.timing     ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Timing</span><strong>${e.timing}</strong></div>` : ""
     ].filter(Boolean).join("");
     exerciseBody = `<div class="jv2-sleep-grid">${exStats}</div>${e.notes ? `<p class="jv2-notes-text">${e.notes}</p>` : ""}`;
   } else {
@@ -387,8 +429,7 @@ function buildJournalCard(dateStr, d) {
   const moodSection = buildSection("Mood", moodBody, false);
 
   // ============================================================
-  // SECTION: Overall Notes (no longer needed as standalone section
-  // since we show a preview — but keep accordion for full text)
+  // SECTION: Overall Notes
   // ============================================================
   const notesBody = d.overallNotes
     ? `<p class="jv2-notes-text">${d.overallNotes}</p>`
@@ -397,32 +438,32 @@ function buildJournalCard(dateStr, d) {
 
   // ============================================================
   // CARD ASSEMBLY
+  // Layout order:
+  //   1. Header (date/title left, empty right)
+  //   2. Tags (left-aligned, under title)
+  //   3. Summary strip (avg func + sleep + mood, full width)
+  //   4. Sparkline (6 blocks)
+  //   5. Notes preview
+  //   6. Accordions
   // ============================================================
   return `
     <article class="jv2-card" data-journal-date="${dateStr}">
       <div class="jv2-card-accent" style="background:${barColor};"></div>
       <div class="jv2-card-inner">
 
-        <!-- Header: date + title -->
         <header class="jv2-card-header">
           <div class="jv2-date-block">
             <span class="jv2-dow">${dow}</span>
             <span class="jv2-date">${dlbl}</span>
             ${title ? `<span class="jv2-title">&ldquo;${title}&rdquo;</span>` : ""}
           </div>
-          <div class="jv2-header-right">
-            <div class="jv2-stat-row">${avgFuncChip}${sleepChip}${moodChip}</div>
-            ${tagsHtml}
-          </div>
         </header>
 
-        <!-- ITEM 3: Sparkline — always visible -->
+        ${tagsHtml}
+        ${summaryStrip}
         ${sparkline}
-
-        <!-- ITEM 7: Notes preview — always visible -->
         ${notesPreview}
 
-        <!-- Accordion sections -->
         <div class="jv2-sections">
           ${funcSection}
           ${sleepSection}
@@ -436,12 +477,13 @@ function buildJournalCard(dateStr, d) {
 }
 
 // ================================================================
-// FILTER UI
+// FILTER UI  (range select + expand/collapse toggle)
 // ================================================================
 
 function injectJournalFilterUI() {
   const container = document.getElementById("journalOutput");
   if (!container || document.getElementById("journalRangeSelect")) return;
+
   const wrap = document.createElement("div");
   wrap.className = "jv2-filter-bar";
   wrap.innerHTML = `
@@ -451,9 +493,17 @@ function injectJournalFilterUI() {
       <option value="30" selected>30 days</option>
       <option value="90">90 days</option>
       <option value="0">All time</option>
-    </select>`;
+    </select>
+    <button id="jv2-expand-all-btn" class="jv2-expand-btn" data-expanded="false">Expand All</button>`;
+
   container.parentElement.insertBefore(wrap, container);
+
   document.getElementById("journalRangeSelect").addEventListener("change", renderJournal);
+
+  document.getElementById("jv2-expand-all-btn").addEventListener("click", function() {
+    const expand = this.dataset.expanded !== "true";
+    setAllSections(expand);
+  });
 }
 
 // ================================================================
@@ -471,9 +521,9 @@ function renderRangeLabel(docs) {
   if (existing) existing.remove();
   if (!docs.length) return;
 
-  const ids  = docs.map(d => d.id).sort();
-  const from = formatDateLabel(ids[0]);
-  const to   = formatDateLabel(ids[ids.length - 1]);
+  const ids   = docs.map(d => d.id).sort();
+  const from  = formatDateLabel(ids[0]);
+  const to    = formatDateLabel(ids[ids.length - 1]);
   const count = docs.length;
   const noun  = count === 1 ? "entry" : "entries";
 
@@ -484,6 +534,13 @@ function renderRangeLabel(docs) {
 
   const container = document.getElementById("journalOutput");
   if (container) container.parentElement.insertBefore(label, container);
+
+  // Reset expand/collapse state on re-render
+  const toggleBtn = document.getElementById("jv2-expand-all-btn");
+  if (toggleBtn) {
+    toggleBtn.textContent = "Expand All";
+    toggleBtn.dataset.expanded = "false";
+  }
 }
 
 // ================================================================
@@ -525,9 +582,7 @@ async function renderJournal() {
       return;
     }
 
-    // ITEM 8: render count + range label above cards
     renderRangeLabel(snapshot.docs);
-
     container.innerHTML = snapshot.docs.map(doc => buildJournalCard(doc.id, doc.data())).join("");
 
   } catch (err) {
