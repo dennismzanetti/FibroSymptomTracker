@@ -9,7 +9,7 @@
 .journal-write-panel {
   background: var(--color-surface);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border-accent);
+  border: 1px solid var(--color-border);
   padding: var(--space-4);
   margin-bottom: var(--space-4);
   box-shadow: var(--shadow-card);
