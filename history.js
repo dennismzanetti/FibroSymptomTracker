@@ -34,7 +34,31 @@ export async function loadAndRenderHistory(startStr, endStr, containerId) {
       return path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
     }
 
-    let html = '<div class="history-scroll"><table class="history-table"><thead><tr><th>Field</th>';
+    function cellClass(key, val) {
+      if (val == null || val === '') return 'cell-missing';
+      const num = Number(val);
+      if (Number.isNaN(num)) return '';
+
+      const isPainOrFatigue = key.startsWith('pain') || key === 'fatigue';
+      const isSleep = key === 'sleep.hours' || key === 'sleep.quality';
+      const isMood = key === 'mood.score';
+
+      if (isPainOrFatigue) {
+        if (num <= 3) return 'cell-low';
+        if (num <= 6) return 'cell-mid';
+        return 'cell-high';
+      }
+
+      if (isSleep || isMood) {
+        if (num >= 7) return 'cell-low';
+        if (num >= 4) return 'cell-mid';
+        return 'cell-high';
+      }
+
+      return '';
+    }
+
+    let html = '<div class="history-table-wrap"><table class="history-table"><thead><tr><th>Field</th>';
     days.forEach(d => {
       const label = formatDateLong(d).replace(/^\w+,\s/, '');
       html += `<th>${label}</th>`;
@@ -45,7 +69,9 @@ export async function loadAndRenderHistory(startStr, endStr, containerId) {
       html += `<tr><td class="history-field-label">${label}</td>`;
       days.forEach(d => {
         const val = getVal(data[d], key);
-        html += `<td>${val != null ? val : '&mdash;'}</td>`;
+        const cls = cellClass(key, val);
+        const displayVal = val != null && val !== '' ? val : '&mdash;';
+        html += `<td class="history-value-cell ${cls}">${displayVal}</td>`;
       });
       html += '</tr>';
     });
@@ -54,7 +80,7 @@ export async function loadAndRenderHistory(startStr, endStr, containerId) {
     html += '<tr><td class="history-field-label">Symptoms</td>';
     days.forEach(d => {
       const syms = data[d]?.symptoms;
-      html += `<td class="symptoms-cell">${syms && syms.length ? syms.map(s => `<span class="sym-tag">${s.replace(/_/g,' ')}</span>`).join('') : '&mdash;'}</td>`;
+      html += `<td class="symptoms-cell ${syms && syms.length ? '' : 'cell-missing'}">${syms && syms.length ? syms.map(s => `<span class="sym-tag">${s.replace(/_/g,' ')}</span>`).join('') : '&mdash;'}</td>`;
     });
     html += '</tr>';
 
@@ -64,7 +90,7 @@ export async function loadAndRenderHistory(startStr, endStr, containerId) {
       html += `<tr><td class="history-field-label">${labelMap[noteKey]}</td>`;
       days.forEach(d => {
         const val = data[d]?.[noteKey];
-        html += `<td class="notes-cell">${val ? val : '&mdash;'}</td>`;
+        html += `<td class="notes-cell ${val ? '' : 'cell-missing'}">${val ? val : '&mdash;'}</td>`;
       });
       html += '</tr>';
     });
