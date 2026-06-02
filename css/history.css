@@ -336,7 +336,7 @@
 
 
 /* ================================================================
-   HISTORY — first-pass comparison improvements
+   HISTORY — phase 1: sticky header/column, heatmap cells, missing-data styling
    ================================================================ */
 
 .history-table-wrap {
@@ -414,4 +414,56 @@
 
 .history-table tr:hover td.history-value-cell {
   color: var(--color-text);
+}
+
+/* ================================================================
+   HISTORY — phase 3: row groups, notes toggle
+   ================================================================ */
+
+/* Group header row (Pain / Wellbeing / Symptoms) */
+.history-group-header td {
+  background: color-mix(in oklab, var(--color-primary) 10%, var(--color-surface-2));
+  color: var(--color-primary);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: var(--space-1) var(--space-3);
+  border-top: 2px solid color-mix(in oklab, var(--color-primary) 25%, var(--color-border));
+  border-bottom: 1px solid color-mix(in oklab, var(--color-primary) 20%, var(--color-border));
+}
+
+/* Override sticky first-cell bg for group header */
+.history-group-header td:first-child {
+  background: color-mix(in oklab, var(--color-primary) 10%, var(--color-surface-2));
+}
+
+/* Notes toggle row */
+.history-notes-toggle-row td {
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-surface-offset, var(--color-surface-2));
+  border-top: 2px solid var(--color-border);
+  text-align: left;
+}
+
+.history-notes-toggle-btn {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-1) 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: color var(--transition-interactive);
+}
+
+.history-notes-toggle-btn:hover {
+  color: var(--color-primary-hover);
+}
+
+/* Notes rows inherit td styling; hidden by default via inline style in JS */
+.history-notes-row td {
+  background: color-mix(in oklab, var(--color-surface-2) 60%, var(--color-surface));
 }
