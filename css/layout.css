@@ -5,14 +5,16 @@
    ================================================================ */
 
 /* ================================================================
-   STICKY HEADER
+   FIXED HEADER
    ================================================================ */
 
 .app-header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 200;
+  left: 0;
+  right: 0;
   width: 100%;
+  z-index: 200;
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-muted) 100%);
   color: white;
   padding: 0;
@@ -342,15 +344,16 @@ h3 { margin-top: 0; }
 
 main {
   padding: var(--space-3) var(--space-4);
+  padding-top: calc(var(--header-h, 88px) + var(--space-3));
   padding-bottom: calc(var(--space-8) + var(--footer-h));
   max-width: var(--content-max);
   margin: 0 auto;
-  /* overflow-x guard already set in base.css */
 }
 
 @media (max-width: 640px) {
   main {
     padding: var(--space-2);
+    padding-top: calc(var(--header-h-mobile, 72px) + var(--space-2));
     padding-bottom: calc(var(--space-8) + var(--footer-h));
   }
 }
