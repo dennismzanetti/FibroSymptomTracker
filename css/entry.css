@@ -449,6 +449,134 @@
 }
 
 /* ================================================================
+   QUICK TAGS
+   ================================================================ */
+
+#tagsContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+@media (min-width: 600px) {
+  #tagsContainer {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Hide the native checkbox but keep it accessible */
+.tag-pill input[type="checkbox"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Base pill style */
+.tag-pill {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
+  line-height: 1.3;
+}
+
+.tag-pill:hover {
+  background: var(--color-surface-3);
+  border-color: var(--color-border-input);
+  color: var(--color-text);
+}
+
+.tag-pill-icon {
+  font-size: 1.1em;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.tag-pill-label {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Checked state — uses per-tag color vars set below */
+.tag-pill input[type="checkbox"]:checked ~ .tag-pill-icon,
+.tag-pill input[type="checkbox"]:checked ~ .tag-pill-label {
+  /* text color override handled per-tag */
+}
+
+.tag-pill:has(input:checked) {
+  box-shadow: var(--shadow-sm);
+}
+
+/* --- Per-tag checked colors --- */
+
+/* Flare — red */
+.tag-pill.tag-flare:has(input:checked) {
+  background: #fff0f0;
+  border-color: #e57373;
+  color: var(--color-danger);
+}
+.tag-pill.tag-flare:hover { border-color: #ef9a9a; }
+
+/* Crash — orange */
+.tag-pill.tag-crash:has(input:checked) {
+  background: #fff3e0;
+  border-color: #ffb74d;
+  color: #e65100;
+}
+.tag-pill.tag-crash:hover { border-color: #ffcc80; }
+
+/* Better — green */
+.tag-pill.tag-better:has(input:checked) {
+  background: var(--color-success-bg);
+  border-color: #81c784;
+  color: var(--color-success);
+}
+.tag-pill.tag-better:hover { border-color: #a5d6a7; }
+
+/* Poor sleep — indigo */
+.tag-pill.tag-poor-sleep:has(input:checked) {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary-border);
+  color: var(--color-primary);
+}
+.tag-pill.tag-poor-sleep:hover { border-color: var(--color-primary-faint); }
+
+/* High stress — pink */
+.tag-pill.tag-stress:has(input:checked) {
+  background: var(--color-pink-bg);
+  border-color: var(--color-pink-border);
+  color: var(--color-pink);
+}
+.tag-pill.tag-stress:hover { border-color: var(--color-pink-border); }
+
+/* Weather — blue-gray */
+.tag-pill.tag-weather:has(input:checked) {
+  background: #e3f2fd;
+  border-color: #90caf9;
+  color: #1565c0;
+}
+.tag-pill.tag-weather:hover { border-color: #bbdefb; }
+
+/* ================================================================
    ENTRY TAB — responsive
    ================================================================ */
 
