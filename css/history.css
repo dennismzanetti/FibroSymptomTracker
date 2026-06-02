@@ -254,12 +254,41 @@
    HISTORY — table view
    ================================================================ */
 
+.history-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
 .history-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 .history-table {
   width: 100%;
   border-collapse: collapse;
   font-size: var(--text-sm);
+}
+
+/* ----------------------------------------------------------------
+   Sticky first column (field label)
+   The <th> in the header row AND all <td>s in the first column
+   stay fixed while scrolling horizontally through date columns.
+   A stronger border-right marks the freeze line.
+---------------------------------------------------------------- */
+
+.history-table thead th:first-child,
+.history-table tbody td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  /* Solid background required — transparent shows scrolled content underneath */
+  background: var(--color-surface);
+  border-right: 2px solid var(--color-border-input);
+}
+
+/* Even rows: keep the alternating tint on the sticky cell */
+.history-table tr:nth-child(even) td:first-child {
+  background: var(--color-surface-2);
+}
+
+/* Hover: keep sticky cell in sync with row hover */
+.history-table tr:hover td:first-child {
+  background: var(--color-surface-3);
 }
 
 .history-table th {
@@ -271,6 +300,12 @@
   font-size: var(--text-xs);
   border-bottom: 2px solid var(--color-border-input);
   white-space: nowrap;
+}
+
+/* Sticky header cell (top-left corner) sits above both axes */
+.history-table thead th:first-child {
+  background: var(--color-surface-2);
+  z-index: 3;
 }
 
 .history-table td {
@@ -289,6 +324,37 @@
   background: var(--color-surface-3);
   color: var(--color-text-muted);
 }
+
+/* ----------------------------------------------------------------
+   Heatmap cell coloring
+   cell-low   = good (low pain, high mood, enough sleep)  → green tint
+   cell-mid   = moderate                                  → amber tint
+   cell-high  = bad  (high pain, low mood, poor sleep)    → red tint
+   Tints are semi-transparent so alternating row shading
+   and hover states still show through.
+---------------------------------------------------------------- */
+
+.history-table td.cell-low {
+  background: color-mix(in oklch, var(--color-success) 14%, transparent);
+}
+
+.history-table td.cell-mid {
+  background: color-mix(in oklch, var(--color-warning) 14%, transparent);
+}
+
+.history-table td.cell-high {
+  background: color-mix(in oklch, var(--color-danger, var(--color-error)) 14%, transparent);
+}
+
+/* Sticky first column must also respect heatmap tints */
+.history-table tbody td:first-child.cell-low  { background: color-mix(in oklch, var(--color-success) 14%, var(--color-surface)); }
+.history-table tbody td:first-child.cell-mid  { background: color-mix(in oklch, var(--color-warning) 14%, var(--color-surface)); }
+.history-table tbody td:first-child.cell-high { background: color-mix(in oklch, var(--color-danger, var(--color-error)) 14%, var(--color-surface)); }
+
+/* Hover: brighten the tint slightly on hover */
+.history-table tr:hover td.cell-low  { background: color-mix(in oklch, var(--color-success) 22%, var(--color-surface-3)); }
+.history-table tr:hover td.cell-mid  { background: color-mix(in oklch, var(--color-warning) 22%, var(--color-surface-3)); }
+.history-table tr:hover td.cell-high { background: color-mix(in oklch, var(--color-danger, var(--color-error)) 22%, var(--color-surface-3)); }
 
 /* ================================================================
    HISTORY — trend chart area
