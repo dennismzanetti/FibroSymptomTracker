@@ -536,6 +536,11 @@ input[type="range"] {
 
 .toast.show { opacity: 1; }
 
+.toast.toast-error {
+  background: var(--color-danger, #c0392b);
+  color: white;
+}
+
 /* ================================================================
    SAVE FLOATING BUTTON
    ================================================================ */

@@ -40,13 +40,18 @@ function showToast(msg, isError = false) {
   if (!toast) {
     toast = document.createElement('div');
     toast.id = 'appToast';
+    toast.className = 'toast';
     document.body.appendChild(toast);
   }
   toast.textContent = msg;
-  toast.className = 'toast' + (isError ? ' toast-error' : ' toast-success');
-  toast.style.display = 'block';
+  toast.className = 'toast' + (isError ? ' toast-error' : '');
+  // Force reflow so re-triggering the animation works
+  void toast.offsetWidth;
+  toast.classList.add('show');
   clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => { toast.style.display = 'none'; }, 5000);
+  toast._timer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
 }
 
 // ---- Mobile wiring — sign-out sync + tab select ----
