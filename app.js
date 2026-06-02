@@ -167,6 +167,15 @@ function todayStr() {
   return `${y}-${m}-${d}`;
 }
 
+function nDaysAgo(n) {
+  const d = new Date();
+  d.setDate(d.getDate() - n);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${dd}`;
+}
+
 function syncDateInput() {
   const dateInput = document.getElementById("dateInput");
   if (dateInput) dateInput.value = currentDateStr;
@@ -221,6 +230,7 @@ window.addEventListener("load", () => {
   setupSleepCalculation();
   setupNumberSteppers();
   setupAtrForm();
+  setupHistoryControls();
 
   const dateInput = document.getElementById("dateInput");
   if (dateInput) {
@@ -503,124 +513,30 @@ function scoreChipClass(score) {
   return "score-high";
 }
 
-async function refreshHistory() {
-  const list = document.getElementById("historyList");
-  if (!list) return;
+// ---- History tab ----
 
-  list.innerHTML = '<li class="history-loading">Loading\u2026</li>';
+function setupHistoryControls() {
+  // Set default date range: last 14 days → today
+  const fromEl = document.getElementById("historyFrom");
+  const toEl   = document.getElementById("historyTo");
+  if (fromEl && !fromEl.value) fromEl.value = nDaysAgo(13);
+  if (toEl   && !toEl.value)   toEl.value   = todayStr();
 
-  try {
-    const snapshot = await db.collection("days")
-      .orderBy(firebase.firestore.FieldPath.documentId())
-      .get();
+  // Wire Load History button
+  document.getElementById("loadHistoryBtn")?.addEventListener("click", refreshHistory);
+}
 
-    const days = [];
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      days.push({
-        date: data.date || doc.id,
-        dayTitle: data.dayTitle || "",
-        avgFunctionality: data.avgFunctionality ?? null,
-        functionality: data.functionality || null,
-        sleep: data.sleep || null,
-        didExercise: data.didExercise || false,
-        exercise: data.exercise || null,
-        tags: data.tags || [],
-        overallNotes: data.overallNotes || "",
-        mood: data.mood || {},
-        painScore: data.painScore ?? null,
-        painNotes: data.painNotes || "",
-        fatigueScore: data.fatigueScore ?? null,
-        fatigueNotes: data.fatigueNotes || ""
-      });
-    });
+function refreshHistory() {
+  const fromEl = document.getElementById("historyFrom");
+  const toEl   = document.getElementById("historyTo");
+  const from   = fromEl?.value || nDaysAgo(13);
+  const to     = toEl?.value   || todayStr();
 
-    days.sort((a, b) => a.date.localeCompare(b.date)).reverse();
-    list.innerHTML = "";
-
-    if (!days.length) {
-      list.innerHTML = `
-        <li class="history-empty">
-          <span class="history-empty-icon">&#x1F4CB;</span>
-          <span>No entries yet. Start by saving a day in the Daily Entry tab.</span>
-        </li>`;
-      return;
-    }
-
-    days.slice(0, 30).forEach(d => {
-      const [y, mo, dy] = d.date.split("-").map(Number);
-      const dateObj = new Date(y, mo - 1, dy);
-      const dow = isNaN(dateObj.getTime()) ? "" : dateObj.toLocaleDateString(undefined, { weekday: "short" });
-      const dateLabel = isNaN(dateObj.getTime())
-        ? d.date
-        : dateObj.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
-
-      const avgScore = d.avgFunctionality;
-      const moodScore = d.mood?.score ?? null;
-      const sleepQuality = d.sleep?.quality ?? null;
-
-      const chipsHtml = [
-        avgScore != null
-          ? `<span class="score-chip ${scoreChipClass(avgScore)}">Func ${avgScore.toFixed(1)}</span>`
-          : "",
-        moodScore != null
-          ? `<span class="score-chip ${scoreChipClass(moodScore)}">Mood ${moodScore}</span>`
-          : "",
-        sleepQuality != null
-          ? `<span class="score-chip ${scoreChipClass(sleepQuality)}">Sleep ${sleepQuality}</span>`
-          : "",
-        d.didExercise
-          ? `<span class="score-chip score-low">&#x1F3C3; Exercise</span>`
-          : ""
-      ].filter(Boolean).join("");
-
-      const notesPreview = d.overallNotes?.trim() || d.mood?.notes?.trim() || "";
-
-      const li = document.createElement("li");
-      li.className = "history-item";
-
-      li.innerHTML = `
-        <div class="history-item-header">
-          <span class="history-date-label">${dow ? dow + " \u00B7 " : ""}${dateLabel}</span>
-          ${d.dayTitle ? `<span class="history-day-title">${d.dayTitle}</span>` : ""}
-          <div class="history-scores">${chipsHtml}</div>
-        </div>
-        ${notesPreview ? `<div class="history-notes-preview">${notesPreview}</div>` : ""}
-        <div class="history-item-actions" style="display:flex;gap:0.5rem;margin-top:0.6rem;">
-          <button class="history-load-btn">Load into entry</button>
-          <button class="history-delete-btn danger">Delete</button>
-        </div>`;
-
-      li.querySelector(".history-load-btn").addEventListener("click", (e) => {
-        e.stopPropagation();
-        fillFormFromData(d);
-        switchToTab("entry-tab");
-      });
-
-      li.querySelector(".history-delete-btn").addEventListener("click", async (e) => {
-        e.stopPropagation();
-        if (!window.confirm(`Delete entry for ${d.date}?`)) return;
-        try {
-          await db.collection("days").doc(d.date).delete();
-          refreshHistory();
-          refreshTrends();
-        } catch (err) {
-          console.error("Error deleting day:", err);
-          alert("Failed to delete.");
-        }
-      });
-
-      li.addEventListener("click", (e) => {
-        if (e.target.tagName === "BUTTON") return;
-        fillFormFromData(d);
-        switchToTab("entry-tab");
-      });
-
-      list.appendChild(li);
-    });
-  } catch (err) {
-    console.error("Error loading history:", err);
-    list.innerHTML = '<li class="history-error">&#x26A0;&#xFE0F; Could not load history. Please check your connection.</li>';
+  if (typeof window.loadAndRenderHistory === "function") {
+    window.loadAndRenderHistory(from, to, "historyList");
+  } else {
+    const list = document.getElementById("historyList");
+    if (list) list.innerHTML = "<p class='history-empty'>History renderer not loaded.</p>";
   }
 }
 
