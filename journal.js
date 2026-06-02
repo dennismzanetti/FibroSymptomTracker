@@ -28,6 +28,25 @@ const TIER_COLORS = {
   5: { bg: "#e0f2f1", border: "#80cbc4", text: "#00695c" }
 };
 
+// Per-tag colour definitions (mirrors entry.css)
+const TAG_STYLES = {
+  flare:          { bg: "#fff0f0", border: "#e57373", text: "#c62828",  icon: "🔥" },
+  crash:          { bg: "#fff3e0", border: "#ffb74d", text: "#e65100",  icon: "⚡" },
+  better:         { bg: "#e8f5e9", border: "#81c784", text: "#2e7d32",  icon: "✨" },
+  poor_sleep:     { bg: "#ede7f6", border: "#9575cd", text: "#4527a0",  icon: "🌙" },
+  high_stress:    { bg: "#fce4ec", border: "#f48fb1", text: "#880e4f",  icon: "💢" },
+  weather_change: { bg: "#e3f2fd", border: "#90caf9", text: "#1565c0",  icon: "🌧️" }
+};
+
+const TAG_LABELS = {
+  flare:          "Flare",
+  crash:          "Crash / PEM",
+  better:         "Better than usual",
+  poor_sleep:     "Poor sleep",
+  high_stress:    "High stress",
+  weather_change: "Weather change"
+};
+
 function tierBarColor(avg) {
   if (avg === null) return "#e3e6f0";
   const t = scoreTier(avg);
@@ -49,6 +68,27 @@ function statChipHtml(icon, label, value, colorStyle) {
       <span class="jv2-stat-value">${value}</span>
     </div>
   </div>`;
+}
+
+// ================================================================
+// ITEM 3 — FUNCTIONALITY SPARKLINE
+// 6 colour-coded squares, one per time block, always visible
+// ================================================================
+
+function sparklineHtml(scores) {
+  const cells = scores.map((s, i) => {
+    const t  = s !== null ? scoreTier(s) : 0;
+    const c  = t ? TIER_COLORS[t] : null;
+    const bg     = c ? c.bg     : "#f0f2fa";
+    const border = c ? c.border : "#dde0ec";
+    const label  = TIME_BLOCKS[i].short;
+    const tip    = s !== null ? `${TIME_BLOCKS[i].label}: ${s}/10` : `${TIME_BLOCKS[i].label}: no data`;
+    return `<div class="jv2-spark-cell" style="background:${bg};border-color:${border};" title="${tip}" aria-label="${tip}">
+      <span class="jv2-spark-label">${label}</span>
+      ${s !== null ? `<span class="jv2-spark-score">${s}</span>` : `<span class="jv2-spark-score jv2-spark-empty">&mdash;</span>`}
+    </div>`;
+  });
+  return `<div class="jv2-sparkline" aria-label="Functionality by time of day">${cells.join("")}</div>`;
 }
 
 // ================================================================
@@ -204,6 +244,19 @@ function buildSection(title, bodyHtml, defaultOpen) {
 }
 
 // ================================================================
+// ITEM 4 — COLOURED TAG PILL
+// ================================================================
+
+function tagPillHtml(tagKey) {
+  const style = TAG_STYLES[tagKey];
+  const label = TAG_LABELS[tagKey] || tagKey.replace(/_/g, " ");
+  if (style) {
+    return `<span class="jv2-tag" style="background:${style.bg};border-color:${style.border};color:${style.text};">${style.icon} ${label}</span>`;
+  }
+  return `<span class="jv2-tag">${label}</span>`;
+}
+
+// ================================================================
 // CARD BUILDER
 // ================================================================
 
@@ -240,9 +293,17 @@ function buildJournalCard(dateStr, d) {
     ? statChipHtml("😌", "Mood", scorePillHtml(d.mood.score), "")
     : "";
 
-  // ---- Tags ----
+  // ---- ITEM 3: Sparkline (always visible, above stat chips) ----
+  const sparkline = sparklineHtml(scores);
+
+  // ---- ITEM 4: Coloured tags ----
   const tagsHtml = d.tags?.length
-    ? `<div class="jv2-tags">${d.tags.map(t => `<span class="jv2-tag">${t}</span>`).join("")}</div>`
+    ? `<div class="jv2-tags">${d.tags.map(t => tagPillHtml(t)).join("")}</div>`
+    : "";
+
+  // ---- ITEM 7: Notes preview (always visible, truncated to 2 lines) ----
+  const notesPreview = d.overallNotes?.trim()
+    ? `<p class="jv2-notes-preview">${d.overallNotes.trim()}</p>`
     : "";
 
   // ============================================================
@@ -277,18 +338,18 @@ function buildJournalCard(dateStr, d) {
   // ============================================================
   // SECTION: Sleep
   // ============================================================
-  const s = d.sleep || {};
-  const hasSleep = s.bedtime || s.wakeTime || s.hours != null || s.quality != null || s.awakenings != null || s.notes;
+  const sl = d.sleep || {};
+  const hasSleep = sl.bedtime || sl.wakeTime || sl.hours != null || sl.quality != null || sl.awakenings != null || sl.notes;
   let sleepBody;
   if (hasSleep) {
     const sleepStats = [
-      s.bedtime    ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Bedtime</span><strong>${s.bedtime}</strong></div>` : "",
-      s.wakeTime   ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Wake</span><strong>${s.wakeTime}</strong></div>` : "",
-      s.hours!=null? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Hours</span><strong>${s.hours}h</strong></div>` : "",
-      s.quality!=null?`<div class="jv2-sleep-stat"><span class="jv2-detail-label">Quality</span><strong>${scorePillHtml(s.quality)}</strong></div>` : "",
-      s.awakenings!=null?`<div class="jv2-sleep-stat"><span class="jv2-detail-label">Awakenings</span><strong>${s.awakenings}</strong></div>` : ""
+      sl.bedtime    ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Bedtime</span><strong>${sl.bedtime}</strong></div>` : "",
+      sl.wakeTime   ? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Wake</span><strong>${sl.wakeTime}</strong></div>` : "",
+      sl.hours!=null? `<div class="jv2-sleep-stat"><span class="jv2-detail-label">Hours</span><strong>${sl.hours}h</strong></div>` : "",
+      sl.quality!=null?`<div class="jv2-sleep-stat"><span class="jv2-detail-label">Quality</span><strong>${scorePillHtml(sl.quality)}</strong></div>` : "",
+      sl.awakenings!=null?`<div class="jv2-sleep-stat"><span class="jv2-detail-label">Awakenings</span><strong>${sl.awakenings}</strong></div>` : ""
     ].filter(Boolean).join("");
-    sleepBody = `<div class="jv2-sleep-grid">${sleepStats}</div>${s.notes ? `<p class="jv2-notes-text">${s.notes}</p>` : ""}`;
+    sleepBody = `<div class="jv2-sleep-grid">${sleepStats}</div>${sl.notes ? `<p class="jv2-notes-text">${sl.notes}</p>` : ""}`;
   } else {
     sleepBody = `<p class="jv2-empty">No sleep data recorded.</p>`;
   }
@@ -326,12 +387,13 @@ function buildJournalCard(dateStr, d) {
   const moodSection = buildSection("Mood", moodBody, false);
 
   // ============================================================
-  // SECTION: Overall Notes
+  // SECTION: Overall Notes (no longer needed as standalone section
+  // since we show a preview — but keep accordion for full text)
   // ============================================================
   const notesBody = d.overallNotes
     ? `<p class="jv2-notes-text">${d.overallNotes}</p>`
     : `<p class="jv2-empty">No overall notes recorded.</p>`;
-  const notesSection = buildSection("Overall Notes", notesBody, !!d.overallNotes);
+  const notesSection = buildSection("Overall Notes", notesBody, false);
 
   // ============================================================
   // CARD ASSEMBLY
@@ -341,7 +403,7 @@ function buildJournalCard(dateStr, d) {
       <div class="jv2-card-accent" style="background:${barColor};"></div>
       <div class="jv2-card-inner">
 
-        <!-- Header -->
+        <!-- Header: date + title -->
         <header class="jv2-card-header">
           <div class="jv2-date-block">
             <span class="jv2-dow">${dow}</span>
@@ -353,6 +415,12 @@ function buildJournalCard(dateStr, d) {
             ${tagsHtml}
           </div>
         </header>
+
+        <!-- ITEM 3: Sparkline — always visible -->
+        ${sparkline}
+
+        <!-- ITEM 7: Notes preview — always visible -->
+        ${notesPreview}
 
         <!-- Accordion sections -->
         <div class="jv2-sections">
@@ -389,6 +457,36 @@ function injectJournalFilterUI() {
 }
 
 // ================================================================
+// ITEM 8 — COUNT + DATE RANGE LABEL
+// ================================================================
+
+function formatDateLabel(dateStr) {
+  const d = new Date(dateStr + "T12:00:00");
+  const MTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return `${MTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+}
+
+function renderRangeLabel(docs) {
+  const existing = document.getElementById("jv2-range-label");
+  if (existing) existing.remove();
+  if (!docs.length) return;
+
+  const ids  = docs.map(d => d.id).sort();
+  const from = formatDateLabel(ids[0]);
+  const to   = formatDateLabel(ids[ids.length - 1]);
+  const count = docs.length;
+  const noun  = count === 1 ? "entry" : "entries";
+
+  const label = document.createElement("p");
+  label.id = "jv2-range-label";
+  label.className = "jv2-range-label";
+  label.textContent = `Showing ${count} ${noun} · ${from} – ${to}`;
+
+  const container = document.getElementById("journalOutput");
+  if (container) container.parentElement.insertBefore(label, container);
+}
+
+// ================================================================
 // MAIN RENDER
 // ================================================================
 
@@ -422,9 +520,13 @@ async function renderJournal() {
     await renderHeatmap(heatDocs);
 
     if (snapshot.empty) {
+      renderRangeLabel([]);
       container.innerHTML = `<p class="jv2-loading" style="font-style:italic;">No journal entries found for the selected period.</p>`;
       return;
     }
+
+    // ITEM 8: render count + range label above cards
+    renderRangeLabel(snapshot.docs);
 
     container.innerHTML = snapshot.docs.map(doc => buildJournalCard(doc.id, doc.data())).join("");
 
