@@ -383,6 +383,53 @@ main {
 }
 
 /* ================================================================
+   TOAST NOTIFICATION
+   ================================================================ */
+
+.toast {
+  position: fixed;
+  bottom: calc(var(--footer-h, 1.8rem) + var(--space-4));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  min-width: 220px;
+  max-width: min(420px, calc(100vw - var(--space-8)));
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-full);
+  font-size: var(--text-base);
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: var(--shadow-xl);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.toast.show {
+  opacity: 1;
+}
+
+.toast.toast-success {
+  background: var(--color-success-deep, #1b5e20);
+  color: #fff;
+}
+
+.toast.toast-error {
+  background: var(--color-danger, #b71c1c);
+  color: #fff;
+}
+
+@media (max-width: 640px) {
+  .toast {
+    bottom: calc(var(--footer-h, 1.8rem) + var(--space-3));
+    min-width: 180px;
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--text-sm);
+  }
+}
+
+/* ================================================================
    BUILD FOOTER
    ================================================================ */
 
