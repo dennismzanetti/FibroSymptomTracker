@@ -109,26 +109,26 @@ function showToast(message, isError = false) {
     document.body.appendChild(toast);
   }
 
-  toast.classList.remove("toast-success", "toast-error", "toast--hide");
+  // Reset state
+  toast.classList.remove("toast-success", "toast-error", "show");
   toast.style.opacity = "";
   toast.style.transition = "";
-  toast.style.animation = "none";
-  // eslint-disable-next-line no-unused-expressions
-  toast.offsetHeight;
-  toast.style.animation = "";
 
   toast.textContent = message;
   toast.classList.add(isError ? "toast-error" : "toast-success");
   toast.style.display = "block";
 
+  // Trigger reflow so the transition fires
+  // eslint-disable-next-line no-unused-expressions
+  toast.offsetHeight;
+
+  toast.classList.add("show");
+
   if (_toastTimer) clearTimeout(_toastTimer);
   _toastTimer = setTimeout(() => {
-    toast.style.transition = "opacity 0.4s ease";
-    toast.style.opacity = "0";
+    toast.classList.remove("show");
     setTimeout(() => {
       toast.style.display = "none";
-      toast.style.opacity = "";
-      toast.style.transition = "";
     }, 420);
   }, 3000);
 }
