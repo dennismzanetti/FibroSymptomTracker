@@ -108,3 +108,39 @@
   gap: var(--space-2);
   justify-content: flex-end;
 }
+
+/* ================================================================
+   SUB-TAB PILLS (used on Medications & Care Team pages)
+   ================================================================ */
+
+.med-sub-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.ct-sub-tab-btn {
+  padding: 0.3rem var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--transition-base), border-color var(--transition-base), color var(--transition-base);
+}
+
+.ct-sub-tab-btn:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary-border);
+  color: var(--color-primary);
+}
+
+.ct-sub-tab-btn.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
