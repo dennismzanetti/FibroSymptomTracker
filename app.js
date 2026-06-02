@@ -16,6 +16,7 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 
 const signOutBtn = document.getElementById("signOutBtn");
+const signOutBtnMobile = document.getElementById("signOutBtnMobile");
 const appMain = document.querySelector("main");
 
 if (appMain) appMain.style.display = "none";
@@ -38,6 +39,7 @@ auth.onAuthStateChanged((user) => {
     if (authOverlay) authOverlay.style.display = "none";
     if (appMain) appMain.style.display = "";
     if (signOutBtn) signOutBtn.style.display = "inline-block";
+    if (signOutBtnMobile) signOutBtnMobile.style.display = "inline-flex";
     console.log("Signed in as", user.displayName, "UID:", user.uid);
 
     if (!_appInitialised) {
@@ -52,12 +54,49 @@ auth.onAuthStateChanged((user) => {
     if (authOverlay) authOverlay.style.display = "flex";
     if (appMain) appMain.style.display = "none";
     if (signOutBtn) signOutBtn.style.display = "none";
+    if (signOutBtnMobile) signOutBtnMobile.style.display = "none";
     _appInitialised = false;
     _pendingSetup = false;
   }
 });
 
+// ---- Google Sign-In ----
+(function setupGoogleSignIn() {
+  const signInBtn = document.getElementById("googleSignInBtn");
+  const authError = document.getElementById("authError");
+  if (!signInBtn) return;
+
+  const provider = new firebase.auth.GoogleAuthProvider();
+
+  // Consume any pending redirect result (mobile flow)
+  auth.getRedirectResult().then(result => {
+    if (result && result.user) {
+      console.log("Redirect sign-in complete:", result.user.displayName);
+    }
+  }).catch(err => {
+    console.error("Redirect sign-in error:", err);
+    if (authError) authError.textContent = "Sign-in failed. Please try again.";
+  });
+
+  signInBtn.addEventListener("click", () => {
+    if (authError) authError.textContent = "";
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      auth.signInWithRedirect(provider).catch(err => {
+        console.error("Redirect sign-in error:", err);
+        if (authError) authError.textContent = "Sign-in failed. Please try again.";
+      });
+    } else {
+      auth.signInWithPopup(provider).catch(err => {
+        console.error("Sign-in error:", err);
+        if (authError) authError.textContent = "Sign-in failed. Please try again.";
+      });
+    }
+  });
+})();
+
 signOutBtn?.addEventListener("click", () => auth.signOut());
+signOutBtnMobile?.addEventListener("click", () => auth.signOut());
 
 // ---- Toast notification ----
 let _toastTimer = null;
