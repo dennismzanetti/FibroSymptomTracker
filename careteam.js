@@ -45,7 +45,6 @@ function setupCareTeamTab() {
   if (defaultBtn) {
     defaultBtn.click();
   } else {
-    // Fallback: activate manually if button not found
     refreshProviderList();
     populateProviderDropdown();
   }
@@ -178,7 +177,6 @@ async function getNextAppointmentDate(providerId) {
     if (snapshot.empty) return null;
     return snapshot.docs[0].data().date;
   } catch (err) {
-    // Silently fail — next appt is supplemental info
     return null;
   }
 }
@@ -190,6 +188,11 @@ function formatApptDate(dateStr) {
   return new Date(y, mo - 1, dy).toLocaleDateString(undefined, {
     weekday: 'short', month: 'short', day: 'numeric'
   });
+}
+
+// Returns the first letter of the first word in a name
+function providerInitial(name) {
+  return (name || '?').trim().charAt(0).toUpperCase();
 }
 
 async function refreshProviderList() {
@@ -209,7 +212,6 @@ async function refreshProviderList() {
     }
     list.innerHTML = '';
 
-    // Fetch all provider cards, then asynchronously annotate next appt dates
     const items = [];
     snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
 
@@ -217,32 +219,53 @@ async function refreshProviderList() {
       const typeLabel   = PROVIDER_TYPE_LABELS[p.providerType] || p.providerType || '';
       const statusLabel = PROVIDER_STATUS_LABELS[p.status] || p.status || '';
       const statusClass = 'ct-status-' + (p.status || 'active');
+      const initial     = providerInitial(p.displayName);
 
-      // Fetch next appointment date in parallel
-      const nextApptDate = await getNextAppointmentDate(p.id);
-      const nextApptLabel = nextApptDate
+      const nextApptDate  = await getNextAppointmentDate(p.id);
+      const nextApptHtml  = nextApptDate
         ? `<div class="ct-provider-next-appt">&#x1F4C5; Next: ${escHtml(formatApptDate(nextApptDate))}</div>`
+        : '';
+
+      // Build sub-line: specialty · org
+      const subParts = [p.specialty, p.organization].filter(Boolean);
+      const subHtml  = subParts.length
+        ? `<div class="ct-provider-sub">${subParts.map(escHtml).join(' &middot; ')}</div>`
+        : '';
+
+      // Meta pills: phone, portal, symptom focus
+      const metaItems = [
+        p.phone     ? `<a class="ct-meta-link" href="tel:${escHtml(p.phone)}">&#x1F4DE; ${escHtml(p.phone)}</a>` : '',
+        p.portalUrl ? `<a class="ct-meta-link" href="${escHtml(p.portalUrl)}" target="_blank" rel="noopener noreferrer">&#x1F517; Portal</a>` : '',
+        p.symptomFocus ? `<span class="ct-meta-text">Treats: ${escHtml(p.symptomFocus)}</span>` : ''
+      ].filter(Boolean).join('');
+      const metaHtml = metaItems
+        ? `<div class="ct-provider-meta">${metaItems}</div>`
+        : '';
+
+      const notesHtml = p.notes
+        ? `<div class="ct-provider-notes">${escHtml(p.notes)}</div>`
         : '';
 
       const li = document.createElement('li');
       li.className = 'ct-provider-item';
+      li.dataset.status = p.status || 'active';
       li.innerHTML = `
-        <div class="ct-provider-header">
+        <div class="ct-provider-body">
+          <div class="ct-provider-avatar" aria-hidden="true">${escHtml(initial)}</div>
           <div class="ct-provider-identity">
-            <span class="ct-provider-name">${escHtml(p.displayName || '')}</span>
-            ${typeLabel ? `<span class="ct-badge ct-badge-type">${escHtml(typeLabel)}</span>` : ''}
-            ${p.specialty ? `<span class="ct-provider-specialty">${escHtml(p.specialty)}</span>` : ''}
+            <div class="ct-provider-name-row">
+              <span class="ct-provider-name">${escHtml(p.displayName || '')}</span>
+              ${typeLabel ? `<span class="ct-badge ct-badge-type">${escHtml(typeLabel)}</span>` : ''}
+            </div>
+            ${subHtml}
+            ${metaHtml}
+            ${nextApptHtml}
           </div>
-          <span class="ct-badge ${statusClass}">${escHtml(statusLabel)}</span>
+          <div class="ct-provider-status-wrap">
+            <span class="ct-badge ${statusClass}">${escHtml(statusLabel)}</span>
+          </div>
         </div>
-        ${p.organization ? `<div class="ct-provider-org">${escHtml(p.organization)}</div>` : ''}
-        <div class="ct-provider-meta">
-          ${p.phone    ? `<a class="ct-meta-link" href="tel:${escHtml(p.phone)}">&#x1F4DE; ${escHtml(p.phone)}</a>` : ''}
-          ${p.portalUrl ? `<a class="ct-meta-link" href="${escHtml(p.portalUrl)}" target="_blank" rel="noopener noreferrer">&#x1F517; Portal</a>` : ''}
-          ${p.symptomFocus ? `<span class="ct-meta-text">Treats: ${escHtml(p.symptomFocus)}</span>` : ''}
-        </div>
-        ${nextApptLabel}
-        ${p.notes ? `<div class="ct-provider-notes">${escHtml(p.notes)}</div>` : ''}
+        ${notesHtml}
         <div class="ct-item-actions">
           <button class="ct-edit-btn">Edit</button>
           <button class="ct-appt-btn">+ Appointment</button>
@@ -418,12 +441,12 @@ async function refreshAppointmentList() {
         <div class="ct-appt-header">
           <div class="ct-appt-who">
             <span class="ct-appt-provider">${escHtml(a.providerName || 'Unknown provider')}</span>
-            <span class="ct-appt-date">${escHtml(dateLabel)}${a.time ? ' \u00B7 ' + escHtml(a.time) : ''}</span>
+            <span class="ct-appt-date">${escHtml(dateLabel)}${a.time ? ' &middot; ' + escHtml(a.time) : ''}</span>
           </div>
           <span class="ct-badge ${statusClass}">${escHtml(statusLabel)}</span>
         </div>
-        ${a.location ? `<div class="ct-appt-detail">&#x1F4CD; ${escHtml(a.location)}</div>` : ''}
-        ${a.purpose  ? `<div class="ct-appt-detail">Purpose: ${escHtml(a.purpose)}</div>` : ''}
+        ${a.location  ? `<div class="ct-appt-detail">&#x1F4CD; ${escHtml(a.location)}</div>` : ''}
+        ${a.purpose   ? `<div class="ct-appt-detail">Purpose: ${escHtml(a.purpose)}</div>` : ''}
         ${a.prepNotes ? `<div class="ct-appt-notes"><span class="ct-notes-label">Prep notes:</span> ${escHtml(a.prepNotes)}</div>` : ''}
         ${a.postNotes ? `<div class="ct-appt-notes"><span class="ct-notes-label">Visit notes:</span> ${escHtml(a.postNotes)}</div>` : ''}
         ${a.followUpNeeded ? `<div class="ct-followup-flag">&#x2691; Follow-up needed</div>` : ''}

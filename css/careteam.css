@@ -17,118 +17,158 @@
   padding: 0;
   margin: 0 0 var(--space-3) 0;
   border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-primary);
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--color-surface);
   box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
 }
 
-.ct-provider-header {
+/* Status-based left-edge accent color */
+.ct-provider-item[data-status="former"]        { border-left-color: var(--color-text-faint); }
+.ct-provider-item[data-status="need_followup"] { border-left-color: var(--color-warning); }
+.ct-provider-item[data-status="referred"]      { border-left-color: var(--color-blue); }
+.ct-provider-item[data-status="upcoming"]      { border-left-color: var(--color-gold); }
+
+/* --- Card body --- */
+
+.ct-provider-body {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-2);
+  gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
-  cursor: pointer;
-  transition: background var(--transition-fast);
 }
 
-.ct-provider-header:hover {
-  background: var(--color-surface-3);
-}
-
-.ct-provider-name {
-  font-size: var(--text-lg);
-  font-weight: 700;
-  color: var(--color-text);
-}
-
-.ct-provider-specialty {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-1);
-}
-
-.ct-provider-org {
-  font-size: var(--text-sm);
-  color: var(--color-text-faint);
-}
-
-.ct-provider-meta {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-}
-
-.ct-provider-next-appt {
-  font-size: var(--text-sm);
-  color: var(--color-text-faint);
-  white-space: nowrap;
+/* Avatar initial circle */
+.ct-provider-avatar {
   flex-shrink: 0;
-}
-
-.ct-meta-text {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-1);
-}
-
-/* --- Appointment list items --- */
-
-.ct-appt-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.ct-appt-item {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.ct-appt-header {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: #fff;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-1);
-  flex-wrap: wrap;
-  gap: var(--space-1);
-}
-
-.ct-appt-date {
-  font-size: var(--text-md);
+  justify-content: center;
+  font-size: var(--text-base);
   font-weight: 700;
-  color: var(--color-text);
+  line-height: 1;
+  text-transform: uppercase;
+  user-select: none;
 }
 
-.ct-appt-detail {
-  font-size: var(--text-sm);
-  font-weight: 700;
-  color: var(--color-text);
+.ct-provider-item[data-status="former"] .ct-provider-avatar {
+  background: var(--color-text-faint);
 }
 
-.ct-appt-notes {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-1);
-}
-
-.ct-appt-provider {
+/* Identity block — sits next to avatar */
+.ct-provider-identity {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
 }
 
-.ct-followup-flag {
-  font-weight: 600;
-  color: var(--color-primary);
+.ct-provider-name-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
 }
 
-/* --- Item action buttons --- */
+.ct-provider-name {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.ct-provider-sub {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.3;
+}
+
+.ct-provider-org {
+  font-size: var(--text-sm);
+  color: var(--color-text-faint);
+  line-height: 1.3;
+}
+
+/* Meta row — phone, portal, treats */
+.ct-provider-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.ct-meta-link,
+.ct-meta-text {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: var(--color-surface-offset);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 1px var(--space-2);
+  white-space: nowrap;
+}
+
+.ct-meta-link:hover {
+  background: var(--color-primary-highlight);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* Next appointment pill */
+.ct-provider-next-appt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-primary);
+  background: var(--color-primary-highlight);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 25%, transparent);
+  border-radius: var(--radius-full);
+  padding: 2px var(--space-2);
+  margin-top: var(--space-1);
+  width: fit-content;
+}
+
+/* Notes */
+.ct-provider-notes {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  padding: 0 var(--space-4) var(--space-2) calc(40px + var(--space-3) + var(--space-4));
+  border-top: 1px solid var(--color-divider);
+  padding-top: var(--space-2);
+}
+
+/* Status badge — top-right of body */
+.ct-provider-status-wrap {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* --- Card footer: action buttons --- */
 
 .ct-item-actions {
   display: flex;
-  gap: var(--space-1);
-  margin-top: var(--space-2);
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-top: 1px solid var(--color-divider);
+  background: var(--color-surface-offset);
+  flex-wrap: wrap;
 }
 
 @media (max-width: 420px) {
@@ -141,42 +181,144 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  padding: var(--space-1) 0.7rem;
+  padding: var(--space-1) 0.75rem;
   font-size: var(--text-xs);
   font-weight: 600;
   border-radius: var(--radius-sm);
   cursor: pointer;
   border: 1px solid transparent;
-  transition: background var(--transition-fast);
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
-.ct-appt-btn,
 .ct-edit-btn {
-  background: var(--color-primary-light);
+  background: var(--color-primary-highlight);
   color: var(--color-primary);
-  border-color: var(--color-primary-border);
+  border-color: color-mix(in oklch, var(--color-primary) 25%, transparent);
+}
+.ct-edit-btn:hover {
+  background: color-mix(in oklch, var(--color-primary) 20%, transparent);
 }
 
-.ct-appt-btn:hover,
-.ct-edit-btn:hover {
-  background: var(--color-primary-border);
+.ct-appt-btn {
+  background: var(--color-surface-dynamic);
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+}
+.ct-appt-btn:hover {
+  background: var(--color-primary-highlight);
+  color: var(--color-primary);
+  border-color: color-mix(in oklch, var(--color-primary) 25%, transparent);
 }
 
 .ct-delete-btn {
-  background: var(--color-pink-bg);
-  color: var(--color-error);
-  border-color: var(--color-error-border);
+  background: transparent;
+  color: var(--color-text-faint);
+  border-color: transparent;
+  margin-left: auto;
 }
-
 .ct-delete-btn:hover {
-  background: var(--color-error-border);
+  background: var(--color-error-highlight);
+  color: var(--color-error);
+  border-color: color-mix(in oklch, var(--color-error) 25%, transparent);
 }
 
-/* Status badge colours */
-.ct-status-active   { background: var(--color-success-bg);    color: var(--color-success); }
-.ct-status-inactive { background: var(--color-surface-2);     color: var(--color-primary-muted); }
+/* --- Status badges --- */
 
-/* Empty state */
+.ct-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.ct-badge-type {
+  background: var(--color-surface-dynamic);
+  color: var(--color-text-muted);
+}
+
+.ct-status-active        { background: var(--color-success-highlight);      color: var(--color-success); }
+.ct-status-upcoming      { background: var(--color-gold-highlight);          color: var(--color-gold); }
+.ct-status-referred      { background: var(--color-blue-highlight);          color: var(--color-blue); }
+.ct-status-need_followup { background: var(--color-warning-highlight);       color: var(--color-warning); }
+.ct-status-former        { background: var(--color-surface-dynamic);         color: var(--color-text-faint); }
+
+/* --- Appointment list items --- */
+
+.ct-appt-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ct-appt-item {
+  list-style: none;
+  padding: var(--space-3) var(--space-4);
+  margin: 0 0 var(--space-2) 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.ct-appt-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-1);
+}
+
+.ct-appt-who {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ct-appt-provider {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.ct-appt-date {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.ct-appt-detail {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-1);
+}
+
+.ct-appt-notes {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-1);
+}
+
+.ct-notes-label {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.ct-followup-flag {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-top: var(--space-1);
+}
+
+@media (max-width: 420px) {
+  .ct-appt-header { flex-direction: column; align-items: flex-start; }
+}
+
+/* --- Empty state --- */
+
 .ct-empty-state {
   display: flex;
   flex-direction: column;
@@ -205,30 +347,16 @@
   margin: 0 0 var(--space-4) 0;
 }
 
-/* ================================================================
-   CARE TEAM — combined header layout rules
-   ================================================================ */
-
-.ct-provider-header,
-.ct-appt-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-2);
-  flex-wrap: wrap;
+.ct-empty {
+  font-size: var(--text-sm);
+  color: var(--color-text-faint);
+  padding: var(--space-3) 0;
+  list-style: none;
 }
 
-@media (max-width: 420px) {
-  .ct-provider-header,
-  .ct-appt-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
+/* Misc */
 .ct-link {
-  color: var(--color-primary-hover);
+  color: var(--color-primary);
   text-decoration: underline;
 }
-
-.ct-link:hover { color: var(--color-primary-active); }
+.ct-link:hover { color: var(--color-primary-hover); }
