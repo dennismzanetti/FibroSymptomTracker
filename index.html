@@ -134,12 +134,14 @@
         <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
       </summary>
       <div class="entry-section-body card">
-        <label>Day title (optional):
-          <input type="text" id="dayTitleInput" placeholder="Flare day, Better day, etc." />
-        </label>
-        <label>Overall notes:
-          <textarea id="overallNotesInput" rows="2" placeholder="Big events, stress, weather, etc."></textarea>
-        </label>
+        <div class="form-group">
+          <label for="dayTitleInput">Day title (optional)</label>
+          <input type="text" id="dayTitleInput" placeholder="Flare day, Better day, travel, etc." />
+        </div>
+        <div class="form-group">
+          <label for="overallNotesInput">Overall notes</label>
+          <textarea id="overallNotesInput" rows="3" placeholder="Big events, stress, weather, etc."></textarea>
+        </div>
       </div>
     </details>
 
@@ -199,16 +201,18 @@
         <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
       </summary>
       <div class="entry-section-body card">
-        <label>Mood score (1&#8211;10)
+        <div class="form-group">
+          <label for="moodScoreInput">Mood score (1&#8211;10)</label>
           <div class="number-stepper">
             <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease mood score">&#8722;</button>
             <input type="number" min="1" max="10" id="moodScoreInput" inputmode="numeric" />
             <button type="button" class="stepper-btn" data-step="1" aria-label="Increase mood score">+</button>
           </div>
-        </label>
-        <label>Mood notes:
-          <textarea id="moodNotesInput" rows="2" placeholder="Anxious, low, ok, calm, etc."></textarea>
-        </label>
+        </div>
+        <div class="form-group">
+          <label for="moodNotesInput">Mood notes</label>
+          <textarea id="moodNotesInput" rows="3" placeholder="Anxious, low, ok, calm, etc."></textarea>
+        </div>
       </div>
     </details>
 
@@ -219,12 +223,133 @@
         <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
       </summary>
       <div class="entry-section-body card">
-        <div class="time-block"><h4>Early morning (5&#8211;9 am)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early morning functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyMorningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early morning functionality score">+</button></div></label><label>What I was doing: <input type="text" id="earlyMorningActivity" /></label><label>Symptoms / how it felt: <textarea id="earlyMorningSymptoms" rows="2"></textarea></label></div>
-        <div class="time-block"><h4>Late morning (9&#8211;12)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late morning functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateMorningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late morning functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateMorningActivity" /></label><label>Symptoms / how it felt: <textarea id="lateMorningSymptoms" rows="2"></textarea></label></div>
-        <div class="time-block"><h4>Early afternoon (12&#8211;3)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early afternoon functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyAfternoonScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early afternoon functionality score">+</button></div></label><label>What I was doing: <input type="text" id="earlyAfternoonActivity" /></label><label>Symptoms / how it felt: <textarea id="earlyAfternoonSymptoms" rows="2"></textarea></label></div>
-        <div class="time-block"><h4>Late afternoon (3&#8211;6)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late afternoon functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateAfternoonScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late afternoon functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateAfternoonActivity" /></label><label>Symptoms / how it felt: <textarea id="lateAfternoonSymptoms" rows="2"></textarea></label></div>
-        <div class="time-block"><h4>Early evening (6&#8211;9)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early evening functionality score">&#8722;</button><input type="number" min="1" max="10" id="earlyEveningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase early evening functionality score">+</button></div></label><label>What I was doing: <input type="text" id="earlyEveningActivity" /></label><label>Symptoms / how it felt: <textarea id="earlyEveningSymptoms" rows="2"></textarea></label></div>
-        <div class="time-block"><h4>Late evening (9&#8211;12)</h4><label>Functionality score (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late evening functionality score">&#8722;</button><input type="number" min="1" max="10" id="lateEveningScore" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase late evening functionality score">+</button></div></label><label>What I was doing: <input type="text" id="lateEveningActivity" /></label><label>Symptoms / how it felt: <textarea id="lateEveningSymptoms" rows="2"></textarea></label></div>
+
+        <!-- Early Morning -->
+        <div class="time-block">
+          <h4>Early morning (5&#8211;9 am)</h4>
+          <div class="form-group">
+            <label for="earlyMorningScore">Functionality score (1&#8211;10)</label>
+            <div class="number-stepper">
+              <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early morning functionality score">&#8722;</button>
+              <input type="number" min="1" max="10" id="earlyMorningScore" inputmode="numeric" />
+              <button type="button" class="stepper-btn" data-step="1" aria-label="Increase early morning functionality score">+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="earlyMorningActivity">What I was doing</label>
+            <input type="text" id="earlyMorningActivity" />
+          </div>
+          <div class="form-group">
+            <label for="earlyMorningSymptoms">Symptoms / how it felt</label>
+            <textarea id="earlyMorningSymptoms" rows="2"></textarea>
+          </div>
+        </div>
+
+        <!-- Late Morning -->
+        <div class="time-block">
+          <h4>Late morning (9&#8211;12)</h4>
+          <div class="form-group">
+            <label for="lateMorningScore">Functionality score (1&#8211;10)</label>
+            <div class="number-stepper">
+              <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late morning functionality score">&#8722;</button>
+              <input type="number" min="1" max="10" id="lateMorningScore" inputmode="numeric" />
+              <button type="button" class="stepper-btn" data-step="1" aria-label="Increase late morning functionality score">+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="lateMorningActivity">What I was doing</label>
+            <input type="text" id="lateMorningActivity" />
+          </div>
+          <div class="form-group">
+            <label for="lateMorningSymptoms">Symptoms / how it felt</label>
+            <textarea id="lateMorningSymptoms" rows="2"></textarea>
+          </div>
+        </div>
+
+        <!-- Early Afternoon -->
+        <div class="time-block">
+          <h4>Early afternoon (12&#8211;3)</h4>
+          <div class="form-group">
+            <label for="earlyAfternoonScore">Functionality score (1&#8211;10)</label>
+            <div class="number-stepper">
+              <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early afternoon functionality score">&#8722;</button>
+              <input type="number" min="1" max="10" id="earlyAfternoonScore" inputmode="numeric" />
+              <button type="button" class="stepper-btn" data-step="1" aria-label="Increase early afternoon functionality score">+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="earlyAfternoonActivity">What I was doing</label>
+            <input type="text" id="earlyAfternoonActivity" />
+          </div>
+          <div class="form-group">
+            <label for="earlyAfternoonSymptoms">Symptoms / how it felt</label>
+            <textarea id="earlyAfternoonSymptoms" rows="2"></textarea>
+          </div>
+        </div>
+
+        <!-- Late Afternoon -->
+        <div class="time-block">
+          <h4>Late afternoon (3&#8211;6)</h4>
+          <div class="form-group">
+            <label for="lateAfternoonScore">Functionality score (1&#8211;10)</label>
+            <div class="number-stepper">
+              <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late afternoon functionality score">&#8722;</button>
+              <input type="number" min="1" max="10" id="lateAfternoonScore" inputmode="numeric" />
+              <button type="button" class="stepper-btn" data-step="1" aria-label="Increase late afternoon functionality score">+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="lateAfternoonActivity">What I was doing</label>
+            <input type="text" id="lateAfternoonActivity" />
+          </div>
+          <div class="form-group">
+            <label for="lateAfternoonSymptoms">Symptoms / how it felt</label>
+            <textarea id="lateAfternoonSymptoms" rows="2"></textarea>
+          </div>
+        </div>
+
+        <!-- Early Evening -->
+        <div class="time-block">
+          <h4>Early evening (6&#8211;9)</h4>
+          <div class="form-group">
+            <label for="earlyEveningScore">Functionality score (1&#8211;10)</label>
+            <div class="number-stepper">
+              <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early evening functionality score">&#8722;</button>
+              <input type="number" min="1" max="10" id="earlyEveningScore" inputmode="numeric" />
+              <button type="button" class="stepper-btn" data-step="1" aria-label="Increase early evening functionality score">+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="earlyEveningActivity">What I was doing</label>
+            <input type="text" id="earlyEveningActivity" />
+          </div>
+          <div class="form-group">
+            <label for="earlyEveningSymptoms">Symptoms / how it felt</label>
+            <textarea id="earlyEveningSymptoms" rows="2"></textarea>
+          </div>
+        </div>
+
+        <!-- Late Evening -->
+        <div class="time-block">
+          <h4>Late evening (9&#8211;12)</h4>
+          <div class="form-group">
+            <label for="lateEveningScore">Functionality score (1&#8211;10)</label>
+            <div class="number-stepper">
+              <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late evening functionality score">&#8722;</button>
+              <input type="number" min="1" max="10" id="lateEveningScore" inputmode="numeric" />
+              <button type="button" class="stepper-btn" data-step="1" aria-label="Increase late evening functionality score">+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="lateEveningActivity">What I was doing</label>
+            <input type="text" id="lateEveningActivity" />
+          </div>
+          <div class="form-group">
+            <label for="lateEveningSymptoms">Symptoms / how it felt</label>
+            <textarea id="lateEveningSymptoms" rows="2"></textarea>
+          </div>
+        </div>
+
       </div>
     </details>
 
@@ -250,9 +375,28 @@
           <span id="hoursSleptDisplay" class="sleep-total-value">&#8212;</span>
           <input type="hidden" id="hoursSleptInput" />
         </div>
-        <label>Sleep Quality (1&#8211;10)<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease sleep quality score">&#8722;</button><input type="number" min="1" max="10" id="sleepQualityInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase sleep quality score">+</button></div></label>
-        <label>Number of awakenings<div class="number-stepper"><button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease number of awakenings">&#8722;</button><input type="number" min="0" max="20" id="awakeningsInput" inputmode="numeric" /><button type="button" class="stepper-btn" data-step="1" aria-label="Increase number of awakenings">+</button></div></label>
-        <label>Sleep notes <textarea id="sleepNotesInput" rows="2"></textarea></label>
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label for="sleepQualityInput">Sleep quality (1&#8211;10)</label>
+            <div class="number-stepper">
+              <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease sleep quality score">&#8722;</button>
+              <input type="number" min="1" max="10" id="sleepQualityInput" inputmode="numeric" />
+              <button type="button" class="stepper-btn" data-step="1" aria-label="Increase sleep quality score">+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="awakeningsInput">Number of awakenings</label>
+            <div class="number-stepper">
+              <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease number of awakenings">&#8722;</button>
+              <input type="number" min="0" max="20" id="awakeningsInput" inputmode="numeric" />
+              <button type="button" class="stepper-btn" data-step="1" aria-label="Increase number of awakenings">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="sleepNotesInput">Sleep notes</label>
+          <textarea id="sleepNotesInput" rows="3"></textarea>
+        </div>
       </div>
     </details>
 
@@ -263,15 +407,53 @@
         <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
       </summary>
       <div class="entry-section-body card">
-        <label>Did you do planned exercise or notable activity?
+        <div class="form-group">
+          <label for="didExerciseInput">Did you do planned exercise or notable activity?</label>
           <select id="didExerciseInput"><option value="no">No</option><option value="yes">Yes</option></select>
-        </label>
+        </div>
         <div id="exerciseDetails">
-          <label>Type:<select id="exerciseTypeInput"><option value="">Select...</option><option value="walk">Walk</option><option value="stretching">Stretching</option><option value="pt">Physical therapy</option><option value="strength">Strength</option><option value="yoga">Yoga</option><option value="other">Other</option></select></label>
-          <label>Duration (minutes): <input type="number" min="0" id="exerciseMinutesInput" /></label>
-          <label>Intensity:<select id="exerciseIntensityInput"><option value="">Select...</option><option value="gentle">Gentle</option><option value="moderate">Moderate</option><option value="overdid">Pushed too hard</option></select></label>
-          <label>Timing:<select id="exerciseTimingInput"><option value="">Select...</option><option value="morning">Morning</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option></select></label>
-          <label>Exercise notes: <textarea id="exerciseNotesInput" rows="2"></textarea></label>
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label for="exerciseTypeInput">Type</label>
+              <select id="exerciseTypeInput">
+                <option value="">Select...</option>
+                <option value="walk">Walk</option>
+                <option value="stretching">Stretching</option>
+                <option value="pt">Physical therapy</option>
+                <option value="strength">Strength</option>
+                <option value="yoga">Yoga</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="exerciseMinutesInput">Duration (minutes)</label>
+              <input type="number" min="0" id="exerciseMinutesInput" />
+            </div>
+          </div>
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label for="exerciseIntensityInput">Intensity</label>
+              <select id="exerciseIntensityInput">
+                <option value="">Select...</option>
+                <option value="gentle">Gentle</option>
+                <option value="moderate">Moderate</option>
+                <option value="overdid">Pushed too hard</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="exerciseTimingInput">Timing</label>
+              <select id="exerciseTimingInput">
+                <option value="">Select...</option>
+                <option value="morning">Morning</option>
+                <option value="afternoon">Afternoon</option>
+                <option value="evening">Evening</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="exerciseNotesInput">Exercise notes</label>
+            <textarea id="exerciseNotesInput" rows="3"></textarea>
+          </div>
         </div>
       </div>
     </details>
@@ -326,25 +508,33 @@
       </div>
       <div class="card">
         <h3 id="atrFormTitle">New Automatic Thought Record</h3>
-        <label>Date: <input type="date" id="atrDateInput" /></label>
-        <label>Situation:
+        <div class="form-group">
+          <label for="atrDateInput">Date</label>
+          <input type="date" id="atrDateInput" />
+        </div>
+        <div class="form-group">
+          <label for="atrSituationInput">Situation</label>
           <textarea id="atrSituationInput" rows="2" placeholder="What were you doing / what happened?"></textarea>
-        </label>
-        <label>Emotions:
+        </div>
+        <div class="form-group">
+          <label for="atrEmotionsInput">Emotions</label>
           <input type="text" id="atrEmotionsInput" placeholder="e.g. anxious, sad, angry" />
-        </label>
-        <label>Intensity (0&#8211;100):
+        </div>
+        <div class="form-group">
+          <label for="atrIntensityRange">Intensity (0&#8211;100)</label>
           <div style="display:flex;align-items:center;gap:0.5rem;">
             <input type="range" id="atrIntensityRange" min="0" max="100" value="50" style="flex:1;" />
             <span id="atrIntensityDisplay" style="min-width:2rem;text-align:right;">50</span>
           </div>
-        </label>
-        <label>Automatic thought:
+        </div>
+        <div class="form-group">
+          <label for="atrAutoThoughtInput">Automatic thought</label>
           <textarea id="atrAutoThoughtInput" rows="2" placeholder="What went through your mind?"></textarea>
-        </label>
-        <label>Alternative / balanced thought:
+        </div>
+        <div class="form-group">
+          <label for="atrAltThoughtInput">Alternative / balanced thought</label>
           <textarea id="atrAltThoughtInput" rows="2" placeholder="A more balanced way of seeing it (optional)"></textarea>
-        </label>
+        </div>
         <input type="hidden" id="atrEditingId" />
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem;">
           <button id="saveAtrBtn" class="btn btn-primary">Save Record</button>
@@ -370,21 +560,38 @@
     <div id="medListView" class="med-view">
       <div class="card">
         <h3 id="medFormTitle">Add Medication</h3>
-        <label>Name: <input type="text" id="medNameInput" placeholder="e.g. Gabapentin" /></label>
-        <label>Dose: <input type="text" id="medDoseInput" placeholder="e.g. 300 mg" /></label>
-        <label>Frequency:
-          <select id="medFrequencyInput">
-            <option value="">Select...</option>
-            <option value="daily">Daily</option>
-            <option value="twice_daily">Twice daily</option>
-            <option value="three_times_daily">Three times daily</option>
-            <option value="as_needed">As needed (PRN)</option>
-            <option value="weekly">Weekly</option>
-            <option value="other">Other</option>
-          </select>
-        </label>
-        <label>Prescribing doctor: <input type="text" id="medDoctorInput" placeholder="e.g. Dr. Smith" /></label>
-        <label>Notes: <textarea id="medNotesInput" rows="2" placeholder="Side effects, instructions, etc."></textarea></label>
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label for="medNameInput">Name</label>
+            <input type="text" id="medNameInput" placeholder="e.g. Gabapentin" />
+          </div>
+          <div class="form-group">
+            <label for="medDoseInput">Dose</label>
+            <input type="text" id="medDoseInput" placeholder="e.g. 300 mg" />
+          </div>
+        </div>
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label for="medFrequencyInput">Frequency</label>
+            <select id="medFrequencyInput">
+              <option value="">Select...</option>
+              <option value="daily">Daily</option>
+              <option value="twice_daily">Twice daily</option>
+              <option value="three_times_daily">Three times daily</option>
+              <option value="as_needed">As needed (PRN)</option>
+              <option value="weekly">Weekly</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="medDoctorInput">Prescribing doctor</label>
+            <input type="text" id="medDoctorInput" placeholder="e.g. Dr. Smith" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="medNotesInput">Notes</label>
+          <textarea id="medNotesInput" rows="2" placeholder="Side effects, instructions, etc."></textarea>
+        </div>
         <input type="hidden" id="medEditingId" />
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
           <button id="saveMedBtn" class="btn btn-primary">Add Medication</button>
@@ -396,21 +603,38 @@
     <div id="suppListView" class="med-view" style="display:none;">
       <div class="card">
         <h3 id="suppFormTitle">Add Supplement</h3>
-        <label>Name: <input type="text" id="suppNameInput" placeholder="e.g. Magnesium" /></label>
-        <label>Dose: <input type="text" id="suppDoseInput" placeholder="e.g. 400 mg" /></label>
-        <label>Frequency:
-          <select id="suppFrequencyInput">
-            <option value="">Select...</option>
-            <option value="daily">Daily</option>
-            <option value="twice_daily">Twice daily</option>
-            <option value="three_times_daily">Three times daily</option>
-            <option value="as_needed">As needed</option>
-            <option value="weekly">Weekly</option>
-            <option value="other">Other</option>
-          </select>
-        </label>
-        <label>Brand: <input type="text" id="suppBrandInput" placeholder="e.g. Nature Made" /></label>
-        <label>Notes: <textarea id="suppNotesInput" rows="2" placeholder="Why you take it, effects, etc."></textarea></label>
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label for="suppNameInput">Name</label>
+            <input type="text" id="suppNameInput" placeholder="e.g. Magnesium" />
+          </div>
+          <div class="form-group">
+            <label for="suppDoseInput">Dose</label>
+            <input type="text" id="suppDoseInput" placeholder="e.g. 400 mg" />
+          </div>
+        </div>
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label for="suppFrequencyInput">Frequency</label>
+            <select id="suppFrequencyInput">
+              <option value="">Select...</option>
+              <option value="daily">Daily</option>
+              <option value="twice_daily">Twice daily</option>
+              <option value="three_times_daily">Three times daily</option>
+              <option value="as_needed">As needed</option>
+              <option value="weekly">Weekly</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="suppBrandInput">Brand</label>
+            <input type="text" id="suppBrandInput" placeholder="e.g. Nature Made" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="suppNotesInput">Notes</label>
+          <textarea id="suppNotesInput" rows="2" placeholder="Why you take it, effects, etc."></textarea>
+        </div>
         <input type="hidden" id="suppEditingId" />
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
           <button id="saveSuppBtn" class="btn btn-primary">Add Supplement</button>
@@ -557,27 +781,53 @@
     <div id="ctAppointmentsView" class="ct-view" style="display:none;">
       <div class="card">
         <h3 id="ctApptFormTitle">Add Appointment</h3>
-        <label>Provider:
+        <div class="form-group">
+          <label for="ctApptProvider">Provider</label>
           <select id="ctApptProvider"><option value="">Select provider&hellip;</option></select>
-        </label>
-        <label>Date: <input type="date" id="ctApptDate" /></label>
-        <label>Time: <input type="time" id="ctApptTime" /></label>
-        <label>Location: <input type="text" id="ctApptLocation" placeholder="Office, telehealth, hospital, etc." /></label>
-        <label>Purpose / reason: <input type="text" id="ctApptPurpose" placeholder="Routine follow-up, new symptom, etc." /></label>
-        <label>Prep notes: <textarea id="ctApptPrepNotes" rows="2" placeholder="Questions to ask, things to bring, etc."></textarea></label>
-        <label>Visit notes: <textarea id="ctApptPostNotes" rows="2" placeholder="What was discussed, next steps, etc."></textarea></label>
-        <label style="display:flex;align-items:center;gap:0.5rem;">
-          <input type="checkbox" id="ctApptFollowUp" />
-          Follow-up needed after this appointment
-        </label>
-        <label>Status:
+        </div>
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label for="ctApptDate">Date</label>
+            <input type="date" id="ctApptDate" />
+          </div>
+          <div class="form-group">
+            <label for="ctApptTime">Time</label>
+            <input type="time" id="ctApptTime" />
+          </div>
+        </div>
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label for="ctApptLocation">Location</label>
+            <input type="text" id="ctApptLocation" placeholder="Office, telehealth, hospital, etc." />
+          </div>
+          <div class="form-group">
+            <label for="ctApptPurpose">Purpose / reason</label>
+            <input type="text" id="ctApptPurpose" placeholder="Routine follow-up, new symptom, etc." />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="ctApptPrepNotes">Prep notes</label>
+          <textarea id="ctApptPrepNotes" rows="2" placeholder="Questions to ask, things to bring, etc."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="ctApptPostNotes">Visit notes</label>
+          <textarea id="ctApptPostNotes" rows="2" placeholder="What was discussed, next steps, etc."></textarea>
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:0.5rem;font-weight:normal;">
+            <input type="checkbox" id="ctApptFollowUp" style="width:auto;" />
+            Follow-up needed after this appointment
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="ctApptStatus">Status</label>
           <select id="ctApptStatus">
             <option value="upcoming">Upcoming</option>
             <option value="completed">Completed</option>
             <option value="cancelled">Cancelled</option>
             <option value="rescheduled">Rescheduled</option>
           </select>
-        </label>
+        </div>
         <input type="hidden" id="ctApptEditingId" />
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
           <button id="saveApptBtn" class="btn btn-primary">Add Appointment</button>
