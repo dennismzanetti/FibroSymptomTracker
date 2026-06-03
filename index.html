@@ -457,41 +457,93 @@
     <div id="ctProvidersView" class="ct-view">
       <div class="card">
         <h3 id="ctProviderFormTitle">Add Team Member</h3>
-        <label>Name: <input type="text" id="ctProviderName" placeholder="e.g. Dr. Sarah Jones" /></label>
-        <label>Type:
-          <select id="ctProviderType">
-            <option value="">Select...</option>
-            <option value="physician">Primary Care</option>
-            <option value="specialist">Specialist</option>
-            <option value="rheumatology">Rheumatology</option>
-            <option value="pain">Pain Management</option>
-            <option value="pt">Physical Therapy</option>
-            <option value="therapist">Mental Health</option>
-            <option value="sleep">Sleep</option>
-            <option value="neurology">Neurology</option>
-            <option value="pharmacy">Pharmacy</option>
-            <option value="clinic">Clinic</option>
-            <option value="lab">Lab / Imaging</option>
-            <option value="other">Other</option>
-          </select>
-        </label>
-        <label>Specialty / role: <input type="text" id="ctProviderSpecialty" placeholder="e.g. Fibromyalgia, Sleep Medicine" /></label>
-        <label>Practice / organization: <input type="text" id="ctProviderOrg" placeholder="e.g. Dartmouth-Hitchcock" /></label>
-        <label>Phone: <input type="tel" id="ctProviderPhone" placeholder="(603) 555-0100" /></label>
-        <label>Fax: <input type="tel" id="ctProviderFax" placeholder="Optional" /></label>
-        <label>Patient portal URL: <input type="url" id="ctProviderPortal" placeholder="https://..." /></label>
-        <label>Address: <input type="text" id="ctProviderAddress" placeholder="Street, City, State" /></label>
-        <label>Status:
-          <select id="ctProviderStatus">
-            <option value="active">Active</option>
-            <option value="upcoming">Upcoming</option>
-            <option value="referred">Referred</option>
-            <option value="need_followup">Needs Follow-Up</option>
-            <option value="former">Former</option>
-          </select>
-        </label>
-        <label>Symptoms / issues they help with: <input type="text" id="ctProviderSymptoms" placeholder="e.g. pain, sleep, fatigue" /></label>
-        <label>Notes: <textarea id="ctProviderNotes" rows="2" placeholder="What works, what to ask, insurance notes, etc."></textarea></label>
+
+        <!-- Row 1: Name + Type -->
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label for="ctProviderName">Name</label>
+            <input type="text" id="ctProviderName" placeholder="e.g. Dr. Sarah Jones" />
+          </div>
+          <div class="form-group">
+            <label for="ctProviderType">Type</label>
+            <select id="ctProviderType">
+              <option value="">Select...</option>
+              <option value="physician">Primary Care</option>
+              <option value="specialist">Specialist</option>
+              <option value="rheumatology">Rheumatology</option>
+              <option value="pain">Pain Management</option>
+              <option value="pt">Physical Therapy</option>
+              <option value="therapist">Mental Health</option>
+              <option value="sleep">Sleep</option>
+              <option value="neurology">Neurology</option>
+              <option value="pharmacy">Pharmacy</option>
+              <option value="clinic">Clinic</option>
+              <option value="lab">Lab / Imaging</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Row 2: Specialty + Organization -->
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label for="ctProviderSpecialty">Specialty / role</label>
+            <input type="text" id="ctProviderSpecialty" placeholder="e.g. Fibromyalgia, Sleep Medicine" />
+          </div>
+          <div class="form-group">
+            <label for="ctProviderOrg">Practice / organization</label>
+            <input type="text" id="ctProviderOrg" placeholder="e.g. Dartmouth-Hitchcock" />
+          </div>
+        </div>
+
+        <!-- Row 3: Phone + Fax -->
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label for="ctProviderPhone">Phone</label>
+            <input type="tel" id="ctProviderPhone" placeholder="(603) 555-0100" />
+          </div>
+          <div class="form-group">
+            <label for="ctProviderFax">Fax</label>
+            <input type="tel" id="ctProviderFax" placeholder="Optional" />
+          </div>
+        </div>
+
+        <!-- Row 4: Portal URL (full width) -->
+        <div class="form-group">
+          <label for="ctProviderPortal">Patient portal URL</label>
+          <input type="url" id="ctProviderPortal" placeholder="https://..." />
+        </div>
+
+        <!-- Row 5: Address (full width) -->
+        <div class="form-group">
+          <label for="ctProviderAddress">Address</label>
+          <input type="text" id="ctProviderAddress" placeholder="Street, City, State" />
+        </div>
+
+        <!-- Row 6: Status + Symptoms -->
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label for="ctProviderStatus">Status</label>
+            <select id="ctProviderStatus">
+              <option value="active">Active</option>
+              <option value="upcoming">Upcoming</option>
+              <option value="referred">Referred</option>
+              <option value="need_followup">Needs Follow-Up</option>
+              <option value="former">Former</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="ctProviderSymptoms">Symptoms / issues they help with</label>
+            <input type="text" id="ctProviderSymptoms" placeholder="e.g. pain, sleep, fatigue" />
+          </div>
+        </div>
+
+        <!-- Row 7: Notes (full width) -->
+        <div class="form-group">
+          <label for="ctProviderNotes">Notes</label>
+          <textarea id="ctProviderNotes" rows="2" placeholder="What works, what to ask, insurance notes, etc."></textarea>
+        </div>
+
         <input type="hidden" id="ctProviderEditingId" />
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
           <button id="saveProviderBtn" class="btn btn-primary">Add Team Member</button>
