@@ -325,7 +325,6 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  /* margin-bottom removed — now handled by .entry-title-row */
   flex-shrink: 0;
 }
 

@@ -75,7 +75,7 @@ h4 {
   display: grid;
   /* row-gap: --space-3 | col-gap: --space-4 — intentionally asymmetric */
   gap: var(--space-3) var(--space-4);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
 }
 
 .form-row-2 { grid-template-columns: 1fr 1fr; }
@@ -88,8 +88,8 @@ h4 {
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
-  margin-bottom: var(--space-3);
+  gap: var(--space-2);        /* increased from --space-1 for breathing room */
+  margin-bottom: var(--space-4);  /* increased from --space-3 */
 }
 
 .form-group:last-child { margin-bottom: 0; }
@@ -101,9 +101,22 @@ h4 {
 label {
   display: block;
   font-weight: 600;
-  font-size: var(--text-base);
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-1);
+  font-size: var(--text-sm);           /* tightened from --text-base: labels smaller than input text */
+  letter-spacing: 0.025em;             /* slight tracking for legibility at small size */
+  text-transform: uppercase;           /* medical-form convention: field names are structural, not prose */
+  color: var(--color-text);            /* full-strength text — labels must be as easy to read as values */
+  margin-bottom: 0;                    /* gap handled by .form-group */
+}
+
+/* Optional field badge — inline, after label text */
+.field-optional {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--color-text-faint);
+  margin-left: var(--space-2);
+  vertical-align: middle;
 }
 
 input[type="number"],
@@ -118,7 +131,7 @@ textarea {
   border-radius: var(--radius-md);
   background: var(--color-surface);
   color: var(--color-text);
-  font-size: var(--text-md);
+  font-size: var(--text-base);         /* was --text-md: now consistent with body scale */
   font-family: var(--font-body);
   box-sizing: border-box;
   transition: border-color var(--transition-base), box-shadow var(--transition-base);
@@ -148,6 +161,7 @@ textarea {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
+  width: fit-content;      /* prevent stretching full-width in flex/grid parents */
 }
 
 .number-stepper input[type="number"] {
@@ -214,7 +228,7 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-3) var(--space-5);  /* was 0.85rem — now token-aligned */
+  padding: var(--space-3) var(--space-5);
   cursor: pointer;
   user-select: none;
   background: var(--color-surface);
@@ -223,6 +237,11 @@ textarea {
 }
 
 .entry-section-summary:hover { background: var(--color-surface-2); }
+
+/* Open state: tinted header background to signal active section */
+.entry-section[open] > .entry-section-summary {
+  background: color-mix(in oklch, var(--color-primary) 6%, var(--color-surface));
+}
 
 .entry-section-title {
   font-size: var(--text-lg);
@@ -242,14 +261,57 @@ textarea {
 }
 
 .entry-section-body {
-  padding: var(--space-3) var(--space-5) var(--space-4) var(--space-5);
+  padding: var(--space-4) var(--space-5) var(--space-5) var(--space-5);
   border-top: 1px solid var(--color-border);
   background: var(--color-surface);
+}
+
+/* Suppress redundant card decoration when card is inside a section body */
+.entry-section-body > .card,
+.entry-section-body .card {
+  box-shadow: none;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 /* Open state: tinted shadow signals active section */
 .entry-section[open] {
   box-shadow: var(--shadow-primary);
+}
+
+/* ================================================================
+   TIME-OF-DAY BLOCKS (inside Functionality section)
+   ================================================================ */
+
+.time-block {
+  margin-bottom: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-divider);
+}
+
+.time-block:first-child {
+  padding-top: 0;
+  border-top: none;
+  margin-top: 0;
+}
+
+.time-block h4 {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-3) 0;
+  padding: var(--space-1) var(--space-3);
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface));
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-primary);
 }
 
 /* ================================================================
@@ -459,7 +521,7 @@ textarea {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  font-size: var(--text-sm);  /* was 0.88rem — now token-aligned */
+  font-size: var(--text-sm);
   color: var(--color-text-muted);
 }
 
@@ -672,7 +734,7 @@ input[type="range"] {
     border-radius: var(--radius-md);
   }
   .entry-section-summary { padding: var(--space-2) var(--space-4); }
-  .entry-section-body    { padding: var(--space-2) var(--space-4) var(--space-3) var(--space-4); }
+  .entry-section-body    { padding: var(--space-3) var(--space-4) var(--space-4) var(--space-4); }
   .modal-box             { padding: var(--space-5); }
 }
 
