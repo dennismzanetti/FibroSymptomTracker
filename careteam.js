@@ -40,8 +40,15 @@ function setupCareTeamTab() {
   document.getElementById('saveApptBtn')?.addEventListener('click', saveAppointment);
   document.getElementById('cancelApptEditBtn')?.addEventListener('click', resetApptForm);
 
-  refreshProviderList();
-  populateProviderDropdown();
+  // Default to Providers sub-tab on first load
+  const defaultBtn = document.querySelector('.ct-sub-tab-btn[data-ct-view="ctProvidersView"]');
+  if (defaultBtn) {
+    defaultBtn.click();
+  } else {
+    // Fallback: activate manually if button not found
+    refreshProviderList();
+    populateProviderDropdown();
+  }
 }
 
 // ============================================================
