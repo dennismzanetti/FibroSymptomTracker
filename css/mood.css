@@ -1,10 +1,8 @@
 /* MOOD STYLES — FibroSymptomTracker */
 
 /* ================================================================
-   MOOD TAB
+   MOOD TAB — DAILY MOOD CARD
    ================================================================ */
-
-/* --- Mood card (daily mood entry) --- */
 
 .mood-card {
   border: 2px solid var(--color-border);
@@ -41,7 +39,9 @@
   margin-bottom: var(--space-2);
 }
 
-/* --- Emoji button grid --- */
+/* ================================================================
+   EMOJI BUTTON GRID
+   ================================================================ */
 
 .mood-emoji-grid {
   display: flex;
@@ -68,7 +68,38 @@
 .mood-emoji-btn:hover    { background: var(--color-primary-light); }
 .mood-emoji-btn.selected { border-color: var(--color-primary); background: var(--color-primary-light); }
 
-/* --- Mood history chart --- */
+/* ================================================================
+   MOOD SUMMARY TABLE — SCORE PILLS
+   ================================================================ */
+
+.mood-table-empty {
+  text-align: center;
+  padding: var(--space-4);
+  color: var(--color-text-faint);
+  font-style: italic;
+}
+
+/* Tier pills — applied via JS class names instead of inline styles */
+.mood-pill {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.mood-pill-1 { background: #ffebee; color: #c62828; border-color: #ef9a9a; } /* low    — red   */
+.mood-pill-2 { background: #fff3e0; color: #e65100; border-color: #ffcc80; } /* low+   — orange */
+.mood-pill-3 { background: #fff8e1; color: #f57f17; border-color: #ffe082; } /* mid    — amber */
+.mood-pill-4 { background: #e8f5e9; color: #2e7d32; border-color: #a5d6a7; } /* good   — green */
+.mood-pill-5 { background: #e0f2f1; color: #00695c; border-color: #80cbc4; } /* great  — teal  */
+.mood-pill-none { color: var(--color-text-faint); }
+
+/* ================================================================
+   MOOD HISTORY CHART
+   ================================================================ */
 
 .mood-history-chart {
   position: relative;
@@ -77,13 +108,11 @@
   margin-bottom: var(--space-4);
 }
 
-/* --- Mood breakdown list --- */
+/* ================================================================
+   MOOD BREAKDOWN LIST
+   ================================================================ */
 
-.mood-breakdown-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+.mood-breakdown-list { list-style: none; padding: 0; margin: 0; }
 
 .mood-breakdown-item {
   display: flex;
@@ -94,17 +123,277 @@
 }
 
 .mood-breakdown-item:last-child { border-bottom: none; }
+.mood-breakdown-emoji  { font-size: 1.4rem; }
+.mood-breakdown-label  { font-size: var(--text-base); color: var(--color-text-muted); flex: 1; }
+.mood-breakdown-count  { font-size: var(--text-sm); font-weight: 700; color: var(--color-text-muted); }
 
-.mood-breakdown-emoji { font-size: 1.4rem; }
+/* ================================================================
+   ATR SECTION HEADING
+   ================================================================ */
 
-.mood-breakdown-label {
-  font-size: var(--text-base);
-  color: var(--color-text-muted);
+.atr-section-title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-text);
+  margin: var(--space-6) 0 var(--space-1) 0;
+}
+
+.atr-section-subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-text-faint);
+  margin-bottom: var(--space-4);
+}
+
+/* ================================================================
+   ATR FORM CARD
+   ================================================================ */
+
+.atr-form-card {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-primary-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-primary);
+}
+
+.atr-form-title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 var(--space-4) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.atr-form-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 1.1em;
+  border-radius: 2px;
+  background: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* Intensity slider row */
+.atr-intensity-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+
+.atr-intensity-row input[type="range"] {
   flex: 1;
 }
 
-.mood-breakdown-count {
+.atr-intensity-value {
+  min-width: 2.8rem;
+  text-align: center;
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+  flex-shrink: 0;
+}
+
+/* Thought fields — visually distinguish auto vs. alternative */
+.atr-thought-block {
+  border-left: 3px solid var(--color-border-input);
+  padding-left: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.atr-thought-block.is-auto     { border-left-color: var(--color-warning); }
+.atr-thought-block.is-alt      { border-left-color: var(--color-success); }
+
+.atr-thought-label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-faint);
+  margin-bottom: var(--space-1);
+}
+
+.atr-thought-block.is-auto .atr-thought-label { color: var(--color-warning); }
+.atr-thought-block.is-alt  .atr-thought-label { color: var(--color-success); }
+
+/* Form action buttons row */
+.atr-form-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+/* ================================================================
+   ATR RECORD CARDS (list)
+   ================================================================ */
+
+.atr-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.atr-record {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: box-shadow var(--transition-fast);
+}
+
+.atr-record:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* Record header — date, emotions tag, intensity badge, actions */
+.atr-record-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-2);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.atr-record-date {
   font-size: var(--text-sm);
   font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.atr-record-emotions {
+  font-size: var(--text-xs);
   color: var(--color-text-muted);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-full);
+  padding: 0.1rem var(--space-2);
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.atr-intensity-badge {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  padding: 0.1rem var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+  border: 1px solid #ffe0b2;
+  white-space: nowrap;
+}
+
+.atr-record-actions {
+  margin-left: auto;
+  display: flex;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.atr-edit-btn,
+.atr-delete-btn {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.atr-edit-btn {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border-color: var(--color-primary-border);
+}
+.atr-edit-btn:hover { background: var(--color-primary-border); }
+
+.atr-delete-btn {
+  background: var(--color-error-bg);
+  color: var(--color-error);
+  border-color: var(--color-error-border);
+}
+.atr-delete-btn:hover { background: var(--color-error-border); }
+
+/* Record body — field rows */
+.atr-record-body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.atr-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.atr-field-label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-faint);
+}
+
+.atr-field p {
+  margin: 0;
+  font-size: var(--text-base);
+  color: var(--color-text);
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+/* Alternative thought field — visually accented green */
+.atr-field-alt .atr-field-label {
+  color: var(--color-success);
+}
+
+.atr-field-alt p {
+  background: var(--color-success-bg);
+  border-left: 3px solid var(--color-success);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: var(--space-2) var(--space-3);
+}
+
+/* Situation field — subtle separator */
+.atr-field:first-child {
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+/* Empty / loading state */
+.atr-empty {
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+  color: var(--color-text-faint);
+  font-size: var(--text-base);
+  font-style: italic;
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+
+@media (max-width: 540px) {
+  .atr-record-header { gap: var(--space-1); }
+  .atr-record-body   { padding: var(--space-3); }
+  .atr-form-card     { padding: var(--space-4); }
+  .atr-form-actions  { justify-content: stretch; }
+  .atr-form-actions .btn { flex: 1; justify-content: center; }
 }

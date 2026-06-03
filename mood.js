@@ -6,15 +6,6 @@ async function refreshMoodTab() {
 
 // ---- 14-Day Mood Sidebar List ----
 
-const MOOD_TIER_COLORS = [
-  null,
-  { bg: "#ffebee", border: "#ef9a9a", text: "#c62828" }, // 1
-  { bg: "#fff3e0", border: "#ffcc80", text: "#e65100" }, // 2
-  { bg: "#fff8e1", border: "#ffe082", text: "#f57f17" }, // 3
-  { bg: "#e8f5e9", border: "#a5d6a7", text: "#2e7d32" }, // 4
-  { bg: "#e0f2f1", border: "#80cbc4", text: "#00695c" }  // 5
-];
-
 function moodTier(s) {
   if (s === null || s === undefined) return 0;
   if (s <= 2) return 1;
@@ -63,32 +54,32 @@ async function refreshMoodSummaryTable() {
       const dateLbl = `${MONTH[d.getMonth()]} ${d.getDate()}`;
 
       const tier = score !== null ? moodTier(score) : 0;
-      const tc   = tier ? MOOD_TIER_COLORS[tier] : null;
 
+      // Use CSS classes instead of inline styles for pill colours
       const pillHtml = score !== null
-        ? `<span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:999px;font-size:0.75rem;font-weight:700;background:${tc.bg};color:${tc.text};border:1px solid ${tc.border};white-space:nowrap;">${score}/10</span>`
-        : `<span style="color:#bbb;">&#8212;</span>`;
+        ? `<span class="mood-pill mood-pill-${tier}">${score}/10</span>`
+        : `<span class="mood-pill mood-pill-none">&#8212;</span>`;
 
-      const rowOpacity = hasData ? "1" : "0.4";
+      const rowStyle = hasData ? "" : " style=\"opacity:0.4;\"";
 
       rows += `
-        <tr style="opacity:${rowOpacity};">
-          <td style="white-space:nowrap;font-size:0.82rem;color:#1c1d22;">${dateLbl}</td>
-          <td style="font-size:0.82rem;color:#5a5f7a;">${dow}</td>
+        <tr${rowStyle}>
+          <td style="white-space:nowrap;font-size:var(--text-sm);color:var(--color-text);">${dateLbl}</td>
+          <td style="font-size:var(--text-sm);color:var(--color-text-muted);">${dow}</td>
           <td>${pillHtml}</td>
-          <td style="font-size:0.78rem;color:#5a5f7a;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${notes.replace(/"/g,'&quot;')}">${notes || "&#8212;"}</td>
+          <td style="font-size:var(--text-xs);color:var(--color-text-muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${notes.replace(/"/g,'&quot;')}">${notes || "&#8212;"}</td>
         </tr>`;
     });
 
     if (!hasAny) {
-      tbody.innerHTML = `<tr><td colspan="4" class="mood-table-empty" style="font-style:italic;color:#9e9e9e;">No mood data in the last 14 days.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="4" class="mood-table-empty">No mood data in the last 14 days.</td></tr>`;
       return;
     }
 
     tbody.innerHTML = rows;
   } catch (err) {
     console.error("Error loading mood summary:", err);
-    tbody.innerHTML = `<tr><td colspan="4" class="mood-table-empty" style="color:#c0392b;">Failed to load mood data.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4" class="mood-table-empty" style="color:var(--color-error);">Failed to load mood data.</td></tr>`;
   }
 }
 
@@ -182,6 +173,7 @@ async function refreshAtrList() {
     }
 
     const MONTH = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    container.className = "atr-list";
     container.innerHTML = "";
     snapshot.forEach(doc => {
       const r = doc.data();
@@ -196,14 +188,23 @@ async function refreshAtrList() {
           ${r.intensity != null ? `<span class="atr-intensity-badge">${r.intensity}/100</span>` : ""}
           <div class="atr-record-actions">
             <button class="atr-edit-btn" aria-label="Edit record">Edit</button>
-            <button class="atr-delete-btn danger" aria-label="Delete record">Delete</button>
+            <button class="atr-delete-btn" aria-label="Delete record">Delete</button>
           </div>
         </div>
         <div class="atr-record-body">
-          <div class="atr-field"><span class="atr-field-label">Situation</span><p>${r.situation || "\u2014"}</p></div>
-          <div class="atr-field"><span class="atr-field-label">Automatic Thought</span><p>${r.automaticThought || "\u2014"}</p></div>
+          <div class="atr-field">
+            <span class="atr-field-label">Situation</span>
+            <p>${r.situation || "\u2014"}</p>
+          </div>
+          <div class="atr-field">
+            <span class="atr-field-label">Automatic Thought</span>
+            <p>${r.automaticThought || "\u2014"}</p>
+          </div>
           ${r.alternativeThought
-            ? `<div class="atr-field atr-field-alt"><span class="atr-field-label">Alternative Thought</span><p>${r.alternativeThought}</p></div>`
+            ? `<div class="atr-field atr-field-alt">
+                <span class="atr-field-label">Alternative Thought</span>
+                <p>${r.alternativeThought}</p>
+               </div>`
             : ""}
         </div>`;
       card.querySelector(".atr-edit-btn").addEventListener("click", () => startEditAtr(doc.id, r));
