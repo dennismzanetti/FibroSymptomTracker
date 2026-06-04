@@ -285,22 +285,19 @@ textarea {
 /* ================================================================
    TIME-OF-DAY BLOCKS (inside Functionality section)
 
-   Each block is rendered as a self-contained card — subtle surface
-   background, rounded corners, internal padding — so the six periods
-   read as discrete, scannable units rather than a flat list of fields.
-
-   The h4 chip uses a tinted background without a colored side border
-   (the left-border pattern is an anti-pattern: it looks like a status
-   indicator and creates visual noise). The time-range text inside each
-   h4 is dimmed so the period name leads.
+   Each block is a self-contained card: rounded corners, offset
+   background, consistent internal padding. The h4 header uses a
+   pill badge — no colored side border (anti-pattern removed).
+   A contextual emoji via ::before gives quick visual anchoring
+   without requiring any icon library changes.
    ================================================================ */
 
 .time-block {
-  margin-bottom: var(--space-4);
-  padding: var(--space-4) var(--space-4) var(--space-3) var(--space-4);
-  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-offset));
-  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, var(--color-border));
+  background: var(--color-surface-offset, var(--color-surface-2));
+  border: 1px solid oklch(from var(--color-border, #ccc) l c h / 0.6);
   border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  margin-bottom: var(--space-4);
   transition: box-shadow var(--transition-fast), background var(--transition-fast);
 }
 
@@ -308,20 +305,21 @@ textarea {
   margin-bottom: 0;
 }
 
+/* Subtle lift on hover — signals the block is a coherent unit */
 .time-block:hover {
-  background: color-mix(in oklch, var(--color-primary) 6%, var(--color-surface-offset));
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-offset, var(--color-surface-2)));
   box-shadow: var(--shadow-sm);
 }
 
-/* Period heading chip — tinted pill, no side border */
+/* Pill badge header — replaces the border-left anti-pattern */
 .time-block h4 {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
   margin: 0 0 var(--space-4) 0;
-  padding: var(--space-1) var(--space-3);
-  background: color-mix(in oklch, var(--color-primary) 12%, var(--color-surface));
-  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, var(--color-border));
+  padding: var(--space-1) var(--space-3) var(--space-1) var(--space-2);
+  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface));
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
   border-radius: var(--radius-full);
   font-size: var(--text-sm);
   font-weight: 700;
@@ -330,23 +328,18 @@ textarea {
   color: var(--color-primary);
 }
 
-/* Clock icon prefix — unique per block via data attribute on .time-block,
-   falling back to a generic ⏱ if no attribute is set */
-.time-block h4::before {
-  content: attr(data-icon);
-  font-size: 1em;
-  line-height: 1;
-  /* prevent the emoji from inheriting uppercase transform */
-  text-transform: none;
-  letter-spacing: 0;
-}
+/* Time-of-day emoji anchors — one per block via nth-child */
+.time-block:nth-child(1) h4::before { content: "🌅"; margin-right: var(--space-1); }
+.time-block:nth-child(2) h4::before { content: "☀️"; margin-right: var(--space-1); }
+.time-block:nth-child(3) h4::before { content: "🌤️"; margin-right: var(--space-1); }
+.time-block:nth-child(4) h4::before { content: "🌇"; margin-right: var(--space-1); }
+.time-block:nth-child(5) h4::before { content: "🌆"; margin-right: var(--space-1); }
+.time-block:nth-child(6) h4::before { content: "🌙"; margin-right: var(--space-1); }
 
-/* Time-range parenthetical inside the h4 (the "(5–9 am)" part) —
-   rendered at slightly lower contrast so the period name leads */
-.time-block h4 .time-range {
-  font-weight: 500;
-  opacity: 0.7;
-  letter-spacing: 0.01em;
+@media (max-width: 480px) {
+  .time-block {
+    padding: var(--space-3) var(--space-4);
+  }
 }
 
 /* ================================================================
@@ -771,7 +764,6 @@ input[type="range"] {
   .entry-section-summary { padding: var(--space-2) var(--space-4); }
   .entry-section-body    { padding: var(--space-3) var(--space-4) var(--space-4) var(--space-4); }
   .modal-box             { padding: var(--space-5); }
-  .time-block            { padding: var(--space-3); }
 }
 
 /* ================================================================
