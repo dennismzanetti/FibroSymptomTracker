@@ -152,18 +152,19 @@ async function refreshMedList() {
         freq,
         med.doctor ? `Dr. ${escHtml(med.doctor)}` : ""
       ].filter(Boolean);
+      const hasBody = metaParts.length > 0 || !!med.notes;
       li.innerHTML = `
         <div class="med-item-header">
-          <div>
-            <span class="med-item-name">${escHtml(med.name || "")}</span>
-            ${metaParts.length ? `<div class="med-item-meta">${metaParts.map(escHtml).join(" &bull; ")}</div>` : ""}
-            ${med.notes ? `<div class="med-item-meta" style="font-style:italic;margin-top:0.15rem;">${escHtml(med.notes)}</div>` : ""}
-          </div>
+          <span class="med-item-name">${escHtml(med.name || "")}</span>
           <div class="med-item-actions">
             <button class="med-btn med-btn-edit">Edit</button>
             <button class="med-btn med-btn-delete">Delete</button>
           </div>
-        </div>`;
+        </div>
+        ${hasBody ? `<div class="med-item-body">
+          ${metaParts.length ? `<div class="med-item-meta">${metaParts.map(escHtml).join(" &bull; ")}</div>` : ""}
+          ${med.notes ? `<div class="med-item-meta med-item-notes">${escHtml(med.notes)}</div>` : ""}
+        </div>` : ""}`;
       li.querySelector(".med-btn-edit").addEventListener("click", () => startEditMedication(doc.id, med));
       li.querySelector(".med-btn-delete").addEventListener("click", () => deleteMedication(doc.id, med.name));
       list.appendChild(li);
@@ -278,18 +279,19 @@ async function refreshSuppList() {
         freq,
         supp.brand || ""
       ].filter(Boolean);
+      const hasBody = metaParts.length > 0 || !!supp.notes;
       li.innerHTML = `
         <div class="med-item-header">
-          <div>
-            <span class="med-item-name">${escHtml(supp.name || "")}</span>
-            ${metaParts.length ? `<div class="med-item-meta">${metaParts.map(escHtml).join(" &bull; ")}</div>` : ""}
-            ${supp.notes ? `<div class="med-item-meta" style="font-style:italic;margin-top:0.15rem;">${escHtml(supp.notes)}</div>` : ""}
-          </div>
+          <span class="med-item-name">${escHtml(supp.name || "")}</span>
           <div class="med-item-actions">
             <button class="med-btn med-btn-edit">Edit</button>
             <button class="med-btn med-btn-delete">Delete</button>
           </div>
-        </div>`;
+        </div>
+        ${hasBody ? `<div class="med-item-body">
+          ${metaParts.length ? `<div class="med-item-meta">${metaParts.map(escHtml).join(" &bull; ")}</div>` : ""}
+          ${supp.notes ? `<div class="med-item-meta med-item-notes">${escHtml(supp.notes)}</div>` : ""}
+        </div>` : ""}`;
       li.querySelector(".med-btn-edit").addEventListener("click", () => startEditSupplement(doc.id, supp));
       li.querySelector(".med-btn-delete").addEventListener("click", () => deleteSupplement(doc.id, supp.name));
       list.appendChild(li);
