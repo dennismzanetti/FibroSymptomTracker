@@ -123,6 +123,8 @@ input[type="number"],
 input[type="text"],
 input[type="time"],
 input[type="date"],
+input[type="tel"],
+input[type="url"],
 select,
 textarea {
   width: 100%;
@@ -141,6 +143,8 @@ input[type="number"]:focus,
 input[type="text"]:focus,
 input[type="time"]:focus,
 input[type="date"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
 select:focus,
 textarea:focus {
   outline: none;
