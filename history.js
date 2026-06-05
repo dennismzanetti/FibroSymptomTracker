@@ -70,22 +70,65 @@
     return '';
   }
 
+  // ---------- sparkline SVG builder ----------
+  // Renders a tiny inline SVG sparkline from an array of {date, val} points.
+  // higherIsBetter: true = green trend up, false = green trend down.
+  function buildSparkline(points, higherIsBetter) {
+    const nums = points.map(p => (p.val != null && p.val !== '') ? Number(p.val) : null);
+    const valid = nums.filter(v => v !== null);
+    if (valid.length < 2) return '';
+
+    const W = 36, H = 16, PAD = 1;
+    const min = Math.min(...valid);
+    const max = Math.max(...valid);
+    const range = max - min || 1;
+
+    const coords = [];
+    let xi = 0;
+    const step = (W - PAD * 2) / (nums.length - 1);
+    nums.forEach((v, i) => {
+      if (v === null) { xi++; return; }
+      const x = PAD + i * step;
+      const y = PAD + (H - PAD * 2) * (1 - (v - min) / range);
+      coords.push([x, y]);
+      xi++;
+    });
+
+    if (coords.length < 2) return '';
+
+    const pathD = coords.map((c, i) => `${i === 0 ? 'M' : 'L'}${c[0].toFixed(1)},${c[1].toFixed(1)}`).join(' ');
+
+    // Colour: compare last valid vs first valid
+    const first = valid[0];
+    const last  = valid[valid.length - 1];
+    let color;
+    if (Math.abs(last - first) < 0.5) {
+      color = 'var(--color-text-faint)';
+    } else if (higherIsBetter ? last > first : last < first) {
+      color = 'var(--color-success)';
+    } else {
+      color = 'var(--color-error, var(--color-danger, #c0392b))';
+    }
+
+    return `<svg class="history-sparkline" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true"><path d="${pathD}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  }
+
   // ---------- field definitions ----------
   const FUNCTIONALITY_FIELDS = [
-    { key: 'avgFunctionality',                   label: 'Avg Functionality' },
-    { key: 'functionality.earlyMorning.score',   label: 'Early Morning' },
-    { key: 'functionality.lateMorning.score',    label: 'Late Morning' },
-    { key: 'functionality.earlyAfternoon.score', label: 'Early Afternoon' },
-    { key: 'functionality.lateAfternoon.score',  label: 'Late Afternoon' },
-    { key: 'functionality.earlyEvening.score',   label: 'Early Evening' },
-    { key: 'functionality.lateEvening.score',    label: 'Late Evening' },
+    { key: 'avgFunctionality',                   label: 'Avg Functionality',  higherIsBetter: true },
+    { key: 'functionality.earlyMorning.score',   label: 'Early Morning',      higherIsBetter: true },
+    { key: 'functionality.lateMorning.score',    label: 'Late Morning',       higherIsBetter: true },
+    { key: 'functionality.earlyAfternoon.score', label: 'Early Afternoon',    higherIsBetter: true },
+    { key: 'functionality.lateAfternoon.score',  label: 'Late Afternoon',     higherIsBetter: true },
+    { key: 'functionality.earlyEvening.score',   label: 'Early Evening',      higherIsBetter: true },
+    { key: 'functionality.lateEvening.score',    label: 'Late Evening',       higherIsBetter: true },
   ];
 
   const WELLBEING_FIELDS = [
-    { key: 'fatigueScore',   label: 'Fatigue' },
-    { key: 'sleep.hours',    label: 'Sleep hrs' },
-    { key: 'sleep.quality',  label: 'Sleep Quality' },
-    { key: 'mood.score',     label: 'Mood' },
+    { key: 'fatigueScore',   label: 'Fatigue',       higherIsBetter: false },
+    { key: 'sleep.hours',    label: 'Sleep hrs',     higherIsBetter: true  },
+    { key: 'sleep.quality',  label: 'Sleep Quality', higherIsBetter: true  },
+    { key: 'mood.score',     label: 'Mood',          higherIsBetter: true  },
   ];
 
   const NOTE_KEYS = [
@@ -102,17 +145,53 @@
   }
 
   function fieldRows(fields, days, dataByDate) {
-    return fields.map(({ key, label }) => {
-      let row = `<tr><td class="history-field-label">${label}</td>`;
+    return fields.map(({ key, label, higherIsBetter }) => {
+      // Build sparkline data points
+      const points = days.map(d => ({ date: d, val: getVal(dataByDate[d], key) }));
+      const spark = buildSparkline(points, higherIsBetter !== false);
+
+      let row = `<tr><td class="history-field-label"><span class="history-field-label-text">${label}</span>${spark}</td>`;
       days.forEach(d => {
         const val = getVal(dataByDate[d], key);
         const cls = cellClass(key, val);
-        const display = (val != null && val !== '') ? (typeof val === 'number' ? val : val) : '&mdash;';
+        const display = (val != null && val !== '') ? val : '&mdash;';
         row += `<td class="history-value-cell ${cls}">${display}</td>`;
       });
       row += '</tr>';
       return row;
     }).join('');
+  }
+
+  // ---------- navigate to Daily Entry for a given date ----------
+  function jumpToDate(dateStr) {
+    // Set app's current date if the global setter is available
+    if (typeof window.setCurrentDate === 'function') {
+      window.setCurrentDate(dateStr);
+    } else if (typeof window.currentDate !== 'undefined') {
+      window.currentDate = dateStr;
+    }
+    // Update the date input if present
+    const dateInput = document.getElementById('dateInput');
+    if (dateInput) {
+      dateInput.value = dateStr;
+      dateInput.dispatchEvent(new Event('change'));
+    }
+    // Switch to entry tab
+    const entryBtn = document.querySelector('[data-tab="entry-tab"]');
+    if (entryBtn) {
+      entryBtn.click();
+    } else {
+      // Fallback: fire tab switch via tabSelect (mobile)
+      const tabSelect = document.getElementById('tabSelect');
+      if (tabSelect) {
+        tabSelect.value = 'entry-tab';
+        tabSelect.dispatchEvent(new Event('change'));
+      }
+    }
+    // Trigger a day load if app.js exposes one
+    if (typeof window.loadDay === 'function') {
+      window.loadDay(dateStr);
+    }
   }
 
   // ---------- main render function ----------
@@ -152,7 +231,7 @@
       // --- Header row ---
       let html = '<div class="history-table-wrap"><table class="history-table"><thead><tr><th class="history-field-label">Field</th>';
       days.forEach(d => {
-        html += `<th class="history-date-th"><span class="history-th-dow">${formatDow(d)}</span><span class="history-th-date">${formatDateShort(d)}</span></th>`;
+        html += `<th class="history-date-th"><button class="history-date-btn" data-date="${d}" title="Go to ${d} in Daily Entry"><span class="history-th-dow">${formatDow(d)}</span><span class="history-th-date">${formatDateShort(d)}</span></button></th>`;
       });
       html += '</tr></thead><tbody>';
 
@@ -166,7 +245,7 @@
 
       // --- Symptoms group ---
       html += groupHeaderRow('Symptoms', colspan);
-      html += '<tr><td class="history-field-label">Tags</td>';
+      html += '<tr><td class="history-field-label"><span class="history-field-label-text">Tags</span></td>';
       days.forEach(d => {
         const tags = dataByDate[d]?.tags;
         html += `<td class="symptoms-cell ${tags && tags.length ? '' : 'cell-missing'}">${
@@ -186,7 +265,7 @@
 
       // --- Notes rows (hidden by default) ---
       NOTE_KEYS.forEach(({ key, label }) => {
-        html += `<tr class="history-notes-row" style="display:none"><td class="history-field-label">${label}</td>`;
+        html += `<tr class="history-notes-row" style="display:none"><td class="history-field-label"><span class="history-field-label-text">${label}</span></td>`;
         days.forEach(d => {
           const val = getVal(dataByDate[d], key);
           html += `<td class="notes-cell ${val ? '' : 'cell-missing'}">${val ? val : '&mdash;'}</td>`;
@@ -203,6 +282,14 @@
         const hidden = rows[0]?.style.display === 'none';
         rows.forEach(r => { r.style.display = hidden ? '' : 'none'; });
         this.innerHTML = hidden ? '&#9662; Hide Notes' : '&#9656; Show Notes';
+      });
+
+      // Wire date-header click → jump to Daily Entry
+      container.addEventListener('click', function (e) {
+        const btn = e.target.closest('.history-date-btn');
+        if (btn) {
+          jumpToDate(btn.dataset.date);
+        }
       });
 
     } catch (err) {
