@@ -976,3 +976,24 @@ textarea:focus-visible {
   letter-spacing: 0.06em;
   margin-bottom: var(--space-2);
 }
+
+/* ================================================================
+   CARD LIST SPACING — universal gap for all item list containers
+   Applies flex column + 12px gap to every dynamically-rendered
+   list so cards never touch, without changing JS or HTML.
+   ================================================================ */
+
+#medList,
+#suppList,
+#conditionsList,
+#ctProviderList,
+#ctUpcomingAppts,
+#ctPastAppts,
+#medHistoryList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);   /* 12px between cards */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
