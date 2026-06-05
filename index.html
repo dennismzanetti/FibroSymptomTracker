@@ -57,6 +57,7 @@
       <button class="tab-button" data-tab="trends-tab">Trends</button>
       <button class="tab-button" data-tab="mood-tab">Mood</button>
       <button class="tab-button" data-tab="medications-tab">Medications</button>
+      <button class="tab-button" data-tab="conditions-tab">Conditions</button>
       <button class="tab-button" data-tab="careteam-tab">Care Team</button>
       <button class="tab-button" data-tab="settings-tab">Settings</button>
     </nav>
@@ -91,6 +92,7 @@
           <option value="trends-tab">Trends</option>
           <option value="mood-tab">Mood</option>
           <option value="medications-tab">Medications</option>
+          <option value="conditions-tab">Conditions</option>
           <option value="careteam-tab">Care Team</option>
           <option value="settings-tab">Settings</option>
         </select>
@@ -669,6 +671,62 @@
     </div>
   </section>
 
+  <!-- Conditions Tab -->
+  <section id="conditions-tab" class="tab">
+    <h2>Conditions</h2>
+    <div class="card">
+      <h3 id="condFormTitle">Add Condition</h3>
+
+      <div class="form-row form-row-2">
+        <div class="form-group">
+          <label for="condNameInput">Condition / diagnosis</label>
+          <input type="text" id="condNameInput" placeholder="e.g. Fibromyalgia" />
+        </div>
+        <div class="form-group">
+          <label for="condIcdInput">ICD-10 code (optional)</label>
+          <input type="text" id="condIcdInput" placeholder="e.g. M79.7" />
+        </div>
+      </div>
+
+      <div class="form-row form-row-2">
+        <div class="form-group">
+          <label for="condDiagnosedDateInput">Diagnosed date</label>
+          <input type="date" id="condDiagnosedDateInput" />
+        </div>
+        <div class="form-group">
+          <label for="condDiagnosedByInput">Diagnosed by</label>
+          <input type="text" id="condDiagnosedByInput" placeholder="e.g. Dr. Smith" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="condStatusInput">Status</label>
+        <select id="condStatusInput">
+          <option value="active">Active</option>
+          <option value="managed">Managed</option>
+          <option value="resolved">Resolved</option>
+          <option value="suspected">Suspected</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="condNotesInput">Notes</label>
+        <textarea id="condNotesInput" rows="3" placeholder="Symptoms, triggers, treatment notes, etc."></textarea>
+      </div>
+
+      <input type="hidden" id="condEditingId" />
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <button id="savCondBtn" class="btn btn-primary">Add Condition</button>
+        <button id="cancelCondEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>My Conditions</h3>
+      <ul id="conditionsList"></ul>
+    </div>
+  </section>
+
   <!-- Care Team Tab -->
   <section id="careteam-tab" class="tab">
     <h2>Care Team</h2>
@@ -896,6 +954,7 @@
 <script src="mood.js"></script>
 <script src="medications.js"></script>
 <script src="careteam.js"></script>
+<script src="conditions.js"></script>
 
 </body>
 </html>

@@ -47,6 +47,7 @@ auth.onAuthStateChanged((user) => {
       _pendingSetup = true;
       setupMedicationsTab();
       setupCareTeamTab();
+      setupConditionsTab();
       runPostLoadSetup();
     }
   } else {
@@ -281,6 +282,7 @@ function setupTabs() {
       if (target === "trends-tab") refreshTrends();
       if (target === "mood-tab") refreshMoodTab();
       if (target === "careteam-tab") refreshProviderList();
+      if (target === "conditions-tab") refreshConditionsList();
       if (target === "medications-tab") {
         const activeView = document.querySelector(".med-view:not([style*='display:none']):not([style*='display: none'])");
         if (activeView) refreshMedView(activeView.id);
@@ -673,7 +675,8 @@ async function exportAllData() {
       "medicationHistory",
       "careTeam",
       "appointments",
-      "automaticThoughtRecords"
+      "automaticThoughtRecords",
+      "conditions"
     ];
 
     const backup = {
