@@ -2,6 +2,10 @@
 
 /* ================================================================
    CARE TEAM TAB
+   Card geometry (border, radius, shadow, padding, gap) intentionally
+   matches .med-item in medications.css so all three list tabs look
+   identical. The semantic border-left accent is retained here because
+   it carries meaningful status information (active/former/referred).
    ================================================================ */
 
 /* --- Provider list --- */
@@ -10,20 +14,29 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);   /* 12px gap between cards — matches .med-list */
 }
 
 .ct-provider-item {
   list-style: none;
   padding: 0;
-  margin: 0 0 var(--space-3) 0;
+  margin: 0;
   border: 1px solid var(--color-border);
   border-left: 3px solid var(--color-primary);
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--color-surface);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-sm);  /* matches .med-item */
   display: flex;
   flex-direction: column;
+  transition: box-shadow var(--transition-interactive), transform var(--transition-interactive);
+}
+
+.ct-provider-item:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 /* Status-based left-edge accent color */
@@ -38,7 +51,7 @@
   display: flex;
   align-items: flex-start;
   gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-3) var(--space-4);  /* matches .med-item padding */
 }
 
 /* Avatar initial circle */
@@ -240,11 +253,11 @@
   color: var(--color-text-muted);
 }
 
-.ct-status-active        { background: var(--color-success-highlight);      color: var(--color-success); }
-.ct-status-upcoming      { background: var(--color-gold-highlight);          color: var(--color-gold); }
-.ct-status-referred      { background: var(--color-blue-highlight);          color: var(--color-blue); }
-.ct-status-need_followup { background: var(--color-warning-highlight);       color: var(--color-warning); }
-.ct-status-former        { background: var(--color-surface-dynamic);         color: var(--color-text-faint); }
+.ct-status-active        { background: var(--color-success-highlight);  color: var(--color-success); }
+.ct-status-upcoming      { background: var(--color-gold-highlight);      color: var(--color-gold); }
+.ct-status-referred      { background: var(--color-blue-highlight);      color: var(--color-blue); }
+.ct-status-need_followup { background: var(--color-warning-highlight);   color: var(--color-warning); }
+.ct-status-former        { background: var(--color-surface-dynamic);     color: var(--color-text-faint); }
 
 /* --- Appointment list items --- */
 
@@ -252,15 +265,24 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }
 
 .ct-appt-item {
   list-style: none;
   padding: var(--space-3) var(--space-4);
-  margin: 0 0 var(--space-2) 0;
+  margin: 0;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-interactive);
+}
+
+.ct-appt-item:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .ct-appt-header {

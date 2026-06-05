@@ -1,7 +1,11 @@
 /* MEDICATIONS STYLES — FibroSymptomTracker */
 
 /* ================================================================
-   MEDICATIONS TAB
+   SHARED LIST CARD STYLES
+   .med-list / .med-item are shared by the Medications and Conditions
+   tabs. All card geometry (border, radius, shadow, padding, gap)
+   is defined here and intentionally matches .ct-provider-item in
+   careteam.css so all three tabs look identical.
    ================================================================ */
 
 .med-list {
@@ -10,7 +14,7 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);   /* 12px — breathing room between cards */
+  gap: var(--space-3);   /* 12px gap between cards */
 }
 
 .med-item {
@@ -57,26 +61,26 @@
   align-items: center;
 }
 
-/* Edit / Delete buttons */
+/* Edit / Delete buttons — match ct-edit-btn / ct-delete-btn style */
 .med-btn {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-1) var(--space-3);
+  padding: var(--space-1) 0.75rem;
   font-size: var(--text-xs);
   font-weight: 600;
   border-radius: var(--radius-sm);
-  border: 1.5px solid transparent;
+  border: 1px solid transparent;
   cursor: pointer;
-  transition: background var(--transition-interactive),
-              border-color var(--transition-interactive),
-              color var(--transition-interactive);
+  transition: background var(--transition-fast),
+              border-color var(--transition-fast),
+              color var(--transition-fast);
   white-space: nowrap;
 }
 
 .med-btn-edit {
   background: var(--color-primary-highlight);
   color: var(--color-primary);
-  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 25%, transparent);
 }
 
 .med-btn-edit:hover {
@@ -85,14 +89,16 @@
 }
 
 .med-btn-delete {
-  background: var(--color-error-highlight);
-  color: var(--color-error);
-  border-color: color-mix(in oklch, var(--color-error) 30%, transparent);
+  background: transparent;
+  color: var(--color-text-faint);
+  border-color: transparent;
+  margin-left: var(--space-1);
 }
 
 .med-btn-delete:hover {
-  background: color-mix(in oklch, var(--color-error) 20%, transparent);
-  border-color: var(--color-error);
+  background: var(--color-error-highlight);
+  color: var(--color-error);
+  border-color: color-mix(in oklch, var(--color-error) 25%, transparent);
 }
 
 /* Empty state */
@@ -226,20 +232,9 @@
   flex-shrink: 0;
 }
 
-.med-history-added   .med-history-action {
-  background: var(--color-success-highlight);
-  color: var(--color-success);
-}
-
-.med-history-edited  .med-history-action {
-  background: var(--color-primary-highlight);
-  color: var(--color-primary);
-}
-
-.med-history-deleted .med-history-action {
-  background: var(--color-error-highlight);
-  color: var(--color-error);
-}
+.med-history-added   .med-history-action { background: var(--color-success-highlight); color: var(--color-success); }
+.med-history-edited  .med-history-action { background: var(--color-primary-highlight); color: var(--color-primary); }
+.med-history-deleted .med-history-action { background: var(--color-error-highlight);   color: var(--color-error); }
 
 /* Medication/supplement name */
 .med-history-name {
