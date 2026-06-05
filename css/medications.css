@@ -1,11 +1,11 @@
 /* MEDICATIONS STYLES — FibroSymptomTracker */
+/* Card geometry (shell, hover, gap) is provided by .app-card /
+   .app-card-list / .app-card-body / .app-card-footer in base.css.
+   .med-item and .med-list are aliased to those globals so that
+   existing JS-generated HTML continues to work without changes. */
 
 /* ================================================================
-   SHARED LIST CARD STYLES
-   .med-list / .med-item are shared by the Medications and Conditions
-   tabs. All card geometry (border, radius, shadow, padding, gap)
-   is defined here and intentionally matches .ct-provider-item in
-   careteam.css so all three tabs look identical.
+   LIST CONTAINER — alias to global
    ================================================================ */
 
 .med-list {
@@ -14,16 +14,19 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);   /* 12px gap between cards */
+  gap: var(--space-3);
 }
+
+/* ================================================================
+   CARD SHELL — alias to .app-card
+   ================================================================ */
 
 .med-item {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-3) var(--space-4);
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--transition-interactive), transform var(--transition-interactive);
+  overflow: hidden;
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
 }
 
 .med-item:hover {
@@ -31,12 +34,17 @@
   transform: translateY(-1px);
 }
 
+/* ================================================================
+   CARD INNER LAYOUT
+   ================================================================ */
+
 .med-item-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-3);
   flex-wrap: wrap;
+  padding: var(--space-3) var(--space-4);
 }
 
 .med-item-name {
@@ -52,6 +60,7 @@
   color: var(--color-text-muted);
   margin-top: var(--space-1);
   line-height: 1.4;
+  padding: 0 var(--space-4) var(--space-3);
 }
 
 .med-item-actions {
@@ -61,32 +70,32 @@
   align-items: center;
 }
 
-/* Edit / Delete buttons — match ct-edit-btn / ct-delete-btn style */
+/* ================================================================
+   EDIT / DELETE BUTTONS — alias to .app-btn
+   ================================================================ */
+
 .med-btn {
   display: inline-flex;
   align-items: center;
+  gap: var(--space-1);
   padding: var(--space-1) 0.75rem;
   font-size: var(--text-xs);
   font-weight: 600;
   border-radius: var(--radius-sm);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: background var(--transition-fast),
-              border-color var(--transition-fast),
-              color var(--transition-fast);
   white-space: nowrap;
+  transition: background var(--transition-fast),
+              color var(--transition-fast),
+              border-color var(--transition-fast);
 }
 
 .med-btn-edit {
-  background: var(--color-primary-highlight);
+  background: var(--color-primary-light);
   color: var(--color-primary);
-  border-color: color-mix(in oklch, var(--color-primary) 25%, transparent);
+  border-color: var(--color-primary-border);
 }
-
-.med-btn-edit:hover {
-  background: color-mix(in oklch, var(--color-primary) 20%, transparent);
-  border-color: var(--color-primary);
-}
+.med-btn-edit:hover { background: var(--color-primary-border); }
 
 .med-btn-delete {
   background: transparent;
@@ -94,14 +103,16 @@
   border-color: transparent;
   margin-left: var(--space-1);
 }
-
 .med-btn-delete:hover {
-  background: var(--color-error-highlight);
+  background: var(--color-error-bg);
   color: var(--color-error);
-  border-color: color-mix(in oklch, var(--color-error) 25%, transparent);
+  border-color: var(--color-error-border);
 }
 
-/* Empty state */
+/* ================================================================
+   EMPTY STATE
+   ================================================================ */
+
 .med-empty {
   list-style: none;
   text-align: center;
@@ -111,7 +122,10 @@
   font-style: italic;
 }
 
-/* Add medication form card */
+/* ================================================================
+   ADD FORM CARD
+   ================================================================ */
+
 .med-form-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -146,7 +160,7 @@
 }
 
 /* ================================================================
-   SUB-TAB PILLS (used on Medications & Care Team pages)
+   SUB-TAB PILLS
    ================================================================ */
 
 .med-sub-tabs {
@@ -170,8 +184,8 @@
 }
 
 .ct-sub-tab-btn:hover {
-  background: var(--color-primary-highlight);
-  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+  background: var(--color-primary-light);
+  border-color: var(--color-primary-border);
   color: var(--color-primary);
 }
 
@@ -196,29 +210,25 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--transition-interactive);
+  transition: box-shadow var(--transition-fast);
 }
 
-.med-history-item:hover {
-  box-shadow: var(--shadow-md);
-}
+.med-history-item:hover { box-shadow: var(--shadow-md); }
 
-/* Left accent border by action type */
 .med-history-added   { border-left: 4px solid var(--color-success); }
 .med-history-edited  { border-left: 4px solid var(--color-primary); }
 .med-history-deleted { border-left: 4px solid var(--color-error); }
 
-/* Header row: badge + name + date */
 .med-history-header {
   display: flex;
   align-items: center;
   gap: var(--space-2);
   flex-wrap: wrap;
   padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-2);
+  border-bottom: 1px solid var(--color-border);
 }
 
-/* Action badge pill */
 .med-history-action {
   display: inline-flex;
   align-items: center;
@@ -232,11 +242,10 @@
   flex-shrink: 0;
 }
 
-.med-history-added   .med-history-action { background: var(--color-success-highlight); color: var(--color-success); }
-.med-history-edited  .med-history-action { background: var(--color-primary-highlight); color: var(--color-primary); }
-.med-history-deleted .med-history-action { background: var(--color-error-highlight);   color: var(--color-error); }
+.med-history-added   .med-history-action { background: var(--color-success-bg);  color: var(--color-success); border: 1px solid #a5d6a7; }
+.med-history-edited  .med-history-action { background: var(--color-primary-light); color: var(--color-primary); border: 1px solid var(--color-primary-border); }
+.med-history-deleted .med-history-action { background: var(--color-error-bg);     color: var(--color-error);   border: 1px solid var(--color-error-border); }
 
-/* Medication/supplement name */
 .med-history-name {
   font-size: var(--text-sm);
   font-weight: 700;
@@ -248,7 +257,6 @@
   white-space: nowrap;
 }
 
-/* Timestamp */
 .med-history-date {
   font-size: var(--text-xs);
   color: var(--color-text-muted);
@@ -257,13 +265,12 @@
   margin-left: auto;
 }
 
-/* Change list */
 .med-history-changes {
   list-style: none;
   padding: var(--space-2) var(--space-4) var(--space-3);
   margin: 0;
   border-top: 1px solid var(--color-border);
-  background: var(--color-surface-offset);
+  background: var(--color-surface-3);
   display: flex;
   flex-direction: column;
   gap: var(--space-1);

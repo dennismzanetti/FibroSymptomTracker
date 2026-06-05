@@ -1,4 +1,6 @@
 /* MOOD STYLES — FibroSymptomTracker */
+/* ATR (Thought Records) card geometry is aligned to the global
+   .app-card system defined in base.css. */
 
 /* ================================================================
    MOOD TAB — DAILY MOOD CARD
@@ -79,7 +81,6 @@
   font-style: italic;
 }
 
-/* Tier pills — applied via JS class names instead of inline styles */
 .mood-pill {
   display: inline-block;
   padding: 0.1rem 0.45rem;
@@ -90,11 +91,11 @@
   white-space: nowrap;
 }
 
-.mood-pill-1 { background: #ffebee; color: #c62828; border-color: #ef9a9a; } /* low    — red   */
-.mood-pill-2 { background: #fff3e0; color: #e65100; border-color: #ffcc80; } /* low+   — orange */
-.mood-pill-3 { background: #fff8e1; color: #f57f17; border-color: #ffe082; } /* mid    — amber */
-.mood-pill-4 { background: #e8f5e9; color: #2e7d32; border-color: #a5d6a7; } /* good   — green */
-.mood-pill-5 { background: #e0f2f1; color: #00695c; border-color: #80cbc4; } /* great  — teal  */
+.mood-pill-1 { background: #ffebee; color: #c62828; border-color: #ef9a9a; }
+.mood-pill-2 { background: #fff3e0; color: #e65100; border-color: #ffcc80; }
+.mood-pill-3 { background: #fff8e1; color: #f57f17; border-color: #ffe082; }
+.mood-pill-4 { background: #e8f5e9; color: #2e7d32; border-color: #a5d6a7; }
+.mood-pill-5 { background: #e0f2f1; color: #00695c; border-color: #80cbc4; }
 .mood-pill-none { color: var(--color-text-faint); }
 
 /* ================================================================
@@ -177,7 +178,6 @@
   flex-shrink: 0;
 }
 
-/* Intensity slider row */
 .atr-intensity-row {
   display: flex;
   align-items: center;
@@ -185,9 +185,7 @@
   margin-top: var(--space-1);
 }
 
-.atr-intensity-row input[type="range"] {
-  flex: 1;
-}
+.atr-intensity-row input[type="range"] { flex: 1; }
 
 .atr-intensity-value {
   min-width: 2.8rem;
@@ -201,15 +199,14 @@
   flex-shrink: 0;
 }
 
-/* Thought fields — visually distinguish auto vs. alternative */
 .atr-thought-block {
   border-left: 3px solid var(--color-border-input);
   padding-left: var(--space-3);
   margin-top: var(--space-3);
 }
 
-.atr-thought-block.is-auto     { border-left-color: var(--color-warning); }
-.atr-thought-block.is-alt      { border-left-color: var(--color-success); }
+.atr-thought-block.is-auto { border-left-color: var(--color-warning); }
+.atr-thought-block.is-alt  { border-left-color: var(--color-success); }
 
 .atr-thought-label {
   font-size: var(--text-xs);
@@ -223,7 +220,6 @@
 .atr-thought-block.is-auto .atr-thought-label { color: var(--color-warning); }
 .atr-thought-block.is-alt  .atr-thought-label { color: var(--color-success); }
 
-/* Form action buttons row */
 .atr-form-actions {
   display: flex;
   gap: var(--space-2);
@@ -233,7 +229,8 @@
 }
 
 /* ================================================================
-   ATR RECORD CARDS (list)
+   ATR RECORD CARDS (Thought Records list)
+   Aligned to .app-card system — same shell, header band, body, footer
    ================================================================ */
 
 .atr-list {
@@ -242,19 +239,21 @@
   gap: var(--space-3);
 }
 
+/* Card shell */
 .atr-record {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  transition: box-shadow var(--transition-fast);
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
 }
 
 .atr-record:hover {
   box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
-/* Record header — date, emotions tag, intensity badge, actions */
+/* Header band — matches .app-card-header */
 .atr-record-header {
   display: flex;
   align-items: center;
@@ -303,6 +302,7 @@
   flex-shrink: 0;
 }
 
+/* Buttons — aligned to .app-btn */
 .atr-edit-btn,
 .atr-delete-btn {
   font-size: var(--text-xs);
@@ -311,7 +311,7 @@
   border-radius: var(--radius-sm);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast);
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
   white-space: nowrap;
 }
 
@@ -323,15 +323,19 @@
 .atr-edit-btn:hover { background: var(--color-primary-border); }
 
 .atr-delete-btn {
+  background: transparent;
+  color: var(--color-text-faint);
+  border-color: transparent;
+}
+.atr-delete-btn:hover {
   background: var(--color-error-bg);
   color: var(--color-error);
   border-color: var(--color-error-border);
 }
-.atr-delete-btn:hover { background: var(--color-error-border); }
 
-/* Record body — field rows */
+/* Card body — matches .app-card-body */
 .atr-record-body {
-  padding: var(--space-4);
+  padding: var(--space-3) var(--space-4);
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
@@ -359,10 +363,7 @@
   white-space: pre-wrap;
 }
 
-/* Alternative thought field — visually accented green */
-.atr-field-alt .atr-field-label {
-  color: var(--color-success);
-}
+.atr-field-alt .atr-field-label { color: var(--color-success); }
 
 .atr-field-alt p {
   background: var(--color-success-bg);
@@ -371,13 +372,11 @@
   padding: var(--space-2) var(--space-3);
 }
 
-/* Situation field — subtle separator */
 .atr-field:first-child {
   padding-bottom: var(--space-3);
   border-bottom: 1px solid var(--color-divider);
 }
 
-/* Empty / loading state */
 .atr-empty {
   text-align: center;
   padding: var(--space-8) var(--space-4);
