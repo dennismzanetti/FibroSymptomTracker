@@ -9,16 +9,24 @@
   // ---- DOM helpers ----
   function el(id) { return document.getElementById(id); }
 
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
   function resetForm() {
-    el('condNameInput').value      = '';
-    el('condIcdInput').value       = '';
+    el('condNameInput').value          = '';
+    el('condIcdInput').value           = '';
     el('condDiagnosedDateInput').value = '';
-    el('condDiagnosedByInput').value = '';
-    el('condStatusInput').value    = 'active';
-    el('condNotesInput').value     = '';
-    el('condEditingId').value      = '';
-    el('condFormTitle').textContent = 'Add Condition';
-    el('savCondBtn').textContent   = 'Add Condition';
+    el('condDiagnosedByInput').value   = '';
+    el('condStatusInput').value        = 'active';
+    el('condNotesInput').value         = '';
+    el('condEditingId').value          = '';
+    el('condFormTitle').textContent    = 'Add Condition';
+    el('savCondBtn').textContent       = 'Add Condition';
     el('cancelCondEditBtn').style.display = 'none';
   }
 
@@ -30,43 +38,42 @@
       list.innerHTML = '<li class="med-empty">No conditions recorded yet.</li>';
       return;
     }
-    list.innerHTML = docs.map(({ id, data: d }) => {
+    list.innerHTML = '';
+    docs.forEach(({ id, data: d }) => {
       const statusLabel = {
         active:    'Active',
         managed:   'Managed',
         resolved:  'Resolved',
         suspected: 'Suspected'
       }[d.status] || d.status || 'Unknown';
-      const statusClass = {
-        active:    'med-status-active',
-        managed:   'med-status-ok',
-        resolved:  'med-status-stopped',
-        suspected: 'med-status-pending'
-      }[d.status] || '';
-      const diagDate = d.diagnosedDate
-        ? `<span class="med-detail">Diagnosed: ${d.diagnosedDate}</span>` : '';
-      const diagBy = d.diagnosedBy
-        ? `<span class="med-detail">By: ${d.diagnosedBy}</span>` : '';
-      const icd = d.icdCode
-        ? `<span class="med-detail">ICD-10: ${d.icdCode}</span>` : '';
-      const notes = d.notes
-        ? `<p class="med-notes">${d.notes}</p>` : '';
-      return `
-        <li class="med-item" data-id="${id}">
-          <div class="med-item-header">
-            <div class="med-item-info">
-              <span class="med-name">${d.name || 'Unnamed'}</span>
-              <span class="med-badge ${statusClass}">${statusLabel}</span>
-              ${diagDate}${diagBy}${icd}
-            </div>
-            <div class="med-item-actions">
-              <button class="med-edit-btn" data-id="${id}" aria-label="Edit">Edit</button>
-              <button class="med-delete-btn" data-id="${id}" aria-label="Delete">Delete</button>
-            </div>
+
+      const metaParts = [
+        d.icdCode       ? 'ICD-10: ' + escHtml(d.icdCode)           : '',
+        d.diagnosedDate ? 'Diagnosed: ' + escHtml(d.diagnosedDate)  : '',
+        d.diagnosedBy   ? 'By: ' + escHtml(d.diagnosedBy)           : ''
+      ].filter(Boolean);
+
+      const li = document.createElement('li');
+      li.className = 'med-item';
+      li.dataset.id = id;
+      li.innerHTML = `
+        <div class="med-item-header">
+          <div>
+            <span class="med-item-name">${escHtml(d.name || 'Unnamed')}</span>
+            <span class="med-item-meta">${escHtml(statusLabel)}</span>
+            ${metaParts.length ? `<div class="med-item-meta">${metaParts.join(' &bull; ')}</div>` : ''}
+            ${d.notes ? `<div class="med-item-meta" style="font-style:italic;margin-top:0.15rem;">${escHtml(d.notes)}</div>` : ''}
           </div>
-          ${notes}
-        </li>`;
-    }).join('');
+          <div class="med-item-actions">
+            <button class="med-btn med-btn-edit">Edit</button>
+            <button class="med-btn med-btn-delete">Delete</button>
+          </div>
+        </div>`;
+
+      li.querySelector('.med-btn-edit').addEventListener('click', () => startEditCondition(id));
+      li.querySelector('.med-btn-delete').addEventListener('click', () => deleteCondition(id, d.name));
+      list.appendChild(li);
+    });
   }
 
   // ---- Load from Firestore ----
@@ -121,8 +128,8 @@
   }
 
   // ---- Delete ----
-  async function deleteCondition(id) {
-    if (!confirm('Delete this condition?')) return;
+  async function deleteCondition(id, name) {
+    if (!window.confirm(`Delete "${name}" from your conditions list?`)) return;
     try {
       await db.collection(COL).doc(id).delete();
       if (typeof showToast === 'function') showToast('Condition deleted');
@@ -149,7 +156,7 @@
       el('condFormTitle').textContent    = 'Edit Condition';
       el('savCondBtn').textContent       = 'Save Changes';
       el('cancelCondEditBtn').style.display = 'inline-block';
-      el('condNameInput').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el('condFormTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
       console.error('Condition edit load error:', err);
     }
@@ -159,14 +166,6 @@
   function setupConditionsTab() {
     el('savCondBtn')?.addEventListener('click', saveCondition);
     el('cancelCondEditBtn')?.addEventListener('click', resetForm);
-
-    el('conditionsList')?.addEventListener('click', function (e) {
-      const editBtn   = e.target.closest('.med-edit-btn');
-      const deleteBtn = e.target.closest('.med-delete-btn');
-      if (editBtn)   startEditCondition(editBtn.dataset.id);
-      if (deleteBtn) deleteCondition(deleteBtn.dataset.id);
-    });
-
     refreshConditionsList();
   }
 
