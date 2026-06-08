@@ -277,6 +277,9 @@ function setupTabs() {
       tabs.forEach(t => t.classList.remove("active"));
       btn.classList.add("active");
       document.getElementById(target).classList.add("active");
+      // Keep mobile tabSelect dropdown in sync with tab button clicks
+      const tabSelect = document.getElementById("tabSelect");
+      if (tabSelect) tabSelect.value = target;
       if (target === "history-tab") refreshHistory();
       if (target === "journal-tab") renderJournal();
       if (target === "trends-tab") refreshTrends();
