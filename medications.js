@@ -25,12 +25,6 @@ function setupMedicationsTab() {
   document.getElementById("saveSuppBtn")?.addEventListener("click", saveSupplement);
   document.getElementById("cancelSuppEditBtn")?.addEventListener("click", resetSuppForm);
 
-  // Wire the Print / Save PDF button
-  const printMedBtn = document.getElementById("printMedBtn");
-  if (printMedBtn) {
-    printMedBtn.addEventListener("click", () => window.print());
-  }
-
   // Use ct-sub-tab-btn class (same style as Care Team sub-tabs) scoped to medications-tab
   document.querySelectorAll("#medications-tab .ct-sub-tab-btn").forEach(btn => {
     btn.addEventListener("click", () => {
