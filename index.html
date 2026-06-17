@@ -158,37 +158,37 @@
 
           <label class="tag-pill tag-flare">
             <input type="checkbox" value="flare" />
-            <span class="tag-pill-icon" aria-hidden="true">🔥</span>
+            <span class="tag-pill-icon" aria-hidden="true">&#x1F525;</span>
             <span class="tag-pill-label">Flare</span>
           </label>
 
           <label class="tag-pill tag-crash">
             <input type="checkbox" value="crash" />
-            <span class="tag-pill-icon" aria-hidden="true">⚡</span>
+            <span class="tag-pill-icon" aria-hidden="true">&#x26A1;</span>
             <span class="tag-pill-label">Crash / post-exertional</span>
           </label>
 
           <label class="tag-pill tag-better">
             <input type="checkbox" value="better" />
-            <span class="tag-pill-icon" aria-hidden="true">✨</span>
+            <span class="tag-pill-icon" aria-hidden="true">&#x2728;</span>
             <span class="tag-pill-label">Better than usual</span>
           </label>
 
           <label class="tag-pill tag-poor-sleep">
             <input type="checkbox" value="poor_sleep" />
-            <span class="tag-pill-icon" aria-hidden="true">🌙</span>
+            <span class="tag-pill-icon" aria-hidden="true">&#x1F319;</span>
             <span class="tag-pill-label">Poor sleep</span>
           </label>
 
           <label class="tag-pill tag-stress">
             <input type="checkbox" value="high_stress" />
-            <span class="tag-pill-icon" aria-hidden="true">💢</span>
+            <span class="tag-pill-icon" aria-hidden="true">&#x1F4A2;</span>
             <span class="tag-pill-label">High stress</span>
           </label>
 
           <label class="tag-pill tag-weather">
             <input type="checkbox" value="weather_change" />
-            <span class="tag-pill-icon" aria-hidden="true">🌧️</span>
+            <span class="tag-pill-icon" aria-hidden="true">&#x1F327;&#xFE0F;</span>
             <span class="tag-pill-label">Weather change</span>
           </label>
 
@@ -845,9 +845,15 @@
         </div>
         <div class="form-row form-row-2">
           <div class="form-group">
-            <label for="ctApptDate">Date</label>
+            <label for="ctApptDate">Start Date</label>
             <input type="date" id="ctApptDate" />
           </div>
+          <div class="form-group">
+            <label for="ctApptEndDate">End Date <span style="font-weight:normal;color:var(--color-text-muted)">(optional)</span></label>
+            <input type="date" id="ctApptEndDate" />
+          </div>
+        </div>
+        <div class="form-row form-row-2">
           <div class="form-group">
             <label for="ctApptTime">Time</label>
             <input type="time" id="ctApptTime" />
