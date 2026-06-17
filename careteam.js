@@ -77,6 +77,10 @@ const PROVIDER_STATUS_LABELS = {
   former:        'Former'
 };
 
+// Provider types that represent organizations rather than individual people.
+// People: use last-name initial. Orgs: use first initial of the full name.
+const ORG_PROVIDER_TYPES = new Set(['pharmacy', 'clinic', 'lab', 'other']);
+
 function getProviderFormData() {
   return {
     displayName:  document.getElementById('ctProviderName').value.trim(),
@@ -207,9 +211,17 @@ function apptEffectiveEndDate(a) {
   return (a.endDate && a.endDate >= a.date) ? a.endDate : a.date;
 }
 
-// Returns the first letter of the first word in a name
-function providerInitial(name) {
-  return (name || '?').trim().charAt(0).toUpperCase();
+// Returns the avatar initial for a provider:
+//   - Organizations (pharmacy, clinic, lab, other): first letter of the full name
+//   - People (all other types): first letter of the last word (last name)
+function providerInitial(name, providerType) {
+  const trimmed = (name || '').trim();
+  if (!trimmed) return '?';
+  if (ORG_PROVIDER_TYPES.has(providerType)) {
+    return trimmed.charAt(0).toUpperCase();
+  }
+  const parts = trimmed.split(/\s+/);
+  return parts[parts.length - 1].charAt(0).toUpperCase();
 }
 
 async function refreshProviderList() {
@@ -236,7 +248,7 @@ async function refreshProviderList() {
       const typeLabel   = PROVIDER_TYPE_LABELS[p.providerType] || p.providerType || '';
       const statusLabel = PROVIDER_STATUS_LABELS[p.status] || p.status || '';
       const statusClass = 'ct-status-' + (p.status || 'active');
-      const initial     = providerInitial(p.displayName);
+      const initial     = providerInitial(p.displayName, p.providerType);
 
       const nextApptDate  = await getNextAppointmentDate(p.id);
       const nextApptHtml  = nextApptDate
@@ -448,8 +460,6 @@ async function refreshAppointmentList() {
 
     snapshot.forEach(doc => {
       const a = { id: doc.id, ...doc.data() };
-      // An appointment is upcoming if its status is 'upcoming' AND its
-      // effective end date (endDate if set, otherwise date) is >= today.
       const effectiveEnd = apptEffectiveEndDate(a);
       if (a.status === 'upcoming' && effectiveEnd >= today) upcoming.push(a);
       else past.push(a);
@@ -465,7 +475,6 @@ async function refreshAppointmentList() {
         ? dateObj.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
         : (a.date || 'No date');
 
-      // Build range label: "Mon, Jun 17, 2026 → Fri, Jun 20" (end date omits year for brevity)
       const endDateLabel = a.endDate ? ' \u2192 ' + formatEndDate(a.endDate) : '';
       const dateLabelDisplay = dateLabel + endDateLabel;
 
