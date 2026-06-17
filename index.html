@@ -989,7 +989,6 @@
 
     <!-- Providers view -->
     <div id="ctProvidersView" class="ct-view">
-      <!-- Add Team Member button -->
       <div style="display:flex; justify-content:flex-end; margin-bottom:var(--space-4);">
         <button id="openProviderAddModalBtn" class="btn btn-primary">&#43; Add Team Member</button>
       </div>
@@ -998,7 +997,6 @@
 
     <!-- Appointments view -->
     <div id="ctAppointmentsView" class="ct-view" style="display:none;">
-      <!-- Add Appointment button -->
       <div style="display:flex; justify-content:flex-end; margin-bottom:var(--space-4);">
         <button id="openApptModalBtn" class="btn btn-primary">&#43; Add Appointment</button>
       </div>
@@ -1014,10 +1012,85 @@
 
   </section>
 
-  <!-- Settings Tab -->
+  <!-- ============================================================
+       SETTINGS TAB
+       ============================================================ -->
   <section id="settings-tab" class="tab">
     <h2>Settings</h2>
-    <div id="settingsContent"></div>
+
+    <!-- Account Info -->
+    <div class="card">
+      <h3>Account</h3>
+      <div style="display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;margin-bottom:var(--space-4);">
+        <img id="settingsUserPhoto" src="" alt="" width="48" height="48"
+             style="border-radius:50%;display:none;object-fit:cover;" />
+        <div>
+          <p id="settingsUserName" style="font-weight:600;margin:0;"></p>
+          <p id="settingsUserEmail" style="color:var(--color-text-muted);font-size:var(--text-sm);margin:0;"></p>
+        </div>
+      </div>
+      <button id="settingsSignOutBtn" class="btn" style="background:var(--color-surface-offset);color:var(--color-text);">Sign out</button>
+    </div>
+
+    <!-- Display Preferences -->
+    <div class="card">
+      <h3>Display</h3>
+      <div class="form-group">
+        <label for="settingsThemeSelect">Theme</label>
+        <select id="settingsThemeSelect">
+          <option value="system">System default</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="settingsDefaultTabSelect">Default tab on open</label>
+        <select id="settingsDefaultTabSelect">
+          <option value="entry-tab">Daily Entry</option>
+          <option value="journal-tab">Journal</option>
+          <option value="history-tab">History</option>
+          <option value="trends-tab">Trends</option>
+          <option value="mood-tab">Mood</option>
+          <option value="medications-tab">Medications</option>
+          <option value="conditions-tab">Conditions</option>
+          <option value="careteam-tab">Care Team</option>
+        </select>
+      </div>
+      <button id="settingsSaveDisplayBtn" class="btn btn-primary">Save Display Settings</button>
+      <p id="settingsDisplayStatus" style="margin-top:var(--space-2);font-size:var(--text-sm);color:var(--color-success);display:none;">&#10003; Saved</p>
+    </div>
+
+    <!-- Export / Import -->
+    <div class="card">
+      <h3>Export &amp; Import Data</h3>
+      <p style="font-size:var(--text-sm);color:var(--color-text-muted);margin-bottom:var(--space-4);">Download a full backup of all your data, or restore from a previous backup file.</p>
+
+      <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;margin-bottom:var(--space-4);">
+        <button id="exportDataBtn" class="btn btn-primary">&#8659; Export All Data</button>
+        <label class="btn" style="background:var(--color-surface-offset);color:var(--color-text);cursor:pointer;">
+          &#8657; Import Backup
+          <input type="file" id="importFileInput" accept=".json" style="display:none;" />
+        </label>
+      </div>
+
+      <div id="importConfirmBox" style="display:none;background:var(--color-surface-offset);border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-3);">
+        <p id="importConfirmMsg" style="margin-bottom:var(--space-3);font-size:var(--text-sm);"></p>
+        <div style="display:flex;gap:var(--space-2);">
+          <button id="importConfirmBtn" class="btn btn-primary">Yes, import</button>
+          <button id="importCancelBtn" class="btn" style="background:var(--color-surface-dynamic);color:var(--color-text);">Cancel</button>
+        </div>
+      </div>
+
+      <p id="exportImportStatus" style="display:none;padding:var(--space-3);border-radius:var(--radius-md);font-size:var(--text-sm);"></p>
+    </div>
+
+    <!-- About -->
+    <div class="card">
+      <h3>About</h3>
+      <p style="font-size:var(--text-sm);color:var(--color-text-muted);margin:0;">Fibromyalgia Symptom Tracker</p>
+      <p id="settingsAppVersion" style="font-size:var(--text-sm);color:var(--color-text-muted);margin:var(--space-1) 0 0;"></p>
+    </div>
+
   </section>
 
 </main>
