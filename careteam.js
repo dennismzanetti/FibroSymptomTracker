@@ -190,6 +190,23 @@ function formatApptDate(dateStr) {
   });
 }
 
+// Format an end date compactly — no year, to avoid repeating it when
+// start and end are in the same year (e.g. "Fri, Jun 20")
+function formatEndDate(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-').map(Number);
+  if (!y || !m || !d) return dateStr;
+  return new Date(y, m - 1, d).toLocaleDateString(undefined, {
+    weekday: 'short', month: 'short', day: 'numeric'
+  });
+}
+
+// Returns the effective end date of an appointment for sorting/bucketing:
+// uses endDate if present, otherwise falls back to date.
+function apptEffectiveEndDate(a) {
+  return (a.endDate && a.endDate >= a.date) ? a.endDate : a.date;
+}
+
 // Returns the first letter of the first word in a name
 function providerInitial(name) {
   return (name || '?').trim().charAt(0).toUpperCase();
@@ -361,6 +378,13 @@ async function saveAppointment() {
   const data = getApptFormData();
   if (!data.providerId) { alert('Please select a provider.'); return; }
   if (!data.date)        { alert('Please enter a date.'); return; }
+
+  // Validate end date is not before start date
+  if (data.endDate && data.endDate < data.date) {
+    alert('End date cannot be before the start date.');
+    return;
+  }
+
   const editingId = document.getElementById('ctApptEditingId').value;
   const now = new Date().toISOString();
   try {
@@ -423,9 +447,12 @@ async function refreshAppointmentList() {
     const upcoming = [], past = [];
 
     snapshot.forEach(doc => {
-      const a = doc.data();
-      if (a.status === 'upcoming' && a.date >= today) upcoming.push({ id: doc.id, ...a });
-      else past.push({ id: doc.id, ...a });
+      const a = { id: doc.id, ...doc.data() };
+      // An appointment is upcoming if its status is 'upcoming' AND its
+      // effective end date (endDate if set, otherwise date) is >= today.
+      const effectiveEnd = apptEffectiveEndDate(a);
+      if (a.status === 'upcoming' && effectiveEnd >= today) upcoming.push(a);
+      else past.push(a);
     });
 
     upcoming.sort((a, b) => a.date.localeCompare(b.date));
@@ -437,14 +464,11 @@ async function refreshAppointmentList() {
       const dateLabel = dateObj
         ? dateObj.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
         : (a.date || 'No date');
-      const dateLabelDisplay = (() => {
-        if (!a.endDate) return dateLabel;
-        const [ey, em, ed] = a.endDate.split('-').map(Number);
-        if (!ey || !em || !ed) return dateLabel;
-        const endObj = new Date(ey, em - 1, ed);
-        const endLabel = endObj.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
-        return dateLabel + ' \u2192 ' + endLabel;
-      })();
+
+      // Build range label: "Mon, Jun 17, 2026 → Fri, Jun 20" (end date omits year for brevity)
+      const endDateLabel = a.endDate ? ' \u2192 ' + formatEndDate(a.endDate) : '';
+      const dateLabelDisplay = dateLabel + endDateLabel;
+
       const statusLabel = APPT_STATUS_LABELS[a.status] || a.status || '';
       const statusClass = 'ct-status-' + (a.status || 'upcoming');
       const li = document.createElement('li');
