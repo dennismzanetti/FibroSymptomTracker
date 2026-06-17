@@ -77,10 +77,6 @@ const PROVIDER_STATUS_LABELS = {
   former:        'Former'
 };
 
-// Provider types that represent organizations rather than individual people.
-// People: use last-name initial. Orgs: use first initial of the full name.
-const ORG_PROVIDER_TYPES = new Set(['pharmacy', 'clinic', 'lab', 'other']);
-
 function getProviderFormData() {
   return {
     displayName:  document.getElementById('ctProviderName').value.trim(),
@@ -211,19 +207,6 @@ function apptEffectiveEndDate(a) {
   return (a.endDate && a.endDate >= a.date) ? a.endDate : a.date;
 }
 
-// Returns the avatar initial for a provider:
-//   - Organizations (pharmacy, clinic, lab, other): first letter of the full name
-//   - People (all other types): first letter of the last word (last name)
-function providerInitial(name, providerType) {
-  const trimmed = (name || '').trim();
-  if (!trimmed) return '?';
-  if (ORG_PROVIDER_TYPES.has(providerType)) {
-    return trimmed.charAt(0).toUpperCase();
-  }
-  const parts = trimmed.split(/\s+/);
-  return parts[parts.length - 1].charAt(0).toUpperCase();
-}
-
 async function refreshProviderList() {
   const list = document.getElementById('ctProviderList');
   if (!list) return;
@@ -244,75 +227,91 @@ async function refreshProviderList() {
     const items = [];
     snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
 
+    // Group by first letter of displayName
+    const groups = {};
     for (const p of items) {
-      const typeLabel   = PROVIDER_TYPE_LABELS[p.providerType] || p.providerType || '';
-      const statusLabel = PROVIDER_STATUS_LABELS[p.status] || p.status || '';
-      const statusClass = 'ct-status-' + (p.status || 'active');
-      const initial     = providerInitial(p.displayName, p.providerType);
+      const letter = (p.displayName || '?').trim().charAt(0).toUpperCase();
+      if (!groups[letter]) groups[letter] = [];
+      groups[letter].push(p);
+    }
+    const sortedLetters = Object.keys(groups).sort();
 
-      const nextApptDate  = await getNextAppointmentDate(p.id);
-      const nextApptHtml  = nextApptDate
-        ? `<div class="ct-provider-next-appt">&#x1F4C5; Next: ${escHtml(formatApptDate(nextApptDate))}</div>`
-        : '';
+    for (const letter of sortedLetters) {
+      // Alpha group header
+      const headerLi = document.createElement('li');
+      headerLi.className = 'ct-alpha-header';
+      headerLi.setAttribute('aria-hidden', 'true');
+      headerLi.textContent = letter;
+      list.appendChild(headerLi);
 
-      // Build sub-line: specialty · org
-      const subParts = [p.specialty, p.organization].filter(Boolean);
-      const subHtml  = subParts.length
-        ? `<div class="ct-provider-sub">${subParts.map(escHtml).join(' &middot; ')}</div>`
-        : '';
+      for (const p of groups[letter]) {
+        const typeLabel   = PROVIDER_TYPE_LABELS[p.providerType] || p.providerType || '';
+        const statusLabel = PROVIDER_STATUS_LABELS[p.status] || p.status || '';
+        const statusClass = 'ct-status-' + (p.status || 'active');
 
-      // Meta pills: phone, fax, portal, address, symptom focus
-      const metaItems = [
-        p.phone        ? `<a class="ct-meta-link" href="tel:${escHtml(p.phone)}">&#x1F4DE; ${escHtml(p.phone)}</a>` : '',
-        p.fax          ? `<span class="ct-meta-text">&#x1F4E0; Fax: ${escHtml(p.fax)}</span>` : '',
-        p.portalUrl    ? `<a class="ct-meta-link" href="${escHtml(p.portalUrl)}" target="_blank" rel="noopener noreferrer">&#x1F517; Patient Portal</a>` : '',
-        p.address      ? `<a class="ct-meta-link" href="https://maps.google.com/?q=${encodeURIComponent(p.address)}" target="_blank" rel="noopener noreferrer">&#x1F4CD; ${escHtml(p.address)}</a>` : '',
-        p.symptomFocus ? `<span class="ct-meta-text">Treats: ${escHtml(p.symptomFocus)}</span>` : ''
-      ].filter(Boolean).join('');
-      const metaHtml = metaItems
-        ? `<div class="ct-provider-meta">${metaItems}</div>`
-        : '';
+        const nextApptDate = await getNextAppointmentDate(p.id);
+        const nextApptHtml = nextApptDate
+          ? `<div class="ct-provider-next-appt">&#x1F4C5; Next: ${escHtml(formatApptDate(nextApptDate))}</div>`
+          : '';
 
-      const notesHtml = p.notes
-        ? `<div class="ct-provider-notes">${escHtml(p.notes)}</div>`
-        : '';
+        // Build sub-line: specialty · org
+        const subParts = [p.specialty, p.organization].filter(Boolean);
+        const subHtml  = subParts.length
+          ? `<div class="ct-provider-sub">${subParts.map(escHtml).join(' &middot; ')}</div>`
+          : '';
 
-      const li = document.createElement('li');
-      li.className = 'ct-provider-item';
-      li.dataset.status = p.status || 'active';
-      li.innerHTML = `
-        <div class="ct-provider-body">
-          <div class="ct-provider-avatar" aria-hidden="true">${escHtml(initial)}</div>
-          <div class="ct-provider-identity">
-            <div class="ct-provider-name-row">
-              <span class="ct-provider-name">${escHtml(p.displayName || '')}</span>
-              ${typeLabel ? `<span class="ct-badge ct-badge-type">${escHtml(typeLabel)}</span>` : ''}
+        // Meta pills: phone, fax, portal, address, symptom focus
+        const metaItems = [
+          p.phone        ? `<a class="ct-meta-link" href="tel:${escHtml(p.phone)}">&#x1F4DE; ${escHtml(p.phone)}</a>` : '',
+          p.fax          ? `<span class="ct-meta-text">&#x1F4E0; Fax: ${escHtml(p.fax)}</span>` : '',
+          p.portalUrl    ? `<a class="ct-meta-link" href="${escHtml(p.portalUrl)}" target="_blank" rel="noopener noreferrer">&#x1F517; Patient Portal</a>` : '',
+          p.address      ? `<a class="ct-meta-link" href="https://maps.google.com/?q=${encodeURIComponent(p.address)}" target="_blank" rel="noopener noreferrer">&#x1F4CD; ${escHtml(p.address)}</a>` : '',
+          p.symptomFocus ? `<span class="ct-meta-text">Treats: ${escHtml(p.symptomFocus)}</span>` : ''
+        ].filter(Boolean).join('');
+        const metaHtml = metaItems
+          ? `<div class="ct-provider-meta">${metaItems}</div>`
+          : '';
+
+        const notesHtml = p.notes
+          ? `<div class="ct-provider-notes">${escHtml(p.notes)}</div>`
+          : '';
+
+        const li = document.createElement('li');
+        li.className = 'ct-provider-item';
+        li.dataset.status = p.status || 'active';
+        li.innerHTML = `
+          <div class="ct-provider-body">
+            <div class="ct-provider-identity">
+              <div class="ct-provider-name-row">
+                <span class="ct-provider-name">${escHtml(p.displayName || '')}</span>
+                ${typeLabel ? `<span class="ct-badge ct-badge-type">${escHtml(typeLabel)}</span>` : ''}
+              </div>
+              ${subHtml}
+              ${metaHtml}
+              ${nextApptHtml}
             </div>
-            ${subHtml}
-            ${metaHtml}
-            ${nextApptHtml}
+            <div class="ct-provider-status-wrap">
+              <span class="ct-badge ${statusClass}">${escHtml(statusLabel)}</span>
+            </div>
           </div>
-          <div class="ct-provider-status-wrap">
-            <span class="ct-badge ${statusClass}">${escHtml(statusLabel)}</span>
-          </div>
-        </div>
-        ${notesHtml}
-        <div class="ct-item-actions">
-          <button class="ct-edit-btn">Edit</button>
-          <button class="ct-appt-btn">+ Appointment</button>
-          <button class="ct-delete-btn danger">Remove</button>
-        </div>`;
+          ${notesHtml}
+          <div class="ct-item-actions">
+            <button class="ct-edit-btn">Edit</button>
+            <button class="ct-appt-btn">+ Appointment</button>
+            <button class="ct-delete-btn danger">Remove</button>
+          </div>`;
 
-      li.querySelector('.ct-edit-btn').addEventListener('click', () => startEditProvider(p.id, p));
-      li.querySelector('.ct-delete-btn').addEventListener('click', () => deleteProvider(p.id, p.displayName));
-      li.querySelector('.ct-appt-btn').addEventListener('click', () => {
-        document.querySelector('.ct-sub-tab-btn[data-ct-view="ctAppointmentsView"]')?.click();
-        const sel = document.getElementById('ctApptProvider');
-        if (sel) sel.value = p.id;
-        document.getElementById('ctApptFormTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
+        li.querySelector('.ct-edit-btn').addEventListener('click', () => startEditProvider(p.id, p));
+        li.querySelector('.ct-delete-btn').addEventListener('click', () => deleteProvider(p.id, p.displayName));
+        li.querySelector('.ct-appt-btn').addEventListener('click', () => {
+          document.querySelector('.ct-sub-tab-btn[data-ct-view="ctAppointmentsView"]')?.click();
+          const sel = document.getElementById('ctApptProvider');
+          if (sel) sel.value = p.id;
+          document.getElementById('ctApptFormTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
 
-      list.appendChild(li);
+        list.appendChild(li);
+      }
     }
   } catch (err) {
     console.error('Error loading providers:', err);
