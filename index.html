@@ -29,6 +29,170 @@
   <p id="authError" style="color:red; font-size:0.875rem;"></p>
 </div>
 
+<!-- ============================================================
+     APPOINTMENT MODAL
+     ============================================================ -->
+<div id="ctApptModal" role="dialog" aria-modal="true" aria-labelledby="ctApptModalTitle"
+     style="display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.45); overflow-y:auto; padding:var(--space-6) var(--space-4);">
+  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:540px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
+    <!-- Close X -->
+    <button id="ctApptModalClose" aria-label="Close"
+            style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
+    <h3 id="ctApptModalTitle" style="margin-bottom:var(--space-4);">Add Appointment</h3>
+    <div class="form-group">
+      <label for="ctApptProvider">Provider</label>
+      <select id="ctApptProvider"><option value="">Select provider&hellip;</option></select>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="ctApptDate">Start Date</label>
+        <input type="date" id="ctApptDate" />
+      </div>
+      <div class="form-group">
+        <label for="ctApptEndDate">End Date <span style="font-weight:normal;color:var(--color-text-muted)">(optional)</span></label>
+        <input type="date" id="ctApptEndDate" />
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="ctApptTime">Time</label>
+        <input type="time" id="ctApptTime" />
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="ctApptLocation">Location</label>
+        <input type="text" id="ctApptLocation" placeholder="Office, telehealth, hospital, etc." />
+      </div>
+      <div class="form-group">
+        <label for="ctApptPurpose">Purpose / reason</label>
+        <input type="text" id="ctApptPurpose" placeholder="Routine follow-up, new symptom, etc." />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="ctApptPrepNotes">Prep notes</label>
+      <textarea id="ctApptPrepNotes" rows="2" placeholder="Questions to ask, things to bring, etc."></textarea>
+    </div>
+    <div class="form-group">
+      <label for="ctApptPostNotes">Visit notes</label>
+      <textarea id="ctApptPostNotes" rows="2" placeholder="What was discussed, next steps, etc."></textarea>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="ctApptStatus">Status</label>
+        <select id="ctApptStatus">
+          <option value="upcoming">Upcoming</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+          <option value="rescheduled">Rescheduled</option>
+        </select>
+      </div>
+      <div class="form-group" style="display:flex;align-items:flex-end;padding-bottom:0.25rem;">
+        <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+          <input type="checkbox" id="ctApptFollowUp" />
+          Follow-up needed
+        </label>
+      </div>
+    </div>
+    <input type="hidden" id="ctApptEditingId" />
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:var(--space-4);">
+      <button id="saveApptBtn" class="btn btn-primary">Add Appointment</button>
+      <button id="cancelApptEditBtn" class="save-btn" style="background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PROVIDER EDIT MODAL
+     ============================================================ -->
+<div id="ctProviderModal" role="dialog" aria-modal="true" aria-labelledby="ctProviderModalTitle"
+     style="display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.45); overflow-y:auto; padding:var(--space-6) var(--space-4);">
+  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:580px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
+    <!-- Close X -->
+    <button id="ctProviderModalClose" aria-label="Close"
+            style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
+    <h3 id="ctProviderModalTitle" style="margin-bottom:var(--space-4);">Edit Team Member</h3>
+
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="ctEditProviderName">Name</label>
+        <input type="text" id="ctEditProviderName" placeholder="e.g. Dr. Sarah Jones" />
+      </div>
+      <div class="form-group">
+        <label for="ctEditProviderType">Type</label>
+        <select id="ctEditProviderType">
+          <option value="">Select...</option>
+          <option value="physician">Primary Care</option>
+          <option value="specialist">Specialist</option>
+          <option value="rheumatology">Rheumatology</option>
+          <option value="pain">Pain Management</option>
+          <option value="pt">Physical Therapy</option>
+          <option value="therapist">Mental Health</option>
+          <option value="sleep">Sleep</option>
+          <option value="neurology">Neurology</option>
+          <option value="pharmacy">Pharmacy</option>
+          <option value="clinic">Clinic</option>
+          <option value="lab">Lab / Imaging</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="ctEditProviderSpecialty">Specialty / role</label>
+        <input type="text" id="ctEditProviderSpecialty" placeholder="e.g. Fibromyalgia, Sleep Medicine" />
+      </div>
+      <div class="form-group">
+        <label for="ctEditProviderOrg">Practice / organization</label>
+        <input type="text" id="ctEditProviderOrg" placeholder="e.g. Dartmouth-Hitchcock" />
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="ctEditProviderPhone">Phone</label>
+        <input type="tel" id="ctEditProviderPhone" placeholder="(603) 555-0100" />
+      </div>
+      <div class="form-group">
+        <label for="ctEditProviderFax">Fax</label>
+        <input type="tel" id="ctEditProviderFax" placeholder="Optional" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="ctEditProviderPortal">Patient portal URL</label>
+      <input type="url" id="ctEditProviderPortal" placeholder="https://..." />
+    </div>
+    <div class="form-group">
+      <label for="ctEditProviderAddress">Address</label>
+      <input type="text" id="ctEditProviderAddress" placeholder="Street, City, State" />
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="ctEditProviderStatus">Status</label>
+        <select id="ctEditProviderStatus">
+          <option value="active">Active</option>
+          <option value="upcoming">Upcoming</option>
+          <option value="referred">Referred</option>
+          <option value="need_followup">Needs Follow-Up</option>
+          <option value="former">Former</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="ctEditProviderSymptoms">Symptoms / issues they help with</label>
+        <input type="text" id="ctEditProviderSymptoms" placeholder="e.g. pain, sleep, fatigue" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="ctEditProviderNotes">Notes</label>
+      <textarea id="ctEditProviderNotes" rows="2" placeholder="What works, what to ask, insurance notes, etc."></textarea>
+    </div>
+    <input type="hidden" id="ctProviderEditingId" />
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:var(--space-4);">
+      <button id="saveProviderEditBtn" class="btn btn-primary">Save Changes</button>
+      <button id="cancelProviderEditBtn" class="save-btn" style="background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <header class="app-header">
 
   <!-- DESKTOP -->
@@ -826,10 +990,9 @@
           <textarea id="ctProviderNotes" rows="2" placeholder="What works, what to ask, insurance notes, etc."></textarea>
         </div>
 
-        <input type="hidden" id="ctProviderEditingId" />
+        <input type="hidden" id="ctProviderAddingId" />
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
           <button id="saveProviderBtn" class="btn btn-primary">Add Team Member</button>
-          <button id="cancelProviderEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
         </div>
       </div>
       <div class="card"><h3>My Care Team</h3><ul id="ctProviderList"></ul></div>
@@ -837,130 +1000,40 @@
 
     <!-- Appointments view -->
     <div id="ctAppointmentsView" class="ct-view" style="display:none;">
-      <div class="card">
-        <h3 id="ctApptFormTitle">Add Appointment</h3>
-        <div class="form-group">
-          <label for="ctApptProvider">Provider</label>
-          <select id="ctApptProvider"><option value="">Select provider&hellip;</option></select>
-        </div>
-        <div class="form-row form-row-2">
-          <div class="form-group">
-            <label for="ctApptDate">Start Date</label>
-            <input type="date" id="ctApptDate" />
-          </div>
-          <div class="form-group">
-            <label for="ctApptEndDate">End Date <span style="font-weight:normal;color:var(--color-text-muted)">(optional)</span></label>
-            <input type="date" id="ctApptEndDate" />
-          </div>
-        </div>
-        <div class="form-row form-row-2">
-          <div class="form-group">
-            <label for="ctApptTime">Time</label>
-            <input type="time" id="ctApptTime" />
-          </div>
-        </div>
-        <div class="form-row form-row-2">
-          <div class="form-group">
-            <label for="ctApptLocation">Location</label>
-            <input type="text" id="ctApptLocation" placeholder="Office, telehealth, hospital, etc." />
-          </div>
-          <div class="form-group">
-            <label for="ctApptPurpose">Purpose / reason</label>
-            <input type="text" id="ctApptPurpose" placeholder="Routine follow-up, new symptom, etc." />
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="ctApptPrepNotes">Prep notes</label>
-          <textarea id="ctApptPrepNotes" rows="2" placeholder="Questions to ask, things to bring, etc."></textarea>
-        </div>
-        <div class="form-group">
-          <label for="ctApptPostNotes">Visit notes</label>
-          <textarea id="ctApptPostNotes" rows="2" placeholder="What was discussed, next steps, etc."></textarea>
-        </div>
-        <div class="form-group">
-          <label style="display:flex;align-items:center;gap:0.5rem;font-weight:normal;">
-            <input type="checkbox" id="ctApptFollowUp" style="width:auto;" />
-            Follow-up needed after this appointment
-          </label>
-        </div>
-        <div class="form-group">
-          <label for="ctApptStatus">Status</label>
-          <select id="ctApptStatus">
-            <option value="upcoming">Upcoming</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-            <option value="rescheduled">Rescheduled</option>
-          </select>
-        </div>
-        <input type="hidden" id="ctApptEditingId" />
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-          <button id="saveApptBtn" class="btn btn-primary">Add Appointment</button>
-          <button id="cancelApptEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
-        </div>
+      <!-- Add Appointment button -->
+      <div style="display:flex; justify-content:flex-end; margin-bottom:var(--space-4);">
+        <button id="openApptModalBtn" class="btn btn-primary">&#43; Add Appointment</button>
       </div>
       <div class="card">
         <h3>Upcoming Appointments</h3>
-        <ul id="ctUpcomingAppts"></ul>
+        <ul id="ctUpcomingAppts" class="ct-appt-list"><li class="ct-empty">Loading&#8230;</li></ul>
       </div>
       <div class="card">
         <h3>Past Appointments</h3>
-        <ul id="ctPastAppts"></ul>
+        <ul id="ctPastAppts" class="ct-appt-list"><li class="ct-empty">Loading&#8230;</li></ul>
       </div>
     </div>
+
   </section>
 
   <!-- Settings Tab -->
   <section id="settings-tab" class="tab">
     <h2>Settings</h2>
-
-    <div class="card settings-card">
-      <h3 class="settings-section-title">&#128190; Data Backup &amp; Restore</h3>
-      <p class="settings-desc">Export all your data (daily entries, medications, supplements, care team, appointments, mood records) to a JSON file. You can import it later to restore your data.</p>
-
-      <div class="settings-actions">
-        <button id="exportDataBtn" class="btn-settings-primary">
-          &#11015; Export My Data
-        </button>
-        <label class="btn-settings-secondary" id="importDataLabel">
-          &#11014; Import Data
-          <input type="file" id="importFileInput" accept=".json" style="display:none;" />
-        </label>
-      </div>
-
-      <div id="exportImportStatus" class="settings-status" style="display:none;"></div>
-
-      <div id="importConfirmBox" class="settings-confirm-box" style="display:none;">
-        <p id="importConfirmMsg"></p>
-        <div class="settings-confirm-actions">
-          <button id="importConfirmBtn" class="btn-settings-primary">&#10003; Yes, Import</button>
-          <button id="importCancelBtn" class="btn-settings-cancel">Cancel</button>
-        </div>
-      </div>
-    </div>
-
+    <div id="settingsContent"></div>
   </section>
 
 </main>
 
-<footer class="build-footer" id="buildFooter" aria-label="Build information">
-  <span class="build-footer-label">Build</span>
-  <a class="build-footer-sha" id="buildSha" href="#" target="_blank" rel="noopener noreferrer" title="View commit on GitHub">loading&hellip;</a>
-  <span class="build-footer-sep">&middot;</span>
-  <span class="build-footer-msg" id="buildMsg"></span>
-  <span class="build-footer-sep">&middot;</span>
-  <time class="build-footer-date" id="buildDate"></time>
-</footer>
-
-<!-- Script load order: ui.js first (globals), then app and feature modules -->
 <script src="ui.js"></script>
-<script src="firebase-init.js"></script>
+<script src="entry.js"></script>
 <script src="history.js"></script>
-<script src="app.js"></script>
+<script src="trends.js"></script>
 <script src="journal.js"></script>
 <script src="mood.js"></script>
 <script src="medications.js"></script>
-<script src="careteam.js"></script>
 <script src="conditions.js"></script>
-
+<script src="careteam.js"></script>
+<script src="settings.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

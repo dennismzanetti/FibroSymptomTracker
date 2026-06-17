@@ -17,6 +17,27 @@ if (typeof escHtml !== 'function') {
   };
 }
 
+// ============================================================
+// MODAL HELPERS
+// ============================================================
+
+function openModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+  modal.style.display = 'block';
+  // Scroll modal content to top each time it opens
+  const inner = modal.querySelector('div');
+  if (inner) inner.scrollTop = 0;
+  // Trap focus on first focusable element
+  const focusable = modal.querySelector('select, input, textarea, button:not([aria-label="Close"])');
+  if (focusable) setTimeout(() => focusable.focus(), 50);
+}
+
+function closeModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) modal.style.display = 'none';
+}
+
 // ---- Sub-tab switching ----
 function setupCareTeamTab() {
   document.querySelectorAll('.ct-sub-tab-btn').forEach(btn => {
@@ -35,10 +56,43 @@ function setupCareTeamTab() {
     });
   });
 
+  // Add Team Member (inline form — add only)
   document.getElementById('saveProviderBtn')?.addEventListener('click', saveProvider);
-  document.getElementById('cancelProviderEditBtn')?.addEventListener('click', resetProviderForm);
+
+  // Provider edit modal
+  document.getElementById('saveProviderEditBtn')?.addEventListener('click', saveProviderEdit);
+  document.getElementById('cancelProviderEditBtn')?.addEventListener('click', () => closeModal('ctProviderModal'));
+  document.getElementById('ctProviderModalClose')?.addEventListener('click', () => closeModal('ctProviderModal'));
+
+  // Appointment modal
+  document.getElementById('openApptModalBtn')?.addEventListener('click', () => {
+    resetApptForm();
+    populateProviderDropdown().then(() => openModal('ctApptModal'));
+  });
   document.getElementById('saveApptBtn')?.addEventListener('click', saveAppointment);
-  document.getElementById('cancelApptEditBtn')?.addEventListener('click', resetApptForm);
+  document.getElementById('cancelApptEditBtn')?.addEventListener('click', () => {
+    resetApptForm();
+    closeModal('ctApptModal');
+  });
+  document.getElementById('ctApptModalClose')?.addEventListener('click', () => {
+    resetApptForm();
+    closeModal('ctApptModal');
+  });
+
+  // Close modals on backdrop click
+  ['ctApptModal', 'ctProviderModal'].forEach(id => {
+    document.getElementById(id)?.addEventListener('click', (e) => {
+      if (e.target.id === id) closeModal(id);
+    });
+  });
+
+  // Close modals on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal('ctApptModal');
+      closeModal('ctProviderModal');
+    }
+  });
 
   // Default to Providers sub-tab on first load
   const defaultBtn = document.querySelector('.ct-sub-tab-btn[data-ct-view="ctProvidersView"]');
@@ -77,6 +131,7 @@ const PROVIDER_STATUS_LABELS = {
   former:        'Former'
 };
 
+// Reads the inline ADD form
 function getProviderFormData() {
   return {
     displayName:  document.getElementById('ctProviderName').value.trim(),
@@ -93,10 +148,27 @@ function getProviderFormData() {
   };
 }
 
+// Reads the EDIT modal form
+function getProviderEditFormData() {
+  return {
+    displayName:  document.getElementById('ctEditProviderName').value.trim(),
+    providerType: document.getElementById('ctEditProviderType').value,
+    specialty:    document.getElementById('ctEditProviderSpecialty').value.trim(),
+    organization: document.getElementById('ctEditProviderOrg').value.trim(),
+    phone:        document.getElementById('ctEditProviderPhone').value.trim(),
+    fax:          document.getElementById('ctEditProviderFax').value.trim(),
+    portalUrl:    document.getElementById('ctEditProviderPortal').value.trim(),
+    address:      document.getElementById('ctEditProviderAddress').value.trim(),
+    status:       document.getElementById('ctEditProviderStatus').value,
+    symptomFocus: document.getElementById('ctEditProviderSymptoms').value.trim(),
+    notes:        document.getElementById('ctEditProviderNotes').value.trim()
+  };
+}
+
 function resetProviderForm() {
   ['ctProviderName','ctProviderSpecialty','ctProviderOrg','ctProviderPhone',
    'ctProviderFax','ctProviderPortal','ctProviderAddress','ctProviderSymptoms',
-   'ctProviderNotes','ctProviderEditingId'].forEach(id => {
+   'ctProviderNotes'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -106,23 +178,36 @@ function resetProviderForm() {
   if (statusEl) statusEl.value = 'active';
   document.getElementById('ctProviderFormTitle').textContent = 'Add Team Member';
   document.getElementById('saveProviderBtn').textContent = 'Add Team Member';
-  document.getElementById('cancelProviderEditBtn').style.display = 'none';
 }
 
+// Save from the inline ADD form (new providers only)
 async function saveProvider() {
   const data = getProviderFormData();
   if (!data.displayName) { alert('Please enter a provider name.'); return; }
-  const editingId = document.getElementById('ctProviderEditingId').value;
   const now = new Date().toISOString();
   try {
-    if (editingId) {
-      await db.collection('careTeam').doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
-      showToast('\u2713 Provider updated');
-    } else {
-      await db.collection('careTeam').add({ ...data, createdAt: now, updatedAt: now });
-      showToast('\u2713 Team member added');
-    }
+    await db.collection('careTeam').add({ ...data, createdAt: now, updatedAt: now });
+    showToast('\u2713 Team member added');
     resetProviderForm();
+    refreshProviderList();
+    populateProviderDropdown();
+  } catch (err) {
+    console.error('Error saving provider:', err);
+    showToast('\u26A0 Save failed \u2014 check connection', true);
+  }
+}
+
+// Save from the EDIT modal
+async function saveProviderEdit() {
+  const data = getProviderEditFormData();
+  if (!data.displayName) { alert('Please enter a provider name.'); return; }
+  const editingId = document.getElementById('ctProviderEditingId').value;
+  if (!editingId) return;
+  const now = new Date().toISOString();
+  try {
+    await db.collection('careTeam').doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
+    showToast('\u2713 Provider updated');
+    closeModal('ctProviderModal');
     refreshProviderList();
     populateProviderDropdown();
   } catch (err) {
@@ -145,22 +230,19 @@ async function deleteProvider(id, name) {
 }
 
 function startEditProvider(id, p) {
-  document.getElementById('ctProviderName').value        = p.displayName || '';
-  document.getElementById('ctProviderType').value        = p.providerType || '';
-  document.getElementById('ctProviderSpecialty').value   = p.specialty || '';
-  document.getElementById('ctProviderOrg').value         = p.organization || '';
-  document.getElementById('ctProviderPhone').value       = p.phone || '';
-  document.getElementById('ctProviderFax').value         = p.fax || '';
-  document.getElementById('ctProviderPortal').value      = p.portalUrl || '';
-  document.getElementById('ctProviderAddress').value     = p.address || '';
-  document.getElementById('ctProviderStatus').value      = p.status || 'active';
-  document.getElementById('ctProviderSymptoms').value    = p.symptomFocus || '';
-  document.getElementById('ctProviderNotes').value       = p.notes || '';
-  document.getElementById('ctProviderEditingId').value   = id;
-  document.getElementById('ctProviderFormTitle').textContent = 'Edit Team Member';
-  document.getElementById('saveProviderBtn').textContent = 'Save Changes';
-  document.getElementById('cancelProviderEditBtn').style.display = 'inline-block';
-  document.getElementById('ctProviderFormTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('ctEditProviderName').value      = p.displayName || '';
+  document.getElementById('ctEditProviderType').value      = p.providerType || '';
+  document.getElementById('ctEditProviderSpecialty').value = p.specialty || '';
+  document.getElementById('ctEditProviderOrg').value       = p.organization || '';
+  document.getElementById('ctEditProviderPhone').value     = p.phone || '';
+  document.getElementById('ctEditProviderFax').value       = p.fax || '';
+  document.getElementById('ctEditProviderPortal').value    = p.portalUrl || '';
+  document.getElementById('ctEditProviderAddress').value   = p.address || '';
+  document.getElementById('ctEditProviderStatus').value    = p.status || 'active';
+  document.getElementById('ctEditProviderSymptoms').value  = p.symptomFocus || '';
+  document.getElementById('ctEditProviderNotes').value     = p.notes || '';
+  document.getElementById('ctProviderEditingId').value     = id;
+  openModal('ctProviderModal');
 }
 
 // Fetches the next upcoming appointment date for a given provider ID
@@ -190,8 +272,6 @@ function formatApptDate(dateStr) {
   });
 }
 
-// Format an end date compactly — no year, to avoid repeating it when
-// start and end are in the same year (e.g. "Fri, Jun 20")
 function formatEndDate(dateStr) {
   if (!dateStr) return '';
   const [y, m, d] = dateStr.split('-').map(Number);
@@ -201,8 +281,6 @@ function formatEndDate(dateStr) {
   });
 }
 
-// Returns the effective end date of an appointment for sorting/bucketing:
-// uses endDate if present, otherwise falls back to date.
 function apptEffectiveEndDate(a) {
   return (a.endDate && a.endDate >= a.date) ? a.endDate : a.date;
 }
@@ -227,7 +305,6 @@ async function refreshProviderList() {
     const items = [];
     snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
 
-    // Group by first letter of displayName
     const groups = {};
     for (const p of items) {
       const letter = (p.displayName || '?').trim().charAt(0).toUpperCase();
@@ -237,7 +314,6 @@ async function refreshProviderList() {
     const sortedLetters = Object.keys(groups).sort();
 
     for (const letter of sortedLetters) {
-      // Alpha group header
       const headerLi = document.createElement('li');
       headerLi.className = 'ct-alpha-header';
       headerLi.setAttribute('aria-hidden', 'true');
@@ -254,13 +330,11 @@ async function refreshProviderList() {
           ? `<div class="ct-provider-next-appt">&#x1F4C5; Next: ${escHtml(formatApptDate(nextApptDate))}</div>`
           : '';
 
-        // Build sub-line: specialty · org
         const subParts = [p.specialty, p.organization].filter(Boolean);
         const subHtml  = subParts.length
           ? `<div class="ct-provider-sub">${subParts.map(escHtml).join(' &middot; ')}</div>`
           : '';
 
-        // Meta pills: phone, fax, portal, address, symptom focus
         const metaItems = [
           p.phone        ? `<a class="ct-meta-link" href="tel:${escHtml(p.phone)}">&#x1F4DE; ${escHtml(p.phone)}</a>` : '',
           p.fax          ? `<span class="ct-meta-text">&#x1F4E0; Fax: ${escHtml(p.fax)}</span>` : '',
@@ -304,10 +378,14 @@ async function refreshProviderList() {
         li.querySelector('.ct-edit-btn').addEventListener('click', () => startEditProvider(p.id, p));
         li.querySelector('.ct-delete-btn').addEventListener('click', () => deleteProvider(p.id, p.displayName));
         li.querySelector('.ct-appt-btn').addEventListener('click', () => {
+          // Switch to Appointments tab, then open modal with provider pre-selected
           document.querySelector('.ct-sub-tab-btn[data-ct-view="ctAppointmentsView"]')?.click();
-          const sel = document.getElementById('ctApptProvider');
-          if (sel) sel.value = p.id;
-          document.getElementById('ctApptFormTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          populateProviderDropdown().then(() => {
+            resetApptForm();
+            const sel = document.getElementById('ctApptProvider');
+            if (sel) sel.value = p.id;
+            openModal('ctApptModal');
+          });
         });
 
         list.appendChild(li);
@@ -380,9 +458,8 @@ function resetApptForm() {
   if (statusEl) statusEl.value = 'upcoming';
   const followUpEl = document.getElementById('ctApptFollowUp');
   if (followUpEl) followUpEl.checked = false;
-  document.getElementById('ctApptFormTitle').textContent = 'Add Appointment';
+  document.getElementById('ctApptModalTitle').textContent = 'Add Appointment';
   document.getElementById('saveApptBtn').textContent = 'Add Appointment';
-  document.getElementById('cancelApptEditBtn').style.display = 'none';
 }
 
 async function saveAppointment() {
@@ -390,7 +467,6 @@ async function saveAppointment() {
   if (!data.providerId) { alert('Please select a provider.'); return; }
   if (!data.date)        { alert('Please enter a date.'); return; }
 
-  // Validate end date is not before start date
   if (data.endDate && data.endDate < data.date) {
     alert('End date cannot be before the start date.');
     return;
@@ -407,6 +483,7 @@ async function saveAppointment() {
       showToast('\u2713 Appointment added');
     }
     resetApptForm();
+    closeModal('ctApptModal');
     refreshAppointmentList();
   } catch (err) {
     console.error('Error saving appointment:', err);
@@ -427,21 +504,22 @@ async function deleteAppointment(id, label) {
 }
 
 function startEditAppointment(id, a) {
-  document.getElementById('ctApptProvider').value   = a.providerId || '';
-  document.getElementById('ctApptDate').value       = a.date || '';
-  document.getElementById('ctApptEndDate').value    = a.endDate || '';
-  document.getElementById('ctApptTime').value       = a.time || '';
-  document.getElementById('ctApptLocation').value   = a.location || '';
-  document.getElementById('ctApptPurpose').value    = a.purpose || '';
-  document.getElementById('ctApptPrepNotes').value  = a.prepNotes || '';
-  document.getElementById('ctApptPostNotes').value  = a.postNotes || '';
-  document.getElementById('ctApptFollowUp').checked = a.followUpNeeded || false;
-  document.getElementById('ctApptStatus').value     = a.status || 'upcoming';
-  document.getElementById('ctApptEditingId').value  = id;
-  document.getElementById('ctApptFormTitle').textContent = 'Edit Appointment';
-  document.getElementById('saveApptBtn').textContent = 'Save Changes';
-  document.getElementById('cancelApptEditBtn').style.display = 'inline-block';
-  document.getElementById('ctApptFormTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  populateProviderDropdown().then(() => {
+    document.getElementById('ctApptProvider').value   = a.providerId || '';
+    document.getElementById('ctApptDate').value       = a.date || '';
+    document.getElementById('ctApptEndDate').value    = a.endDate || '';
+    document.getElementById('ctApptTime').value       = a.time || '';
+    document.getElementById('ctApptLocation').value   = a.location || '';
+    document.getElementById('ctApptPurpose').value    = a.purpose || '';
+    document.getElementById('ctApptPrepNotes').value  = a.prepNotes || '';
+    document.getElementById('ctApptPostNotes').value  = a.postNotes || '';
+    document.getElementById('ctApptFollowUp').checked = a.followUpNeeded || false;
+    document.getElementById('ctApptStatus').value     = a.status || 'upcoming';
+    document.getElementById('ctApptEditingId').value  = id;
+    document.getElementById('ctApptModalTitle').textContent = 'Edit Appointment';
+    document.getElementById('saveApptBtn').textContent = 'Save Changes';
+    openModal('ctApptModal');
+  });
 }
 
 async function refreshAppointmentList() {
@@ -489,11 +567,13 @@ async function refreshAppointmentList() {
           </div>
           <span class="ct-badge ${statusClass}">${escHtml(statusLabel)}</span>
         </div>
-        ${a.location  ? `<div class="ct-appt-detail">&#x1F4CD; ${escHtml(a.location)}</div>` : ''}
-        ${a.purpose   ? `<div class="ct-appt-detail">Purpose: ${escHtml(a.purpose)}</div>` : ''}
-        ${a.prepNotes ? `<div class="ct-appt-notes"><span class="ct-notes-label">Prep notes:</span> ${escHtml(a.prepNotes)}</div>` : ''}
-        ${a.postNotes ? `<div class="ct-appt-notes"><span class="ct-notes-label">Visit notes:</span> ${escHtml(a.postNotes)}</div>` : ''}
-        ${a.followUpNeeded ? `<div class="ct-followup-flag">&#x2691; Follow-up needed</div>` : ''}
+        <div class="ct-appt-body">
+          ${a.location  ? `<div class="ct-appt-detail">&#x1F4CD; ${escHtml(a.location)}</div>` : ''}
+          ${a.purpose   ? `<div class="ct-appt-detail">Purpose: ${escHtml(a.purpose)}</div>` : ''}
+          ${a.prepNotes ? `<div class="ct-appt-notes"><span class="ct-notes-label">Prep notes:</span> ${escHtml(a.prepNotes)}</div>` : ''}
+          ${a.postNotes ? `<div class="ct-appt-notes"><span class="ct-notes-label">Visit notes:</span> ${escHtml(a.postNotes)}</div>` : ''}
+          ${a.followUpNeeded ? `<div class="ct-followup-flag">&#x2691; Follow-up needed</div>` : ''}
+        </div>
         <div class="ct-item-actions">
           <button class="ct-edit-btn">Edit</button>
           <button class="ct-delete-btn danger">Delete</button>
