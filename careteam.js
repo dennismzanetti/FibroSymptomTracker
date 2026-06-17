@@ -329,6 +329,7 @@ function getApptFormData() {
     providerId:     providerSel?.value || '',
     providerName:   providerName.split(' \u2014 ')[0],
     date:           document.getElementById('ctApptDate').value,
+    endDate:        document.getElementById('ctApptEndDate')?.value || '',
     time:           document.getElementById('ctApptTime').value,
     location:       document.getElementById('ctApptLocation').value.trim(),
     purpose:        document.getElementById('ctApptPurpose').value.trim(),
@@ -340,7 +341,7 @@ function getApptFormData() {
 }
 
 function resetApptForm() {
-  ['ctApptDate','ctApptTime','ctApptLocation','ctApptPurpose',
+  ['ctApptDate','ctApptEndDate','ctApptTime','ctApptLocation','ctApptPurpose',
    'ctApptPrepNotes','ctApptPostNotes','ctApptEditingId'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
@@ -393,6 +394,7 @@ async function deleteAppointment(id, label) {
 function startEditAppointment(id, a) {
   document.getElementById('ctApptProvider').value   = a.providerId || '';
   document.getElementById('ctApptDate').value       = a.date || '';
+  document.getElementById('ctApptEndDate').value    = a.endDate || '';
   document.getElementById('ctApptTime').value       = a.time || '';
   document.getElementById('ctApptLocation').value   = a.location || '';
   document.getElementById('ctApptPurpose').value    = a.purpose || '';
@@ -435,6 +437,14 @@ async function refreshAppointmentList() {
       const dateLabel = dateObj
         ? dateObj.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
         : (a.date || 'No date');
+      const dateLabelDisplay = (() => {
+        if (!a.endDate) return dateLabel;
+        const [ey, em, ed] = a.endDate.split('-').map(Number);
+        if (!ey || !em || !ed) return dateLabel;
+        const endObj = new Date(ey, em - 1, ed);
+        const endLabel = endObj.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+        return dateLabel + ' \u2192 ' + endLabel;
+      })();
       const statusLabel = APPT_STATUS_LABELS[a.status] || a.status || '';
       const statusClass = 'ct-status-' + (a.status || 'upcoming');
       const li = document.createElement('li');
@@ -443,7 +453,7 @@ async function refreshAppointmentList() {
         <div class="ct-appt-header">
           <div class="ct-appt-who">
             <span class="ct-appt-provider">${escHtml(a.providerName || 'Unknown provider')}</span>
-            <span class="ct-appt-date">${escHtml(dateLabel)}${a.time ? ' &middot; ' + escHtml(a.time) : ''}</span>
+            <span class="ct-appt-date">${escHtml(dateLabelDisplay)}${a.time ? ' &middot; ' + escHtml(a.time) : ''}</span>
           </div>
           <span class="ct-badge ${statusClass}">${escHtml(statusLabel)}</span>
         </div>
@@ -458,7 +468,7 @@ async function refreshAppointmentList() {
         </div>`;
       li.querySelector('.ct-edit-btn').addEventListener('click', () => startEditAppointment(a.id, a));
       li.querySelector('.ct-delete-btn').addEventListener('click', () =>
-        deleteAppointment(a.id, `${a.providerName} \u2014 ${dateLabel}`));
+        deleteAppointment(a.id, `${a.providerName} \u2014 ${dateLabelDisplay}`));
       listEl.appendChild(li);
     }
 
