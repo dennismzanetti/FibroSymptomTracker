@@ -254,7 +254,7 @@ async function refreshProviderList() {
         p.phone        ? `<a class="ct-meta-link" href="tel:${escHtml(p.phone)}">&#x1F4DE; ${escHtml(p.phone)}</a>` : '',
         p.fax          ? `<span class="ct-meta-text">&#x1F4E0; Fax: ${escHtml(p.fax)}</span>` : '',
         p.portalUrl    ? `<a class="ct-meta-link" href="${escHtml(p.portalUrl)}" target="_blank" rel="noopener noreferrer">&#x1F517; Patient Portal</a>` : '',
-        p.address      ? `<span class="ct-meta-text">&#x1F4CD; ${escHtml(p.address)}</span>` : '',
+        p.address      ? `<a class="ct-meta-link" href="https://maps.google.com/?q=${encodeURIComponent(p.address)}" target="_blank" rel="noopener noreferrer">&#x1F4CD; ${escHtml(p.address)}</a>` : '',
         p.symptomFocus ? `<span class="ct-meta-text">Treats: ${escHtml(p.symptomFocus)}</span>` : ''
       ].filter(Boolean).join('');
       const metaHtml = metaItems
