@@ -35,7 +35,6 @@
 <div id="ctApptModal" role="dialog" aria-modal="true" aria-labelledby="ctApptModalTitle"
      style="display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.45); overflow-y:auto; padding:var(--space-6) var(--space-4);">
   <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:540px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
-    <!-- Close X -->
     <button id="ctApptModalClose" aria-label="Close"
             style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
     <h3 id="ctApptModalTitle" style="margin-bottom:var(--space-4);">Add Appointment</h3>
@@ -103,12 +102,101 @@
 </div>
 
 <!-- ============================================================
+     PROVIDER ADD MODAL
+     ============================================================ -->
+<div id="ctProviderAddModal" role="dialog" aria-modal="true" aria-labelledby="ctProviderAddModalTitle"
+     style="display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.45); overflow-y:auto; padding:var(--space-6) var(--space-4);">
+  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:580px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
+    <button id="ctProviderAddModalClose" aria-label="Close"
+            style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
+    <h3 id="ctProviderAddModalTitle" style="margin-bottom:var(--space-4);">Add Team Member</h3>
+
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="ctProviderName">Name</label>
+        <input type="text" id="ctProviderName" placeholder="e.g. Dr. Sarah Jones" />
+      </div>
+      <div class="form-group">
+        <label for="ctProviderType">Type</label>
+        <select id="ctProviderType">
+          <option value="">Select...</option>
+          <option value="physician">Primary Care</option>
+          <option value="specialist">Specialist</option>
+          <option value="rheumatology">Rheumatology</option>
+          <option value="pain">Pain Management</option>
+          <option value="pt">Physical Therapy</option>
+          <option value="therapist">Mental Health</option>
+          <option value="sleep">Sleep</option>
+          <option value="neurology">Neurology</option>
+          <option value="pharmacy">Pharmacy</option>
+          <option value="clinic">Clinic</option>
+          <option value="lab">Lab / Imaging</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="ctProviderSpecialty">Specialty / role</label>
+        <input type="text" id="ctProviderSpecialty" placeholder="e.g. Fibromyalgia, Sleep Medicine" />
+      </div>
+      <div class="form-group">
+        <label for="ctProviderOrg">Practice / organization</label>
+        <input type="text" id="ctProviderOrg" placeholder="e.g. Dartmouth-Hitchcock" />
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="ctProviderPhone">Phone</label>
+        <input type="tel" id="ctProviderPhone" placeholder="(603) 555-0100" />
+      </div>
+      <div class="form-group">
+        <label for="ctProviderFax">Fax</label>
+        <input type="tel" id="ctProviderFax" placeholder="Optional" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="ctProviderPortal">Patient portal URL</label>
+      <input type="url" id="ctProviderPortal" placeholder="https://..." />
+    </div>
+    <div class="form-group">
+      <label for="ctProviderAddress">Address</label>
+      <input type="text" id="ctProviderAddress" placeholder="Street, City, State" />
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="ctProviderStatus">Status</label>
+        <select id="ctProviderStatus">
+          <option value="active">Active</option>
+          <option value="upcoming">Upcoming</option>
+          <option value="referred">Referred</option>
+          <option value="need_followup">Needs Follow-Up</option>
+          <option value="former">Former</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="ctProviderSymptoms">Symptoms / issues they help with</label>
+        <input type="text" id="ctProviderSymptoms" placeholder="e.g. pain, sleep, fatigue" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="ctProviderNotes">Notes</label>
+      <textarea id="ctProviderNotes" rows="2" placeholder="What works, what to ask, insurance notes, etc."></textarea>
+    </div>
+    <input type="hidden" id="ctProviderAddingId" />
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:var(--space-4);">
+      <button id="saveProviderBtn" class="btn btn-primary">Add Team Member</button>
+      <button id="cancelProviderAddBtn" class="save-btn" style="background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
      PROVIDER EDIT MODAL
      ============================================================ -->
 <div id="ctProviderModal" role="dialog" aria-modal="true" aria-labelledby="ctProviderModalTitle"
      style="display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.45); overflow-y:auto; padding:var(--space-6) var(--space-4);">
   <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:580px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
-    <!-- Close X -->
     <button id="ctProviderModalClose" aria-label="Close"
             style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
     <h3 id="ctProviderModalTitle" style="margin-bottom:var(--space-4);">Edit Team Member</h3>
@@ -901,99 +989,9 @@
 
     <!-- Providers view -->
     <div id="ctProvidersView" class="ct-view">
-      <div class="card">
-        <h3 id="ctProviderFormTitle">Add Team Member</h3>
-
-        <!-- Row 1: Name + Type -->
-        <div class="form-row form-row-2">
-          <div class="form-group">
-            <label for="ctProviderName">Name</label>
-            <input type="text" id="ctProviderName" placeholder="e.g. Dr. Sarah Jones" />
-          </div>
-          <div class="form-group">
-            <label for="ctProviderType">Type</label>
-            <select id="ctProviderType">
-              <option value="">Select...</option>
-              <option value="physician">Primary Care</option>
-              <option value="specialist">Specialist</option>
-              <option value="rheumatology">Rheumatology</option>
-              <option value="pain">Pain Management</option>
-              <option value="pt">Physical Therapy</option>
-              <option value="therapist">Mental Health</option>
-              <option value="sleep">Sleep</option>
-              <option value="neurology">Neurology</option>
-              <option value="pharmacy">Pharmacy</option>
-              <option value="clinic">Clinic</option>
-              <option value="lab">Lab / Imaging</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Row 2: Specialty + Organization -->
-        <div class="form-row form-row-2">
-          <div class="form-group">
-            <label for="ctProviderSpecialty">Specialty / role</label>
-            <input type="text" id="ctProviderSpecialty" placeholder="e.g. Fibromyalgia, Sleep Medicine" />
-          </div>
-          <div class="form-group">
-            <label for="ctProviderOrg">Practice / organization</label>
-            <input type="text" id="ctProviderOrg" placeholder="e.g. Dartmouth-Hitchcock" />
-          </div>
-        </div>
-
-        <!-- Row 3: Phone + Fax -->
-        <div class="form-row form-row-2">
-          <div class="form-group">
-            <label for="ctProviderPhone">Phone</label>
-            <input type="tel" id="ctProviderPhone" placeholder="(603) 555-0100" />
-          </div>
-          <div class="form-group">
-            <label for="ctProviderFax">Fax</label>
-            <input type="tel" id="ctProviderFax" placeholder="Optional" />
-          </div>
-        </div>
-
-        <!-- Row 4: Portal URL (full width) -->
-        <div class="form-group">
-          <label for="ctProviderPortal">Patient portal URL</label>
-          <input type="url" id="ctProviderPortal" placeholder="https://..." />
-        </div>
-
-        <!-- Row 5: Address (full width) -->
-        <div class="form-group">
-          <label for="ctProviderAddress">Address</label>
-          <input type="text" id="ctProviderAddress" placeholder="Street, City, State" />
-        </div>
-
-        <!-- Row 6: Status + Symptoms -->
-        <div class="form-row form-row-2">
-          <div class="form-group">
-            <label for="ctProviderStatus">Status</label>
-            <select id="ctProviderStatus">
-              <option value="active">Active</option>
-              <option value="upcoming">Upcoming</option>
-              <option value="referred">Referred</option>
-              <option value="need_followup">Needs Follow-Up</option>
-              <option value="former">Former</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="ctProviderSymptoms">Symptoms / issues they help with</label>
-            <input type="text" id="ctProviderSymptoms" placeholder="e.g. pain, sleep, fatigue" />
-          </div>
-        </div>
-
-        <!-- Row 7: Notes (full width) -->
-        <div class="form-group">
-          <label for="ctProviderNotes">Notes</label>
-          <textarea id="ctProviderNotes" rows="2" placeholder="What works, what to ask, insurance notes, etc."></textarea>
-        </div>
-
-        <input type="hidden" id="ctProviderAddingId" />
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-          <button id="saveProviderBtn" class="btn btn-primary">Add Team Member</button>
-        </div>
+      <!-- Add Team Member button -->
+      <div style="display:flex; justify-content:flex-end; margin-bottom:var(--space-4);">
+        <button id="openProviderAddModalBtn" class="btn btn-primary">&#43; Add Team Member</button>
       </div>
       <div class="card"><h3>My Care Team</h3><ul id="ctProviderList"></ul></div>
     </div>

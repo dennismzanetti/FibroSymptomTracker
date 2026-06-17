@@ -56,10 +56,16 @@ function setupCareTeamTab() {
     });
   });
 
-  // Add Team Member (inline form — add only)
+  // Provider ADD modal
+  document.getElementById('openProviderAddModalBtn')?.addEventListener('click', () => {
+    resetProviderForm();
+    openModal('ctProviderAddModal');
+  });
   document.getElementById('saveProviderBtn')?.addEventListener('click', saveProvider);
+  document.getElementById('cancelProviderAddBtn')?.addEventListener('click', () => closeModal('ctProviderAddModal'));
+  document.getElementById('ctProviderAddModalClose')?.addEventListener('click', () => closeModal('ctProviderAddModal'));
 
-  // Provider edit modal
+  // Provider EDIT modal
   document.getElementById('saveProviderEditBtn')?.addEventListener('click', saveProviderEdit);
   document.getElementById('cancelProviderEditBtn')?.addEventListener('click', () => closeModal('ctProviderModal'));
   document.getElementById('ctProviderModalClose')?.addEventListener('click', () => closeModal('ctProviderModal'));
@@ -80,7 +86,7 @@ function setupCareTeamTab() {
   });
 
   // Close modals on backdrop click
-  ['ctApptModal', 'ctProviderModal'].forEach(id => {
+  ['ctApptModal', 'ctProviderModal', 'ctProviderAddModal'].forEach(id => {
     document.getElementById(id)?.addEventListener('click', (e) => {
       if (e.target.id === id) closeModal(id);
     });
@@ -91,6 +97,7 @@ function setupCareTeamTab() {
     if (e.key === 'Escape') {
       closeModal('ctApptModal');
       closeModal('ctProviderModal');
+      closeModal('ctProviderAddModal');
     }
   });
 
@@ -131,7 +138,7 @@ const PROVIDER_STATUS_LABELS = {
   former:        'Former'
 };
 
-// Reads the inline ADD form
+// Reads the ADD modal form
 function getProviderFormData() {
   return {
     displayName:  document.getElementById('ctProviderName').value.trim(),
@@ -176,11 +183,9 @@ function resetProviderForm() {
   if (typeEl) typeEl.value = '';
   const statusEl = document.getElementById('ctProviderStatus');
   if (statusEl) statusEl.value = 'active';
-  document.getElementById('ctProviderFormTitle').textContent = 'Add Team Member';
-  document.getElementById('saveProviderBtn').textContent = 'Add Team Member';
 }
 
-// Save from the inline ADD form (new providers only)
+// Save from the ADD modal (new providers only)
 async function saveProvider() {
   const data = getProviderFormData();
   if (!data.displayName) { alert('Please enter a provider name.'); return; }
@@ -189,6 +194,7 @@ async function saveProvider() {
     await db.collection('careTeam').add({ ...data, createdAt: now, updatedAt: now });
     showToast('\u2713 Team member added');
     resetProviderForm();
+    closeModal('ctProviderAddModal');
     refreshProviderList();
     populateProviderDropdown();
   } catch (err) {
