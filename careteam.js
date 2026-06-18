@@ -86,9 +86,8 @@ function setupCareTeamTab() {
     closeModal('ctApptModal');
   });
 
-  // Print buttons
+  // Print button
   document.getElementById('printCareTeamBtn')?.addEventListener('click', printCareTeam);
-  document.getElementById('printAppointmentsBtn')?.addEventListener('click', printAppointments);
 
   // Close modals on backdrop click
   ['ctApptModal', 'ctProviderModal', 'ctProviderAddModal'].forEach(id => {
@@ -717,17 +716,17 @@ async function renderAppointmentsPrintTable() {
 }
 
 async function printCareTeam() {
-  await renderCareTeamPrintTable();
-  const el = document.getElementById('ctProviderPrintSection');
-  if (el) el.setAttribute('data-print-active', 'careteam');
-  window.print();
-  if (el) el.removeAttribute('data-print-active');
-}
+  const includeAppts = document.getElementById('includeAppointmentsChk')?.checked || false;
 
-async function printAppointments() {
-  await renderAppointmentsPrintTable();
-  const el = document.getElementById('ctProviderPrintSection');
-  if (el) el.setAttribute('data-print-active', 'appointments');
+  await renderCareTeamPrintTable();
+  if (includeAppts) await renderAppointmentsPrintTable();
+
+  // Show/hide the appointments section based on checkbox
+  const apptSection = document.getElementById('ctApptPrintSection');
+  if (apptSection) apptSection.style.display = includeAppts ? '' : 'none';
+
   window.print();
-  if (el) el.removeAttribute('data-print-active');
+
+  // Restore appointments section visibility after printing
+  if (apptSection) apptSection.style.display = '';
 }

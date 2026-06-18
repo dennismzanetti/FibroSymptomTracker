@@ -1194,19 +1194,22 @@
       <div class="card">
         <h3>Print / Save as PDF</h3>
         <p style="font-size:0.875rem;color:var(--color-text-muted);margin-bottom:1rem;">Generates a clean, formatted copy of your care team providers and appointments.</p>
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
           <button id="printCareTeamBtn" class="btn btn-primary">&#128438; Print Care Team</button>
-          <button id="printAppointmentsBtn" class="btn" style="background:var(--color-surface-offset);color:var(--color-text);">&#128438; Print Appointments</button>
+          <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:var(--text-sm);color:var(--color-text);">
+            <input type="checkbox" id="includeAppointmentsChk" style="width:1.1rem;height:1.1rem;accent-color:var(--color-primary);">
+            Include Appointments
+          </label>
         </div>
       </div>
-      <div class="card">
+      <div class="card" id="ctProviderPrintSection">
         <h3>Providers Preview</h3>
         <table class="med-print-table">
           <thead><tr><th>Name</th><th>Type</th><th>Specialty / Org</th><th>Phone</th><th>Status</th><th>Notes</th></tr></thead>
           <tbody id="ctProviderPrintTableBody"><tr><td colspan="6">Loading&#8230;</td></tr></tbody>
         </table>
       </div>
-      <div class="card">
+      <div class="card" id="ctApptPrintSection">
         <h3>Appointments Preview</h3>
         <table class="med-print-table">
           <thead><tr><th>Provider</th><th>Date / Time</th><th>Location</th><th>Purpose</th><th>Status</th><th>Notes</th></tr></thead>
