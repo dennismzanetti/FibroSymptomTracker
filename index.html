@@ -226,30 +226,30 @@
     <div class="form-row form-row-2">
       <div class="form-group">
         <label for="ctEditProviderSpecialty">Specialty / role</label>
-        <input type="text" id="ctEditProviderSpecialty" placeholder="e.g. Fibromyalgia, Sleep Medicine" />
+        <input type="text" id="ctEditProviderSpecialty" />
       </div>
       <div class="form-group">
         <label for="ctEditProviderOrg">Practice / organization</label>
-        <input type="text" id="ctEditProviderOrg" placeholder="e.g. Dartmouth-Hitchcock" />
+        <input type="text" id="ctEditProviderOrg" />
       </div>
     </div>
     <div class="form-row form-row-2">
       <div class="form-group">
         <label for="ctEditProviderPhone">Phone</label>
-        <input type="tel" id="ctEditProviderPhone" placeholder="(603) 555-0100" />
+        <input type="tel" id="ctEditProviderPhone" />
       </div>
       <div class="form-group">
         <label for="ctEditProviderFax">Fax</label>
-        <input type="tel" id="ctEditProviderFax" placeholder="Optional" />
+        <input type="tel" id="ctEditProviderFax" />
       </div>
     </div>
     <div class="form-group">
       <label for="ctEditProviderPortal">Patient portal URL</label>
-      <input type="url" id="ctEditProviderPortal" placeholder="https://..." />
+      <input type="url" id="ctEditProviderPortal" />
     </div>
     <div class="form-group">
       <label for="ctEditProviderAddress">Address</label>
-      <input type="text" id="ctEditProviderAddress" placeholder="Street, City, State" />
+      <input type="text" id="ctEditProviderAddress" />
     </div>
     <div class="form-row form-row-2">
       <div class="form-group">
@@ -264,12 +264,12 @@
       </div>
       <div class="form-group">
         <label for="ctEditProviderSymptoms">Symptoms / issues they help with</label>
-        <input type="text" id="ctEditProviderSymptoms" placeholder="e.g. pain, sleep, fatigue" />
+        <input type="text" id="ctEditProviderSymptoms" />
       </div>
     </div>
     <div class="form-group">
       <label for="ctEditProviderNotes">Notes</label>
-      <textarea id="ctEditProviderNotes" rows="2" placeholder="What works, what to ask, insurance notes, etc."></textarea>
+      <textarea id="ctEditProviderNotes" rows="2"></textarea>
     </div>
     <input type="hidden" id="ctProviderEditingId" />
     <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:var(--space-4);">
@@ -280,144 +280,45 @@
 </div>
 
 <!-- ============================================================
-     CONDITION ADD MODAL
-     ============================================================ -->
-<div id="condAddModal" role="dialog" aria-modal="true" aria-labelledby="condAddModalTitle"
-     style="display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.45); overflow-y:auto; padding:var(--space-6) var(--space-4);">
-  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:540px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
-    <button id="condAddModalClose" aria-label="Close"
-            style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
-    <h3 id="condAddModalTitle" style="margin-bottom:var(--space-4);">Add Condition</h3>
-    <div class="form-row form-row-2">
-      <div class="form-group">
-        <label for="condNameInput">Condition / diagnosis</label>
-        <input type="text" id="condNameInput" placeholder="e.g. Fibromyalgia" />
-      </div>
-      <div class="form-group">
-        <label for="condIcdInput">ICD-10 code (optional)</label>
-        <input type="text" id="condIcdInput" placeholder="e.g. M79.7" />
-      </div>
-    </div>
-    <div class="form-row form-row-2">
-      <div class="form-group">
-        <label for="condDiagnosedDateInput">Diagnosed date</label>
-        <input type="date" id="condDiagnosedDateInput" />
-      </div>
-      <div class="form-group">
-        <label for="condDiagnosedByInput">Diagnosed by</label>
-        <input type="text" id="condDiagnosedByInput" placeholder="e.g. Dr. Smith" />
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="condStatusInput">Status</label>
-      <select id="condStatusInput">
-        <option value="active">Active</option>
-        <option value="managed">Managed</option>
-        <option value="resolved">Resolved</option>
-        <option value="suspected">Suspected</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="condNotesInput">Notes</label>
-      <textarea id="condNotesInput" rows="3" placeholder="Symptoms, triggers, treatment notes, etc."></textarea>
-    </div>
-    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:var(--space-4);">
-      <button id="saveCondAddBtn" class="btn btn-primary">Add Condition</button>
-      <button id="cancelCondAddBtn" class="save-btn" style="background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- ============================================================
-     CONDITION EDIT MODAL
-     ============================================================ -->
-<div id="condEditModal" role="dialog" aria-modal="true" aria-labelledby="condEditModalTitle"
-     style="display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.45); overflow-y:auto; padding:var(--space-6) var(--space-4);">
-  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:540px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
-    <button id="condEditModalClose" aria-label="Close"
-            style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
-    <h3 id="condEditModalTitle" style="margin-bottom:var(--space-4);">Edit Condition</h3>
-    <div class="form-row form-row-2">
-      <div class="form-group">
-        <label for="condEditNameInput">Condition / diagnosis</label>
-        <input type="text" id="condEditNameInput" placeholder="e.g. Fibromyalgia" />
-      </div>
-      <div class="form-group">
-        <label for="condEditIcdInput">ICD-10 code (optional)</label>
-        <input type="text" id="condEditIcdInput" placeholder="e.g. M79.7" />
-      </div>
-    </div>
-    <div class="form-row form-row-2">
-      <div class="form-group">
-        <label for="condEditDiagnosedDateInput">Diagnosed date</label>
-        <input type="date" id="condEditDiagnosedDateInput" />
-      </div>
-      <div class="form-group">
-        <label for="condEditDiagnosedByInput">Diagnosed by</label>
-        <input type="text" id="condEditDiagnosedByInput" placeholder="e.g. Dr. Smith" />
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="condEditStatusInput">Status</label>
-      <select id="condEditStatusInput">
-        <option value="active">Active</option>
-        <option value="managed">Managed</option>
-        <option value="resolved">Resolved</option>
-        <option value="suspected">Suspected</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="condEditNotesInput">Notes</label>
-      <textarea id="condEditNotesInput" rows="3" placeholder="Symptoms, triggers, treatment notes, etc."></textarea>
-    </div>
-    <input type="hidden" id="condEditingId" />
-    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:var(--space-4);">
-      <button id="saveCondEditBtn" class="btn btn-primary">Save Changes</button>
-      <button id="cancelCondEditModalBtn" class="save-btn" style="background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- ============================================================
      MEDICATION ADD MODAL
      ============================================================ -->
 <div id="medAddModal" role="dialog" aria-modal="true" aria-labelledby="medAddModalTitle"
      style="display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.45); overflow-y:auto; padding:var(--space-6) var(--space-4);">
-  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:540px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
+  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:500px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
     <button id="medAddModalClose" aria-label="Close"
             style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
     <h3 id="medAddModalTitle" style="margin-bottom:var(--space-4);">Add Medication</h3>
-    <div class="form-row form-row-2">
-      <div class="form-group">
-        <label for="medAddNameInput">Name</label>
-        <input type="text" id="medAddNameInput" placeholder="e.g. Gabapentin" />
-      </div>
-      <div class="form-group">
-        <label for="medAddDoseInput">Dose</label>
-        <input type="text" id="medAddDoseInput" placeholder="e.g. 300 mg" />
-      </div>
+    <div class="form-group">
+      <label for="medAddNameInput">Name</label>
+      <input type="text" id="medAddNameInput" placeholder="e.g. Duloxetine" />
     </div>
     <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="medAddDoseInput">Dose</label>
+        <input type="text" id="medAddDoseInput" placeholder="e.g. 60 mg" />
+      </div>
       <div class="form-group">
         <label for="medAddFrequencyInput">Frequency</label>
         <select id="medAddFrequencyInput">
-          <option value="">Select...</option>
-          <option value="daily">Daily</option>
-          <option value="twice_daily">Twice daily</option>
-          <option value="three_times_daily">Three times daily</option>
-          <option value="as_needed">As needed (PRN)</option>
+          <option value="">Select&hellip;</option>
+          <option value="once-daily">Once daily</option>
+          <option value="twice-daily">Twice daily</option>
+          <option value="three-daily">Three times daily</option>
+          <option value="four-daily">Four times daily</option>
+          <option value="as-needed">As needed</option>
           <option value="weekly">Weekly</option>
-          <option value="other">Other</option>
+          <option value="bi-weekly">Bi-weekly</option>
+          <option value="monthly">Monthly</option>
         </select>
-      </div>
-      <div class="form-group">
-        <label for="medAddDoctorInput">Prescribing doctor</label>
-        <input type="text" id="medAddDoctorInput" placeholder="e.g. Dr. Smith" />
       </div>
     </div>
     <div class="form-group">
+      <label for="medAddDoctorInput">Prescribing doctor</label>
+      <input type="text" id="medAddDoctorInput" placeholder="e.g. Dr. Smith" />
+    </div>
+    <div class="form-group">
       <label for="medAddNotesInput">Notes</label>
-      <textarea id="medAddNotesInput" rows="2" placeholder="Side effects, instructions, etc."></textarea>
+      <textarea id="medAddNotesInput" rows="2" placeholder="Purpose, side effects, instructions, etc."></textarea>
     </div>
     <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:var(--space-4);">
       <button id="saveMedAddBtn" class="btn btn-primary">Add Medication</button>
@@ -431,41 +332,41 @@
      ============================================================ -->
 <div id="medEditModal" role="dialog" aria-modal="true" aria-labelledby="medEditModalTitle"
      style="display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.45); overflow-y:auto; padding:var(--space-6) var(--space-4);">
-  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:540px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
+  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:500px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
     <button id="medEditModalClose" aria-label="Close"
             style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
     <h3 id="medEditModalTitle" style="margin-bottom:var(--space-4);">Edit Medication</h3>
-    <div class="form-row form-row-2">
-      <div class="form-group">
-        <label for="medEditNameInput">Name</label>
-        <input type="text" id="medEditNameInput" placeholder="e.g. Gabapentin" />
-      </div>
-      <div class="form-group">
-        <label for="medEditDoseInput">Dose</label>
-        <input type="text" id="medEditDoseInput" placeholder="e.g. 300 mg" />
-      </div>
+    <div class="form-group">
+      <label for="medEditNameInput">Name</label>
+      <input type="text" id="medEditNameInput" />
     </div>
     <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="medEditDoseInput">Dose</label>
+        <input type="text" id="medEditDoseInput" />
+      </div>
       <div class="form-group">
         <label for="medEditFrequencyInput">Frequency</label>
         <select id="medEditFrequencyInput">
-          <option value="">Select...</option>
-          <option value="daily">Daily</option>
-          <option value="twice_daily">Twice daily</option>
-          <option value="three_times_daily">Three times daily</option>
-          <option value="as_needed">As needed (PRN)</option>
+          <option value="">Select&hellip;</option>
+          <option value="once-daily">Once daily</option>
+          <option value="twice-daily">Twice daily</option>
+          <option value="three-daily">Three times daily</option>
+          <option value="four-daily">Four times daily</option>
+          <option value="as-needed">As needed</option>
           <option value="weekly">Weekly</option>
-          <option value="other">Other</option>
+          <option value="bi-weekly">Bi-weekly</option>
+          <option value="monthly">Monthly</option>
         </select>
-      </div>
-      <div class="form-group">
-        <label for="medEditDoctorInput">Prescribing doctor</label>
-        <input type="text" id="medEditDoctorInput" placeholder="e.g. Dr. Smith" />
       </div>
     </div>
     <div class="form-group">
+      <label for="medEditDoctorInput">Prescribing doctor</label>
+      <input type="text" id="medEditDoctorInput" />
+    </div>
+    <div class="form-group">
       <label for="medEditNotesInput">Notes</label>
-      <textarea id="medEditNotesInput" rows="2" placeholder="Side effects, instructions, etc."></textarea>
+      <textarea id="medEditNotesInput" rows="2"></textarea>
     </div>
     <input type="hidden" id="medEditingId" />
     <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:var(--space-4);">
@@ -480,41 +381,41 @@
      ============================================================ -->
 <div id="suppAddModal" role="dialog" aria-modal="true" aria-labelledby="suppAddModalTitle"
      style="display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.45); overflow-y:auto; padding:var(--space-6) var(--space-4);">
-  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:540px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
+  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:500px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
     <button id="suppAddModalClose" aria-label="Close"
             style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
     <h3 id="suppAddModalTitle" style="margin-bottom:var(--space-4);">Add Supplement</h3>
+    <div class="form-group">
+      <label for="suppAddNameInput">Name</label>
+      <input type="text" id="suppAddNameInput" placeholder="e.g. Magnesium Glycinate" />
+    </div>
     <div class="form-row form-row-2">
-      <div class="form-group">
-        <label for="suppAddNameInput">Name</label>
-        <input type="text" id="suppAddNameInput" placeholder="e.g. Magnesium" />
-      </div>
       <div class="form-group">
         <label for="suppAddDoseInput">Dose</label>
         <input type="text" id="suppAddDoseInput" placeholder="e.g. 400 mg" />
       </div>
-    </div>
-    <div class="form-row form-row-2">
       <div class="form-group">
         <label for="suppAddFrequencyInput">Frequency</label>
         <select id="suppAddFrequencyInput">
-          <option value="">Select...</option>
-          <option value="daily">Daily</option>
-          <option value="twice_daily">Twice daily</option>
-          <option value="three_times_daily">Three times daily</option>
-          <option value="as_needed">As needed</option>
+          <option value="">Select&hellip;</option>
+          <option value="once-daily">Once daily</option>
+          <option value="twice-daily">Twice daily</option>
+          <option value="three-daily">Three times daily</option>
+          <option value="four-daily">Four times daily</option>
+          <option value="as-needed">As needed</option>
           <option value="weekly">Weekly</option>
-          <option value="other">Other</option>
+          <option value="bi-weekly">Bi-weekly</option>
+          <option value="monthly">Monthly</option>
         </select>
-      </div>
-      <div class="form-group">
-        <label for="suppAddBrandInput">Brand</label>
-        <input type="text" id="suppAddBrandInput" placeholder="e.g. Nature Made" />
       </div>
     </div>
     <div class="form-group">
+      <label for="suppAddBrandInput">Brand / source</label>
+      <input type="text" id="suppAddBrandInput" placeholder="e.g. Nature Made" />
+    </div>
+    <div class="form-group">
       <label for="suppAddNotesInput">Notes</label>
-      <textarea id="suppAddNotesInput" rows="2" placeholder="Why you take it, effects, etc."></textarea>
+      <textarea id="suppAddNotesInput" rows="2" placeholder="Purpose, effects, timing, etc."></textarea>
     </div>
     <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:var(--space-4);">
       <button id="saveSuppAddBtn" class="btn btn-primary">Add Supplement</button>
@@ -528,41 +429,41 @@
      ============================================================ -->
 <div id="suppEditModal" role="dialog" aria-modal="true" aria-labelledby="suppEditModalTitle"
      style="display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.45); overflow-y:auto; padding:var(--space-6) var(--space-4);">
-  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:540px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
+  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:500px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
     <button id="suppEditModalClose" aria-label="Close"
             style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
     <h3 id="suppEditModalTitle" style="margin-bottom:var(--space-4);">Edit Supplement</h3>
-    <div class="form-row form-row-2">
-      <div class="form-group">
-        <label for="suppEditNameInput">Name</label>
-        <input type="text" id="suppEditNameInput" placeholder="e.g. Magnesium" />
-      </div>
-      <div class="form-group">
-        <label for="suppEditDoseInput">Dose</label>
-        <input type="text" id="suppEditDoseInput" placeholder="e.g. 400 mg" />
-      </div>
+    <div class="form-group">
+      <label for="suppEditNameInput">Name</label>
+      <input type="text" id="suppEditNameInput" />
     </div>
     <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="suppEditDoseInput">Dose</label>
+        <input type="text" id="suppEditDoseInput" />
+      </div>
       <div class="form-group">
         <label for="suppEditFrequencyInput">Frequency</label>
         <select id="suppEditFrequencyInput">
-          <option value="">Select...</option>
-          <option value="daily">Daily</option>
-          <option value="twice_daily">Twice daily</option>
-          <option value="three_times_daily">Three times daily</option>
-          <option value="as_needed">As needed</option>
+          <option value="">Select&hellip;</option>
+          <option value="once-daily">Once daily</option>
+          <option value="twice-daily">Twice daily</option>
+          <option value="three-daily">Three times daily</option>
+          <option value="four-daily">Four times daily</option>
+          <option value="as-needed">As needed</option>
           <option value="weekly">Weekly</option>
-          <option value="other">Other</option>
+          <option value="bi-weekly">Bi-weekly</option>
+          <option value="monthly">Monthly</option>
         </select>
-      </div>
-      <div class="form-group">
-        <label for="suppEditBrandInput">Brand</label>
-        <input type="text" id="suppEditBrandInput" placeholder="e.g. Nature Made" />
       </div>
     </div>
     <div class="form-group">
+      <label for="suppEditBrandInput">Brand / source</label>
+      <input type="text" id="suppEditBrandInput" />
+    </div>
+    <div class="form-group">
       <label for="suppEditNotesInput">Notes</label>
-      <textarea id="suppEditNotesInput" rows="2" placeholder="Why you take it, effects, etc."></textarea>
+      <textarea id="suppEditNotesInput" rows="2"></textarea>
     </div>
     <input type="hidden" id="suppEditingId" />
     <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:var(--space-4);">
@@ -572,529 +473,356 @@
   </div>
 </div>
 
-<header class="app-header">
+<!-- ============================================================
+     MAIN LAYOUT
+     ============================================================ -->
+<div id="mainLayout" style="display:none;">
 
-  <!-- DESKTOP -->
-  <div class="header-desktop">
-
-    <!-- Row 1: title + sign-out icon -->
-    <div class="header-row1">
-      <h1 class="header-title">Symptom Tracker</h1>
-      <button id="signOutBtn" class="header-signout-btn" style="display:none;"
-              aria-label="Sign out" title="Sign out">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2.5"
-             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-          <polyline points="16 17 21 12 16 7"/>
-          <line x1="21" y1="12" x2="9" y2="12"/>
-        </svg>
-      </button>
+<!-- ============================================================
+     TOP NAV BAR
+     ============================================================ -->
+<header class="top-nav" role="banner">
+  <div class="top-nav-inner">
+    <div class="top-nav-brand">
+      <!-- SVG logo -->
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-label="Fibro Tracker" role="img">
+        <circle cx="14" cy="14" r="13" stroke="var(--color-primary)" stroke-width="2"/>
+        <path d="M14 7 C14 7 9 11 9 15 C9 17.76 11.24 20 14 20 C16.76 20 19 17.76 19 15 C19 11 14 7 14 7Z" fill="var(--color-primary)" opacity="0.18"/>
+        <path d="M14 7 C14 7 9 11 9 15 C9 17.76 11.24 20 14 20 C16.76 20 19 17.76 19 15 C19 11 14 7 14 7Z" stroke="var(--color-primary)" stroke-width="1.5" fill="none"/>
+        <line x1="14" y1="15" x2="14" y2="20" stroke="var(--color-primary)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <span class="top-nav-title">Fibro Tracker</span>
     </div>
-
-    <!-- Row 2: tab pills -->
-    <nav id="tabs" class="header-tabs">
-      <button class="tab-button active" data-tab="entry-tab">Daily Entry</button>
-      <button class="tab-button" data-tab="journal-tab">Journal</button>
+    <!-- Desktop tab bar -->
+    <nav class="top-nav-tabs" role="navigation" aria-label="Main navigation">
+      <button class="tab-button active" data-tab="entry-tab">Log Entry</button>
       <button class="tab-button" data-tab="history-tab">History</button>
-      <button class="tab-button" data-tab="trends-tab">Trends</button>
+      <button class="tab-button" data-tab="pain-map-tab">Pain Map</button>
       <button class="tab-button" data-tab="mood-tab">Mood</button>
+      <button class="tab-button" data-tab="journal-tab">Journal</button>
       <button class="tab-button" data-tab="medications-tab">Medications</button>
-      <button class="tab-button" data-tab="conditions-tab">Conditions</button>
       <button class="tab-button" data-tab="careteam-tab">Care Team</button>
-      <button class="tab-button" data-tab="settings-tab">Settings</button>
     </nav>
-
-  </div>
-
-  <!-- MOBILE HEADER -->
-  <div class="header-mobile">
-
-    <!-- Row 1: title + sign-out -->
-    <div class="header-mobile-row1">
-      <span class="header-mobile-title">Symptom Tracker</span>
-      <button id="signOutBtnMobile" class="header-signout-btn" style="display:none;"
-              aria-label="Sign out" title="Sign out">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2.5"
-             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-          <polyline points="16 17 21 12 16 7"/>
-          <line x1="21" y1="12" x2="9" y2="12"/>
-        </svg>
-      </button>
+    <div class="top-nav-right">
+      <span id="userDisplay" style="font-size:var(--text-sm);color:var(--color-text-muted);"></span>
+      <button id="signOutBtn" class="btn btn-ghost" style="font-size:var(--text-sm);">Sign Out</button>
     </div>
-
-    <!-- Row 2: tab select dropdown -->
-    <div class="header-mobile-row3">
-      <div class="tab-select-wrap">
-        <select id="tabSelect" class="tab-select" aria-label="Select section">
-          <option value="entry-tab">Daily Entry</option>
-          <option value="journal-tab">Journal</option>
-          <option value="history-tab">History</option>
-          <option value="trends-tab">Trends</option>
-          <option value="mood-tab">Mood</option>
-          <option value="medications-tab">Medications</option>
-          <option value="conditions-tab">Conditions</option>
-          <option value="careteam-tab">Care Team</option>
-          <option value="settings-tab">Settings</option>
-        </select>
-        <span class="tab-select-chevron" aria-hidden="true">&#9660;</span>
-      </div>
-    </div>
-
   </div>
-
 </header>
 
-<main>
-  <p id="saveStatus"></p>
+<!-- Mobile bottom nav -->
+<nav class="mobile-bottom-nav" role="navigation" aria-label="Mobile navigation">
+  <button class="mobile-nav-btn active" data-tab="entry-tab">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    <span>Log</span>
+  </button>
+  <button class="mobile-nav-btn" data-tab="history-tab">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    <span>History</span>
+  </button>
+  <button class="mobile-nav-btn" data-tab="pain-map-tab">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <span>Pain</span>
+  </button>
+  <button class="mobile-nav-btn" data-tab="mood-tab">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+    <span>Mood</span>
+  </button>
+  <button class="mobile-nav-btn" data-tab="journal-tab">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+    <span>Journal</span>
+  </button>
+  <button class="mobile-nav-btn" data-tab="medications-tab">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+    <span>Meds</span>
+  </button>
+  <button class="mobile-nav-btn" data-tab="careteam-tab">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    <span>Team</span>
+  </button>
+  <!-- Mobile "more" menu selector (hidden on desktop) -->
+  <div class="mobile-nav-more" style="display:none;">
+    <select id="mobileTabSelect" aria-label="Navigate to tab">
+      <option value="entry-tab">Log Entry</option>
+      <option value="history-tab">History</option>
+      <option value="pain-map-tab">Pain Map</option>
+      <option value="mood-tab">Mood</option>
+      <option value="journal-tab">Journal</option>
+      <option value="medications-tab">Medications</option>
+      <option value="careteam-tab">Care Team</option>
+    </select>
+  </div>
+</nav>
 
-  <!-- Daily Entry Tab -->
-  <section id="entry-tab" class="tab active">
-    <!-- Floating Save Day button -->
-    <button id="saveDayFloat" class="save-day-float primary" aria-label="Save Day">&#128190; Save Day</button>
+<!-- ============================================================
+     TAB CONTENT PANELS
+     ============================================================ -->
+<main id="tabContent" role="main">
 
-    <!-- TITLE ROW: heading + date navigation on same line -->
-    <div class="entry-title-row">
-      <h2 class="entry-tab-heading">Daily Entry</h2>
-
-      <!-- DATE BAR -->
-      <div class="entry-date-bar">
-        <button type="button" id="prevDayBtn" class="entry-date-nav-btn" aria-label="Previous day" title="Previous day">&#8249;</button>
-        <button type="button" id="datePickerBtn" class="entry-date-picker-btn" aria-label="Pick a date" title="Click to choose a date">
-          <span id="dayOfWeekDisplay" class="entry-dow"></span>
-          <span id="dateDisplay" class="entry-date-text"></span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        </button>
-        <input type="date" id="dateInput" aria-label="Entry date" class="sr-date-input" tabindex="-1" aria-hidden="true">
-        <button type="button" id="nextDayBtn" class="entry-date-nav-btn" aria-label="Next day" title="Next day">&#8250;</button>
-      </div>
-    </div>
-
-    <!-- Day Info -->
-    <details class="entry-section" open>
-      <summary class="entry-section-summary">
-        <span class="entry-section-title">Day Info</span>
-        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </summary>
-      <div class="entry-section-body card">
-        <div class="form-group">
-          <label for="dayTitleInput">Day title (optional)</label>
-          <input type="text" id="dayTitleInput" placeholder="Flare day, Better day, travel, etc." />
-        </div>
-        <div class="form-group">
-          <label for="overallNotesInput">Overall notes</label>
-          <textarea id="overallNotesInput" rows="3" placeholder="Big events, stress, weather, etc."></textarea>
-        </div>
-      </div>
-    </details>
-
-    <!-- Quick Tags -->
-    <details class="entry-section" open>
-      <summary class="entry-section-summary">
-        <span class="entry-section-title">Quick Tags (optional)</span>
-        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </summary>
-      <div class="entry-section-body card">
-        <div id="tagsContainer">
-
-          <label class="tag-pill tag-flare">
-            <input type="checkbox" value="flare" />
-            <span class="tag-pill-icon" aria-hidden="true">&#x1F525;</span>
-            <span class="tag-pill-label">Flare</span>
-          </label>
-
-          <label class="tag-pill tag-crash">
-            <input type="checkbox" value="crash" />
-            <span class="tag-pill-icon" aria-hidden="true">&#x26A1;</span>
-            <span class="tag-pill-label">Crash / post-exertional</span>
-          </label>
-
-          <label class="tag-pill tag-better">
-            <input type="checkbox" value="better" />
-            <span class="tag-pill-icon" aria-hidden="true">&#x2728;</span>
-            <span class="tag-pill-label">Better than usual</span>
-          </label>
-
-          <label class="tag-pill tag-poor-sleep">
-            <input type="checkbox" value="poor_sleep" />
-            <span class="tag-pill-icon" aria-hidden="true">&#x1F319;</span>
-            <span class="tag-pill-label">Poor sleep</span>
-          </label>
-
-          <label class="tag-pill tag-stress">
-            <input type="checkbox" value="high_stress" />
-            <span class="tag-pill-icon" aria-hidden="true">&#x1F4A2;</span>
-            <span class="tag-pill-label">High stress</span>
-          </label>
-
-          <label class="tag-pill tag-weather">
-            <input type="checkbox" value="weather_change" />
-            <span class="tag-pill-icon" aria-hidden="true">&#x1F327;&#xFE0F;</span>
-            <span class="tag-pill-label">Weather change</span>
-          </label>
-
-        </div>
-      </div>
-    </details>
-
-    <!-- Mood -->
-    <details class="entry-section" open>
-      <summary class="entry-section-summary">
-        <span class="entry-section-title">Mood</span>
-        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </summary>
-      <div class="entry-section-body card">
-        <div class="form-group">
-          <label for="moodScoreInput">Mood score (1&#8211;10)</label>
-          <div class="number-stepper">
-            <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease mood score">&#8722;</button>
-            <input type="number" min="1" max="10" id="moodScoreInput" inputmode="numeric" />
-            <button type="button" class="stepper-btn" data-step="1" aria-label="Increase mood score">+</button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="moodNotesInput">Mood notes</label>
-          <textarea id="moodNotesInput" rows="3" placeholder="Anxious, low, ok, calm, etc."></textarea>
-        </div>
-      </div>
-    </details>
-
-    <!-- Functionality by Time of Day -->
-    <details class="entry-section" open>
-      <summary class="entry-section-summary">
-        <span class="entry-section-title">Functionality by Time of Day</span>
-        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </summary>
-      <div class="entry-section-body card">
-
-        <!-- Early Morning -->
-        <div class="time-block">
-          <h4>Early morning (5&#8211;9 am)</h4>
-          <div class="form-group">
-            <label for="earlyMorningScore">Functionality score (1&#8211;10)</label>
-            <div class="number-stepper">
-              <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early morning functionality score">&#8722;</button>
-              <input type="number" min="1" max="10" id="earlyMorningScore" inputmode="numeric" />
-              <button type="button" class="stepper-btn" data-step="1" aria-label="Increase early morning functionality score">+</button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="earlyMorningActivity">What I was doing</label>
-            <input type="text" id="earlyMorningActivity" />
-          </div>
-          <div class="form-group">
-            <label for="earlyMorningSymptoms">Symptoms / how it felt</label>
-            <textarea id="earlyMorningSymptoms" rows="2"></textarea>
-          </div>
-        </div>
-
-        <!-- Late Morning -->
-        <div class="time-block">
-          <h4>Late morning (9&#8211;12)</h4>
-          <div class="form-group">
-            <label for="lateMorningScore">Functionality score (1&#8211;10)</label>
-            <div class="number-stepper">
-              <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late morning functionality score">&#8722;</button>
-              <input type="number" min="1" max="10" id="lateMorningScore" inputmode="numeric" />
-              <button type="button" class="stepper-btn" data-step="1" aria-label="Increase late morning functionality score">+</button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="lateMorningActivity">What I was doing</label>
-            <input type="text" id="lateMorningActivity" />
-          </div>
-          <div class="form-group">
-            <label for="lateMorningSymptoms">Symptoms / how it felt</label>
-            <textarea id="lateMorningSymptoms" rows="2"></textarea>
-          </div>
-        </div>
-
-        <!-- Early Afternoon -->
-        <div class="time-block">
-          <h4>Early afternoon (12&#8211;3)</h4>
-          <div class="form-group">
-            <label for="earlyAfternoonScore">Functionality score (1&#8211;10)</label>
-            <div class="number-stepper">
-              <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early afternoon functionality score">&#8722;</button>
-              <input type="number" min="1" max="10" id="earlyAfternoonScore" inputmode="numeric" />
-              <button type="button" class="stepper-btn" data-step="1" aria-label="Increase early afternoon functionality score">+</button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="earlyAfternoonActivity">What I was doing</label>
-            <input type="text" id="earlyAfternoonActivity" />
-          </div>
-          <div class="form-group">
-            <label for="earlyAfternoonSymptoms">Symptoms / how it felt</label>
-            <textarea id="earlyAfternoonSymptoms" rows="2"></textarea>
-          </div>
-        </div>
-
-        <!-- Late Afternoon -->
-        <div class="time-block">
-          <h4>Late afternoon (3&#8211;6)</h4>
-          <div class="form-group">
-            <label for="lateAfternoonScore">Functionality score (1&#8211;10)</label>
-            <div class="number-stepper">
-              <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late afternoon functionality score">&#8722;</button>
-              <input type="number" min="1" max="10" id="lateAfternoonScore" inputmode="numeric" />
-              <button type="button" class="stepper-btn" data-step="1" aria-label="Increase late afternoon functionality score">+</button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="lateAfternoonActivity">What I was doing</label>
-            <input type="text" id="lateAfternoonActivity" />
-          </div>
-          <div class="form-group">
-            <label for="lateAfternoonSymptoms">Symptoms / how it felt</label>
-            <textarea id="lateAfternoonSymptoms" rows="2"></textarea>
-          </div>
-        </div>
-
-        <!-- Early Evening -->
-        <div class="time-block">
-          <h4>Early evening (6&#8211;9)</h4>
-          <div class="form-group">
-            <label for="earlyEveningScore">Functionality score (1&#8211;10)</label>
-            <div class="number-stepper">
-              <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease early evening functionality score">&#8722;</button>
-              <input type="number" min="1" max="10" id="earlyEveningScore" inputmode="numeric" />
-              <button type="button" class="stepper-btn" data-step="1" aria-label="Increase early evening functionality score">+</button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="earlyEveningActivity">What I was doing</label>
-            <input type="text" id="earlyEveningActivity" />
-          </div>
-          <div class="form-group">
-            <label for="earlyEveningSymptoms">Symptoms / how it felt</label>
-            <textarea id="earlyEveningSymptoms" rows="2"></textarea>
-          </div>
-        </div>
-
-        <!-- Late Evening -->
-        <div class="time-block">
-          <h4>Late evening (9&#8211;12)</h4>
-          <div class="form-group">
-            <label for="lateEveningScore">Functionality score (1&#8211;10)</label>
-            <div class="number-stepper">
-              <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease late evening functionality score">&#8722;</button>
-              <input type="number" min="1" max="10" id="lateEveningScore" inputmode="numeric" />
-              <button type="button" class="stepper-btn" data-step="1" aria-label="Increase late evening functionality score">+</button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="lateEveningActivity">What I was doing</label>
-            <input type="text" id="lateEveningActivity" />
-          </div>
-          <div class="form-group">
-            <label for="lateEveningSymptoms">Symptoms / how it felt</label>
-            <textarea id="lateEveningSymptoms" rows="2"></textarea>
-          </div>
-        </div>
-
-      </div>
-    </details>
-
-    <!-- Sleep -->
-    <details class="entry-section" open>
-      <summary class="entry-section-summary">
-        <span class="entry-section-title">Sleep (previous night)</span>
-        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </summary>
-      <div class="entry-section-body card">
-        <div class="sleep-time-grid">
-          <label class="time-widget-label-wrap">
-            <span class="time-widget-label">Bedtime</span>
-            <input type="time" id="bedtimeInput" step="900" class="time-input-single" aria-label="Bedtime" />
-          </label>
-          <label class="time-widget-label-wrap">
-            <span class="time-widget-label">Wake time</span>
-            <input type="time" id="wakeTimeInput" step="900" class="time-input-single" aria-label="Wake time" />
-          </label>
-        </div>
-        <div class="sleep-total-display" aria-live="polite">
-          <span class="sleep-total-label">Total hours slept</span>
-          <span id="hoursSleptDisplay" class="sleep-total-value">&#8212;</span>
-          <input type="hidden" id="hoursSleptInput" />
-        </div>
+  <!-- ── LOG ENTRY TAB ────────────────────────────────────────── -->
+  <section id="entry-tab" class="tab-panel active" aria-label="Log Entry">
+    <h2>Log Entry</h2>
+    <form id="symptomForm">
+      <div class="card">
+        <h3>Date &amp; Time</h3>
         <div class="form-row form-row-2">
           <div class="form-group">
-            <label for="sleepQualityInput">Sleep quality (1&#8211;10)</label>
-            <div class="number-stepper">
-              <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease sleep quality score">&#8722;</button>
-              <input type="number" min="1" max="10" id="sleepQualityInput" inputmode="numeric" />
-              <button type="button" class="stepper-btn" data-step="1" aria-label="Increase sleep quality score">+</button>
-            </div>
+            <label for="dateInput">Date</label>
+            <input type="date" id="dateInput" required />
           </div>
           <div class="form-group">
-            <label for="awakeningsInput">Number of awakenings</label>
-            <div class="number-stepper">
-              <button type="button" class="stepper-btn" data-step="-1" aria-label="Decrease number of awakenings">&#8722;</button>
-              <input type="number" min="0" max="20" id="awakeningsInput" inputmode="numeric" />
-              <button type="button" class="stepper-btn" data-step="1" aria-label="Increase number of awakenings">+</button>
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="sleepNotesInput">Sleep notes</label>
-          <textarea id="sleepNotesInput" rows="3"></textarea>
-        </div>
-      </div>
-    </details>
-
-    <!-- Exercise / Activity -->
-    <details class="entry-section" open>
-      <summary class="entry-section-summary">
-        <span class="entry-section-title">Exercise / Activity</span>
-        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </summary>
-      <div class="entry-section-body card">
-        <div class="form-group">
-          <label for="didExerciseInput">Did you do planned exercise or notable activity?</label>
-          <select id="didExerciseInput"><option value="no">No</option><option value="yes">Yes</option></select>
-        </div>
-        <div id="exerciseDetails">
-          <div class="form-row form-row-2">
-            <div class="form-group">
-              <label for="exerciseTypeInput">Type</label>
-              <select id="exerciseTypeInput">
-                <option value="">Select...</option>
-                <option value="walk">Walk</option>
-                <option value="stretching">Stretching</option>
-                <option value="pt">Physical therapy</option>
-                <option value="strength">Strength</option>
-                <option value="yoga">Yoga</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="exerciseMinutesInput">Duration (minutes)</label>
-              <input type="number" min="0" id="exerciseMinutesInput" />
-            </div>
-          </div>
-          <div class="form-row form-row-2">
-            <div class="form-group">
-              <label for="exerciseIntensityInput">Intensity</label>
-              <select id="exerciseIntensityInput">
-                <option value="">Select...</option>
-                <option value="gentle">Gentle</option>
-                <option value="moderate">Moderate</option>
-                <option value="overdid">Pushed too hard</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="exerciseTimingInput">Timing</label>
-              <select id="exerciseTimingInput">
-                <option value="">Select...</option>
-                <option value="morning">Morning</option>
-                <option value="afternoon">Afternoon</option>
-                <option value="evening">Evening</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="exerciseNotesInput">Exercise notes</label>
-            <textarea id="exerciseNotesInput" rows="3"></textarea>
+            <label for="timeInput">Time</label>
+            <input type="time" id="timeInput" />
           </div>
         </div>
       </div>
-    </details>
 
+      <div class="card">
+        <h3>Pain</h3>
+        <div class="form-group">
+          <label for="painSlider">Pain Level: <span id="painValue">5</span></label>
+          <input type="range" id="painSlider" min="0" max="10" value="5" class="slider" />
+          <div class="slider-labels"><span>0</span><span>5</span><span>10</span></div>
+        </div>
+        <div class="form-group">
+          <label>Pain Locations</label>
+          <div class="checkbox-group" id="painLocations">
+            <label><input type="checkbox" name="painLocation" value="head" /> Head</label>
+            <label><input type="checkbox" name="painLocation" value="neck" /> Neck</label>
+            <label><input type="checkbox" name="painLocation" value="shoulders" /> Shoulders</label>
+            <label><input type="checkbox" name="painLocation" value="upper-back" /> Upper Back</label>
+            <label><input type="checkbox" name="painLocation" value="lower-back" /> Lower Back</label>
+            <label><input type="checkbox" name="painLocation" value="chest" /> Chest</label>
+            <label><input type="checkbox" name="painLocation" value="arms" /> Arms</label>
+            <label><input type="checkbox" name="painLocation" value="hands" /> Hands</label>
+            <label><input type="checkbox" name="painLocation" value="hips" /> Hips</label>
+            <label><input type="checkbox" name="painLocation" value="legs" /> Legs</label>
+            <label><input type="checkbox" name="painLocation" value="feet" /> Feet</label>
+            <label><input type="checkbox" name="painLocation" value="full-body" /> Full Body</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Fatigue</h3>
+        <div class="form-group">
+          <label for="fatigueSlider">Fatigue Level: <span id="fatigueValue">5</span></label>
+          <input type="range" id="fatigueSlider" min="0" max="10" value="5" class="slider" />
+          <div class="slider-labels"><span>0</span><span>5</span><span>10</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Sleep</h3>
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label for="sleepHours">Hours Slept</label>
+            <input type="number" id="sleepHours" min="0" max="24" step="0.5" placeholder="e.g. 7.5" />
+          </div>
+          <div class="form-group">
+            <label for="sleepQuality">Sleep Quality</label>
+            <select id="sleepQuality">
+              <option value="">Select&hellip;</option>
+              <option value="poor">Poor</option>
+              <option value="fair">Fair</option>
+              <option value="good">Good</option>
+              <option value="excellent">Excellent</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Mood &amp; Cognition</h3>
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label for="moodSlider">Mood: <span id="moodValue">5</span></label>
+            <input type="range" id="moodSlider" min="0" max="10" value="5" class="slider" />
+            <div class="slider-labels"><span>0</span><span>5</span><span>10</span></div>
+          </div>
+          <div class="form-group">
+            <label for="cognitiveSlider">Cognitive Function: <span id="cognitiveValue">5</span></label>
+            <input type="range" id="cognitiveSlider" min="0" max="10" value="5" class="slider" />
+            <div class="slider-labels"><span>0</span><span>5</span><span>10</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Symptoms</h3>
+        <div class="form-group">
+          <label>Symptoms</label>
+          <div class="checkbox-group" id="symptomsList">
+            <label><input type="checkbox" name="symptom" value="headache" /> Headache</label>
+            <label><input type="checkbox" name="symptom" value="brain-fog" /> Brain Fog</label>
+            <label><input type="checkbox" name="symptom" value="nausea" /> Nausea</label>
+            <label><input type="checkbox" name="symptom" value="dizziness" /> Dizziness</label>
+            <label><input type="checkbox" name="symptom" value="sensitivity" /> Light/Sound Sensitivity</label>
+            <label><input type="checkbox" name="symptom" value="numbness" /> Numbness/Tingling</label>
+            <label><input type="checkbox" name="symptom" value="stiffness" /> Stiffness</label>
+            <label><input type="checkbox" name="symptom" value="ibs" /> IBS/GI Issues</label>
+            <label><input type="checkbox" name="symptom" value="anxiety" /> Anxiety</label>
+            <label><input type="checkbox" name="symptom" value="depression" /> Depression</label>
+            <label><input type="checkbox" name="symptom" value="insomnia" /> Insomnia</label>
+            <label><input type="checkbox" name="symptom" value="palpitations" /> Heart Palpitations</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Activities &amp; Triggers</h3>
+        <div class="form-group">
+          <label>Activities</label>
+          <div class="checkbox-group" id="activitiesList">
+            <label><input type="checkbox" name="activity" value="light-walk" /> Light Walk</label>
+            <label><input type="checkbox" name="activity" value="exercise" /> Exercise</label>
+            <label><input type="checkbox" name="activity" value="work" /> Work</label>
+            <label><input type="checkbox" name="activity" value="housework" /> Housework</label>
+            <label><input type="checkbox" name="activity" value="social" /> Social Activity</label>
+            <label><input type="checkbox" name="activity" value="rest" /> Rest Day</label>
+            <label><input type="checkbox" name="activity" value="travel" /> Travel</label>
+            <label><input type="checkbox" name="activity" value="therapy" /> Therapy/PT</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Triggers</label>
+          <div class="checkbox-group" id="triggersList">
+            <label><input type="checkbox" name="trigger" value="stress" /> Stress</label>
+            <label><input type="checkbox" name="trigger" value="weather" /> Weather Change</label>
+            <label><input type="checkbox" name="trigger" value="poor-sleep" /> Poor Sleep</label>
+            <label><input type="checkbox" name="trigger" value="overexertion" /> Overexertion</label>
+            <label><input type="checkbox" name="trigger" value="diet" /> Diet/Food</label>
+            <label><input type="checkbox" name="trigger" value="hormonal" /> Hormonal</label>
+            <label><input type="checkbox" name="trigger" value="illness" /> Illness/Infection</label>
+            <label><input type="checkbox" name="trigger" value="unknown" /> Unknown</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Notes</h3>
+        <div class="form-group">
+          <label for="notesInput">Additional notes</label>
+          <textarea id="notesInput" rows="3" placeholder="How are you feeling overall? Any other details..."></textarea>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary btn-lg">Save Entry</button>
+        <span id="saveStatus" class="save-status"></span>
+      </div>
+    </form>
   </section>
 
-  <!-- Journal Tab -->
-  <section id="journal-tab" class="tab">
-    <h2>Journal</h2>
-    <div id="journalHeatmap" class="journal-heatmap-wrap"></div>
-    <div id="journalOutput" class="journal-output">No journal entry yet.</div>
-  </section>
-
-  <!-- History Tab -->
-  <section id="history-tab" class="tab">
+  <!-- ── HISTORY TAB ──────────────────────────────────────────── -->
+  <section id="history-tab" class="tab-panel" aria-label="History">
     <h2>History</h2>
-    <div class="history-controls">
-      <div>
-        <label for="historyFrom">From</label>
-        <input type="date" id="historyFrom" />
+
+    <div class="card">
+      <h3>Trends</h3>
+      <div class="form-row form-row-2">
+        <div class="form-group">
+          <label for="chartRangeSelect">Range</label>
+          <select id="chartRangeSelect">
+            <option value="7">Last 7 days</option>
+            <option value="14">Last 14 days</option>
+            <option value="30" selected>Last 30 days</option>
+            <option value="90">Last 90 days</option>
+          </select>
+        </div>
       </div>
-      <div>
-        <label for="historyTo">To</label>
-        <input type="date" id="historyTo" />
+      <div style="position:relative; height:260px;">
+        <canvas id="trendsChart"></canvas>
       </div>
-      <button id="loadHistoryBtn" class="btn btn-primary">Load History</button>
     </div>
-    <div id="historyList"></div>
-  </section>
 
-  <!-- Trends Tab -->
-  <section id="trends-tab" class="tab">
-    <h2>Trends</h2>
-    <p>Average daily functionality (all six time blocks combined).</p>
-    <canvas id="functionalityChart" height="200"></canvas>
-  </section>
-
-  <!-- Mood Tab -->
-  <section id="mood-tab" class="tab">
-    <h2>Mood</h2>
-    <div id="moodContent">
-      <div class="card">
-        <h3>14-Day Mood Summary</h3>
-        <table class="mood-summary-table">
-          <thead>
-            <tr><th>Date</th><th>Day</th><th>Score</th><th>Notes</th></tr>
-          </thead>
-          <tbody id="moodSummaryBody">
-            <tr><td colspan="4" class="mood-table-empty">Loading&#8230;</td></tr>
-          </tbody>
-        </table>
+    <div class="card">
+      <h3>Recent Entries</h3>
+      <div class="form-group" style="display:flex;gap:var(--space-3);flex-wrap:wrap;align-items:flex-end;">
+        <div style="flex:1;min-width:160px;">
+          <label for="filterStartDate" style="font-size:var(--text-sm);">From</label>
+          <input type="date" id="filterStartDate" />
+        </div>
+        <div style="flex:1;min-width:160px;">
+          <label for="filterEndDate" style="font-size:var(--text-sm);">To</label>
+          <input type="date" id="filterEndDate" />
+        </div>
+        <button id="applyFilterBtn" class="btn btn-secondary" style="white-space:nowrap;">Apply Filter</button>
+        <button id="clearFilterBtn" class="btn btn-ghost" style="white-space:nowrap;">Clear</button>
       </div>
-      <div class="card">
-        <h3 id="atrFormTitle">New Automatic Thought Record</h3>
-        <div class="form-group">
-          <label for="atrDateInput">Date</label>
-          <input type="date" id="atrDateInput" />
-        </div>
-        <div class="form-group">
-          <label for="atrSituationInput">Situation</label>
-          <textarea id="atrSituationInput" rows="2" placeholder="What were you doing / what happened?"></textarea>
-        </div>
-        <div class="form-group">
-          <label for="atrEmotionsInput">Emotions</label>
-          <input type="text" id="atrEmotionsInput" placeholder="e.g. anxious, sad, angry" />
-        </div>
-        <div class="form-group">
-          <label for="atrIntensityRange">Intensity (0&#8211;100)</label>
-          <div style="display:flex;align-items:center;gap:0.5rem;">
-            <input type="range" id="atrIntensityRange" min="0" max="100" value="50" style="flex:1;" />
-            <span id="atrIntensityDisplay" style="min-width:2rem;text-align:right;">50</span>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="atrAutoThoughtInput">Automatic thought</label>
-          <textarea id="atrAutoThoughtInput" rows="2" placeholder="What went through your mind?"></textarea>
-        </div>
-        <div class="form-group">
-          <label for="atrAltThoughtInput">Alternative / balanced thought</label>
-          <textarea id="atrAltThoughtInput" rows="2" placeholder="A more balanced way of seeing it (optional)"></textarea>
-        </div>
-        <input type="hidden" id="atrEditingId" />
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem;">
-          <button id="saveAtrBtn" class="btn btn-primary">Save Record</button>
-          <button id="cancelAtrEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
-        </div>
-      </div>
-      <div class="card">
-        <h3>Thought Records</h3>
-        <div id="atrList"><p class="atr-empty">No records yet.</p></div>
-      </div>
+      <ul id="historyList" style="list-style:none;padding:0;margin:0;"></ul>
+      <div id="historyPagination" style="display:flex;gap:var(--space-2);justify-content:center;margin-top:var(--space-4);flex-wrap:wrap;"></div>
     </div>
   </section>
 
-  <!-- Medications Tab -->
-  <section id="medications-tab" class="tab">
+  <!-- ── PAIN MAP TAB ──────────────────────────────────────────── -->
+  <section id="pain-map-tab" class="tab-panel" aria-label="Pain Map">
+    <h2>Pain Map</h2>
+    <div class="card">
+      <p style="color:var(--color-text-muted);font-size:var(--text-sm);">Click or tap body regions to mark pain areas. Drag to move markers.</p>
+      <div id="painMapContainer" style="position:relative;display:inline-block;max-width:100%;margin:auto;display:block;">
+        <!-- Pain map SVG injected by JS -->
+      </div>
+      <div style="margin-top:var(--space-4);display:flex;gap:var(--space-3);flex-wrap:wrap;">
+        <button id="savePainMapBtn" class="btn btn-primary">Save Pain Map</button>
+        <button id="clearPainMapBtn" class="btn btn-ghost">Clear All</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Pain Map History</h3>
+      <ul id="painMapHistory" style="list-style:none;padding:0;margin:0;"></ul>
+    </div>
+  </section>
+
+  <!-- ── MOOD TRACKER TAB ──────────────────────────────────────── -->
+  <section id="mood-tab" class="tab-panel" aria-label="Mood Tracker">
+    <h2>Mood Tracker</h2>
+    <div class="card">
+      <h3>Today&rsquo;s Mood</h3>
+      <div id="moodEmojiPicker" class="mood-emoji-row"></div>
+      <div class="form-group" style="margin-top:var(--space-3);">
+        <label for="moodNoteInput">Mood note <span style="font-weight:normal;color:var(--color-text-muted)">(optional)</span></label>
+        <textarea id="moodNoteInput" rows="2" placeholder="What's influencing your mood today?"></textarea>
+      </div>
+      <button id="saveMoodBtn" class="btn btn-primary" style="margin-top:var(--space-3);">Save Mood</button>
+      <span id="moodSaveStatus" style="margin-left:var(--space-3);font-size:var(--text-sm);color:var(--color-success);"></span>
+    </div>
+    <div class="card">
+      <h3>Mood History</h3>
+      <ul id="moodHistoryList" style="list-style:none;padding:0;margin:0;"></ul>
+    </div>
+  </section>
+
+  <!-- ── JOURNAL TAB ───────────────────────────────────────────── -->
+  <section id="journal-tab" class="tab-panel" aria-label="Journal">
+    <h2>Journal</h2>
+    <div class="card">
+      <h3>New Entry</h3>
+      <div class="form-group">
+        <label for="journalDateInput">Date</label>
+        <input type="date" id="journalDateInput" />
+      </div>
+      <div class="form-group">
+        <label for="journalTitleInput">Title <span style="font-weight:normal;color:var(--color-text-muted)">(optional)</span></label>
+        <input type="text" id="journalTitleInput" placeholder="e.g. Bad flare day, Good day..." />
+      </div>
+      <div class="form-group">
+        <label for="journalBodyInput">Entry</label>
+        <textarea id="journalBodyInput" rows="6" placeholder="Write about how you're feeling, what happened today, what helped or didn't..."></textarea>
+      </div>
+      <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;align-items:center;">
+        <button id="saveJournalBtn" class="btn btn-primary">Save Entry</button>
+        <span id="journalSaveStatus" style="font-size:var(--text-sm);color:var(--color-success);"></span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Past Entries</h3>
+      <ul id="journalList" style="list-style:none;padding:0;margin:0;"></ul>
+    </div>
+  </section>
+
+  <!-- ── MEDICATIONS TAB ──────────────────────────────────────── -->
+  <section id="medications-tab" class="tab-panel" aria-label="Medications">
     <h2>Medications</h2>
     <div class="med-sub-tabs">
       <button class="ct-sub-tab-btn active" data-med-view="medListView">Medications</button>
@@ -1102,29 +830,47 @@
       <button class="ct-sub-tab-btn" data-med-view="medHistoryView">Change History</button>
       <button class="ct-sub-tab-btn" data-med-view="medPrintView">Print / Export</button>
     </div>
+
+    <!-- Medications list view -->
     <div id="medListView" class="med-view">
-      <div style="display:flex; justify-content:flex-end; margin-bottom:var(--space-4);">
-        <button id="openMedAddModalBtn" class="btn btn-primary">&#43; Add Medication</button>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-3);">
+          <h3 style="margin:0;">My Medications</h3>
+          <button id="openMedAddModalBtn" class="btn btn-primary btn-sm">+ Add</button>
+        </div>
+        <ul id="medList" class="med-list"></ul>
       </div>
-      <div class="card"><h3>My Medications</h3><ul id="medList"></ul></div>
     </div>
+
+    <!-- Supplements list view -->
     <div id="suppListView" class="med-view" style="display:none;">
-      <div style="display:flex; justify-content:flex-end; margin-bottom:var(--space-4);">
-        <button id="openSuppAddModalBtn" class="btn btn-primary">&#43; Add Supplement</button>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-3);">
+          <h3 style="margin:0;">My Supplements</h3>
+          <button id="openSuppAddModalBtn" class="btn btn-primary btn-sm">+ Add</button>
+        </div>
+        <ul id="suppList" class="med-list"></ul>
       </div>
-      <div class="card"><h3>My Supplements</h3><ul id="suppList"></ul></div>
     </div>
+
+    <!-- Change History view -->
     <div id="medHistoryView" class="med-view" style="display:none;">
-      <div class="card"><h3>Medication &amp; Supplement Change History</h3><ul id="medHistoryList"></ul></div>
-    </div>
-    <div id="medPrintView" class="med-view" style="display:none;">
       <div class="card">
-        <h3>Print / Save as PDF</h3>
-        <p style="font-size:0.875rem;color:var(--color-text-muted);margin-bottom:1rem;">Generates a compact, print-ready list of all your medications and supplements.</p>
-        <button id="printMedBtn" class="btn btn-primary">Print / Save PDF</button>
+        <h3>Change History</h3>
+        <div id="medHistoryList"></div>
+      </div>
+    </div>
+
+    <!-- Print / Export view -->
+    <div id="medPrintView" class="med-view" style="display:none;">
+      <div class="card" style="margin-bottom:var(--space-4);">
+        <div style="display:flex;gap:var(--space-3);align-items:center;flex-wrap:wrap;">
+          <button id="printMedBtn" class="btn btn-primary">&#128438; Print / Save as PDF</button>
+          <span style="font-size:var(--text-sm);color:var(--color-text-muted);">Use your browser&rsquo;s print dialog to save as PDF.</span>
+        </div>
       </div>
       <div class="card">
-        <h3>Medications Preview</h3>
+        <h3>Medications</h3>
         <table class="med-print-table">
           <colgroup>
             <col /><col /><col /><col /><col />
@@ -1134,7 +880,7 @@
         </table>
       </div>
       <div class="card">
-        <h3>Supplements Preview</h3>
+        <h3>Supplements</h3>
         <table class="med-print-table">
           <colgroup>
             <col /><col /><col /><col /><col />
@@ -1144,146 +890,79 @@
         </table>
       </div>
     </div>
+
   </section>
 
-  <!-- Conditions Tab -->
-  <section id="conditions-tab" class="tab">
-    <h2>Conditions</h2>
-    <div style="display:flex; justify-content:flex-end; margin-bottom:var(--space-4);">
-      <button id="openCondAddModalBtn" class="btn btn-primary">&#43; Add Condition</button>
-    </div>
-    <div class="card">
-      <h3>My Conditions</h3>
-      <ul id="conditionsList"></ul>
-    </div>
-  </section>
-
-  <!-- Care Team Tab -->
-  <section id="careteam-tab" class="tab">
+  <!-- ── CARE TEAM TAB ─────────────────────────────────────────── -->
+  <section id="careteam-tab" class="tab-panel" aria-label="Care Team">
     <h2>Care Team</h2>
     <div class="med-sub-tabs">
-      <button class="ct-sub-tab-btn active" data-ct-view="ctProvidersView">My Providers</button>
-      <button class="ct-sub-tab-btn" data-ct-view="ctAppointmentsView">Appointments</button>
+      <button class="ct-sub-tab-btn active" data-ct-view="ctProvidersView">Providers</button>
+      <button class="ct-sub-tab-btn" data-ct-view="ctApptsView">Appointments</button>
+      <button class="ct-sub-tab-btn" data-ct-view="ctPrintView">Print / Export</button>
     </div>
 
     <!-- Providers view -->
     <div id="ctProvidersView" class="ct-view">
-      <div style="display:flex; justify-content:flex-end; margin-bottom:var(--space-4);">
-        <button id="openProviderAddModalBtn" class="btn btn-primary">&#43; Add Team Member</button>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-3);">
+          <h3 style="margin:0;">My Care Team</h3>
+          <button id="openProviderAddModalBtn" class="btn btn-primary btn-sm">+ Add</button>
+        </div>
+        <div id="ctProviderList"></div>
       </div>
-      <div class="card"><h3>My Care Team</h3><ul id="ctProviderList"></ul></div>
     </div>
 
     <!-- Appointments view -->
-    <div id="ctAppointmentsView" class="ct-view" style="display:none;">
-      <div style="display:flex; justify-content:flex-end; margin-bottom:var(--space-4);">
-        <button id="openApptModalBtn" class="btn btn-primary">&#43; Add Appointment</button>
-      </div>
+    <div id="ctApptsView" class="ct-view" style="display:none;">
       <div class="card">
-        <h3>Upcoming Appointments</h3>
-        <ul id="ctUpcomingAppts" class="ct-appt-list"><li class="ct-empty">Loading&#8230;</li></ul>
-      </div>
-      <div class="card">
-        <h3>Past Appointments</h3>
-        <ul id="ctPastAppts" class="ct-appt-list"><li class="ct-empty">Loading&#8230;</li></ul>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-3);">
+          <h3 style="margin:0;">Appointments</h3>
+          <button id="openApptAddModalBtn" class="btn btn-primary btn-sm">+ Add</button>
+        </div>
+        <div id="ctApptList"></div>
       </div>
     </div>
 
-  </section>
-
-  <!-- ============================================================
-       SETTINGS TAB
-       ============================================================ -->
-  <section id="settings-tab" class="tab">
-    <h2>Settings</h2>
-
-    <!-- Account Info -->
-    <div class="card">
-      <h3>Account</h3>
-      <div style="display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;margin-bottom:var(--space-4);">
-        <img id="settingsUserPhoto" src="" alt="" width="48" height="48"
-             style="border-radius:50%;display:none;object-fit:cover;" />
-        <div>
-          <p id="settingsUserName" style="font-weight:600;margin:0;"></p>
-          <p id="settingsUserEmail" style="color:var(--color-text-muted);font-size:var(--text-sm);margin:0;"></p>
+    <!-- Print / Export view -->
+    <div id="ctPrintView" class="ct-view" style="display:none;">
+      <div class="card" style="margin-bottom:var(--space-4);">
+        <div style="display:flex;gap:var(--space-3);align-items:center;flex-wrap:wrap;">
+          <button id="printCareTeamBtn" class="btn btn-primary">&#128438; Print / Save as PDF</button>
+          <span style="font-size:var(--text-sm);color:var(--color-text-muted);">Use your browser&rsquo;s print dialog to save as PDF.</span>
         </div>
       </div>
-      <button id="settingsSignOutBtn" class="btn" style="background:var(--color-surface-offset);color:var(--color-text);">Sign out</button>
-    </div>
-
-    <!-- Display Preferences -->
-    <div class="card">
-      <h3>Display</h3>
-      <div class="form-group">
-        <label for="settingsThemeSelect">Theme</label>
-        <select id="settingsThemeSelect">
-          <option value="system">System default</option>
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-        </select>
+      <div class="card">
+        <h3>Care Team</h3>
+        <table class="med-print-table">
+          <colgroup><col /><col /><col /><col /><col /></colgroup>
+          <thead><tr><th>Name</th><th>Type</th><th>Specialty</th><th>Phone</th><th>Notes</th></tr></thead>
+          <tbody id="ctProviderPrintBody"><tr><td colspan="5">Loading&#8230;</td></tr></tbody>
+        </table>
       </div>
-      <div class="form-group">
-        <label for="settingsDefaultTabSelect">Default tab on open</label>
-        <select id="settingsDefaultTabSelect">
-          <option value="entry-tab">Daily Entry</option>
-          <option value="journal-tab">Journal</option>
-          <option value="history-tab">History</option>
-          <option value="trends-tab">Trends</option>
-          <option value="mood-tab">Mood</option>
-          <option value="medications-tab">Medications</option>
-          <option value="conditions-tab">Conditions</option>
-          <option value="careteam-tab">Care Team</option>
-        </select>
+      <div class="card">
+        <h3>Appointments</h3>
+        <table class="med-print-table">
+          <colgroup><col /><col /><col /><col /><col /></colgroup>
+          <thead><tr><th>Date</th><th>Provider</th><th>Purpose</th><th>Status</th><th>Notes</th></tr></thead>
+          <tbody id="ctApptPrintBody"><tr><td colspan="5">Loading&#8230;</td></tr></tbody>
+        </table>
       </div>
-      <button id="settingsSaveDisplayBtn" class="btn btn-primary">Save Display Settings</button>
-      <p id="settingsDisplayStatus" style="margin-top:var(--space-2);font-size:var(--text-sm);color:var(--color-success);display:none;">&#10003; Saved</p>
-    </div>
-
-    <!-- Export / Import -->
-    <div class="card">
-      <h3>Export &amp; Import Data</h3>
-      <p style="font-size:var(--text-sm);color:var(--color-text-muted);margin-bottom:var(--space-4);">Download a full backup of all your data, or restore from a previous backup file.</p>
-
-      <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;margin-bottom:var(--space-4);">
-        <button id="exportDataBtn" class="btn btn-primary">&#8659; Export All Data</button>
-        <label class="btn" style="background:var(--color-surface-offset);color:var(--color-text);cursor:pointer;">
-          &#8657; Import Backup
-          <input type="file" id="importFileInput" accept=".json" style="display:none;" />
-        </label>
-      </div>
-
-      <div id="importConfirmBox" style="display:none;background:var(--color-surface-offset);border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-3);">
-        <p id="importConfirmMsg" style="margin-bottom:var(--space-3);font-size:var(--text-sm);"></p>
-        <div style="display:flex;gap:var(--space-2);">
-          <button id="importConfirmBtn" class="btn btn-primary">Yes, import</button>
-          <button id="importCancelBtn" class="btn" style="background:var(--color-surface-dynamic);color:var(--color-text);">Cancel</button>
-        </div>
-      </div>
-
-      <p id="exportImportStatus" style="display:none;padding:var(--space-3);border-radius:var(--radius-md);font-size:var(--text-sm);"></p>
-    </div>
-
-    <!-- About -->
-    <div class="card">
-      <h3>About</h3>
-      <p style="font-size:var(--text-sm);color:var(--color-text-muted);margin:0;">Fibromyalgia Symptom Tracker</p>
-      <p id="settingsAppVersion" style="font-size:var(--text-sm);color:var(--color-text-muted);margin:var(--space-1) 0 0;"></p>
     </div>
 
   </section>
 
 </main>
+</div><!-- end #mainLayout -->
 
-<script src="ui.js"></script>
-<script src="entry.js"></script>
-<script src="history.js"></script>
-<script src="trends.js"></script>
-<script src="journal.js"></script>
-<script src="mood.js"></script>
-<script src="medications.js"></script>
-<script src="conditions.js"></script>
-<script src="careteam.js"></script>
-<script src="settings.js"></script>
 <script src="app.js"></script>
+<script src="date.js"></script>
+<script src="history.js"></script>
+<script src="pain-map.js"></script>
+<script src="mood.js"></script>
+<script src="journal.js"></script>
+<script src="medications.js"></script>
+<script src="careteam.js"></script>
+
 </body>
 </html>
