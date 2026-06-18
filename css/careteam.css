@@ -1,4 +1,8 @@
 /* CARE TEAM STYLES — FibroSymptomTracker */
+/* Card geometry is provided by .app-card / .app-card-list in base.css.
+   .ct-provider-item / .ct-provider-list mirror those globals so that
+   existing HTML continues to work. The semantic border-left accent
+   is retained because it conveys appointment status information. */
 
 /* ================================================================
    LIST CONTAINER
@@ -60,7 +64,7 @@
 .ct-provider-item[data-status="upcoming"]      { border-left-color: var(--color-warning); }
 
 /* ================================================================
-   CARD BODY
+   CARD BODY (matches .app-card-body padding)
    ================================================================ */
 
 .ct-provider-body {
@@ -162,7 +166,7 @@
 }
 
 /* ================================================================
-   CARD FOOTER — action buttons
+   CARD FOOTER — action buttons (matches .app-card-footer)
    ================================================================ */
 
 .ct-item-actions {
@@ -179,6 +183,7 @@
   .ct-item-actions { flex-direction: column; align-items: flex-start; }
 }
 
+/* Buttons — aligned to .app-btn style */
 .ct-edit-btn,
 .ct-appt-btn,
 .ct-delete-btn {
@@ -254,7 +259,8 @@
 .ct-status-rescheduled   { background: var(--color-warning-bg);    color: var(--color-warning); }
 
 /* ================================================================
-   APPOINTMENT CARDS
+   APPOINTMENT CARDS — Compact single-block layout
+   No separate header/footer sections. Everything inline.
    ================================================================ */
 
 .ct-appt-list {
@@ -279,10 +285,12 @@
   transform: translateY(-1px);
 }
 
+/* Status-tinted left border */
 .ct-appt-item:has(.ct-status-completed)     { border-left-color: var(--color-text-faint); }
 .ct-appt-item:has(.ct-status-cancelled)     { border-left-color: var(--color-error); }
 .ct-appt-item:has(.ct-status-rescheduled)   { border-left-color: var(--color-warning); }
 
+/* Compact card layout: main content + icon actions side by side */
 .ct-appt-compact {
   display: flex;
   align-items: flex-start;
@@ -298,6 +306,7 @@
   gap: 2px;
 }
 
+/* Row 1: provider name · date · status badge · follow-up flag */
 .ct-appt-row1 {
   display: flex;
   align-items: center;
@@ -319,12 +328,14 @@
   white-space: nowrap;
 }
 
+/* Row 2: location · purpose */
 .ct-appt-detail {
   font-size: var(--text-xs);
   color: var(--color-text-muted);
   line-height: 1.4;
 }
 
+/* Row 3: prep / visit notes */
 .ct-appt-notes {
   font-size: var(--text-xs);
   color: var(--color-text-muted);
@@ -343,6 +354,7 @@
   white-space: nowrap;
 }
 
+/* Icon action buttons — right edge of compact card */
 .ct-appt-actions {
   display: flex;
   flex-direction: column;
@@ -364,171 +376,150 @@
   cursor: pointer;
   color: var(--color-text-faint);
   transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
-  line-height: 1;
 }
 
-.ct-icon-edit:hover {
-  background: var(--color-primary-light);
-  color: var(--color-primary);
-  border-color: var(--color-primary-border);
+.ct-icon-btn:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  border-color: var(--color-border);
 }
 
-.ct-icon-delete:hover {
+.ct-icon-btn.delete:hover {
   background: var(--color-error-bg);
   color: var(--color-error);
   border-color: var(--color-error-border);
 }
 
-@media (max-width: 480px) {
-  .ct-appt-compact { padding: var(--space-2); }
-  .ct-appt-row1 { gap: var(--space-1); }
+/* ================================================================
+   SECTION HEADINGS (sub-tabs)
+   ================================================================ */
+
+.ct-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.ct-section-title {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-text);
 }
 
 /* ================================================================
-   EMPTY STATES
+   SEARCH / FILTER BAR
    ================================================================ */
 
-.ct-empty-state {
+.ct-filter-bar {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
-  padding: var(--space-10) var(--space-6);
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.ct-search-wrap {
+  flex: 1;
+  min-width: 160px;
+  position: relative;
+}
+
+.ct-search-wrap input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3) var(--space-2) 2rem;
+  font-size: var(--text-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.ct-search-wrap input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+.ct-search-icon {
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--color-text-faint);
+  pointer-events: none;
+  font-size: 0.8rem;
+}
+
+.ct-filter-select {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.ct-filter-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+/* ================================================================
+   EMPTY STATE
+   ================================================================ */
+
+.ct-empty {
+  text-align: center;
+  padding: var(--space-10) var(--space-4);
+  color: var(--color-text-muted);
 }
 
 .ct-empty-icon {
   font-size: 2.5rem;
   margin-bottom: var(--space-3);
-  opacity: 0.7;
+  opacity: 0.4;
 }
 
-.ct-empty-state h3 {
-  font-size: var(--text-lg);
-  font-weight: 700;
-  color: var(--color-primary);
-  margin: 0 0 var(--space-1) 0;
+.ct-empty h3 {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-1);
 }
 
-.ct-empty-state p {
+.ct-empty p {
   font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  margin: 0 0 var(--space-4) 0;
+  max-width: 30ch;
+  margin: 0 auto var(--space-4);
 }
-
-.ct-empty {
-  font-size: var(--text-sm);
-  color: var(--color-text-faint);
-  padding: var(--space-3) 0;
-  list-style: none;
-}
-
-.ct-link { color: var(--color-primary); text-decoration: underline; }
-.ct-link:hover { color: var(--color-primary-hover); }
 
 /* ================================================================
-   PRINT / EXPORT VIEW — screen styles
+   MODAL OVERRIDES for Care Team / Appointments
    ================================================================ */
 
-.ct-print-btn-row {
-  display: flex;
+.ct-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: var(--space-3);
-  flex-wrap: wrap;
+}
+
+@media (max-width: 500px) {
+  .ct-form-grid { grid-template-columns: 1fr; }
+}
+
+.ct-form-grid .full-width {
+  grid-column: 1 / -1;
 }
 
 /* ================================================================
-   PRINT MEDIA — Care Team
-   When printCareTeam() sets data-print-active="careteam",
-   only #ctProviderPrintSection is shown (appointments table hidden).
-   When printAppointments() sets data-print-active="appointments",
-   only the appointments section is shown.
-   With no attribute (e.g. browser Ctrl+P), both tables print.
+   RESPONSIVE TWEAKS
    ================================================================ */
 
-@media print {
-  /* Hide everything by default */
-  body > *:not(#ctProviderPrintSection),
-  .app-header,
-  .mobile-tab-bar,
-  .tab-nav,
-  main > *:not(#careteam-tab),
-  #careteam-tab > h2,
-  #careteam-tab > .med-sub-tabs,
-  #ctProvidersView,
-  #ctAppointmentsView,
-  #ctPrintView > .card:first-child,
-  #authOverlay,
-  #ctApptModal,
-  #ctProviderModal,
-  #ctProviderAddModal,
-  #condAddModal,
-  #atrModal,
-  #medModal,
-  #suppModal,
-  #appToast,
-  .save-float-btn {
-    display: none !important;
-  }
-
-  /* Show the print section card */
-  #ctPrintView,
-  #ctProviderPrintSection {
-    display: block !important;
-  }
-
-  /* When printing only Care Team — hide the appointments h3+table */
-  #ctProviderPrintSection[data-print-active="careteam"] h3:last-of-type,
-  #ctProviderPrintSection[data-print-active="careteam"] table:last-of-type {
-    display: none !important;
-  }
-
-  /* When printing only Appointments — hide the care team h3+table */
-  #ctProviderPrintSection[data-print-active="appointments"] h3:first-of-type,
-  #ctProviderPrintSection[data-print-active="appointments"] table:first-of-type {
-    display: none !important;
-  }
-
-  /* Print table styles */
-  .print-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 11pt;
-    margin-bottom: 1.5rem;
-  }
-
-  .print-table th,
-  .print-table td {
-    border: 1px solid #ccc;
-    padding: 6px 8px;
-    text-align: left;
-    vertical-align: top;
-  }
-
-  .print-table th {
-    background: #f0f0f0;
-    font-weight: 700;
-    font-size: 10pt;
-  }
-
-  .print-table tr:nth-child(even) td {
-    background: #fafafa;
-  }
-
-  #ctProviderPrintSection h3 {
-    font-size: 14pt;
-    margin: 1rem 0 0.5rem;
-    border-bottom: 2px solid #333;
-    padding-bottom: 4px;
-  }
-
-  /* Add a header line with print date */
-  #ctProviderPrintSection::before {
-    content: "Fibro Tracker — Care Team & Appointments  |  Printed: " attr(data-print-date);
-    display: block;
-    font-size: 9pt;
-    color: #666;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 6px;
-  }
+@media (max-width: 600px) {
+  .ct-provider-body { flex-direction: column; }
+  .ct-provider-status-wrap { align-self: flex-start; }
 }
