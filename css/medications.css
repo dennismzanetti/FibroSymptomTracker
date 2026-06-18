@@ -413,9 +413,11 @@
 }
 
 @media print {
-  /* Hide nav tabs and the Print/Save card — only show the tables */
+  /* Hide nav tabs, Print/Save card, and "Preview" headings */
   .med-sub-tabs,
-  #medPrintView > .card:first-child {
+  #medPrintView > .card:first-child,
+  #medPrintView .card:nth-child(2) h3,
+  #medPrintView .card:nth-child(3) h3 {
     display: none !important;
   }
 
