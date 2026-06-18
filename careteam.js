@@ -561,31 +561,54 @@ async function refreshAppointmentList() {
       const endDateLabel = a.endDate ? ' \u2192 ' + formatEndDate(a.endDate) : '';
       const dateLabelDisplay = dateLabel + endDateLabel;
 
+      const timeStr = a.time ? ' \u00B7 ' + escHtml(a.time) : '';
       const statusLabel = APPT_STATUS_LABELS[a.status] || a.status || '';
       const statusClass = 'ct-status-' + (a.status || 'upcoming');
+
+      // Build optional detail line: location · purpose
+      const detailParts = [
+        a.location ? '\uD83D\uDCCD ' + escHtml(a.location) : '',
+        a.purpose  ? escHtml(a.purpose) : ''
+      ].filter(Boolean);
+      const detailHtml = detailParts.length
+        ? `<div class="ct-appt-detail">${detailParts.join(' &middot; ')}</div>`
+        : '';
+
+      // Build optional notes line
+      const notesParts = [
+        a.prepNotes  ? `<span class="ct-notes-label">Prep:</span> ${escHtml(a.prepNotes)}`  : '',
+        a.postNotes  ? `<span class="ct-notes-label">Visit:</span> ${escHtml(a.postNotes)}` : ''
+      ].filter(Boolean);
+      const notesHtml = notesParts.length
+        ? `<div class="ct-appt-notes">${notesParts.join(' &nbsp;&#x7C;&nbsp; ')}</div>`
+        : '';
+
+      const followUpHtml = a.followUpNeeded
+        ? `<span class="ct-followup-flag">&#x2691; Follow-up</span>`
+        : '';
+
       const li = document.createElement('li');
       li.className = 'ct-appt-item';
       li.innerHTML = `
-        <div class="ct-appt-header">
-          <div class="ct-appt-who">
-            <span class="ct-appt-provider">${escHtml(a.providerName || 'Unknown provider')}</span>
-            <span class="ct-appt-date">${escHtml(dateLabelDisplay)}${a.time ? ' &middot; ' + escHtml(a.time) : ''}</span>
+        <div class="ct-appt-compact">
+          <div class="ct-appt-main">
+            <div class="ct-appt-row1">
+              <span class="ct-appt-provider">${escHtml(a.providerName || 'Unknown provider')}</span>
+              <span class="ct-appt-datetime">${escHtml(dateLabelDisplay)}${timeStr}</span>
+              <span class="ct-badge ${statusClass}">${escHtml(statusLabel)}</span>
+              ${followUpHtml}
+            </div>
+            ${detailHtml}
+            ${notesHtml}
           </div>
-          <span class="ct-badge ${statusClass}">${escHtml(statusLabel)}</span>
-        </div>
-        <div class="ct-appt-body">
-          ${a.location  ? `<div class="ct-appt-detail">&#x1F4CD; ${escHtml(a.location)}</div>` : ''}
-          ${a.purpose   ? `<div class="ct-appt-detail">Purpose: ${escHtml(a.purpose)}</div>` : ''}
-          ${a.prepNotes ? `<div class="ct-appt-notes"><span class="ct-notes-label">Prep notes:</span> ${escHtml(a.prepNotes)}</div>` : ''}
-          ${a.postNotes ? `<div class="ct-appt-notes"><span class="ct-notes-label">Visit notes:</span> ${escHtml(a.postNotes)}</div>` : ''}
-          ${a.followUpNeeded ? `<div class="ct-followup-flag">&#x2691; Follow-up needed</div>` : ''}
-        </div>
-        <div class="ct-item-actions">
-          <button class="ct-edit-btn">Edit</button>
-          <button class="ct-delete-btn danger">Delete</button>
+          <div class="ct-appt-actions">
+            <button class="ct-icon-btn ct-icon-edit" title="Edit" aria-label="Edit appointment">&#x270E;</button>
+            <button class="ct-icon-btn ct-icon-delete" title="Delete" aria-label="Delete appointment">&#x1F5D1;</button>
+          </div>
         </div>`;
-      li.querySelector('.ct-edit-btn').addEventListener('click', () => startEditAppointment(a.id, a));
-      li.querySelector('.ct-delete-btn').addEventListener('click', () =>
+
+      li.querySelector('.ct-icon-edit').addEventListener('click', () => startEditAppointment(a.id, a));
+      li.querySelector('.ct-icon-delete').addEventListener('click', () =>
         deleteAppointment(a.id, `${a.providerName} \u2014 ${dateLabelDisplay}`));
       listEl.appendChild(li);
     }
