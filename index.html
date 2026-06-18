@@ -110,7 +110,6 @@
     <button id="ctProviderAddModalClose" aria-label="Close"
             style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
     <h3 id="ctProviderAddModalTitle" style="margin-bottom:var(--space-4);">Add Team Member</h3>
-
     <div class="form-row form-row-2">
       <div class="form-group">
         <label for="ctProviderName">Name</label>
@@ -200,7 +199,6 @@
     <button id="ctProviderModalClose" aria-label="Close"
             style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
     <h3 id="ctProviderModalTitle" style="margin-bottom:var(--space-4);">Edit Team Member</h3>
-
     <div class="form-row form-row-2">
       <div class="form-group">
         <label for="ctEditProviderName">Name</label>
@@ -376,6 +374,200 @@
     <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:var(--space-4);">
       <button id="saveCondEditBtn" class="btn btn-primary">Save Changes</button>
       <button id="cancelCondEditModalBtn" class="save-btn" style="background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MEDICATION ADD MODAL
+     ============================================================ -->
+<div id="medAddModal" role="dialog" aria-modal="true" aria-labelledby="medAddModalTitle"
+     style="display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.45); overflow-y:auto; padding:var(--space-6) var(--space-4);">
+  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:540px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
+    <button id="medAddModalClose" aria-label="Close"
+            style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
+    <h3 id="medAddModalTitle" style="margin-bottom:var(--space-4);">Add Medication</h3>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="medAddNameInput">Name</label>
+        <input type="text" id="medAddNameInput" placeholder="e.g. Gabapentin" />
+      </div>
+      <div class="form-group">
+        <label for="medAddDoseInput">Dose</label>
+        <input type="text" id="medAddDoseInput" placeholder="e.g. 300 mg" />
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="medAddFrequencyInput">Frequency</label>
+        <select id="medAddFrequencyInput">
+          <option value="">Select...</option>
+          <option value="daily">Daily</option>
+          <option value="twice_daily">Twice daily</option>
+          <option value="three_times_daily">Three times daily</option>
+          <option value="as_needed">As needed (PRN)</option>
+          <option value="weekly">Weekly</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="medAddDoctorInput">Prescribing doctor</label>
+        <input type="text" id="medAddDoctorInput" placeholder="e.g. Dr. Smith" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="medAddNotesInput">Notes</label>
+      <textarea id="medAddNotesInput" rows="2" placeholder="Side effects, instructions, etc."></textarea>
+    </div>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:var(--space-4);">
+      <button id="saveMedAddBtn" class="btn btn-primary">Add Medication</button>
+      <button id="cancelMedAddBtn" class="save-btn" style="background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MEDICATION EDIT MODAL
+     ============================================================ -->
+<div id="medEditModal" role="dialog" aria-modal="true" aria-labelledby="medEditModalTitle"
+     style="display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.45); overflow-y:auto; padding:var(--space-6) var(--space-4);">
+  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:540px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
+    <button id="medEditModalClose" aria-label="Close"
+            style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
+    <h3 id="medEditModalTitle" style="margin-bottom:var(--space-4);">Edit Medication</h3>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="medEditNameInput">Name</label>
+        <input type="text" id="medEditNameInput" placeholder="e.g. Gabapentin" />
+      </div>
+      <div class="form-group">
+        <label for="medEditDoseInput">Dose</label>
+        <input type="text" id="medEditDoseInput" placeholder="e.g. 300 mg" />
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="medEditFrequencyInput">Frequency</label>
+        <select id="medEditFrequencyInput">
+          <option value="">Select...</option>
+          <option value="daily">Daily</option>
+          <option value="twice_daily">Twice daily</option>
+          <option value="three_times_daily">Three times daily</option>
+          <option value="as_needed">As needed (PRN)</option>
+          <option value="weekly">Weekly</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="medEditDoctorInput">Prescribing doctor</label>
+        <input type="text" id="medEditDoctorInput" placeholder="e.g. Dr. Smith" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="medEditNotesInput">Notes</label>
+      <textarea id="medEditNotesInput" rows="2" placeholder="Side effects, instructions, etc."></textarea>
+    </div>
+    <input type="hidden" id="medEditingId" />
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:var(--space-4);">
+      <button id="saveMedEditBtn" class="btn btn-primary">Save Changes</button>
+      <button id="cancelMedEditModalBtn" class="save-btn" style="background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SUPPLEMENT ADD MODAL
+     ============================================================ -->
+<div id="suppAddModal" role="dialog" aria-modal="true" aria-labelledby="suppAddModalTitle"
+     style="display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.45); overflow-y:auto; padding:var(--space-6) var(--space-4);">
+  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:540px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
+    <button id="suppAddModalClose" aria-label="Close"
+            style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
+    <h3 id="suppAddModalTitle" style="margin-bottom:var(--space-4);">Add Supplement</h3>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="suppAddNameInput">Name</label>
+        <input type="text" id="suppAddNameInput" placeholder="e.g. Magnesium" />
+      </div>
+      <div class="form-group">
+        <label for="suppAddDoseInput">Dose</label>
+        <input type="text" id="suppAddDoseInput" placeholder="e.g. 400 mg" />
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="suppAddFrequencyInput">Frequency</label>
+        <select id="suppAddFrequencyInput">
+          <option value="">Select...</option>
+          <option value="daily">Daily</option>
+          <option value="twice_daily">Twice daily</option>
+          <option value="three_times_daily">Three times daily</option>
+          <option value="as_needed">As needed</option>
+          <option value="weekly">Weekly</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="suppAddBrandInput">Brand</label>
+        <input type="text" id="suppAddBrandInput" placeholder="e.g. Nature Made" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="suppAddNotesInput">Notes</label>
+      <textarea id="suppAddNotesInput" rows="2" placeholder="Why you take it, effects, etc."></textarea>
+    </div>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:var(--space-4);">
+      <button id="saveSuppAddBtn" class="btn btn-primary">Add Supplement</button>
+      <button id="cancelSuppAddBtn" class="save-btn" style="background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SUPPLEMENT EDIT MODAL
+     ============================================================ -->
+<div id="suppEditModal" role="dialog" aria-modal="true" aria-labelledby="suppEditModalTitle"
+     style="display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.45); overflow-y:auto; padding:var(--space-6) var(--space-4);">
+  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:540px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
+    <button id="suppEditModalClose" aria-label="Close"
+            style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
+    <h3 id="suppEditModalTitle" style="margin-bottom:var(--space-4);">Edit Supplement</h3>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="suppEditNameInput">Name</label>
+        <input type="text" id="suppEditNameInput" placeholder="e.g. Magnesium" />
+      </div>
+      <div class="form-group">
+        <label for="suppEditDoseInput">Dose</label>
+        <input type="text" id="suppEditDoseInput" placeholder="e.g. 400 mg" />
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="suppEditFrequencyInput">Frequency</label>
+        <select id="suppEditFrequencyInput">
+          <option value="">Select...</option>
+          <option value="daily">Daily</option>
+          <option value="twice_daily">Twice daily</option>
+          <option value="three_times_daily">Three times daily</option>
+          <option value="as_needed">As needed</option>
+          <option value="weekly">Weekly</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="suppEditBrandInput">Brand</label>
+        <input type="text" id="suppEditBrandInput" placeholder="e.g. Nature Made" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="suppEditNotesInput">Notes</label>
+      <textarea id="suppEditNotesInput" rows="2" placeholder="Why you take it, effects, etc."></textarea>
+    </div>
+    <input type="hidden" id="suppEditingId" />
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:var(--space-4);">
+      <button id="saveSuppEditBtn" class="btn btn-primary">Save Changes</button>
+      <button id="cancelSuppEditModalBtn" class="save-btn" style="background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
     </div>
   </div>
 </div>
@@ -911,88 +1103,14 @@
       <button class="ct-sub-tab-btn" data-med-view="medPrintView">Print / Export</button>
     </div>
     <div id="medListView" class="med-view">
-      <div class="card">
-        <h3 id="medFormTitle">Add Medication</h3>
-        <div class="form-row form-row-2">
-          <div class="form-group">
-            <label for="medNameInput">Name</label>
-            <input type="text" id="medNameInput" placeholder="e.g. Gabapentin" />
-          </div>
-          <div class="form-group">
-            <label for="medDoseInput">Dose</label>
-            <input type="text" id="medDoseInput" placeholder="e.g. 300 mg" />
-          </div>
-        </div>
-        <div class="form-row form-row-2">
-          <div class="form-group">
-            <label for="medFrequencyInput">Frequency</label>
-            <select id="medFrequencyInput">
-              <option value="">Select...</option>
-              <option value="daily">Daily</option>
-              <option value="twice_daily">Twice daily</option>
-              <option value="three_times_daily">Three times daily</option>
-              <option value="as_needed">As needed (PRN)</option>
-              <option value="weekly">Weekly</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="medDoctorInput">Prescribing doctor</label>
-            <input type="text" id="medDoctorInput" placeholder="e.g. Dr. Smith" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="medNotesInput">Notes</label>
-          <textarea id="medNotesInput" rows="2" placeholder="Side effects, instructions, etc."></textarea>
-        </div>
-        <input type="hidden" id="medEditingId" />
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-          <button id="saveMedBtn" class="btn btn-primary">Add Medication</button>
-          <button id="cancelMedEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
-        </div>
+      <div style="display:flex; justify-content:flex-end; margin-bottom:var(--space-4);">
+        <button id="openMedAddModalBtn" class="btn btn-primary">&#43; Add Medication</button>
       </div>
       <div class="card"><h3>My Medications</h3><ul id="medList"></ul></div>
     </div>
     <div id="suppListView" class="med-view" style="display:none;">
-      <div class="card">
-        <h3 id="suppFormTitle">Add Supplement</h3>
-        <div class="form-row form-row-2">
-          <div class="form-group">
-            <label for="suppNameInput">Name</label>
-            <input type="text" id="suppNameInput" placeholder="e.g. Magnesium" />
-          </div>
-          <div class="form-group">
-            <label for="suppDoseInput">Dose</label>
-            <input type="text" id="suppDoseInput" placeholder="e.g. 400 mg" />
-          </div>
-        </div>
-        <div class="form-row form-row-2">
-          <div class="form-group">
-            <label for="suppFrequencyInput">Frequency</label>
-            <select id="suppFrequencyInput">
-              <option value="">Select...</option>
-              <option value="daily">Daily</option>
-              <option value="twice_daily">Twice daily</option>
-              <option value="three_times_daily">Three times daily</option>
-              <option value="as_needed">As needed</option>
-              <option value="weekly">Weekly</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="suppBrandInput">Brand</label>
-            <input type="text" id="suppBrandInput" placeholder="e.g. Nature Made" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="suppNotesInput">Notes</label>
-          <textarea id="suppNotesInput" rows="2" placeholder="Why you take it, effects, etc."></textarea>
-        </div>
-        <input type="hidden" id="suppEditingId" />
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-          <button id="saveSuppBtn" class="btn btn-primary">Add Supplement</button>
-          <button id="cancelSuppEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
-        </div>
+      <div style="display:flex; justify-content:flex-end; margin-bottom:var(--space-4);">
+        <button id="openSuppAddModalBtn" class="btn btn-primary">&#43; Add Supplement</button>
       </div>
       <div class="card"><h3>My Supplements</h3><ul id="suppList"></ul></div>
     </div>

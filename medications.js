@@ -19,16 +19,30 @@ function escHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
+// ---- Modal helpers ----
+
+function openModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = "";
+}
+
+function closeModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = "none";
+}
+
+function wireModal(modalId, openBtnId, closeBtnId, cancelBtnId) {
+  document.getElementById(openBtnId)?.addEventListener("click", () => openModal(modalId));
+  document.getElementById(closeBtnId)?.addEventListener("click", () => closeModal(modalId));
+  document.getElementById(cancelBtnId)?.addEventListener("click", () => closeModal(modalId));
+  // Close on backdrop click
+  document.getElementById(modalId)?.addEventListener("click", e => {
+    if (e.target === document.getElementById(modalId)) closeModal(modalId);
+  });
+}
+
 function setupMedicationsTab() {
-  document.getElementById("saveMedBtn")?.addEventListener("click", saveMedication);
-  document.getElementById("cancelMedEditBtn")?.addEventListener("click", resetMedForm);
-  document.getElementById("saveSuppBtn")?.addEventListener("click", saveSupplement);
-  document.getElementById("cancelSuppEditBtn")?.addEventListener("click", resetSuppForm);
-
-  // Wire print button to trigger window.print()
-  document.getElementById("printMedBtn")?.addEventListener("click", () => window.print());
-
-  // Use ct-sub-tab-btn class (same style as Care Team sub-tabs) scoped to medications-tab
+  // Sub-tab switching
   document.querySelectorAll("#medications-tab .ct-sub-tab-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       const targetViewId = btn.getAttribute("data-med-view");
@@ -40,6 +54,39 @@ function setupMedicationsTab() {
       refreshMedView(targetViewId);
     });
   });
+
+  // Medication Add modal
+  wireModal("medAddModal", "openMedAddModalBtn", "medAddModalClose", "cancelMedAddBtn");
+  document.getElementById("saveMedAddBtn")?.addEventListener("click", saveMedication);
+
+  // Medication Edit modal
+  document.getElementById("medEditModalClose")?.addEventListener("click", () => closeModal("medEditModal"));
+  document.getElementById("cancelMedEditModalBtn")?.addEventListener("click", () => closeModal("medEditModal"));
+  document.getElementById("medEditModal")?.addEventListener("click", e => {
+    if (e.target === document.getElementById("medEditModal")) closeModal("medEditModal");
+  });
+  document.getElementById("saveMedEditBtn")?.addEventListener("click", saveMedication);
+
+  // Supplement Add modal
+  wireModal("suppAddModal", "openSuppAddModalBtn", "suppAddModalClose", "cancelSuppAddBtn");
+  document.getElementById("saveSuppAddBtn")?.addEventListener("click", saveSupplement);
+
+  // Supplement Edit modal
+  document.getElementById("suppEditModalClose")?.addEventListener("click", () => closeModal("suppEditModal"));
+  document.getElementById("cancelSuppEditModalBtn")?.addEventListener("click", () => closeModal("suppEditModal"));
+  document.getElementById("suppEditModal")?.addEventListener("click", e => {
+    if (e.target === document.getElementById("suppEditModal")) closeModal("suppEditModal");
+  });
+  document.getElementById("saveSuppEditBtn")?.addEventListener("click", saveSupplement);
+
+  // Global Escape key handler for med/supp modals
+  document.addEventListener("keydown", e => {
+    if (e.key !== "Escape") return;
+    ["medAddModal", "medEditModal", "suppAddModal", "suppEditModal"].forEach(id => closeModal(id));
+  });
+
+  // Print button
+  document.getElementById("printMedBtn")?.addEventListener("click", () => window.print());
 
   refreshMedList();
 }
@@ -53,32 +100,45 @@ function refreshMedView(viewId) {
 
 // ---- Medications CRUD ----
 
-function getMedFormData() {
+function getMedFormData(prefix) {
+  // prefix is either "medAdd" or "medEdit"
   return {
-    name: document.getElementById("medNameInput").value.trim(),
-    dose: document.getElementById("medDoseInput").value.trim(),
-    frequency: document.getElementById("medFrequencyInput").value,
-    doctor: document.getElementById("medDoctorInput").value.trim(),
-    notes: document.getElementById("medNotesInput").value.trim()
+    name: document.getElementById(`${prefix}NameInput`).value.trim(),
+    dose: document.getElementById(`${prefix}DoseInput`).value.trim(),
+    frequency: document.getElementById(`${prefix}FrequencyInput`).value,
+    doctor: document.getElementById(`${prefix}DoctorInput`).value.trim(),
+    notes: document.getElementById(`${prefix}NotesInput`).value.trim()
   };
 }
 
 function resetMedForm() {
-  document.getElementById("medNameInput").value = "";
-  document.getElementById("medDoseInput").value = "";
-  document.getElementById("medFrequencyInput").value = "";
-  document.getElementById("medDoctorInput").value = "";
-  document.getElementById("medNotesInput").value = "";
-  document.getElementById("medEditingId").value = "";
-  document.getElementById("medFormTitle").textContent = "Add Medication";
-  document.getElementById("saveMedBtn").textContent = "Add Medication";
-  document.getElementById("cancelMedEditBtn").style.display = "none";
+  ["medAddNameInput","medAddDoseInput","medAddDoctorInput","medAddNotesInput"].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = "";
+  });
+  const freq = document.getElementById("medAddFrequencyInput");
+  if (freq) freq.value = "";
+}
+
+function resetMedEditForm() {
+  ["medEditNameInput","medEditDoseInput","medEditDoctorInput","medEditNotesInput"].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = "";
+  });
+  const freq = document.getElementById("medEditFrequencyInput");
+  if (freq) freq.value = "";
+  const hidden = document.getElementById("medEditingId");
+  if (hidden) hidden.value = "";
 }
 
 async function saveMedication() {
-  const data = getMedFormData();
+  // Determine which modal is open (add vs edit)
+  const addOpen = document.getElementById("medAddModal")?.style.display !== "none"
+                  && document.getElementById("medAddModal")?.style.display !== undefined
+                  && document.getElementById("medAddModal")?.style.display !== "";
+  // Simpler: check editingId hidden field
+  const editingId = document.getElementById("medEditingId")?.value || "";
+  const prefix = editingId ? "medEdit" : "medAdd";
+  const data = getMedFormData(prefix);
   if (!data.name) { alert("Please enter a medication name."); return; }
-  const editingId = document.getElementById("medEditingId").value;
   const now = new Date().toISOString();
   if (editingId) {
     const oldDoc = await db.collection("medications").doc(editingId).get();
@@ -95,6 +155,8 @@ async function saveMedication() {
       changes: changes.length ? changes : ["No field changes detected"],
       snapshot: { ...data }, timestamp: now
     });
+    resetMedEditForm();
+    closeModal("medEditModal");
   } else {
     const docRef = await db.collection("medications").add({ ...data, createdAt: now, updatedAt: now });
     await db.collection("medicationHistory").add({
@@ -102,8 +164,9 @@ async function saveMedication() {
       changes: [`Added: ${data.name}${data.dose ? ` ${data.dose}` : ""}`],
       snapshot: { ...data }, timestamp: now
     });
+    resetMedForm();
+    closeModal("medAddModal");
   }
-  resetMedForm();
   refreshMedList();
 }
 
@@ -122,16 +185,13 @@ async function deleteMedication(id, name) {
 }
 
 function startEditMedication(id, med) {
-  document.getElementById("medNameInput").value = med.name || "";
-  document.getElementById("medDoseInput").value = med.dose || "";
-  document.getElementById("medFrequencyInput").value = med.frequency || "";
-  document.getElementById("medDoctorInput").value = med.doctor || "";
-  document.getElementById("medNotesInput").value = med.notes || "";
+  document.getElementById("medEditNameInput").value = med.name || "";
+  document.getElementById("medEditDoseInput").value = med.dose || "";
+  document.getElementById("medEditFrequencyInput").value = med.frequency || "";
+  document.getElementById("medEditDoctorInput").value = med.doctor || "";
+  document.getElementById("medEditNotesInput").value = med.notes || "";
   document.getElementById("medEditingId").value = id;
-  document.getElementById("medFormTitle").textContent = "Edit Medication";
-  document.getElementById("saveMedBtn").textContent = "Save Changes";
-  document.getElementById("cancelMedEditBtn").style.display = "inline-block";
-  document.getElementById("medFormTitle").scrollIntoView({ behavior: "smooth", block: "start" });
+  openModal("medEditModal");
 }
 
 async function refreshMedList() {
@@ -180,32 +240,39 @@ async function refreshMedList() {
 
 // ---- Supplements CRUD ----
 
-function getSuppFormData() {
+function getSuppFormData(prefix) {
   return {
-    name: document.getElementById("suppNameInput").value.trim(),
-    dose: document.getElementById("suppDoseInput").value.trim(),
-    frequency: document.getElementById("suppFrequencyInput").value,
-    brand: document.getElementById("suppBrandInput").value.trim(),
-    notes: document.getElementById("suppNotesInput").value.trim()
+    name: document.getElementById(`${prefix}NameInput`).value.trim(),
+    dose: document.getElementById(`${prefix}DoseInput`).value.trim(),
+    frequency: document.getElementById(`${prefix}FrequencyInput`).value,
+    brand: document.getElementById(`${prefix}BrandInput`).value.trim(),
+    notes: document.getElementById(`${prefix}NotesInput`).value.trim()
   };
 }
 
 function resetSuppForm() {
-  document.getElementById("suppNameInput").value = "";
-  document.getElementById("suppDoseInput").value = "";
-  document.getElementById("suppFrequencyInput").value = "";
-  document.getElementById("suppBrandInput").value = "";
-  document.getElementById("suppNotesInput").value = "";
-  document.getElementById("suppEditingId").value = "";
-  document.getElementById("suppFormTitle").textContent = "Add Supplement";
-  document.getElementById("saveSuppBtn").textContent = "Add Supplement";
-  document.getElementById("cancelSuppEditBtn").style.display = "none";
+  ["suppAddNameInput","suppAddDoseInput","suppAddBrandInput","suppAddNotesInput"].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = "";
+  });
+  const freq = document.getElementById("suppAddFrequencyInput");
+  if (freq) freq.value = "";
+}
+
+function resetSuppEditForm() {
+  ["suppEditNameInput","suppEditDoseInput","suppEditBrandInput","suppEditNotesInput"].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = "";
+  });
+  const freq = document.getElementById("suppEditFrequencyInput");
+  if (freq) freq.value = "";
+  const hidden = document.getElementById("suppEditingId");
+  if (hidden) hidden.value = "";
 }
 
 async function saveSupplement() {
-  const data = getSuppFormData();
+  const editingId = document.getElementById("suppEditingId")?.value || "";
+  const prefix = editingId ? "suppEdit" : "suppAdd";
+  const data = getSuppFormData(prefix);
   if (!data.name) { alert("Please enter a supplement name."); return; }
-  const editingId = document.getElementById("suppEditingId").value;
   const now = new Date().toISOString();
   if (editingId) {
     const oldDoc = await db.collection("supplements").doc(editingId).get();
@@ -222,6 +289,8 @@ async function saveSupplement() {
       changes: changes.length ? changes : ["No field changes detected"],
       snapshot: { ...data }, timestamp: now
     });
+    resetSuppEditForm();
+    closeModal("suppEditModal");
   } else {
     const docRef = await db.collection("supplements").add({ ...data, createdAt: now, updatedAt: now });
     await db.collection("medicationHistory").add({
@@ -229,8 +298,9 @@ async function saveSupplement() {
       changes: [`Added: ${data.name}${data.dose ? ` ${data.dose}` : ""}`],
       snapshot: { ...data }, timestamp: now
     });
+    resetSuppForm();
+    closeModal("suppAddModal");
   }
-  resetSuppForm();
   refreshSuppList();
 }
 
@@ -249,16 +319,13 @@ async function deleteSupplement(id, name) {
 }
 
 function startEditSupplement(id, supp) {
-  document.getElementById("suppNameInput").value = supp.name || "";
-  document.getElementById("suppDoseInput").value = supp.dose || "";
-  document.getElementById("suppFrequencyInput").value = supp.frequency || "";
-  document.getElementById("suppBrandInput").value = supp.brand || "";
-  document.getElementById("suppNotesInput").value = supp.notes || "";
+  document.getElementById("suppEditNameInput").value = supp.name || "";
+  document.getElementById("suppEditDoseInput").value = supp.dose || "";
+  document.getElementById("suppEditFrequencyInput").value = supp.frequency || "";
+  document.getElementById("suppEditBrandInput").value = supp.brand || "";
+  document.getElementById("suppEditNotesInput").value = supp.notes || "";
   document.getElementById("suppEditingId").value = id;
-  document.getElementById("suppFormTitle").textContent = "Edit Supplement";
-  document.getElementById("saveSuppBtn").textContent = "Save Changes";
-  document.getElementById("cancelSuppEditBtn").style.display = "inline-block";
-  document.getElementById("suppFormTitle").scrollIntoView({ behavior: "smooth", block: "start" });
+  openModal("suppEditModal");
 }
 
 async function refreshSuppList() {
