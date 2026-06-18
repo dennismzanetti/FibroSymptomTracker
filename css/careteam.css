@@ -1,8 +1,4 @@
 /* CARE TEAM STYLES — FibroSymptomTracker */
-/* Card geometry is provided by .app-card / .app-card-list in base.css.
-   .ct-provider-item / .ct-provider-list mirror those globals so that
-   existing HTML continues to work. The semantic border-left accent
-   is retained because it conveys appointment status information. */
 
 /* ================================================================
    LIST CONTAINER
@@ -64,7 +60,7 @@
 .ct-provider-item[data-status="upcoming"]      { border-left-color: var(--color-warning); }
 
 /* ================================================================
-   CARD BODY (matches .app-card-body padding)
+   CARD BODY
    ================================================================ */
 
 .ct-provider-body {
@@ -166,7 +162,7 @@
 }
 
 /* ================================================================
-   CARD FOOTER — action buttons (matches .app-card-footer)
+   CARD FOOTER — action buttons
    ================================================================ */
 
 .ct-item-actions {
@@ -183,7 +179,6 @@
   .ct-item-actions { flex-direction: column; align-items: flex-start; }
 }
 
-/* Buttons — aligned to .app-btn style */
 .ct-edit-btn,
 .ct-appt-btn,
 .ct-delete-btn {
@@ -259,8 +254,7 @@
 .ct-status-rescheduled   { background: var(--color-warning-bg);    color: var(--color-warning); }
 
 /* ================================================================
-   APPOINTMENT CARDS — Compact single-block layout
-   No separate header/footer sections. Everything inline.
+   APPOINTMENT CARDS
    ================================================================ */
 
 .ct-appt-list {
@@ -285,12 +279,10 @@
   transform: translateY(-1px);
 }
 
-/* Status-tinted left border */
 .ct-appt-item:has(.ct-status-completed)     { border-left-color: var(--color-text-faint); }
 .ct-appt-item:has(.ct-status-cancelled)     { border-left-color: var(--color-error); }
 .ct-appt-item:has(.ct-status-rescheduled)   { border-left-color: var(--color-warning); }
 
-/* Compact card layout: main content + icon actions side by side */
 .ct-appt-compact {
   display: flex;
   align-items: flex-start;
@@ -306,7 +298,6 @@
   gap: 2px;
 }
 
-/* Row 1: provider name · date · status badge · follow-up flag */
 .ct-appt-row1 {
   display: flex;
   align-items: center;
@@ -328,14 +319,12 @@
   white-space: nowrap;
 }
 
-/* Row 2: location · purpose */
 .ct-appt-detail {
   font-size: var(--text-xs);
   color: var(--color-text-muted);
   line-height: 1.4;
 }
 
-/* Row 3: prep / visit notes */
 .ct-appt-notes {
   font-size: var(--text-xs);
   color: var(--color-text-muted);
@@ -354,7 +343,6 @@
   white-space: nowrap;
 }
 
-/* Icon action buttons — right edge of compact card */
 .ct-appt-actions {
   display: flex;
   flex-direction: column;
@@ -435,6 +423,112 @@
   list-style: none;
 }
 
-/* Misc */
 .ct-link { color: var(--color-primary); text-decoration: underline; }
 .ct-link:hover { color: var(--color-primary-hover); }
+
+/* ================================================================
+   PRINT / EXPORT VIEW — screen styles
+   ================================================================ */
+
+.ct-print-btn-row {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* ================================================================
+   PRINT MEDIA — Care Team
+   When printCareTeam() sets data-print-active="careteam",
+   only #ctProviderPrintSection is shown (appointments table hidden).
+   When printAppointments() sets data-print-active="appointments",
+   only the appointments section is shown.
+   With no attribute (e.g. browser Ctrl+P), both tables print.
+   ================================================================ */
+
+@media print {
+  /* Hide everything by default */
+  body > *:not(#ctProviderPrintSection),
+  .app-header,
+  .mobile-tab-bar,
+  .tab-nav,
+  main > *:not(#careteam-tab),
+  #careteam-tab > h2,
+  #careteam-tab > .med-sub-tabs,
+  #ctProvidersView,
+  #ctAppointmentsView,
+  #ctPrintView > .card:first-child,
+  #authOverlay,
+  #ctApptModal,
+  #ctProviderModal,
+  #ctProviderAddModal,
+  #condAddModal,
+  #atrModal,
+  #medModal,
+  #suppModal,
+  #appToast,
+  .save-float-btn {
+    display: none !important;
+  }
+
+  /* Show the print section card */
+  #ctPrintView,
+  #ctProviderPrintSection {
+    display: block !important;
+  }
+
+  /* When printing only Care Team — hide the appointments h3+table */
+  #ctProviderPrintSection[data-print-active="careteam"] h3:last-of-type,
+  #ctProviderPrintSection[data-print-active="careteam"] table:last-of-type {
+    display: none !important;
+  }
+
+  /* When printing only Appointments — hide the care team h3+table */
+  #ctProviderPrintSection[data-print-active="appointments"] h3:first-of-type,
+  #ctProviderPrintSection[data-print-active="appointments"] table:first-of-type {
+    display: none !important;
+  }
+
+  /* Print table styles */
+  .print-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11pt;
+    margin-bottom: 1.5rem;
+  }
+
+  .print-table th,
+  .print-table td {
+    border: 1px solid #ccc;
+    padding: 6px 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .print-table th {
+    background: #f0f0f0;
+    font-weight: 700;
+    font-size: 10pt;
+  }
+
+  .print-table tr:nth-child(even) td {
+    background: #fafafa;
+  }
+
+  #ctProviderPrintSection h3 {
+    font-size: 14pt;
+    margin: 1rem 0 0.5rem;
+    border-bottom: 2px solid #333;
+    padding-bottom: 4px;
+  }
+
+  /* Add a header line with print date */
+  #ctProviderPrintSection::before {
+    content: "Fibro Tracker — Care Team & Appointments  |  Printed: " attr(data-print-date);
+    display: block;
+    font-size: 9pt;
+    color: #666;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 6px;
+  }
+}
