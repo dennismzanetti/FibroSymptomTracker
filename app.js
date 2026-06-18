@@ -49,6 +49,7 @@ auth.onAuthStateChanged((user) => {
       setupCareTeamTab();
       setupConditionsTab();
       runPostLoadSetup();
+      if (typeof window.applySettingsOnAuth === 'function') window.applySettingsOnAuth();
     }
   } else {
     const authOverlay = document.getElementById("authOverlay");

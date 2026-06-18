@@ -5,21 +5,33 @@
 (function () {
   'use strict';
 
-  // ---- Constants ----
-  const SETTINGS_KEY = 'fibroSettings';
+  let _cachedSettings = {};
 
-  function loadSettings() {
-    try {
-      const raw = localStorage.getItem(SETTINGS_KEY);
-      return raw ? JSON.parse(raw) : {};
-    } catch { return {}; }
+  // ---- Firestore helpers ----
+  function getSettingsRef() {
+    const auth = typeof firebase !== 'undefined' ? firebase.auth() : null;
+    const db   = typeof firebase !== 'undefined' ? firebase.firestore() : null;
+    if (!auth || !db || !auth.currentUser) return null;
+    return db.collection('users').doc(auth.currentUser.uid).collection('meta').doc('settings');
   }
 
-  function saveSettings(obj) {
-    try {
-      const current = loadSettings();
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(Object.assign(current, obj)));
-    } catch { /* silently ignore */ }
+  function loadSettingsFromFirestore(callback) {
+    const ref = getSettingsRef();
+    if (!ref) { callback({}); return; }
+    ref.get().then(snap => {
+      const data = snap.exists ? snap.data() : {};
+      _cachedSettings = data;
+      callback(data);
+    }).catch(() => callback({}));
+  }
+
+  function saveSettingsToFirestore(obj, onDone) {
+    _cachedSettings = Object.assign({}, _cachedSettings, obj);
+    const ref = getSettingsRef();
+    if (!ref) { if (onDone) onDone(); return; }
+    ref.set(_cachedSettings, { merge: true })
+      .then(() => { if (onDone) onDone(); })
+      .catch(() => { if (onDone) onDone(); });
   }
 
   // ---- Theme ----
@@ -30,22 +42,14 @@
     } else if (theme === 'dark') {
       root.setAttribute('data-theme', 'dark');
     } else {
-      // system
       root.removeAttribute('data-theme');
     }
   }
 
-  function initTheme() {
-    const settings = loadSettings();
-    if (settings.theme) applyTheme(settings.theme);
-  }
-
   // ---- Default tab on open ----
-  function applyDefaultTab() {
-    const settings = loadSettings();
-    const tabId = settings.defaultTab;
+  function applyDefaultTab(settings) {
+    const tabId = settings && settings.defaultTab;
     if (!tabId) return;
-    // Only switch if no tab is already active beyond entry-tab (i.e. on initial page load)
     const activeBtn = document.querySelector('.tab-button.active');
     if (activeBtn && activeBtn.getAttribute('data-tab') === 'entry-tab' && tabId !== 'entry-tab') {
       const targetBtn = document.querySelector(`.tab-button[data-tab="${tabId}"]`);
@@ -60,11 +64,11 @@
     const user = auth.currentUser;
     if (!user) return;
 
-    const nameEl = document.getElementById('settingsUserName');
+    const nameEl  = document.getElementById('settingsUserName');
     const emailEl = document.getElementById('settingsUserEmail');
     const photoEl = document.getElementById('settingsUserPhoto');
 
-    if (nameEl) nameEl.textContent = user.displayName || 'No name set';
+    if (nameEl)  nameEl.textContent  = user.displayName || 'No name set';
     if (emailEl) emailEl.textContent = user.email || '';
     if (photoEl && user.photoURL) {
       photoEl.src = user.photoURL;
@@ -84,27 +88,23 @@
 
   // ---- Wire display settings form ----
   function wireDisplaySettings() {
-    const themeSelect = document.getElementById('settingsThemeSelect');
+    const themeSelect      = document.getElementById('settingsThemeSelect');
     const defaultTabSelect = document.getElementById('settingsDefaultTabSelect');
-    const saveBtn = document.getElementById('settingsSaveDisplayBtn');
-    const status = document.getElementById('settingsDisplayStatus');
+    const saveBtn          = document.getElementById('settingsSaveDisplayBtn');
+    const status           = document.getElementById('settingsDisplayStatus');
 
     if (!themeSelect || !defaultTabSelect || !saveBtn) return;
 
-    // Pre-populate from saved settings
-    const settings = loadSettings();
-    if (settings.theme) themeSelect.value = settings.theme;
-    if (settings.defaultTab) defaultTabSelect.value = settings.defaultTab;
-
     saveBtn.addEventListener('click', () => {
-      const theme = themeSelect.value;
+      const theme      = themeSelect.value;
       const defaultTab = defaultTabSelect.value;
-      saveSettings({ theme, defaultTab });
-      applyTheme(theme);
-      if (status) {
-        status.style.display = 'block';
-        setTimeout(() => { status.style.display = 'none'; }, 2000);
-      }
+      saveSettingsToFirestore({ theme, defaultTab }, () => {
+        applyTheme(theme);
+        if (status) {
+          status.style.display = 'block';
+          setTimeout(() => { status.style.display = 'none'; }, 2000);
+        }
+      });
     });
   }
 
@@ -137,16 +137,21 @@
       });
   }
 
-  // ---- Refresh settings tab when it becomes active ----
+  // ---- Refresh account info + display form when settings tab is activated ----
   function watchSettingsTab() {
     document.querySelectorAll('.tab-button').forEach(btn => {
       btn.addEventListener('click', () => {
         if (btn.getAttribute('data-tab') === 'settings-tab') {
           populateAccountInfo();
+          loadSettingsFromFirestore(settings => {
+            const themeSelect      = document.getElementById('settingsThemeSelect');
+            const defaultTabSelect = document.getElementById('settingsDefaultTabSelect');
+            if (themeSelect      && settings.theme)      themeSelect.value      = settings.theme;
+            if (defaultTabSelect && settings.defaultTab) defaultTabSelect.value = settings.defaultTab;
+          });
         }
       });
     });
-    // Also handle mobile dropdown
     const tabSelect = document.getElementById('tabSelect');
     if (tabSelect) {
       tabSelect.addEventListener('change', () => {
@@ -157,7 +162,6 @@
 
   // ---- Init ----
   document.addEventListener('DOMContentLoaded', () => {
-    initTheme();
     wireDisplaySettings();
     wireSettingsSignOut();
     wireExportImport();
@@ -165,8 +169,17 @@
     loadAppVersion();
   });
 
-  // Apply default tab after auth resolves (auth.onAuthStateChanged fires after DOMContentLoaded)
-  // We expose a hook that app.js can call after sign-in setup
-  window.applySettingsDefaultTab = applyDefaultTab;
+  // Called by app.js after onAuthStateChanged fires so theme + default tab apply immediately on login
+  window.applySettingsOnAuth = function () {
+    loadSettingsFromFirestore(settings => {
+      if (settings.theme) applyTheme(settings.theme);
+      applyDefaultTab(settings);
+    });
+  };
+
+  // Keep old hook name for backward compat
+  window.applySettingsDefaultTab = function () {
+    applyDefaultTab(_cachedSettings);
+  };
 
 })();
