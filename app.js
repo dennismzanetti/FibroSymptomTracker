@@ -47,7 +47,7 @@ auth.onAuthStateChanged((user) => {
       _pendingSetup = true;
       setupMedicationsTab();
       setupCareTeamTab();
-      setupConditionsTab();
+      if (typeof setupConditionsTab === 'function') setupConditionsTab();
       runPostLoadSetup();
       if (typeof window.applySettingsOnAuth === 'function') window.applySettingsOnAuth();
     }
