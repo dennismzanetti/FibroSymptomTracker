@@ -3,10 +3,8 @@
 
 (function () {
 
-  // ---- Firestore collection ----
   const COL = 'conditions';
 
-  // ---- DOM helpers ----
   function el(id) { return document.getElementById(id); }
 
   function escHtml(str) {
@@ -17,17 +15,36 @@
       .replace(/"/g, '&quot;');
   }
 
-  function resetForm() {
+  // ---- Modal helpers ----
+  function openModal(id) {
+    const m = el(id);
+    if (m) { m.style.display = 'block'; }
+  }
+
+  function closeModal(id) {
+    const m = el(id);
+    if (m) { m.style.display = 'none'; }
+  }
+
+  // ---- Reset / clear Add modal form ----
+  function resetAddForm() {
     el('condNameInput').value          = '';
     el('condIcdInput').value           = '';
     el('condDiagnosedDateInput').value = '';
     el('condDiagnosedByInput').value   = '';
     el('condStatusInput').value        = 'active';
     el('condNotesInput').value         = '';
-    el('condEditingId').value          = '';
-    el('condFormTitle').textContent    = 'Add Condition';
-    el('savCondBtn').textContent       = 'Add Condition';
-    el('cancelCondEditBtn').style.display = 'none';
+  }
+
+  // ---- Reset / clear Edit modal form ----
+  function resetEditForm() {
+    el('condEditNameInput').value          = '';
+    el('condEditIcdInput').value           = '';
+    el('condEditDiagnosedDateInput').value = '';
+    el('condEditDiagnosedByInput').value   = '';
+    el('condEditStatusInput').value        = 'active';
+    el('condEditNotesInput').value         = '';
+    el('condEditingId').value              = '';
   }
 
   // ---- Render list ----
@@ -48,9 +65,9 @@
       }[d.status] || d.status || 'Unknown';
 
       const metaParts = [
-        d.icdCode       ? 'ICD-10: ' + escHtml(d.icdCode)           : '',
-        d.diagnosedDate ? 'Diagnosed: ' + escHtml(d.diagnosedDate)  : '',
-        d.diagnosedBy   ? 'By: ' + escHtml(d.diagnosedBy)           : ''
+        d.icdCode       ? 'ICD-10: ' + escHtml(d.icdCode)          : '',
+        d.diagnosedDate ? 'Diagnosed: ' + escHtml(d.diagnosedDate) : '',
+        d.diagnosedBy   ? 'By: ' + escHtml(d.diagnosedBy)          : ''
       ].filter(Boolean);
 
       const li = document.createElement('li');
@@ -92,8 +109,8 @@
     }
   }
 
-  // ---- Save (add / update) ----
-  async function saveCondition() {
+  // ---- Add condition (from Add modal) ----
+  async function addCondition() {
     const name = el('condNameInput').value.trim();
     if (!name) {
       if (typeof showToast === 'function') showToast('Condition name is required.', true);
@@ -107,19 +124,45 @@
       diagnosedBy:   el('condDiagnosedByInput').value.trim(),
       status:        el('condStatusInput').value,
       notes:         el('condNotesInput').value.trim(),
+      createdAt:     new Date().toISOString(),
       updatedAt:     new Date().toISOString()
     };
-    const editingId = el('condEditingId').value;
     try {
-      if (editingId) {
-        await db.collection(COL).doc(editingId).set(data, { merge: true });
-        if (typeof showToast === 'function') showToast('\u2713 Condition updated');
-      } else {
-        data.createdAt = new Date().toISOString();
-        await db.collection(COL).add(data);
-        if (typeof showToast === 'function') showToast('\u2713 Condition added');
-      }
-      resetForm();
+      await db.collection(COL).add(data);
+      if (typeof showToast === 'function') showToast('\u2713 Condition added');
+      resetAddForm();
+      closeModal('condAddModal');
+      await refreshConditionsList();
+    } catch (err) {
+      console.error('Condition add error:', err);
+      if (typeof showToast === 'function') showToast('\u26A0 Save failed', true);
+    }
+  }
+
+  // ---- Save edit (from Edit modal) ----
+  async function saveEditCondition() {
+    const editingId = el('condEditingId').value;
+    if (!editingId) return;
+    const name = el('condEditNameInput').value.trim();
+    if (!name) {
+      if (typeof showToast === 'function') showToast('Condition name is required.', true);
+      el('condEditNameInput').focus();
+      return;
+    }
+    const data = {
+      name,
+      icdCode:       el('condEditIcdInput').value.trim(),
+      diagnosedDate: el('condEditDiagnosedDateInput').value,
+      diagnosedBy:   el('condEditDiagnosedByInput').value.trim(),
+      status:        el('condEditStatusInput').value,
+      notes:         el('condEditNotesInput').value.trim(),
+      updatedAt:     new Date().toISOString()
+    };
+    try {
+      await db.collection(COL).doc(editingId).set(data, { merge: true });
+      if (typeof showToast === 'function') showToast('\u2713 Condition updated');
+      resetEditForm();
+      closeModal('condEditModal');
       await refreshConditionsList();
     } catch (err) {
       console.error('Condition save error:', err);
@@ -140,23 +183,20 @@
     }
   }
 
-  // ---- Populate form for editing ----
+  // ---- Open Edit modal pre-populated ----
   async function startEditCondition(id) {
     try {
       const doc = await db.collection(COL).doc(id).get();
       if (!doc.exists) return;
       const d = doc.data();
-      el('condNameInput').value          = d.name || '';
-      el('condIcdInput').value           = d.icdCode || '';
-      el('condDiagnosedDateInput').value = d.diagnosedDate || '';
-      el('condDiagnosedByInput').value   = d.diagnosedBy || '';
-      el('condStatusInput').value        = d.status || 'active';
-      el('condNotesInput').value         = d.notes || '';
-      el('condEditingId').value          = id;
-      el('condFormTitle').textContent    = 'Edit Condition';
-      el('savCondBtn').textContent       = 'Save Changes';
-      el('cancelCondEditBtn').style.display = 'inline-block';
-      el('condFormTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el('condEditNameInput').value          = d.name          || '';
+      el('condEditIcdInput').value           = d.icdCode       || '';
+      el('condEditDiagnosedDateInput').value = d.diagnosedDate || '';
+      el('condEditDiagnosedByInput').value   = d.diagnosedBy   || '';
+      el('condEditStatusInput').value        = d.status        || 'active';
+      el('condEditNotesInput').value         = d.notes         || '';
+      el('condEditingId').value              = id;
+      openModal('condEditModal');
     } catch (err) {
       console.error('Condition edit load error:', err);
     }
@@ -164,8 +204,32 @@
 
   // ---- Setup ----
   function setupConditionsTab() {
-    el('savCondBtn')?.addEventListener('click', saveCondition);
-    el('cancelCondEditBtn')?.addEventListener('click', resetForm);
+    // Add modal
+    el('openCondAddModalBtn')?.addEventListener('click', () => {
+      resetAddForm();
+      openModal('condAddModal');
+    });
+    el('condAddModalClose')?.addEventListener('click', () => closeModal('condAddModal'));
+    el('cancelCondAddBtn')?.addEventListener('click',  () => closeModal('condAddModal'));
+    el('saveCondAddBtn')?.addEventListener('click', addCondition);
+
+    // Edit modal
+    el('condEditModalClose')?.addEventListener('click', () => closeModal('condEditModal'));
+    el('cancelCondEditModalBtn')?.addEventListener('click', () => closeModal('condEditModal'));
+    el('saveCondEditBtn')?.addEventListener('click', saveEditCondition);
+
+    // Close on backdrop click
+    el('condAddModal')?.addEventListener('click', e => { if (e.target === el('condAddModal')) closeModal('condAddModal'); });
+    el('condEditModal')?.addEventListener('click', e => { if (e.target === el('condEditModal')) closeModal('condEditModal'); });
+
+    // Close on Escape
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closeModal('condAddModal');
+        closeModal('condEditModal');
+      }
+    });
+
     refreshConditionsList();
   }
 
