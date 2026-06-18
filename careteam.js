@@ -311,17 +311,23 @@ async function refreshProviderList() {
         </li>`;
       return;
     }
-    list.innerHTML = '';
 
     const items = [];
     snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
 
+    // Fetch all next-appointment dates in parallel before rendering
+    // so the DOM is built in one synchronous pass and sort order is preserved
+    const nextApptDates = await Promise.all(items.map(p => getNextAppointmentDate(p.id)));
+
+    list.innerHTML = '';
+
     const groups = {};
-    for (const p of items) {
+    items.forEach((p, i) => {
+      p._nextApptDate = nextApptDates[i];
       const letter = (p.displayName || '?').trim().charAt(0).toUpperCase();
       if (!groups[letter]) groups[letter] = [];
       groups[letter].push(p);
-    }
+    });
     const sortedLetters = Object.keys(groups).sort();
 
     for (const letter of sortedLetters) {
@@ -336,9 +342,8 @@ async function refreshProviderList() {
         const statusLabel = PROVIDER_STATUS_LABELS[p.status] || p.status || '';
         const statusClass = 'ct-status-' + (p.status || 'active');
 
-        const nextApptDate = await getNextAppointmentDate(p.id);
-        const nextApptHtml = nextApptDate
-          ? `<div class="ct-provider-next-appt">&#x1F4C5; Next: ${escHtml(formatApptDate(nextApptDate))}</div>`
+        const nextApptHtml = p._nextApptDate
+          ? `<div class="ct-provider-next-appt">&#x1F4C5; Next: ${escHtml(formatApptDate(p._nextApptDate))}</div>`
           : '';
 
         const subParts = [p.specialty, p.organization].filter(Boolean);
