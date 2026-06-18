@@ -281,6 +281,105 @@
   </div>
 </div>
 
+<!-- ============================================================
+     CONDITION ADD MODAL
+     ============================================================ -->
+<div id="condAddModal" role="dialog" aria-modal="true" aria-labelledby="condAddModalTitle"
+     style="display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.45); overflow-y:auto; padding:var(--space-6) var(--space-4);">
+  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:540px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
+    <button id="condAddModalClose" aria-label="Close"
+            style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
+    <h3 id="condAddModalTitle" style="margin-bottom:var(--space-4);">Add Condition</h3>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="condNameInput">Condition / diagnosis</label>
+        <input type="text" id="condNameInput" placeholder="e.g. Fibromyalgia" />
+      </div>
+      <div class="form-group">
+        <label for="condIcdInput">ICD-10 code (optional)</label>
+        <input type="text" id="condIcdInput" placeholder="e.g. M79.7" />
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="condDiagnosedDateInput">Diagnosed date</label>
+        <input type="date" id="condDiagnosedDateInput" />
+      </div>
+      <div class="form-group">
+        <label for="condDiagnosedByInput">Diagnosed by</label>
+        <input type="text" id="condDiagnosedByInput" placeholder="e.g. Dr. Smith" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="condStatusInput">Status</label>
+      <select id="condStatusInput">
+        <option value="active">Active</option>
+        <option value="managed">Managed</option>
+        <option value="resolved">Resolved</option>
+        <option value="suspected">Suspected</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="condNotesInput">Notes</label>
+      <textarea id="condNotesInput" rows="3" placeholder="Symptoms, triggers, treatment notes, etc."></textarea>
+    </div>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:var(--space-4);">
+      <button id="saveCondAddBtn" class="btn btn-primary">Add Condition</button>
+      <button id="cancelCondAddBtn" class="save-btn" style="background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     CONDITION EDIT MODAL
+     ============================================================ -->
+<div id="condEditModal" role="dialog" aria-modal="true" aria-labelledby="condEditModalTitle"
+     style="display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.45); overflow-y:auto; padding:var(--space-6) var(--space-4);">
+  <div style="background:var(--color-surface); border-radius:var(--radius-xl); max-width:540px; margin:auto; padding:var(--space-6); position:relative; box-shadow:var(--shadow-lg);">
+    <button id="condEditModalClose" aria-label="Close"
+            style="position:absolute; top:var(--space-4); right:var(--space-4); background:none; border:none; cursor:pointer; color:var(--color-text-muted); font-size:1.25rem; line-height:1;">&times;</button>
+    <h3 id="condEditModalTitle" style="margin-bottom:var(--space-4);">Edit Condition</h3>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="condEditNameInput">Condition / diagnosis</label>
+        <input type="text" id="condEditNameInput" placeholder="e.g. Fibromyalgia" />
+      </div>
+      <div class="form-group">
+        <label for="condEditIcdInput">ICD-10 code (optional)</label>
+        <input type="text" id="condEditIcdInput" placeholder="e.g. M79.7" />
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label for="condEditDiagnosedDateInput">Diagnosed date</label>
+        <input type="date" id="condEditDiagnosedDateInput" />
+      </div>
+      <div class="form-group">
+        <label for="condEditDiagnosedByInput">Diagnosed by</label>
+        <input type="text" id="condEditDiagnosedByInput" placeholder="e.g. Dr. Smith" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="condEditStatusInput">Status</label>
+      <select id="condEditStatusInput">
+        <option value="active">Active</option>
+        <option value="managed">Managed</option>
+        <option value="resolved">Resolved</option>
+        <option value="suspected">Suspected</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="condEditNotesInput">Notes</label>
+      <textarea id="condEditNotesInput" rows="3" placeholder="Symptoms, triggers, treatment notes, etc."></textarea>
+    </div>
+    <input type="hidden" id="condEditingId" />
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:var(--space-4);">
+      <button id="saveCondEditBtn" class="btn btn-primary">Save Changes</button>
+      <button id="cancelCondEditModalBtn" class="save-btn" style="background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <header class="app-header">
 
   <!-- DESKTOP -->
@@ -926,53 +1025,9 @@
   <!-- Conditions Tab -->
   <section id="conditions-tab" class="tab">
     <h2>Conditions</h2>
-    <div class="card">
-      <h3 id="condFormTitle">Add Condition</h3>
-
-      <div class="form-row form-row-2">
-        <div class="form-group">
-          <label for="condNameInput">Condition / diagnosis</label>
-          <input type="text" id="condNameInput" placeholder="e.g. Fibromyalgia" />
-        </div>
-        <div class="form-group">
-          <label for="condIcdInput">ICD-10 code (optional)</label>
-          <input type="text" id="condIcdInput" placeholder="e.g. M79.7" />
-        </div>
-      </div>
-
-      <div class="form-row form-row-2">
-        <div class="form-group">
-          <label for="condDiagnosedDateInput">Diagnosed date</label>
-          <input type="date" id="condDiagnosedDateInput" />
-        </div>
-        <div class="form-group">
-          <label for="condDiagnosedByInput">Diagnosed by</label>
-          <input type="text" id="condDiagnosedByInput" placeholder="e.g. Dr. Smith" />
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="condStatusInput">Status</label>
-        <select id="condStatusInput">
-          <option value="active">Active</option>
-          <option value="managed">Managed</option>
-          <option value="resolved">Resolved</option>
-          <option value="suspected">Suspected</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="condNotesInput">Notes</label>
-        <textarea id="condNotesInput" rows="3" placeholder="Symptoms, triggers, treatment notes, etc."></textarea>
-      </div>
-
-      <input type="hidden" id="condEditingId" />
-      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-        <button id="savCondBtn" class="btn btn-primary">Add Condition</button>
-        <button id="cancelCondEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
-      </div>
+    <div style="display:flex; justify-content:flex-end; margin-bottom:var(--space-4);">
+      <button id="openCondAddModalBtn" class="btn btn-primary">&#43; Add Condition</button>
     </div>
-
     <div class="card">
       <h3>My Conditions</h3>
       <ul id="conditionsList"></ul>
