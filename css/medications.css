@@ -413,6 +413,12 @@
 }
 
 @media print {
+  /* Hide nav tabs and the Print/Save card — only show the tables */
+  .med-sub-tabs,
+  #medPrintView > .card:first-child {
+    display: none !important;
+  }
+
   .med-print-table thead th {
     background: #eee;
     color: #333;
