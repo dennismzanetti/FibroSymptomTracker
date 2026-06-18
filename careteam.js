@@ -53,6 +53,7 @@ function setupCareTeamTab() {
         populateProviderDropdown();
         refreshAppointmentList();
       }
+      if (targetViewId === 'ctPrintView') renderCTPrintPreviews();
     });
   });
 
@@ -84,6 +85,10 @@ function setupCareTeamTab() {
     resetApptForm();
     closeModal('ctApptModal');
   });
+
+  // Print buttons
+  document.getElementById('printCareTeamBtn')?.addEventListener('click', printCareTeam);
+  document.getElementById('printAppointmentsBtn')?.addEventListener('click', printAppointments);
 
   // Close modals on backdrop click
   ['ctApptModal', 'ctProviderModal', 'ctProviderAddModal'].forEach(id => {
@@ -565,7 +570,6 @@ async function refreshAppointmentList() {
       const statusLabel = APPT_STATUS_LABELS[a.status] || a.status || '';
       const statusClass = 'ct-status-' + (a.status || 'upcoming');
 
-      // Build optional detail line: location · purpose
       const detailParts = [
         a.location ? '\uD83D\uDCCD ' + escHtml(a.location) : '',
         a.purpose  ? escHtml(a.purpose) : ''
@@ -574,7 +578,6 @@ async function refreshAppointmentList() {
         ? `<div class="ct-appt-detail">${detailParts.join(' &middot; ')}</div>`
         : '';
 
-      // Build optional notes line
       const notesParts = [
         a.prepNotes  ? `<span class="ct-notes-label">Prep:</span> ${escHtml(a.prepNotes)}`  : '',
         a.postNotes  ? `<span class="ct-notes-label">Visit:</span> ${escHtml(a.postNotes)}` : ''
@@ -632,4 +635,99 @@ async function refreshAppointmentList() {
     upcomingList.innerHTML = '<li class="ct-empty">&#x26A0; Failed to load appointments.</li>';
     pastList.innerHTML = '';
   }
+}
+
+// ============================================================
+// PRINT / EXPORT
+// ============================================================
+
+async function renderCTPrintPreviews() {
+  await renderCareTeamPrintTable();
+  await renderAppointmentsPrintTable();
+}
+
+async function renderCareTeamPrintTable() {
+  const tbody = document.getElementById('ctProviderPrintTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="6">Loading\u2026</td></tr>';
+  try {
+    const snapshot = await db.collection('careTeam').orderBy('displayName').get();
+    if (snapshot.empty) {
+      tbody.innerHTML = '<tr><td colspan="6" style="color:var(--color-text-muted);">No providers on record.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = '';
+    snapshot.forEach(doc => {
+      const p = doc.data();
+      const typeLabel   = PROVIDER_TYPE_LABELS[p.providerType] || p.providerType || '';
+      const statusLabel = PROVIDER_STATUS_LABELS[p.status] || p.status || '';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${escHtml(p.displayName || '')}</td>
+        <td>${escHtml(typeLabel)}</td>
+        <td>${escHtml(p.specialty || '')}${p.organization ? '<br><span style="color:var(--color-text-muted);font-size:0.8em;">' + escHtml(p.organization) + '</span>' : ''}</td>
+        <td>${p.phone ? escHtml(p.phone) : ''}</td>
+        <td>${escHtml(statusLabel)}</td>
+        <td>${escHtml(p.notes || '')}</td>`;
+      tbody.appendChild(tr);
+    });
+  } catch (err) {
+    console.error('Error rendering care team print table:', err);
+    tbody.innerHTML = '<tr><td colspan="6">&#x26A0; Failed to load.</td></tr>';
+  }
+}
+
+async function renderAppointmentsPrintTable() {
+  const tbody = document.getElementById('ctApptPrintTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="6">Loading\u2026</td></tr>';
+  try {
+    const snapshot = await db.collection('appointments').orderBy('date', 'asc').get();
+    if (snapshot.empty) {
+      tbody.innerHTML = '<tr><td colspan="6" style="color:var(--color-text-muted);">No appointments on record.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = '';
+    snapshot.forEach(doc => {
+      const a = doc.data();
+      const [y, mo, dy] = (a.date || '').split('-').map(Number);
+      const dateLabel = (y && mo && dy)
+        ? new Date(y, mo - 1, dy).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
+        : (a.date || '');
+      const endLabel = a.endDate ? ' \u2013 ' + formatEndDate(a.endDate) : '';
+      const statusLabel = APPT_STATUS_LABELS[a.status] || a.status || '';
+      const notesArr = [
+        a.prepNotes  ? 'Prep: ' + a.prepNotes  : '',
+        a.postNotes  ? 'Visit: ' + a.postNotes : ''
+      ].filter(Boolean);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${escHtml(a.providerName || '')}</td>
+        <td>${escHtml(dateLabel + endLabel)}${a.time ? '<br><span style="font-size:0.85em;color:var(--color-text-muted);">' + escHtml(a.time) + '</span>' : ''}</td>
+        <td>${escHtml(a.location || '')}</td>
+        <td>${escHtml(a.purpose || '')}</td>
+        <td>${escHtml(statusLabel)}${a.followUpNeeded ? '<br><span style="font-size:0.8em;color:var(--color-primary);">\u2691 Follow-up</span>' : ''}</td>
+        <td>${notesArr.map(escHtml).join('<br>')}</td>`;
+      tbody.appendChild(tr);
+    });
+  } catch (err) {
+    console.error('Error rendering appointments print table:', err);
+    tbody.innerHTML = '<tr><td colspan="6">&#x26A0; Failed to load.</td></tr>';
+  }
+}
+
+async function printCareTeam() {
+  await renderCareTeamPrintTable();
+  const el = document.getElementById('ctProviderPrintSection');
+  if (el) el.setAttribute('data-print-active', 'careteam');
+  window.print();
+  if (el) el.removeAttribute('data-print-active');
+}
+
+async function printAppointments() {
+  await renderAppointmentsPrintTable();
+  const el = document.getElementById('ctProviderPrintSection');
+  if (el) el.setAttribute('data-print-active', 'appointments');
+  window.print();
+  if (el) el.removeAttribute('data-print-active');
 }
