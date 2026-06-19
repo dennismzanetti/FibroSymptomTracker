@@ -1067,3 +1067,96 @@ textarea:focus-visible {
   color: var(--color-text-muted);
   white-space: nowrap;
 }
+
+/* ================================================================
+   MEDICATIONS PRINT STYLES
+   ================================================================ */
+
+/* Screen: hide print-only elements */
+.med-print-header,
+.med-print-footer,
+.med-print-section-title { display: none; }
+
+.med-status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.med-status-active   { background: var(--color-success); }
+.med-status-inactive { background: var(--color-text-faint); }
+
+@media print {
+  @page { size: letter; margin: 0.5in; }
+
+  #medPrintControls { display: none !important; }
+
+  .med-print-header,
+  .med-print-footer { display: flex !important; }
+
+  .med-print-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin-bottom: 1.5em;
+  }
+  .med-print-table colgroup col:nth-child(1) { width: 26%; }
+  .med-print-table colgroup col:nth-child(2) { width: 13%; }
+  .med-print-table colgroup col:nth-child(3) { width: 18%; }
+  .med-print-table colgroup col:nth-child(4) { width: 16%; }
+  .med-print-table colgroup col:nth-child(5) { width: 27%; }
+  .med-print-table thead th {
+    padding: 5pt 7pt;
+    background: #e8f0ef !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color: #01696f;
+    font-weight: 700;
+    font-size: 7.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1.5pt solid #01696f;
+    text-align: left;
+  }
+  .med-print-table td {
+    padding: 5pt 7pt;
+    border-bottom: 0.5pt solid #e0ddd8;
+    vertical-align: top;
+    font-size: 9pt;
+  }
+  .med-print-table tr:nth-child(even) td {
+    background: #f7f6f2 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .med-print-header {
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 8pt;
+    margin-bottom: 12pt;
+    border-bottom: 2pt solid #01696f;
+  }
+  .med-print-header-title { font-size: 13pt; font-weight: 700; color: #01696f; }
+  .med-print-header-sub   { font-size: 8pt; color: #666; margin-top: 2pt; }
+  .med-print-header-date  { font-size: 8pt; color: #666; text-align: right; }
+  .med-print-section-title {
+    display: block !important;
+    font-size: 8pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #01696f;
+    margin: 14pt 0 4pt 0;
+  }
+  .med-print-footer {
+    justify-content: space-between;
+    font-size: 7pt;
+    color: #999;
+    border-top: 0.5pt solid #dcd9d5;
+    padding-top: 6pt;
+    margin-top: 12pt;
+  }
+}
