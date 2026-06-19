@@ -756,6 +756,14 @@ input[type="range"] {
   .card, .entry-section { box-shadow: none; border: 1px solid var(--color-border); }
 }
 
+/* Care Team print: hide page heading, sub-tabs, and the
+   Print/Save as PDF controls card — show only the data tables */
+body[data-print-context="careteam"] #careteam-tab h2,
+body[data-print-context="careteam"] #careteam-tab .med-sub-tabs,
+body[data-print-context="careteam"] #ctPrintView > .card:first-child {
+  display: none !important;
+}
+
 /* ================================================================
    RESPONSIVE ADJUSTMENTS
    ================================================================ */
