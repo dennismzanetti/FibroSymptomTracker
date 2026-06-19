@@ -1118,9 +1118,13 @@
     </div>
     <div id="medPrintView" class="med-view" style="display:none;">
       <div class="card">
-        <h3>Print / Save as PDF</h3>
+        <h3>Print</h3>
         <p style="font-size:0.875rem;color:var(--color-text-muted);margin-bottom:1rem;">Generates a compact, print-ready list of all your medications and supplements.</p>
-        <button id="printMedBtn" class="btn btn-primary">Print / Save PDF</button>
+        <button id="printMedBtn" class="btn btn-primary">Print Medications
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;">
+            <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+          </svg>     
+        </button>
       </div>
       <div class="card">
         <h3>Medications</h3>
@@ -1163,7 +1167,7 @@
     <div class="med-sub-tabs">
       <button class="ct-sub-tab-btn active" data-ct-view="ctProvidersView">My Providers</button>
       <button class="ct-sub-tab-btn" data-ct-view="ctAppointmentsView">Appointments</button>
-      <button class="ct-sub-tab-btn" data-ct-view="ctPrintView">Print / Export</button>
+      <button class="ct-sub-tab-btn" data-ct-view="ctPrintView">Print</button>
     </div>
 
     <!-- Providers view -->
@@ -1189,10 +1193,10 @@
       </div>
     </div>
 
-    <!-- Print / Export view -->
+    <!-- Print view -->
     <div id="ctPrintView" class="ct-view" style="display:none;">
       <div class="card">
-        <h3>Print / Save as PDF</h3>
+        <h3>Print</h3>
         <p style="font-size:0.875rem;color:var(--color-text-muted);margin-bottom:1rem;">Generates a clean, formatted copy of your care team providers and appointments.</p>
         <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
          <button id="printCareTeamBtn" class="btn btn-primary">
