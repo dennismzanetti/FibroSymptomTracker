@@ -76,14 +76,69 @@
     }
   }
 
-  // ---- Load app version from VERSION file ----
-  function loadAppVersion() {
-    const el = document.getElementById('settingsAppVersion');
-    if (!el) return;
-    fetch('VERSION')
-      .then(r => r.text())
-      .then(v => { el.textContent = 'Version ' + v.trim(); })
-      .catch(() => { el.textContent = ''; });
+  // ---- Load About section: version + last 10 commits ----
+  function loadAboutSection() {
+    // Version line
+    const versionEl = document.getElementById('settingsAppVersion');
+    if (versionEl) {
+      fetch('VERSION')
+        .then(r => r.text())
+        .then(v => { versionEl.textContent = 'Version ' + v.trim(); })
+        .catch(() => { versionEl.textContent = ''; });
+    }
+
+    // Commit history table
+    const container = document.getElementById('settingsAboutCommits');
+    if (!container) return;
+
+    container.innerHTML = '<p style="font-size:var(--text-sm);color:var(--color-text-muted);">Loading commit history\u2026</p>';
+
+    fetch('https://api.github.com/repos/dennismzanetti/FibroSymptomTracker/commits?sha=main&per_page=10')
+      .then(r => r.json())
+      .then(commits => {
+        if (!Array.isArray(commits) || commits.length === 0) {
+          container.innerHTML = '<p style="font-size:var(--text-sm);color:var(--color-text-muted);">No commit data available.</p>';
+          return;
+        }
+
+        const rows = commits.map(c => {
+          const sha     = c.sha;
+          const url     = c.html_url;
+          const date    = new Date(c.commit.author.date);
+          const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+          const msg     = (c.commit.message || '').split('\n')[0];
+
+          return `<tr>
+            <td style="font-family:monospace;font-size:var(--text-xs);white-space:nowrap;padding:var(--space-2) var(--space-3);vertical-align:top;border-bottom:1px solid var(--color-divider);">
+              <a href="${url}" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary);text-decoration:none;">${sha}</a>
+            </td>
+            <td style="font-size:var(--text-xs);white-space:nowrap;padding:var(--space-2) var(--space-3);vertical-align:top;border-bottom:1px solid var(--color-divider);color:var(--color-text-muted);">
+              ${dateStr}<br><span style="color:var(--color-text-faint);">${timeStr}</span>
+            </td>
+            <td style="font-size:var(--text-xs);padding:var(--space-2) var(--space-3);vertical-align:top;border-bottom:1px solid var(--color-divider);">
+              ${msg}
+            </td>
+          </tr>`;
+        }).join('');
+
+        container.innerHTML = `
+          <div style="overflow-x:auto;margin-top:var(--space-3);">
+            <table style="width:100%;border-collapse:collapse;">
+              <thead>
+                <tr style="background:var(--color-surface-offset);">
+                  <th style="font-size:var(--text-xs);text-align:left;padding:var(--space-2) var(--space-3);color:var(--color-text-muted);font-weight:600;border-bottom:2px solid var(--color-border);white-space:nowrap;">SHA</th>
+                  <th style="font-size:var(--text-xs);text-align:left;padding:var(--space-2) var(--space-3);color:var(--color-text-muted);font-weight:600;border-bottom:2px solid var(--color-border);white-space:nowrap;">Date</th>
+                  <th style="font-size:var(--text-xs);text-align:left;padding:var(--space-2) var(--space-3);color:var(--color-text-muted);font-weight:600;border-bottom:2px solid var(--color-border);">Commit Message</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>`;
+      })
+      .catch(() => {
+        container.innerHTML = '<p style="font-size:var(--text-sm);color:var(--color-text-muted);">Could not load commit history.</p>';
+      });
   }
 
   // ---- Wire display settings form ----
@@ -143,6 +198,7 @@
       btn.addEventListener('click', () => {
         if (btn.getAttribute('data-tab') === 'settings-tab') {
           populateAccountInfo();
+          loadAboutSection();
           loadSettingsFromFirestore(settings => {
             const themeSelect      = document.getElementById('settingsThemeSelect');
             const defaultTabSelect = document.getElementById('settingsDefaultTabSelect');
@@ -155,7 +211,10 @@
     const tabSelect = document.getElementById('tabSelect');
     if (tabSelect) {
       tabSelect.addEventListener('change', () => {
-        if (tabSelect.value === 'settings-tab') populateAccountInfo();
+        if (tabSelect.value === 'settings-tab') {
+          populateAccountInfo();
+          loadAboutSection();
+        }
       });
     }
   }
@@ -166,7 +225,7 @@
     wireSettingsSignOut();
     wireExportImport();
     watchSettingsTab();
-    loadAppVersion();
+    loadAboutSection();
   });
 
   // Called by app.js after onAuthStateChanged fires so theme + default tab apply immediately on login
