@@ -88,6 +88,15 @@ function setupMedicationsTab() {
   // Print button
   document.getElementById("printMedBtn")?.addEventListener("click", () => window.print());
 
+  // Set default active sub-tab to Medications
+  const defaultBtn = document.querySelector('#medications-tab .ct-sub-tab-btn[data-med-view="medListView"]');
+  if (defaultBtn) {
+    defaultBtn.classList.add('active');
+    document.querySelectorAll('.med-view').forEach(v => {
+      v.style.display = v.id === 'medListView' ? '' : 'none';
+    });
+  }
+
   refreshMedList();
 }
 
