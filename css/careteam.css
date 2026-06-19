@@ -438,3 +438,37 @@
 /* Misc */
 .ct-link { color: var(--color-primary); text-decoration: underline; }
 .ct-link:hover { color: var(--color-primary-hover); }
+
+/* ================================================================
+   PRINT — hide all UI chrome, show only data
+   ================================================================ */
+
+@media print {
+  /* Hide the Print controls card (title, instructions, Print button) */
+  #ctPrintView > .card:first-child { display: none !important; }
+
+  /* Hide sub-navigation tabs */
+  .med-sub-tabs { display: none !important; }
+
+  /* Hide all checkboxes in the print view (appointment toggles etc.) */
+  #ctPrintView input[type="checkbox"],
+  #ctPrintView label:has(input[type="checkbox"]) { display: none !important; }
+
+  /* Hide card action buttons — not useful on paper */
+  .ct-item-actions,
+  .ct-appt-actions { display: none !important; }
+
+  /* Clean up card chrome for paper */
+  .ct-provider-item,
+  .ct-appt-item {
+    box-shadow: none !important;
+    transform: none !important;
+    border: 1px solid #ccc !important;
+    border-left: 3px solid #ccc !important;
+    break-inside: avoid;
+  }
+
+  /* App header and footer */
+  .app-header,
+  .build-footer { display: none !important; }
+}
