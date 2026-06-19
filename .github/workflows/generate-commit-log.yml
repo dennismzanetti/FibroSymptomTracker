@@ -1,0 +1,29 @@
+name: Generate commit-log.json
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  commit-log:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 11
+
+      - name: Build commit-log.json
+        run: |
+          git log -10 --pretty=format:'{"sha":"%H","short":"%h","date":"%aI","message":"%s","url":"https://github.com/dennismzanetti/FibroSymptomTracker/commit/%H"}' \
+            | awk 'NR==1{printf "["}{printf "%s%s", (NR>1?",":""}, $0}END{print "]"}' \
+            > commit-log.json
+
+      - name: Commit commit-log.json
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add commit-log.json
+          git diff --cached --quiet || git commit -m "chore: update commit-log.json [skip ci]"
+          git push
