@@ -1,4 +1,5 @@
 // trends.js — uses global `db` and `auth` from app.js (no ES module import needed)
+// NOTE: days are stored at the top-level `days` collection (not under users/{uid}/days)
 
 function setupTrends(getUid) {
   const fromEl  = document.getElementById('trendsFrom');
@@ -10,14 +11,12 @@ function setupTrends(getUid) {
   if (!loadBtn || !canvas) return;
 
   loadBtn.addEventListener('click', async () => {
-    const uid  = getUid ? getUid() : null;
     const from = fromEl ? fromEl.value : null;
     const to   = toEl   ? toEl.value   : null;
-    if (!uid || !from || !to) return;
+    if (!from || !to) return;
 
     try {
       const snap = await db
-        .collection('users').doc(uid)
         .collection('days')
         .where(firebase.firestore.FieldPath.documentId(), '>=', from)
         .where(firebase.firestore.FieldPath.documentId(), '<=', to)
