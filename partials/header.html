@@ -1,0 +1,78 @@
+<header class="app-header">
+
+  <!-- DESKTOP -->
+  <div class="header-desktop">
+
+    <!-- Row 1: title + sign-out icon -->
+    <div class="header-row1">
+      <h1 class="header-title">Symptom Tracker</h1>
+      <button id="signOutBtn" class="header-signout-btn" style="display:none;"
+              aria-label="Sign out" title="Sign out">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Row 2: tab pills -->
+    <nav id="tabs" class="header-tabs">
+      <button class="tab-button active" data-tab="entry-tab">Daily Entry</button>
+      <button class="tab-button" data-tab="journal-tab">Journal</button>
+      <button class="tab-button" data-tab="history-tab">History</button>
+      <button class="tab-button" data-tab="trends-tab">Trends</button>
+      <button class="tab-button" data-tab="mood-tab">Mood</button>
+      <button class="tab-button" data-tab="medications-tab">Medications</button>
+      <button class="tab-button" data-tab="conditions-tab">Conditions</button>
+      <button class="tab-button" data-tab="careteam-tab">Care Team</button>
+      <button class="tab-button" data-tab="settings-tab">Settings</button>
+    </nav>
+
+  </div>
+
+  <!-- MOBILE HEADER -->
+  <div class="header-mobile">
+
+    <!-- Row 1: title + sign-out -->
+    <div class="header-mobile-row1">
+      <span class="header-mobile-title">Symptom Tracker</span>
+      <button id="signOutBtnMobile" class="header-signout-btn" style="display:none;"
+              aria-label="Sign out" title="Sign out">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Row 2: tab select dropdown -->
+    <div class="header-mobile-row3">
+      <div class="tab-select-wrap">
+        <select id="tabSelect" class="tab-select" aria-label="Select section">
+          <option value="entry-tab">Daily Entry</option>
+          <option value="journal-tab">Journal</option>
+          <option value="history-tab">History</option>
+          <option value="trends-tab">Trends</option>
+          <option value="mood-tab">Mood</option>
+          <option value="medications-tab">Medications</option>
+          <option value="conditions-tab">Conditions</option>
+          <option value="careteam-tab">Care Team</option>
+          <option value="settings-tab">Settings</option>
+        </select>
+        <span class="tab-select-chevron" aria-hidden="true">&#9660;</span>
+      </div>
+    </div>
+
+  </div>
+
+</header>
+
+<main>
+  <p id="saveStatus"></p>
+

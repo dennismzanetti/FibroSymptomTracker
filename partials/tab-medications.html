@@ -1,0 +1,57 @@
+  <!-- Medications Tab -->
+  <section id="medications-tab" class="tab">
+    <h2>Medications</h2>
+    <div class="med-sub-tabs">
+      <button class="ct-sub-tab-btn active" data-med-view="medListView">Medications</button>
+      <button class="ct-sub-tab-btn" data-med-view="suppListView">Supplements</button>
+      <button class="ct-sub-tab-btn" data-med-view="medHistoryView">Change History</button>
+      <button class="ct-sub-tab-btn" data-med-view="medPrintView">Print</button>
+    </div>
+    <div id="medListView" class="med-view">
+      <div style="display:flex; justify-content:flex-end; margin-bottom:var(--space-4);">
+        <button id="openMedAddModalBtn" class="btn btn-primary">&#43; Add Medication</button>
+      </div>
+      <div class="card"><h3>My Medications</h3><ul id="medList"></ul></div>
+    </div>
+    <div id="suppListView" class="med-view" style="display:none;">
+      <div style="display:flex; justify-content:flex-end; margin-bottom:var(--space-4);">
+        <button id="openSuppAddModalBtn" class="btn btn-primary">&#43; Add Supplement</button>
+      </div>
+      <div class="card"><h3>My Supplements</h3><ul id="suppList"></ul></div>
+    </div>
+    <div id="medHistoryView" class="med-view" style="display:none;">
+      <div class="card"><h3>Medication &amp; Supplement Change History</h3><ul id="medHistoryList"></ul></div>
+    </div>
+    <div id="medPrintView" class="med-view" style="display:none;">
+      <div class="card">
+        <h3>Print</h3>
+        <p style="font-size:0.875rem;color:var(--color-text-muted);margin-bottom:1rem;">Generates a compact, print-ready list of all your medications and supplements.</p>
+        <button id="printMedBtn" class="btn btn-primary">Print Medications
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;">
+            <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+          </svg>     
+        </button>
+      </div>
+      <div class="card">
+        <h3>Medications</h3>
+        <table class="med-print-table">
+          <colgroup>
+            <col /><col /><col /><col /><col />
+          </colgroup>
+          <thead><tr><th>Name</th><th>Dose</th><th>Frequency</th><th>Doctor</th><th>Notes</th></tr></thead>
+          <tbody id="medPrintTableBody"><tr><td colspan="5">Loading&#8230;</td></tr></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Supplements</h3>
+        <table class="med-print-table">
+          <colgroup>
+            <col /><col /><col /><col /><col />
+          </colgroup>
+          <thead><tr><th>Name</th><th>Dose</th><th>Frequency</th><th>Brand</th><th>Notes</th></tr></thead>
+          <tbody id="suppPrintTableBody"><tr><td colspan="5">Loading&#8230;</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+

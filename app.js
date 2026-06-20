@@ -223,7 +223,7 @@ function getJournalDateLine(dateStr) {
 }
 
 // ---- UI setup ----
-window.addEventListener("load", () => {
+document.addEventListener("partialsLoaded", () => {
   setupTabs();
   setupExerciseToggle();
   setupSaveDay();
@@ -806,7 +806,7 @@ function cancelImport() {
 }
 
 // Wire up export/import listeners after DOM ready
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("partialsLoaded", () => {
   document.getElementById("exportDataBtn")?.addEventListener("click", exportAllData);
   document.getElementById("importFileInput")?.addEventListener("change", handleImportFile);
   document.getElementById("importConfirmBtn")?.addEventListener("click", confirmImport);
