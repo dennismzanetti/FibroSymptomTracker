@@ -6,6 +6,7 @@ on:
 
 jobs:
   commit-log:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -13,6 +14,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 11
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build commit-log.json
         run: |
