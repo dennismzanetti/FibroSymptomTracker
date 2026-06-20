@@ -111,7 +111,7 @@
   --text-2xl:   1.25rem;   /* 20px */
 
   /* --- Layout --- */
-  --header-h:       110px;
+  --header-h:       72px;
   --footer-h:       1.8rem;
   --content-max:    900px;
   --content-wide:   1000px;
@@ -119,7 +119,7 @@
 
 @media (max-width: 640px) {
   :root {
-    --header-h: 100px;
+    --header-h: 58px;
   }
 }
 
