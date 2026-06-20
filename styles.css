@@ -690,8 +690,8 @@ input[type="range"] {
   bottom: calc(var(--space-4) + var(--footer-h));
   left: 50%;
   transform: translateX(-50%);
-  background: var(--color-text);
-  color: var(--color-surface);
+  background: var(--color-success);
+  color: white;
   padding: var(--space-2) var(--space-5);
   border-radius: var(--radius-full);
   font-size: var(--text-sm);
