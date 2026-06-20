@@ -234,6 +234,11 @@ window.addEventListener("load", () => {
   setupAtrForm();
   setupHistoryControls();
 
+  // Wire the date-range trends chart (trends.js)
+  if (typeof setupTrends === 'function') {
+    setupTrends(() => auth.currentUser ? auth.currentUser.uid : null);
+  }
+
   const dateInput = document.getElementById("dateInput");
   if (dateInput) {
     dateInput.addEventListener("change", () => {
