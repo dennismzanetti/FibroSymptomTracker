@@ -108,7 +108,7 @@
           const date    = new Date(c.commit.author.date);
           const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
           const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-          const sha     = c.sha.slice(0, 7);
+          const sha     = c.sha;
           const msg     = (c.commit.message || '').split('\n')[0];
           const url     = c.html_url;
 
