@@ -29,12 +29,16 @@ async function refreshMoodSummaryTable() {
       dates.push(d.toISOString().split("T")[0]);
     }
 
-    const snapshot = await db.collection("days")
-      .where(firebase.firestore.FieldPath.documentId(), "in", dates)
-      .get();
+    // Firestore 'in' operator supports max 10 values — split into two batches of 7
+    const FP = firebase.firestore.FieldPath;
+    const [snap1, snap2] = await Promise.all([
+      db.collection("days").where(FP.documentId(), "in", dates.slice(0, 7)).get(),
+      db.collection("days").where(FP.documentId(), "in", dates.slice(7, 14)).get()
+    ]);
 
     const byDate = {};
-    snapshot.forEach(doc => { byDate[doc.id] = doc.data(); });
+    snap1.forEach(doc => { byDate[doc.id] = doc.data(); });
+    snap2.forEach(doc => { byDate[doc.id] = doc.data(); });
 
     const DOW   = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
     const MONTH = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -55,7 +59,6 @@ async function refreshMoodSummaryTable() {
 
       const tier = score !== null ? moodTier(score) : 0;
 
-      // Use CSS classes instead of inline styles for pill colours
       const pillHtml = score !== null
         ? `<span class="mood-pill mood-pill-${tier}">${score}/10</span>`
         : `<span class="mood-pill mood-pill-none">&#8212;</span>`;
