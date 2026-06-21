@@ -648,11 +648,11 @@ async function renderCTPrintPreviews() {
 async function renderCareTeamPrintTable() {
   const tbody = document.getElementById('ctProviderPrintTableBody');
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="6">Loading\u2026</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="7">Loading\u2026</td></tr>';
   try {
     const snapshot = await db.collection('careTeam').orderBy('displayName').get();
     if (snapshot.empty) {
-      tbody.innerHTML = '<tr><td colspan="6" style="color:var(--color-text-muted);">No providers on record.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="color:var(--color-text-muted);">No providers on record.</td></tr>';
       return;
     }
     tbody.innerHTML = '';
@@ -666,13 +666,14 @@ async function renderCareTeamPrintTable() {
         <td>${escHtml(typeLabel)}</td>
         <td>${escHtml(p.specialty || '')}${p.organization ? '<br><span style="color:var(--color-text-muted);font-size:0.8em;">' + escHtml(p.organization) + '</span>' : ''}</td>
         <td>${p.phone ? escHtml(p.phone) : ''}</td>
+        <td>${p.address ? escHtml(p.address) : ''}</td>
         <td>${escHtml(statusLabel)}</td>
         <td>${escHtml(p.notes || '')}</td>`;
       tbody.appendChild(tr);
     });
   } catch (err) {
     console.error('Error rendering care team print table:', err);
-    tbody.innerHTML = '<tr><td colspan="6">&#x26A0; Failed to load.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7">&#x26A0; Failed to load.</td></tr>';
   }
 }
 
