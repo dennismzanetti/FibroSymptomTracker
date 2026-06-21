@@ -18,9 +18,17 @@ jobs:
 
       - name: Build commit-log.json
         run: |
-          git log -10 --pretty=format:'{"sha":"%H","short":"%h","date":"%aI","message":"%s","url":"https://github.com/dennismzanetti/FibroSymptomTracker/commit/%H"}' \
-            | awk 'NR==1{printf "["}{printf "%s%s", (NR>1?",":""}, $0}END{print "]"}' \
-            > commit-log.json
+          git log -10 --pretty=format:"%H|%h|%aI|%s" \
+            | while IFS='|' read -r sha short date msg; do
+                jq -n \
+                  --arg sha "$sha" \
+                  --arg short "$short" \
+                  --arg date "$date" \
+                  --arg msg "$msg" \
+                  --arg url "https://github.com/dennismzanetti/FibroSymptomTracker/commit/$sha" \
+                  '{sha:$sha,short:$short,date:$date,message:$msg,url:$url}'
+              done \
+            | jq -s '.' > commit-log.json
 
       - name: Commit commit-log.json
         run: |
