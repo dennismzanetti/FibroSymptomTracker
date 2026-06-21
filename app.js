@@ -263,32 +263,40 @@ function setupDatePicker() {
 function setupTabs() {
   const buttons = document.querySelectorAll('.tab-button');
   const tabs = document.querySelectorAll('.tab');
+  const tabSelect = document.getElementById('tabSelect');
+
+  function activate(target) {
+    buttons.forEach(b => b.classList.toggle('active', b.getAttribute('data-tab') === target));
+    tabs.forEach(t => t.classList.toggle('active', t.id === target));
+    // Keep the mobile dropdown in sync
+    if (tabSelect && tabSelect.value !== target) tabSelect.value = target;
+    // Tab-specific refresh hooks
+    if (target === 'history-tab') refreshHistory();
+    if (target === 'journal-tab') renderJournal();
+    if (target === 'trends-tab') refreshTrends();
+    if (target === 'mood-tab') refreshMoodTab();
+    if (target === 'careteam-tab') {
+      const defaultCTBtn = document.querySelector('.ct-sub-tab-btn[data-ct-view="ctProvidersView"]');
+      if (defaultCTBtn) defaultCTBtn.click();
+      else refreshProviderList();
+    }
+    if (target === 'conditions-tab') refreshConditionsList();
+    if (target === 'medications-tab') {
+      const activeView = document.querySelector(".med-view:not([style*='display:none']):not([style*='display: none'])");
+      if (activeView) refreshMedView(activeView.id);
+    }
+    if (target === 'entry-tab') syncDateInput();
+  }
+
+  // Desktop tab button clicks
   buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = btn.getAttribute('data-tab');
-      buttons.forEach(b => b.classList.remove('active'));
-      tabs.forEach(t => t.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById(target).classList.add('active');
-      const tabSelect = document.getElementById('tabSelect');
-      if (tabSelect) tabSelect.value = target;
-      if (target === 'history-tab') refreshHistory();
-      if (target === 'journal-tab') renderJournal();
-      if (target === 'trends-tab') refreshTrends();
-      if (target === 'mood-tab') refreshMoodTab();
-      if (target === 'careteam-tab') {
-        const defaultCTBtn = document.querySelector('.ct-sub-tab-btn[data-ct-view="ctProvidersView"]');
-        if (defaultCTBtn) defaultCTBtn.click();
-        else refreshProviderList();
-      }
-      if (target === 'conditions-tab') refreshConditionsList();
-      if (target === 'medications-tab') {
-        const activeView = document.querySelector(".med-view:not([style*='display:none']):not([style*='display: none'])");
-        if (activeView) refreshMedView(activeView.id);
-      }
-      if (target === 'entry-tab') syncDateInput();
-    });
+    btn.addEventListener('click', () => activate(btn.getAttribute('data-tab')));
   });
+
+  // Mobile dropdown — drives the same activate() path
+  if (tabSelect) {
+    tabSelect.addEventListener('change', () => activate(tabSelect.value));
+  }
 }
 
 function setupExerciseToggle() {
@@ -586,6 +594,8 @@ function setupDateNavigation() {
 function switchToTab(tabId) {
   document.querySelectorAll('.tab-button').forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId));
   document.querySelectorAll('.tab').forEach(tab => tab.classList.toggle('active', tab.id === tabId));
+  const tabSelect = document.getElementById('tabSelect');
+  if (tabSelect && tabSelect.value !== tabId) tabSelect.value = tabId;
   if (tabId === 'entry-tab') syncDateInput();
 }
 
