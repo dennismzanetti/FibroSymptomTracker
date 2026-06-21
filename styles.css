@@ -50,6 +50,38 @@ h4 {
 }
 
 /* ================================================================
+   ENTRY TITLE ROW — heading + date bar
+   ================================================================ */
+
+.entry-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.entry-date-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .entry-title-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .entry-date-bar {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+/* ================================================================
    SAVE CONTROLS BAR
    ================================================================ */
 
