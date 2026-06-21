@@ -1,5 +1,19 @@
 [
   {
+    "sha": "93ed7f35d7bb2f480b5a56b215ca2f8ee852acae",
+    "short": "93ed7f3",
+    "date": "2026-06-20T20:45:16-04:00",
+    "message": "fix: add Chart.js CDN so trends charts render",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/93ed7f35d7bb2f480b5a56b215ca2f8ee852acae"
+  },
+  {
+    "sha": "34cfce507225b9af662b802c8f11ed1dbacc9410",
+    "short": "34cfce5",
+    "date": "2026-06-21T00:40:35Z",
+    "message": "chore: update commit-log.json [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/34cfce507225b9af662b802c8f11ed1dbacc9410"
+  },
+  {
     "sha": "b12ddf58e24d15b378485e23b0ba3223cc796fd8",
     "short": "b12ddf5",
     "date": "2026-06-20T20:40:29-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-20T20:09:56-04:00",
     "message": "fix: always default Care Team to Providers sub-tab on tab switch",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9545635330cc21307982d361875dd6968ebf50ee"
-  },
-  {
-    "sha": "c4403bf6d9fdd2eb20332af7289f406fa08c0e51",
-    "short": "c4403bf",
-    "date": "2026-06-20T17:18:53-04:00",
-    "message": "Style: change toast success color to muted green #4a7c59",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c4403bf6d9fdd2eb20332af7289f406fa08c0e51"
-  },
-  {
-    "sha": "85c9da3a2a9af999f9c466c52fb993d967adaa2c",
-    "short": "85c9da3",
-    "date": "2026-06-20T17:14:04-04:00",
-    "message": "Fix: restore green toast background (var(--color-success) with white text)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/85c9da3a2a9af999f9c466c52fb993d967adaa2c"
   }
 ]
