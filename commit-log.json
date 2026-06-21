@@ -1,5 +1,19 @@
 [
   {
+    "sha": "c16a6bf1cc6bb6cdadc3b42708de60c9a2519a4b",
+    "short": "c16a6bf",
+    "date": "2026-06-20T20:49:07-04:00",
+    "message": "feat: expandable build footer on tap",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c16a6bf1cc6bb6cdadc3b42708de60c9a2519a4b"
+  },
+  {
+    "sha": "65b14beafe978d49f2ae593c4b54f46bb4a6a43c",
+    "short": "65b14be",
+    "date": "2026-06-21T00:45:24Z",
+    "message": "chore: update commit-log.json [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/65b14beafe978d49f2ae593c4b54f46bb4a6a43c"
+  },
+  {
     "sha": "93ed7f35d7bb2f480b5a56b215ca2f8ee852acae",
     "short": "93ed7f3",
     "date": "2026-06-20T20:45:16-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-20T20:17:49-04:00",
     "message": "fix: move mobile tabSelect wiring into setupTabs() so it runs after partials load",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c26ca0aafda87725b2075fb42a513a4b16c2abec"
-  },
-  {
-    "sha": "c2dc509e886bc96a01f1efbbd8d55a3f1fb5f0b7",
-    "short": "c2dc509",
-    "date": "2026-06-20T20:15:20-04:00",
-    "message": "feat: add address column to Care Team print table",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c2dc509e886bc96a01f1efbbd8d55a3f1fb5f0b7"
-  },
-  {
-    "sha": "9545635330cc21307982d361875dd6968ebf50ee",
-    "short": "9545635",
-    "date": "2026-06-20T20:09:56-04:00",
-    "message": "fix: always default Care Team to Providers sub-tab on tab switch",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9545635330cc21307982d361875dd6968ebf50ee"
   }
 ]
