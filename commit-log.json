@@ -1,5 +1,19 @@
 [
   {
+    "sha": "6fa1882b359dca7614f2135b134f1f9bafe2f884",
+    "short": "6fa1882",
+    "date": "2026-06-20T20:54:50-04:00",
+    "message": "fix: style sign out button with btn-danger; fix btn-danger to use defined CSS vars",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/6fa1882b359dca7614f2135b134f1f9bafe2f884"
+  },
+  {
+    "sha": "9fc32895f9e309d89708dc49ec40101c8f0dc0ed",
+    "short": "9fc3289",
+    "date": "2026-06-21T00:52:30Z",
+    "message": "chore: update commit-log.json [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9fc32895f9e309d89708dc49ec40101c8f0dc0ed"
+  },
+  {
     "sha": "2bac288a46fa86fe33b7d025056d1021ab60c10b",
     "short": "2bac288",
     "date": "2026-06-20T20:52:24-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-20T20:40:29-04:00",
     "message": "fix: use jq to safely build commit-log.json",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b12ddf58e24d15b378485e23b0ba3223cc796fd8"
-  },
-  {
-    "sha": "4926b948477a930c8d056b86a2b4dbe20f2d8046",
-    "short": "4926b94",
-    "date": "2026-06-20T20:38:58-04:00",
-    "message": "Center toast vertically on mobile",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/4926b948477a930c8d056b86a2b4dbe20f2d8046"
-  },
-  {
-    "sha": "bb9cf17838fa92f065c52f962347be4a225bac55",
-    "short": "bb9cf17",
-    "date": "2026-06-20T20:34:55-04:00",
-    "message": "fix: pre-fetch print data on button tap, cache result so beforeprint is instant on mobile",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/bb9cf17838fa92f065c52f962347be4a225bac55"
   }
 ]
