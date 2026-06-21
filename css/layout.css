@@ -391,7 +391,9 @@ main {
   bottom: 0;
   left: 0;
   right: 0;
+  /* Collapsed: single line */
   height: var(--footer-h);
+  overflow: hidden;
   background: var(--color-primary);
   color: white;
   text-align: center;
@@ -403,4 +405,50 @@ main {
   opacity: 0.9;
   width: 100%;
   box-sizing: border-box;
+  cursor: pointer;
+  user-select: none;
+  /* Animate height open/close */
+  transition: height 0.25s ease, padding 0.25s ease;
+  /* Truncate collapsed text */
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Expanded state — triggered by onclick toggle in index.html */
+.build-footer.expanded {
+  height: auto;
+  min-height: var(--footer-h);
+  padding: 0.4rem var(--space-4) 0.6rem var(--space-4);
+  white-space: normal;
+  text-overflow: clip;
+  line-height: 1.7;
+}
+
+/* In collapsed state, SHA is truncated inline */
+.build-footer #buildSha {
+  display: inline;
+  font-family: monospace;
+}
+
+/* In expanded state, show SHA and message on separate lines */
+.build-footer.expanded #buildSha,
+.build-footer.expanded #buildMsg {
+  display: block;
+  word-break: break-all;
+}
+
+.build-footer.expanded #buildSha::before { content: 'SHA: '; opacity: 0.7; }
+.build-footer.expanded #buildMsg::before { content: 'Commit: '; opacity: 0.7; }
+
+/* Hint chevron — points up when expanded */
+.build-footer::after {
+  content: ' \25BE'; /* ▾ */
+  opacity: 0.6;
+  font-size: 0.7rem;
+  transition: transform 0.25s ease;
+  display: inline-block;
+}
+
+.build-footer.expanded::after {
+  content: ' \25B4'; /* ▴ */
 }
