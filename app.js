@@ -276,7 +276,11 @@ function setupTabs() {
       if (target === 'journal-tab') renderJournal();
       if (target === 'trends-tab') refreshTrends();
       if (target === 'mood-tab') refreshMoodTab();
-      if (target === 'careteam-tab') refreshProviderList();
+      if (target === 'careteam-tab') {
+        const defaultCTBtn = document.querySelector('.ct-sub-tab-btn[data-ct-view="ctProvidersView"]');
+        if (defaultCTBtn) defaultCTBtn.click();
+        else refreshProviderList();
+      }
       if (target === 'conditions-tab') refreshConditionsList();
       if (target === 'medications-tab') {
         const activeView = document.querySelector(".med-view:not([style*='display:none']):not([style*='display: none'])");
