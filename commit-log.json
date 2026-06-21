@@ -1,5 +1,19 @@
 [
   {
+    "sha": "2aa25798fff6add75114a5dbd4074cc878733d78",
+    "short": "2aa2579",
+    "date": "2026-06-20T21:03:06-04:00",
+    "message": "Mobile: center date nav bar on daily entry page",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2aa25798fff6add75114a5dbd4074cc878733d78"
+  },
+  {
+    "sha": "b998225e8527af278892a6355a3278aa1ae7c64e",
+    "short": "b998225",
+    "date": "2026-06-21T00:54:56Z",
+    "message": "chore: update commit-log.json [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b998225e8527af278892a6355a3278aa1ae7c64e"
+  },
+  {
     "sha": "6fa1882b359dca7614f2135b134f1f9bafe2f884",
     "short": "6fa1882",
     "date": "2026-06-20T20:54:50-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-20T20:45:16-04:00",
     "message": "fix: add Chart.js CDN so trends charts render",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/93ed7f35d7bb2f480b5a56b215ca2f8ee852acae"
-  },
-  {
-    "sha": "34cfce507225b9af662b802c8f11ed1dbacc9410",
-    "short": "34cfce5",
-    "date": "2026-06-21T00:40:35Z",
-    "message": "chore: update commit-log.json [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/34cfce507225b9af662b802c8f11ed1dbacc9410"
-  },
-  {
-    "sha": "b12ddf58e24d15b378485e23b0ba3223cc796fd8",
-    "short": "b12ddf5",
-    "date": "2026-06-20T20:40:29-04:00",
-    "message": "fix: use jq to safely build commit-log.json",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b12ddf58e24d15b378485e23b0ba3223cc796fd8"
   }
 ]
