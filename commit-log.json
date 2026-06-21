@@ -1,5 +1,19 @@
 [
   {
+    "sha": "2bac288a46fa86fe33b7d025056d1021ab60c10b",
+    "short": "2bac288",
+    "date": "2026-06-20T20:52:24-04:00",
+    "message": "fix: split 14-date Firestore query into two batches to stay under 10-item 'in' limit",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2bac288a46fa86fe33b7d025056d1021ab60c10b"
+  },
+  {
+    "sha": "88a62363fa6f637909c4356b0ed16fb71cd53e05",
+    "short": "88a6236",
+    "date": "2026-06-21T00:49:13Z",
+    "message": "chore: update commit-log.json [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/88a62363fa6f637909c4356b0ed16fb71cd53e05"
+  },
+  {
     "sha": "c16a6bf1cc6bb6cdadc3b42708de60c9a2519a4b",
     "short": "c16a6bf",
     "date": "2026-06-20T20:49:07-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-20T20:34:55-04:00",
     "message": "fix: pre-fetch print data on button tap, cache result so beforeprint is instant on mobile",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/bb9cf17838fa92f065c52f962347be4a225bac55"
-  },
-  {
-    "sha": "7261d07f7ad2fc4f062d05a75ee36a526e1e2a2b",
-    "short": "7261d07",
-    "date": "2026-06-20T20:25:44-04:00",
-    "message": "fix: wire mobile tabSelect into app.js setupTabs() so dropdown actually switches tabs",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7261d07f7ad2fc4f062d05a75ee36a526e1e2a2b"
-  },
-  {
-    "sha": "c26ca0aafda87725b2075fb42a513a4b16c2abec",
-    "short": "c26ca0a",
-    "date": "2026-06-20T20:17:49-04:00",
-    "message": "fix: move mobile tabSelect wiring into setupTabs() so it runs after partials load",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c26ca0aafda87725b2075fb42a513a4b16c2abec"
   }
 ]
