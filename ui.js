@@ -10,17 +10,28 @@ function setupTabs() {
   const tabs     = document.querySelectorAll('.tab');
   const floatBtn = document.getElementById('saveDayFloat');
   const header   = document.querySelector('.app-header');
+  const tabSelect = document.getElementById('tabSelect');
 
   function activate(id) {
     tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === id));
     tabs.forEach(t => t.classList.toggle('active', t.id === id));
     if (floatBtn) floatBtn.style.display = (id === 'entry-tab') ? '' : 'none';
     if (header) header.classList.toggle('entry-tab-active', id === 'entry-tab');
+    // Keep the mobile dropdown in sync
+    if (tabSelect && tabSelect.value !== id) tabSelect.value = id;
   }
 
+  // Desktop tab button clicks
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => activate(btn.dataset.tab));
   });
+
+  // Mobile dropdown change — drive the same activate() path
+  if (tabSelect) {
+    tabSelect.addEventListener('change', function () {
+      activate(tabSelect.value);
+    });
+  }
 
   activate('entry-tab');
 }
@@ -64,35 +75,22 @@ function showToast(msg, isError = false) {
   });
 }
 
-// ---- Mobile wiring — sign-out sync + tab select ----
+// ---- Mobile sign-out sync ----
+// Runs immediately (sign-out buttons are in the static header partial,
+// loaded before this script executes).
 (function () {
   var signOutBtnMobile  = document.getElementById('signOutBtnMobile');
   var signOutBtnDesktop = document.getElementById('signOutBtn');
 
-  if (signOutBtnMobile) {
+  if (signOutBtnMobile && signOutBtnDesktop) {
     signOutBtnMobile.addEventListener('click', function () {
-      if (signOutBtnDesktop) signOutBtnDesktop.click();
+      signOutBtnDesktop.click();
     });
-  }
 
-  if (signOutBtnDesktop && signOutBtnMobile) {
     var obs = new MutationObserver(function () {
       signOutBtnMobile.style.display = signOutBtnDesktop.style.display;
     });
     obs.observe(signOutBtnDesktop, { attributes: true, attributeFilter: ['style'] });
-  }
-
-  var tabSelect = document.getElementById('tabSelect');
-  document.querySelectorAll('#tabs .tab-button').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      if (tabSelect) tabSelect.value = btn.getAttribute('data-tab');
-    });
-  });
-  if (tabSelect) {
-    tabSelect.addEventListener('change', function () {
-      var btn = document.querySelector('#tabs .tab-button[data-tab="' + tabSelect.value + '"]');
-      if (btn) btn.click();
-    });
   }
 }());
 
