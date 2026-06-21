@@ -710,6 +710,15 @@ input[type="range"] {
   color: white;
 }
 
+/* On mobile, center the toast vertically in the viewport */
+@media (max-width: 640px) {
+  .toast {
+    bottom: auto;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
 /* ================================================================
    SAVE FLOATING BUTTON
    ================================================================ */
