@@ -1,0 +1,65 @@
+[
+  {
+    "sha": "b12ddf58e24d15b378485e23b0ba3223cc796fd8",
+    "short": "b12ddf5",
+    "date": "2026-06-20T20:40:29-04:00",
+    "message": "fix: use jq to safely build commit-log.json",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b12ddf58e24d15b378485e23b0ba3223cc796fd8"
+  },
+  {
+    "sha": "4926b948477a930c8d056b86a2b4dbe20f2d8046",
+    "short": "4926b94",
+    "date": "2026-06-20T20:38:58-04:00",
+    "message": "Center toast vertically on mobile",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/4926b948477a930c8d056b86a2b4dbe20f2d8046"
+  },
+  {
+    "sha": "bb9cf17838fa92f065c52f962347be4a225bac55",
+    "short": "bb9cf17",
+    "date": "2026-06-20T20:34:55-04:00",
+    "message": "fix: pre-fetch print data on button tap, cache result so beforeprint is instant on mobile",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/bb9cf17838fa92f065c52f962347be4a225bac55"
+  },
+  {
+    "sha": "7261d07f7ad2fc4f062d05a75ee36a526e1e2a2b",
+    "short": "7261d07",
+    "date": "2026-06-20T20:25:44-04:00",
+    "message": "fix: wire mobile tabSelect into app.js setupTabs() so dropdown actually switches tabs",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7261d07f7ad2fc4f062d05a75ee36a526e1e2a2b"
+  },
+  {
+    "sha": "c26ca0aafda87725b2075fb42a513a4b16c2abec",
+    "short": "c26ca0a",
+    "date": "2026-06-20T20:17:49-04:00",
+    "message": "fix: move mobile tabSelect wiring into setupTabs() so it runs after partials load",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c26ca0aafda87725b2075fb42a513a4b16c2abec"
+  },
+  {
+    "sha": "c2dc509e886bc96a01f1efbbd8d55a3f1fb5f0b7",
+    "short": "c2dc509",
+    "date": "2026-06-20T20:15:20-04:00",
+    "message": "feat: add address column to Care Team print table",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c2dc509e886bc96a01f1efbbd8d55a3f1fb5f0b7"
+  },
+  {
+    "sha": "9545635330cc21307982d361875dd6968ebf50ee",
+    "short": "9545635",
+    "date": "2026-06-20T20:09:56-04:00",
+    "message": "fix: always default Care Team to Providers sub-tab on tab switch",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9545635330cc21307982d361875dd6968ebf50ee"
+  },
+  {
+    "sha": "c4403bf6d9fdd2eb20332af7289f406fa08c0e51",
+    "short": "c4403bf",
+    "date": "2026-06-20T17:18:53-04:00",
+    "message": "Style: change toast success color to muted green #4a7c59",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c4403bf6d9fdd2eb20332af7289f406fa08c0e51"
+  },
+  {
+    "sha": "85c9da3a2a9af999f9c466c52fb993d967adaa2c",
+    "short": "85c9da3",
+    "date": "2026-06-20T17:14:04-04:00",
+    "message": "Fix: restore green toast background (var(--color-success) with white text)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/85c9da3a2a9af999f9c466c52fb993d967adaa2c"
+  }
+]
