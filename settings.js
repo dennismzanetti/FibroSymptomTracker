@@ -40,7 +40,7 @@ document.addEventListener('partialsLoaded', () => {
   const saveSettingsBtn = document.getElementById('saveSettingsBtn');
   if (saveSettingsBtn) saveSettingsBtn.addEventListener('click', saveSettings);
 
-  // ---- About section: read from static build-info.js (no API call) ----
+  // ---- About section ----
   loadAboutSection();
 
   // ---- Developer Diagnostics toggle ----
@@ -49,45 +49,97 @@ document.addEventListener('partialsLoaded', () => {
 
 function loadAboutSection() {
   const container = document.getElementById('settingsAboutCommits');
-  const versionEl = document.getElementById('settingsAppVersion');
   if (!container) return;
 
   const info = window.BUILD_INFO;
 
   if (!info) {
-    container.innerHTML = '<p style="font-size:var(--text-sm);color:var(--color-text-faint);">Build history unavailable.</p>';
+    container.innerHTML = '<p style="font-size:var(--text-sm);color:var(--color-text-faint);">Build info unavailable.</p>';
     return;
   }
 
-  if (versionEl) {
-    versionEl.textContent = 'Build: ' + info.shaFull;
-  }
+  const currentDate = info.date ? new Date(info.date).toLocaleString() : '';
+  const currentUrl  = info.url || '#';
+  const currentSha  = info.shaFull || info.sha || '';
+  const currentMsg  = info.message || '';
 
-  const date = info.date ? new Date(info.date).toLocaleString() : '';
-  const url  = info.url || '#';
-  const sha  = info.shaFull || info.sha || '';
-  const message = info.message || '';
-
-  container.innerHTML = `
-    <p style="font-size:var(--text-xs);font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:var(--space-2);">Current Build</p>
-    <div style="
-      display:grid;
-      grid-template-columns: 1fr auto;
-      gap:var(--space-1) var(--space-3);
-      padding:var(--space-2) 0;
-      border-bottom:1px solid var(--color-divider);
-    ">
-      <div style="min-width:0;">
-        <span style="display:inline-block;font-size:var(--text-xs);font-weight:700;background:var(--color-primary-light);color:var(--color-primary);border:1px solid var(--color-primary-border);border-radius:var(--radius-full);padding:0 0.5rem;margin-bottom:var(--space-1);">latest</span><br>
-        <span style="font-size:var(--text-sm);font-weight:600;color:var(--color-text);word-break:break-word;">${escHtml(message)}</span>
+  // Render current build header
+  let html = `
+    <div style="margin-bottom:var(--space-4);">
+      <p style="font-size:var(--text-xs);font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:var(--space-2);">Current Build</p>
+      <div style="
+        display:grid;
+        grid-template-columns:1fr auto;
+        align-items:start;
+        gap:var(--space-1) var(--space-3);
+        padding:var(--space-3);
+        background:var(--color-surface-offset);
+        border-radius:var(--radius-md);
+        border:1px solid var(--color-border);
+      ">
+        <div style="min-width:0;">
+          <span style="display:inline-block;font-size:var(--text-xs);font-weight:700;background:var(--color-primary-highlight);color:var(--color-primary);border-radius:var(--radius-full);padding:0.1em 0.6em;margin-bottom:var(--space-1);">latest</span>
+          <p style="font-size:var(--text-sm);font-weight:600;color:var(--color-text);margin:0;word-break:break-word;">${escHtml(currentMsg)}</p>
+          <p style="font-size:var(--text-xs);color:var(--color-text-faint);margin:var(--space-1) 0 0;">${escHtml(currentDate)}</p>
+        </div>
+        <a href="${escHtml(currentUrl)}" target="_blank" rel="noopener noreferrer"
+           style="font-size:var(--text-xs);color:var(--color-primary);font-family:monospace;white-space:nowrap;text-decoration:none;padding-top:2px;"
+           title="Open commit on GitHub">${escHtml(currentSha.slice(0, 7))}</a>
       </div>
-      <a href="${escHtml(url)}" target="_blank" rel="noopener noreferrer"
-         style="font-size:var(--text-xs);color:var(--color-primary);font-family:monospace;white-space:nowrap;align-self:start;text-decoration:none;"
-         title="Open commit on GitHub">${escHtml(sha.slice(0, 7))}</a>
-      <span style="font-size:var(--text-xs);color:var(--color-text-faint);">${escHtml(date)}</span>
     </div>
-    <p style="margin-top:var(--space-3);font-size:var(--text-xs);color:var(--color-text-faint);">Build info is embedded at deploy time. Full commit history is available on <a href="https://github.com/dennismzanetti/FibroSymptomTracker/commits/main" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary);">GitHub</a>.</p>
+    <p style="font-size:var(--text-xs);font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:var(--space-2);">Recent Changes</p>
+    <div id="aboutCommitList" style="font-size:var(--text-xs);color:var(--color-text-faint);">Loading&hellip;</div>
+    <p style="margin-top:var(--space-4);font-size:var(--text-xs);color:var(--color-text-faint);">
+      Full history on <a href="https://github.com/dennismzanetti/FibroSymptomTracker/commits/main" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary);">GitHub</a>.
+    </p>
   `;
+
+  container.innerHTML = html;
+
+  // Load commit-log.json and render recent commits (skip bot chore commits)
+  fetch('./commit-log.json')
+    .then(r => r.json())
+    .then(commits => {
+      const listEl = document.getElementById('aboutCommitList');
+      if (!listEl) return;
+
+      const real = commits.filter(c =>
+        !c.message.includes('[skip ci]') &&
+        !c.message.startsWith('chore: update commit-log')
+      );
+
+      if (!real.length) {
+        listEl.textContent = 'No recent commits found.';
+        return;
+      }
+
+      listEl.innerHTML = real.map((c, i) => {
+        const d = c.date ? new Date(c.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+        const isFirst = i === 0;
+        return `
+          <div style="
+            display:grid;
+            grid-template-columns:1fr auto;
+            align-items:baseline;
+            gap:var(--space-1) var(--space-3);
+            padding:var(--space-2) 0;
+            ${i < real.length - 1 ? 'border-bottom:1px solid var(--color-divider);' : ''}
+          ">
+            <div style="min-width:0;">
+              <span style="font-size:var(--text-xs);color:var(--color-text);word-break:break-word;${isFirst ? 'font-weight:600;' : ''}">${escHtml(c.message)}</span>
+              <span style="display:block;font-size:var(--text-xs);color:var(--color-text-faint);margin-top:2px;">${escHtml(d)}</span>
+            </div>
+            <a href="${escHtml(c.url)}" target="_blank" rel="noopener noreferrer"
+               style="font-size:var(--text-xs);color:var(--color-primary);font-family:monospace;white-space:nowrap;text-decoration:none;"
+               title="Open commit on GitHub">${escHtml(c.short)}</a>
+          </div>
+        `;
+      }).join('');
+    })
+    .catch(() => {
+      const listEl = document.getElementById('aboutCommitList');
+      if (listEl) listEl.textContent = 'Could not load commit history.';
+    });
 }
 
 function escHtml(str) {
@@ -100,7 +152,6 @@ function escHtml(str) {
 
 // ---- Developer Diagnostics toggle ----
 function injectDiagnosticsToggle() {
-  // Find a stable anchor in the settings tab to append to
   const settingsTab = document.getElementById('settings-tab');
   if (!settingsTab) return;
 
@@ -152,7 +203,6 @@ function injectDiagnosticsToggle() {
     if (currentlyOn) {
       sessionStorage.removeItem('FIBRO_DEBUG');
       showToast('\uD83D\uDD15 Debug logging disabled');
-      // Update button immediately without reload
       const btn  = document.getElementById('diagToggleBtn');
       const dot  = document.getElementById('diagToggleDot');
       const lbl  = document.getElementById('diagToggleLabel');
