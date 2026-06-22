@@ -1,5 +1,19 @@
 [
   {
+    "sha": "fb8e2b50566b36e17bac02e9b34a2a52b3885b1e",
+    "short": "fb8e2b5",
+    "date": "2026-06-22T15:18:56-04:00",
+    "message": "refactor: move local-fibro.html to dev/ and merge release_notes into CHANGELOG",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/fb8e2b50566b36e17bac02e9b34a2a52b3885b1e"
+  },
+  {
+    "sha": "a11f15f03981456bb0c447ba4761cf9384d2f0a1",
+    "short": "a11f15f",
+    "date": "2026-06-22T19:15:23Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/a11f15f03981456bb0c447ba4761cf9384d2f0a1"
+  },
+  {
     "sha": "f5c463ade8dc91f3ccf01eb472ceac9b5c34b62c",
     "short": "f5c463a",
     "date": "2026-06-22T15:15:09-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T14:47:14-04:00",
     "message": "fix: load firebase-init.js after Firebase CDN scripts; move loader.js after Firebase init",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/fcd757077bd0b8a2e379f43600c00eb5f4988c02"
-  },
-  {
-    "sha": "22bc9b9d1b005bee1ff2a218a121f57c163f63cc",
-    "short": "22bc9b9",
-    "date": "2026-06-22T18:39:03Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/22bc9b9d1b005bee1ff2a218a121f57c163f63cc"
-  },
-  {
-    "sha": "c0d29a7a0acfa21fd2c3f6243cff2746c2f1491e",
-    "short": "c0d29a7",
-    "date": "2026-06-22T14:38:48-04:00",
-    "message": "chore: update workflow to write build-info.js only to js/core/",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c0d29a7a0acfa21fd2c3f6243cff2746c2f1491e"
   }
 ]
