@@ -44,8 +44,9 @@
 <!-- Diagnostics (must be first script — sets up global error handlers) -->
 <script src="diagnostics.js"></script>
 
-<!-- Static build stamp (no GitHub API call) -->
-<script src="build-info.js"></script>
+<!-- js/core/ -->
+<script src="js/core/build-info.js"></script>
+<script src="js/core/loader.js"></script>
 
 <!-- Firebase v8 compat SDKs (must load before any app script) -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -54,9 +55,6 @@
 
 <!-- Chart.js (UMD build exposes global Chart used by trends.js and app.js) -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-
-<!-- js/core/ -->
-<script src="js/core/loader.js"></script>
 
 <!-- js/utils/ (not yet moved) -->
 <script src="ui.js"></script>
