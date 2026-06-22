@@ -1,5 +1,19 @@
 [
   {
+    "sha": "d426e5b15763bbcb0eaf5cfe3e4296dacf0c7fad",
+    "short": "d426e5b",
+    "date": "2026-06-22T12:37:07-04:00",
+    "message": "Add sessionStorage debug persistence and Settings toggle for diagnostics",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d426e5b15763bbcb0eaf5cfe3e4296dacf0c7fad"
+  },
+  {
+    "sha": "d20e73334a4cd062a6cfff84ad5c30b2deb9ff0a",
+    "short": "d20e733",
+    "date": "2026-06-22T16:29:17Z",
+    "message": "chore: update commit-log.json [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d20e73334a4cd062a6cfff84ad5c30b2deb9ff0a"
+  },
+  {
     "sha": "c789ba6f72d2e74f73f39f48398d32afcd0c5442",
     "short": "c789ba6",
     "date": "2026-06-22T12:29:08-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T12:13:50-04:00",
     "message": "Add favicon link tag to index.html",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ab4ccdb79110b9c1d67a300c206c2f21c2d9bd64"
-  },
-  {
-    "sha": "72d72c2abc6080a9159be28502c7702ab78047f1",
-    "short": "72d72c2",
-    "date": "2026-06-22T16:13:36Z",
-    "message": "chore: update commit-log.json [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/72d72c2abc6080a9159be28502c7702ab78047f1"
-  },
-  {
-    "sha": "e0b59c70f3b69ca8183b841b9a028fbc119636ea",
-    "short": "e0b59c7",
-    "date": "2026-06-22T12:13:23-04:00",
-    "message": "Add favicon (SVG + fallback link tag)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e0b59c70f3b69ca8183b841b9a028fbc119636ea"
   }
 ]
