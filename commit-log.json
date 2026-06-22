@@ -1,5 +1,33 @@
 [
   {
+    "sha": "c7a35593d047767bc94a8310a6ed7cd1f242a04c",
+    "short": "c7a3559",
+    "date": "2026-06-22T14:38:02-04:00",
+    "message": "refactor: remove duplicate root build-info.js (canonical copy is js/core/build-info.js)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c7a35593d047767bc94a8310a6ed7cd1f242a04c"
+  },
+  {
+    "sha": "a4c7f262e25aa423c22570d87194f4a789938928",
+    "short": "a4c7f26",
+    "date": "2026-06-22T14:37:53-04:00",
+    "message": "feat: display signed-in user info in Account card; right-justify Sign Out button",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/a4c7f262e25aa423c22570d87194f4a789938928"
+  },
+  {
+    "sha": "dbe8b54dfd4f312f1735bd5aa91882e05b047451",
+    "short": "dbe8b54",
+    "date": "2026-06-22T14:37:51-04:00",
+    "message": "refactor: extract Firebase init into js/core/firebase-init.js",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/dbe8b54dfd4f312f1735bd5aa91882e05b047451"
+  },
+  {
+    "sha": "f6897b50e5c1adf5cd98621e8f2c821edbceb661",
+    "short": "f6897b5",
+    "date": "2026-06-22T18:30:29Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/f6897b50e5c1adf5cd98621e8f2c821edbceb661"
+  },
+  {
     "sha": "9d711e8e0cdcdb76fe69ebe479a55e0f73d484d7",
     "short": "9d711e8",
     "date": "2026-06-22T14:30:20-04:00",
@@ -33,33 +61,5 @@
     "date": "2026-06-22T14:27:03-04:00",
     "message": "Revert ATR query: remove userId filter from refreshAtrList",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c00e5a99e89f53af0259f0b0fd4d6d2a94c51e7d"
-  },
-  {
-    "sha": "e7b2ae55b6f2228bd1c74b03c3fbc0e87d694de6",
-    "short": "e7b2ae5",
-    "date": "2026-06-22T18:25:45Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e7b2ae55b6f2228bd1c74b03c3fbc0e87d694de6"
-  },
-  {
-    "sha": "806379071c9b89f035fc40a7c31b217d5bad9231",
-    "short": "8063790",
-    "date": "2026-06-22T14:25:22-04:00",
-    "message": "cleaning up fb rules",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/806379071c9b89f035fc40a7c31b217d5bad9231"
-  },
-  {
-    "sha": "d77a5700b5e742e0e6721b7f4a0412e1c4179413",
-    "short": "d77a570",
-    "date": "2026-06-22T18:22:50Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d77a5700b5e742e0e6721b7f4a0412e1c4179413"
-  },
-  {
-    "sha": "78c329b604823986738973b4405186342f26496b",
-    "short": "78c329b",
-    "date": "2026-06-22T14:22:42-04:00",
-    "message": "style: add shared .med-sub-tabs and .ct-sub-tab-btn rules to styles.css",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/78c329b604823986738973b4405186342f26496b"
   }
 ]
