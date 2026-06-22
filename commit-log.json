@@ -1,5 +1,19 @@
 [
   {
+    "sha": "bf7f55fb8a63145206600917def4071666327482",
+    "short": "bf7f55f",
+    "date": "2026-06-22T15:20:15-04:00",
+    "message": "refactor: remove release_notes.md (merged into CHANGELOG.md)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/bf7f55fb8a63145206600917def4071666327482"
+  },
+  {
+    "sha": "d06b035f6ff45655f2a49a47cd0e30ef019cc20b",
+    "short": "d06b035",
+    "date": "2026-06-22T19:19:26Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d06b035f6ff45655f2a49a47cd0e30ef019cc20b"
+  },
+  {
     "sha": "195bebf406e0c70abe9022aaf84764c105042445",
     "short": "195bebf",
     "date": "2026-06-22T15:19:15-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T15:08:27-04:00",
     "message": "fix: pass user object to applySettingsOnAuth so Account section displays user info",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/03c0ac0f943ecacc87f1451bd56961b6a9d533f4"
-  },
-  {
-    "sha": "787a3b649aaaf6b2b8b2fd15a04d9eff9da111ba",
-    "short": "787a3b6",
-    "date": "2026-06-22T19:07:58Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/787a3b649aaaf6b2b8b2fd15a04d9eff9da111ba"
-  },
-  {
-    "sha": "96f35436268b562071aceef9956ea87640d4f94c",
-    "short": "96f3543",
-    "date": "2026-06-22T15:07:45-04:00",
-    "message": "style: refine sub-tab pill buttons with segmented-control look",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/96f35436268b562071aceef9956ea87640d4f94c"
   }
 ]
