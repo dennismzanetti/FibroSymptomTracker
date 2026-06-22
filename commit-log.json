@@ -1,5 +1,19 @@
 [
   {
+    "sha": "7f9824ac3f2c644e8494ffd2f9f637bf219f5879",
+    "short": "7f9824a",
+    "date": "2026-06-22T13:39:33-04:00",
+    "message": "refactor: move conditions.js to js/features/ (Step 9 of folder restructure)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7f9824ac3f2c644e8494ffd2f9f637bf219f5879"
+  },
+  {
+    "sha": "cc808cff2256a3700dc2542c2a6547d9b8be993c",
+    "short": "cc808cf",
+    "date": "2026-06-22T17:36:58Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/cc808cff2256a3700dc2542c2a6547d9b8be993c"
+  },
+  {
     "sha": "02d532e0016e927c8f5598a8785b567fb9a33987",
     "short": "02d532e",
     "date": "2026-06-22T13:36:45-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T17:22:44Z",
     "message": "chore: update commit-log.json + build-info.js [skip ci]",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/8fc961e781ee76d8b40afe4883e3d05ce969db63"
-  },
-  {
-    "sha": "786ba1c5068e1883e0119ae7eadf0f7b960562d4",
-    "short": "786ba1c",
-    "date": "2026-06-22T13:22:33-04:00",
-    "message": "fix: fix heredoc indentation bug in build-info.js generation",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/786ba1c5068e1883e0119ae7eadf0f7b960562d4"
-  },
-  {
-    "sha": "da1f864a1164277bc718a58cc4aa2e339831a209",
-    "short": "da1f864",
-    "date": "2026-06-22T17:22:23Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/da1f864a1164277bc718a58cc4aa2e339831a209"
   }
 ]
