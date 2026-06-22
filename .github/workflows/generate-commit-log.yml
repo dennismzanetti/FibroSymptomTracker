@@ -47,12 +47,12 @@ jobs:
             echo "  date:    \"${DATE}\","
             echo "  url:     \"${URL}\""
             echo "};"
-          } > build-info.js
+          } | tee build-info.js js/core/build-info.js > /dev/null
 
       - name: Commit generated files
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add commit-log.json build-info.js
+          git add build-info.js js/core/build-info.js commit-log.json
           git diff --cached --quiet || git commit -m "chore: update commit-log.json + build-info.js [skip ci]"
           git push
