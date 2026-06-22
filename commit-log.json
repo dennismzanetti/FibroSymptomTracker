@@ -1,5 +1,19 @@
 [
   {
+    "sha": "ae6f6aebae52241dc2250bece9a0ce2732c9a48d",
+    "short": "ae6f6ae",
+    "date": "2026-06-22T12:21:10-04:00",
+    "message": "Load diagnostics.js first in index.html for global error handling coverage",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ae6f6aebae52241dc2250bece9a0ce2732c9a48d"
+  },
+  {
+    "sha": "cabf7a9a62170d5ae6b66300c34b1a94c4c557ea",
+    "short": "cabf7a9",
+    "date": "2026-06-22T16:20:17Z",
+    "message": "chore: update commit-log.json [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/cabf7a9a62170d5ae6b66300c34b1a94c4c557ea"
+  },
+  {
     "sha": "182e7c5369f0b1b9ee5a47f8d4b57eecc64dab7f",
     "short": "182e7c5",
     "date": "2026-06-22T12:19:28-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-20T21:03:06-04:00",
     "message": "Mobile: center date nav bar on daily entry page",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2aa25798fff6add75114a5dbd4074cc878733d78"
-  },
-  {
-    "sha": "b998225e8527af278892a6355a3278aa1ae7c64e",
-    "short": "b998225",
-    "date": "2026-06-21T00:54:56Z",
-    "message": "chore: update commit-log.json [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b998225e8527af278892a6355a3278aa1ae7c64e"
-  },
-  {
-    "sha": "6fa1882b359dca7614f2135b134f1f9bafe2f884",
-    "short": "6fa1882",
-    "date": "2026-06-20T20:54:50-04:00",
-    "message": "fix: style sign out button with btn-danger; fix btn-danger to use defined CSS vars",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/6fa1882b359dca7614f2135b134f1f9bafe2f884"
   }
 ]
