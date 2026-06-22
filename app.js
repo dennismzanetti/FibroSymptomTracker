@@ -137,19 +137,15 @@ document.addEventListener('partialsLoaded', () => {
   document.getElementById('importConfirmBtn')?.addEventListener('click', confirmImport);
   document.getElementById('importCancelBtn')?.addEventListener('click', cancelImport);
 
-  // ---- Build footer ----
-  fetch('https://api.github.com/repos/dennismzanetti/FibroSymptomTracker/commits/main')
-    .then(r => r.json())
-    .then(data => {
-      const shaEl = document.getElementById('buildSha');
-      const msgEl = document.getElementById('buildMsg');
-      if (shaEl) shaEl.textContent = data.sha.slice(0, 7);
-      if (msgEl) msgEl.textContent = (data.commit?.message || '').split('\n')[0];
-    })
-    .catch(() => {
-      const msgEl = document.getElementById('buildMsg');
-      if (msgEl) msgEl.textContent = 'build info unavailable';
-    });
+  // ---- Build footer — read from static build-info.js (no API call) ----
+  const shaEl = document.getElementById('buildSha');
+  const msgEl = document.getElementById('buildMsg');
+  if (window.BUILD_INFO) {
+    if (shaEl) shaEl.textContent = window.BUILD_INFO.sha;
+    if (msgEl) msgEl.textContent = window.BUILD_INFO.message;
+  } else {
+    if (msgEl) msgEl.textContent = 'build info unavailable';
+  }
 
 }); // end partialsLoaded
 
