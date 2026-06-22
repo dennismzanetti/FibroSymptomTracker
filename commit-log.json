@@ -1,5 +1,19 @@
 [
   {
+    "sha": "6fefeeb6c40602f8d36b4f9c75490b47396d2c28",
+    "short": "6fefeeb",
+    "date": "2026-06-22T13:16:36-04:00",
+    "message": "refactor: delete root date.js (moved to js/utils/)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/6fefeeb6c40602f8d36b4f9c75490b47396d2c28"
+  },
+  {
+    "sha": "eacb759ab85db280740bbe07e43307948dd006bb",
+    "short": "eacb759",
+    "date": "2026-06-22T17:15:10Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/eacb759ab85db280740bbe07e43307948dd006bb"
+  },
+  {
     "sha": "60d9063270ee5bdc1e6c3ec82e5762c773c248d3",
     "short": "60d9063",
     "date": "2026-06-22T13:14:59-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T13:11:57-04:00",
     "message": "refactor: move build-info.js to js/core/ (Step 4 of folder restructure)",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7eb885075a73ed018a975fb4db22cdb64e022815"
-  },
-  {
-    "sha": "09d0f04ea810e0e3d54c8a60c1c58af08c007429",
-    "short": "09d0f04",
-    "date": "2026-06-22T17:09:53Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/09d0f04ea810e0e3d54c8a60c1c58af08c007429"
-  },
-  {
-    "sha": "87d1f4d7e5c4ade10633e6a10464cbbe05e44ddd",
-    "short": "87d1f4d",
-    "date": "2026-06-22T13:09:43-04:00",
-    "message": "fix: update index.html script paths for steps 1-3 (loader, auth, firebase-init now in js/core/)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/87d1f4d7e5c4ade10633e6a10464cbbe05e44ddd"
   }
 ]
