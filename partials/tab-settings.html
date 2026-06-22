@@ -17,15 +17,21 @@
     <div id="settings-account" style="scroll-margin-top:var(--space-2);"></div>
     <div class="card">
       <h3>Account</h3>
-      <div style="display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;margin-bottom:var(--space-4);">
-        <img id="settingsUserPhoto" src="" alt="" width="48" height="48"
-             style="border-radius:50%;display:none;object-fit:cover;" />
-        <div>
-          <p id="settingsUserName" style="font-weight:600;margin:0;"></p>
-          <p id="settingsUserEmail" style="color:var(--color-text-muted);font-size:var(--text-sm);margin:0;"></p>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;">
+        <!-- Left: avatar + name/email -->
+        <div style="display:flex;align-items:center;gap:var(--space-3);">
+          <img id="settingsUserPhoto" src="" alt="" width="48" height="48"
+               style="border-radius:50%;display:none;object-fit:cover;flex-shrink:0;" />
+          <div id="settingsUserInitials"
+               style="display:none;width:48px;height:48px;border-radius:50%;background:var(--color-primary);color:white;font-weight:700;font-size:var(--text-lg);align-items:center;justify-content:center;flex-shrink:0;"></div>
+          <div>
+            <p id="settingsUserName" style="font-weight:600;margin:0;font-size:var(--text-base);"></p>
+            <p id="settingsUserEmail" style="color:var(--color-text-muted);font-size:var(--text-sm);margin:0;"></p>
+          </div>
         </div>
+        <!-- Right: sign out -->
+        <button id="settingsSignOutBtn" class="btn btn-danger" style="flex-shrink:0;">Sign out</button>
       </div>
-      <button id="settingsSignOutBtn" class="btn btn-danger">Sign out</button>
     </div>
 
     <!-- Display Preferences -->

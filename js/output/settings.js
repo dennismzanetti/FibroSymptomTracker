@@ -1,7 +1,7 @@
 // settings.js
 
 // ---- Theme / display name settings (called from app.js after auth) ----
-window.applySettingsOnAuth = function applySettingsOnAuth() {
+window.applySettingsOnAuth = function applySettingsOnAuth(user) {
   const saved = {};
   try {
     const raw = sessionStorage.getItem('fibroSettings');
@@ -13,6 +13,9 @@ window.applySettingsOnAuth = function applySettingsOnAuth() {
     themeSelect.value = saved.theme;
     applyTheme(saved.theme);
   }
+
+  // Populate the Account card with the signed-in user's info
+  if (user) loadAccountSection(user);
 };
 
 function applyTheme(theme) {
@@ -27,6 +30,41 @@ function saveSettings() {
   try { sessionStorage.setItem('fibroSettings', JSON.stringify(settings)); } catch {}
   if (settings.theme) applyTheme(settings.theme);
   showToast('\u2713 Settings saved');
+}
+
+function loadAccountSection(user) {
+  const nameEl     = document.getElementById('settingsUserName');
+  const emailEl    = document.getElementById('settingsUserEmail');
+  const photoEl    = document.getElementById('settingsUserPhoto');
+  const initialsEl = document.getElementById('settingsUserInitials');
+  const signOutBtn = document.getElementById('settingsSignOutBtn');
+
+  if (nameEl)  nameEl.textContent  = user.displayName  || '';
+  if (emailEl) emailEl.textContent = user.email        || '';
+
+  if (photoEl && user.photoURL) {
+    photoEl.src = user.photoURL;
+    photoEl.style.display = 'block';
+    if (initialsEl) initialsEl.style.display = 'none';
+  } else if (initialsEl) {
+    // Fallback: show initials avatar
+    const name = user.displayName || user.email || '?';
+    const initials = name
+      .split(' ')
+      .map(w => w[0])
+      .slice(0, 2)
+      .join('')
+      .toUpperCase();
+    initialsEl.textContent = initials;
+    initialsEl.style.display = 'flex';
+    if (photoEl) photoEl.style.display = 'none';
+  }
+
+  if (signOutBtn) {
+    signOutBtn.addEventListener('click', () => {
+      firebase.auth().signOut().catch(err => console.error('Sign-out error:', err));
+    });
+  }
 }
 
 document.addEventListener('partialsLoaded', () => {
