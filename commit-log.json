@@ -1,5 +1,19 @@
 [
   {
+    "sha": "069ae2b8f239daff92e67af4c1f23a2dfa5fb8ae",
+    "short": "069ae2b",
+    "date": "2026-06-22T14:15:15-04:00",
+    "message": "style: use .med-sub-tabs / .ct-sub-tab-btn classes for settings anchor nav",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/069ae2b8f239daff92e67af4c1f23a2dfa5fb8ae"
+  },
+  {
+    "sha": "783236548a716d8c6df66c850404db115a6e97e2",
+    "short": "7832365",
+    "date": "2026-06-22T18:13:30Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/783236548a716d8c6df66c850404db115a6e97e2"
+  },
+  {
     "sha": "ecd7e8a795f1fa9d5b2901fceeaa48aef3663cdc",
     "short": "ecd7e8a",
     "date": "2026-06-22T14:13:21-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T14:10:07-04:00",
     "message": "refactor: move settings.js to js/output/ and update index.html (Step 17)",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/733b752030a9de84557ba307b15f9062fd6f7a32"
-  },
-  {
-    "sha": "9dc4af9aa2f0e846347da8060bdec634b0595b82",
-    "short": "9dc4af9",
-    "date": "2026-06-22T18:09:50Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9dc4af9aa2f0e846347da8060bdec634b0595b82"
-  },
-  {
-    "sha": "f7e0ef0679ab35ee9db6cb64e81d3acbe0f0a5b7",
-    "short": "f7e0ef0",
-    "date": "2026-06-22T14:09:40-04:00",
-    "message": "feat: add Diagnostics sub-tab to Settings nav",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/f7e0ef0679ab35ee9db6cb64e81d3acbe0f0a5b7"
   }
 ]
