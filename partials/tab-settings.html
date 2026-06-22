@@ -4,8 +4,67 @@
   <section id="settings-tab" class="tab">
     <h2>Settings</h2>
 
+    <!-- Anchor Navigation -->
+    <nav id="settingsAnchorNav" aria-label="Settings sections" style="
+      display:flex;
+      flex-wrap:wrap;
+      gap:var(--space-2);
+      padding:var(--space-3) 0;
+      margin-bottom:var(--space-4);
+      position:sticky;
+      top:0;
+      z-index:10;
+      background:var(--color-bg);
+      border-bottom:1px solid var(--color-divider);
+    ">
+      <a href="#settings-account" class="settings-anchor-link" style="
+        font-size:var(--text-sm);
+        font-weight:500;
+        padding:var(--space-1) var(--space-3);
+        border-radius:var(--radius-full);
+        border:1px solid var(--color-border);
+        background:var(--color-surface);
+        color:var(--color-text-muted);
+        text-decoration:none;
+        transition:background 180ms ease, color 180ms ease, border-color 180ms ease;
+      ">Account</a>
+      <a href="#settings-display" class="settings-anchor-link" style="
+        font-size:var(--text-sm);
+        font-weight:500;
+        padding:var(--space-1) var(--space-3);
+        border-radius:var(--radius-full);
+        border:1px solid var(--color-border);
+        background:var(--color-surface);
+        color:var(--color-text-muted);
+        text-decoration:none;
+        transition:background 180ms ease, color 180ms ease, border-color 180ms ease;
+      ">Display</a>
+      <a href="#settings-export" class="settings-anchor-link" style="
+        font-size:var(--text-sm);
+        font-weight:500;
+        padding:var(--space-1) var(--space-3);
+        border-radius:var(--radius-full);
+        border:1px solid var(--color-border);
+        background:var(--color-surface);
+        color:var(--color-text-muted);
+        text-decoration:none;
+        transition:background 180ms ease, color 180ms ease, border-color 180ms ease;
+      ">Export &amp; Import</a>
+      <a href="#settings-about" class="settings-anchor-link" style="
+        font-size:var(--text-sm);
+        font-weight:500;
+        padding:var(--space-1) var(--space-3);
+        border-radius:var(--radius-full);
+        border:1px solid var(--color-border);
+        background:var(--color-surface);
+        color:var(--color-text-muted);
+        text-decoration:none;
+        transition:background 180ms ease, color 180ms ease, border-color 180ms ease;
+      ">About</a>
+    </nav>
+
     <!-- Account Info -->
-    <div class="card">
+    <div class="card" id="settings-account">
       <h3>Account</h3>
       <div style="display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;margin-bottom:var(--space-4);">
         <img id="settingsUserPhoto" src="" alt="" width="48" height="48"
@@ -19,7 +78,7 @@
     </div>
 
     <!-- Display Preferences -->
-    <div class="card">
+    <div class="card" id="settings-display">
       <h3>Display</h3>
       <div class="form-group">
         <label for="settingsThemeSelect">Theme</label>
@@ -47,7 +106,7 @@
     </div>
 
     <!-- Export / Import -->
-    <div class="card">
+    <div class="card" id="settings-export">
       <h3>Export &amp; Import Data</h3>
       <p style="font-size:var(--text-sm);color:var(--color-text-muted);margin-bottom:var(--space-4);">Download a full backup of all your data, or restore from a previous backup file.</p>
 
@@ -71,11 +130,70 @@
     </div>
 
     <!-- About -->
-    <div class="card">
+    <div class="card" id="settings-about">
       <h3>About</h3>
       <div id="settingsAboutCommits"></div>
     </div>
 
   </section>
+
+  <!-- Anchor nav active-state highlighting via IntersectionObserver -->
+  <script>
+  (function () {
+    function initSettingsAnchorNav() {
+      const nav = document.getElementById('settingsAnchorNav');
+      if (!nav) return;
+
+      const links = nav.querySelectorAll('.settings-anchor-link');
+      const sectionIds = ['settings-account', 'settings-display', 'settings-export', 'settings-about'];
+
+      function setActive(id) {
+        links.forEach(link => {
+          const isActive = link.getAttribute('href') === '#' + id;
+          link.style.background    = isActive ? 'var(--color-primary)'           : 'var(--color-surface)';
+          link.style.color         = isActive ? 'var(--color-text-inverse)'      : 'var(--color-text-muted)';
+          link.style.borderColor   = isActive ? 'var(--color-primary)'           : 'var(--color-border)';
+          link.style.fontWeight    = isActive ? '600' : '500';
+        });
+      }
+
+      // Set first as default active
+      if (sectionIds.length) setActive(sectionIds[0]);
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      }, {
+        root: null,
+        rootMargin: '-30% 0px -60% 0px',
+        threshold: 0
+      });
+
+      sectionIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) observer.observe(el);
+      });
+
+      // Smooth scroll on click (in case CSS scroll-behavior isn't inherited)
+      links.forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          const targetId = link.getAttribute('href').slice(1);
+          const target = document.getElementById(targetId);
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+    }
+
+    // Run after partials are loaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('partialsLoaded', initSettingsAnchorNav);
+    } else {
+      // If already loaded, run after a short tick to ensure DOM is ready
+      setTimeout(initSettingsAnchorNav, 0);
+    }
+  })();
+  </script>
 
 </main>
