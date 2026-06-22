@@ -1,5 +1,19 @@
 [
   {
+    "sha": "c0d29a7a0acfa21fd2c3f6243cff2746c2f1491e",
+    "short": "c0d29a7",
+    "date": "2026-06-22T14:38:48-04:00",
+    "message": "chore: update workflow to write build-info.js only to js/core/",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c0d29a7a0acfa21fd2c3f6243cff2746c2f1491e"
+  },
+  {
+    "sha": "9e07426399ed42e83a6696bc1bd66487ed8233dc",
+    "short": "9e07426",
+    "date": "2026-06-22T18:38:11Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9e07426399ed42e83a6696bc1bd66487ed8233dc"
+  },
+  {
     "sha": "c7a35593d047767bc94a8310a6ed7cd1f242a04c",
     "short": "c7a3559",
     "date": "2026-06-22T14:38:02-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T14:28:38-04:00",
     "message": "fix: render diagnostics toggle inside #settings-diagnostics card instead of appending to tab",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ac5fb590632836d8f1908cfe44c0009faa8c2ce6"
-  },
-  {
-    "sha": "be71ccfffa0f73994afd0316dc6f11f011fd15fe",
-    "short": "be71ccf",
-    "date": "2026-06-22T18:27:11Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/be71ccfffa0f73994afd0316dc6f11f011fd15fe"
-  },
-  {
-    "sha": "c00e5a99e89f53af0259f0b0fd4d6d2a94c51e7d",
-    "short": "c00e5a9",
-    "date": "2026-06-22T14:27:03-04:00",
-    "message": "Revert ATR query: remove userId filter from refreshAtrList",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c00e5a99e89f53af0259f0b0fd4d6d2a94c51e7d"
   }
 ]
