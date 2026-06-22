@@ -1,5 +1,19 @@
 [
   {
+    "sha": "e0b59c70f3b69ca8183b841b9a028fbc119636ea",
+    "short": "e0b59c7",
+    "date": "2026-06-22T12:13:23-04:00",
+    "message": "Add favicon (SVG + fallback link tag)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e0b59c70f3b69ca8183b841b9a028fbc119636ea"
+  },
+  {
+    "sha": "3888375472d117465ec03530bd0f2876bca35db8",
+    "short": "3888375",
+    "date": "2026-06-21T01:03:12Z",
+    "message": "chore: update commit-log.json [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/3888375472d117465ec03530bd0f2876bca35db8"
+  },
+  {
     "sha": "2aa25798fff6add75114a5dbd4074cc878733d78",
     "short": "2aa2579",
     "date": "2026-06-20T21:03:06-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-20T20:49:07-04:00",
     "message": "feat: expandable build footer on tap",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c16a6bf1cc6bb6cdadc3b42708de60c9a2519a4b"
-  },
-  {
-    "sha": "65b14beafe978d49f2ae593c4b54f46bb4a6a43c",
-    "short": "65b14be",
-    "date": "2026-06-21T00:45:24Z",
-    "message": "chore: update commit-log.json [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/65b14beafe978d49f2ae593c4b54f46bb4a6a43c"
-  },
-  {
-    "sha": "93ed7f35d7bb2f480b5a56b215ca2f8ee852acae",
-    "short": "93ed7f3",
-    "date": "2026-06-20T20:45:16-04:00",
-    "message": "fix: add Chart.js CDN so trends charts render",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/93ed7f35d7bb2f480b5a56b215ca2f8ee852acae"
   }
 ]
