@@ -5,73 +5,12 @@
     <h2>Settings</h2>
 
     <!-- Anchor Navigation -->
-    <nav id="settingsAnchorNav" aria-label="Settings sections" style="
-      display:flex;
-      flex-wrap:wrap;
-      gap:var(--space-2);
-      padding:var(--space-3) 0;
-      margin-bottom:var(--space-4);
-      position:sticky;
-      top:0;
-      z-index:10;
-      background:var(--color-bg);
-      border-bottom:1px solid var(--color-divider);
-    ">
-      <a href="#settings-account" class="settings-anchor-link" style="
-        font-size:var(--text-sm);
-        font-weight:500;
-        padding:var(--space-1) var(--space-3);
-        border-radius:var(--radius-full);
-        border:1px solid var(--color-border);
-        background:var(--color-surface);
-        color:var(--color-text-muted);
-        text-decoration:none;
-        transition:background 180ms ease, color 180ms ease, border-color 180ms ease;
-      ">Account</a>
-      <a href="#settings-display" class="settings-anchor-link" style="
-        font-size:var(--text-sm);
-        font-weight:500;
-        padding:var(--space-1) var(--space-3);
-        border-radius:var(--radius-full);
-        border:1px solid var(--color-border);
-        background:var(--color-surface);
-        color:var(--color-text-muted);
-        text-decoration:none;
-        transition:background 180ms ease, color 180ms ease, border-color 180ms ease;
-      ">Display</a>
-      <a href="#settings-export" class="settings-anchor-link" style="
-        font-size:var(--text-sm);
-        font-weight:500;
-        padding:var(--space-1) var(--space-3);
-        border-radius:var(--radius-full);
-        border:1px solid var(--color-border);
-        background:var(--color-surface);
-        color:var(--color-text-muted);
-        text-decoration:none;
-        transition:background 180ms ease, color 180ms ease, border-color 180ms ease;
-      ">Export &amp; Import</a>
-      <a href="#settings-about" class="settings-anchor-link" style="
-        font-size:var(--text-sm);
-        font-weight:500;
-        padding:var(--space-1) var(--space-3);
-        border-radius:var(--radius-full);
-        border:1px solid var(--color-border);
-        background:var(--color-surface);
-        color:var(--color-text-muted);
-        text-decoration:none;
-        transition:background 180ms ease, color 180ms ease, border-color 180ms ease;
-      ">About</a>
-      <a href="#settings-diagnostics" class="settings-anchor-link" style="
-        font-size:var(--text-sm);
-        font-weight:500;
-        padding:var(--space-1) var(--space-3);
-        border-radius:var(--radius-full);
-        border:1px solid var(--color-border);
-        background:var(--color-surface);
-        color:var(--color-text-muted);
-        text-decoration:none;
-        transition:background 180ms ease, color 180ms ease, border-color 180ms ease;
-      ">Diagnostics</a>
+    <nav id="settingsAnchorNav" aria-label="Settings sections" class="med-sub-tabs">
+      <a href="#settings-account"     class="ct-sub-tab-btn active">Account</a>
+      <a href="#settings-display"     class="ct-sub-tab-btn">Display</a>
+      <a href="#settings-export"      class="ct-sub-tab-btn">Export &amp; Import</a>
+      <a href="#settings-about"       class="ct-sub-tab-btn">About</a>
+      <a href="#settings-diagnostics" class="ct-sub-tab-btn">Diagnostics</a>
     </nav>
 
     <!-- Account Info -->
@@ -161,16 +100,13 @@
       const nav = document.getElementById('settingsAnchorNav');
       if (!nav) return;
 
-      const links = nav.querySelectorAll('.settings-anchor-link');
+      const links = nav.querySelectorAll('.ct-sub-tab-btn');
       const sectionIds = ['settings-account', 'settings-display', 'settings-export', 'settings-about', 'settings-diagnostics'];
 
       function setActive(id) {
         links.forEach(link => {
           const isActive = link.getAttribute('href') === '#' + id;
-          link.style.background    = isActive ? 'var(--color-primary)'           : 'var(--color-surface)';
-          link.style.color         = isActive ? 'var(--color-text-inverse)'      : 'var(--color-text-muted)';
-          link.style.borderColor   = isActive ? 'var(--color-primary)'           : 'var(--color-border)';
-          link.style.fontWeight    = isActive ? '600' : '500';
+          link.classList.toggle('active', isActive);
         });
       }
 
@@ -192,7 +128,7 @@
         if (el) observer.observe(el);
       });
 
-      // Smooth scroll on click (in case CSS scroll-behavior isn't inherited)
+      // Smooth scroll on click
       links.forEach(link => {
         link.addEventListener('click', e => {
           e.preventDefault();
@@ -203,11 +139,9 @@
       });
     }
 
-    // Run after partials are loaded
     if (document.readyState === 'loading') {
       document.addEventListener('partialsLoaded', initSettingsAnchorNav);
     } else {
-      // If already loaded, run after a short tick to ensure DOM is ready
       setTimeout(initSettingsAnchorNav, 0);
     }
   })();
