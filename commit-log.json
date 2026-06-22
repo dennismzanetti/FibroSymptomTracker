@@ -1,5 +1,19 @@
 [
   {
+    "sha": "b3cd3bd674804145944473478bc2b34b05b16c6b",
+    "short": "b3cd3bd",
+    "date": "2026-06-22T14:10:39-04:00",
+    "message": "refactor: delete root settings.js (moved to js/output/)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b3cd3bd674804145944473478bc2b34b05b16c6b"
+  },
+  {
+    "sha": "fa9c2d0b33d06644e8006308b45b8cda2e93ac7e",
+    "short": "fa9c2d0",
+    "date": "2026-06-22T18:10:17Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/fa9c2d0b33d06644e8006308b45b8cda2e93ac7e"
+  },
+  {
     "sha": "733b752030a9de84557ba307b15f9062fd6f7a32",
     "short": "733b752",
     "date": "2026-06-22T14:10:07-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T14:08:23-04:00",
     "message": "refactor: move journal.js to js/features/ and update index.html (Step 16)",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/defd1fcd82cb66a00a3e572129d180f841b0a2e3"
-  },
-  {
-    "sha": "c9d4f0bb33743b6d4beccda0cebf03c11478a2ab",
-    "short": "c9d4f0b",
-    "date": "2026-06-22T18:05:36Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c9d4f0bb33743b6d4beccda0cebf03c11478a2ab"
-  },
-  {
-    "sha": "1bc74f04a54deeddc16e1738e5ad90fb685f4e3e",
-    "short": "1bc74f0",
-    "date": "2026-06-22T14:05:28-04:00",
-    "message": "refactor: delete root careteam.js (moved to js/features/)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/1bc74f04a54deeddc16e1738e5ad90fb685f4e3e"
   }
 ]
