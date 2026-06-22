@@ -181,7 +181,7 @@
 }
 
 /* ================================================================
-   SUB-TAB PILLS — segmented-control style
+   SUB-TAB PILLS — segmented-control, warm neutral palette
    Used on Medications, Care Team, and Settings tabs.
    ================================================================ */
 
@@ -221,7 +221,7 @@
 
 .ct-sub-tab-btn.active {
   background: var(--color-surface);
-  color: var(--color-primary);
+  color: var(--color-text);
   font-weight: 700;
   box-shadow: var(--shadow-sm);
 }
