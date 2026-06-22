@@ -119,30 +119,21 @@ function showToast(msg, isError = false) {
   }
 }());
 
-// ---- Build footer SHA ----
+// ---- Build footer SHA — read from static build-info.js (no API call) ----
 (function () {
-  var REPO = 'dennismzanetti/FibroSymptomTracker';
-  var API  = 'https://api.github.com/repos/' + REPO + '/commits/main';
-  fetch(API, { headers: { Accept: 'application/vnd.github.v3+json' } })
-    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
-    .then(function (data) {
-      var sha     = data.sha.slice(0, 7);
-      var msg     = data.commit.message.split('\n')[0];
-      var isoDate = data.commit.author.date;
-      var d = new Date(isoDate);
-      var formatted = d.toLocaleString(undefined, {
-        year: 'numeric', month: 'short', day: 'numeric',
-        hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
-      });
-      var shaEl  = document.getElementById('buildSha');
-      var msgEl  = document.getElementById('buildMsg');
-      var dateEl = document.getElementById('buildDate');
-      if (shaEl)  { shaEl.textContent = sha; shaEl.href = 'https://github.com/' + REPO + '/commit/' + data.sha; }
-      if (msgEl)  msgEl.textContent  = msg;
-      if (dateEl) { dateEl.textContent = formatted; dateEl.setAttribute('datetime', isoDate); }
-    })
-    .catch(function () {
-      var footer = document.getElementById('buildFooter');
-      if (footer) footer.style.display = 'none';
+  var info = window.BUILD_INFO;
+  if (!info) return;
+  var shaEl  = document.getElementById('buildSha');
+  var msgEl  = document.getElementById('buildMsg');
+  var dateEl = document.getElementById('buildDate');
+  if (shaEl)  shaEl.textContent = info.sha;
+  if (msgEl)  msgEl.textContent = (info.message || '').split('\n')[0];
+  if (dateEl) {
+    var d = new Date(info.date);
+    dateEl.textContent = d.toLocaleString(undefined, {
+      year: 'numeric', month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
     });
+    dateEl.setAttribute('datetime', info.date);
+  }
 }());
