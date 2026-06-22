@@ -1,18 +1,20 @@
-// firebase-init.js
-// NOTE: Firebase is initialised in app.js which owns the active project config.
-// This file is retained for reference but is not loaded by index.html.
-// The export keyword has been removed to prevent syntax errors if this file
-// is ever loaded as a plain script in future.
+// ---- Firebase Configuration & Initialization ----
+// This is the single source of truth for Firebase setup.
+// All other modules consume the global `db` and `auth` objects initialized here.
 
-// If you wish to migrate to this config, copy the credentials below into
-// app.js and remove the old firebaseConfig block there.
+const firebaseConfig = {
+  apiKey: "AIzaSyD75EQyz7w9ZYuK8iDewQDzI5Z2RUzMk1k",
+  authDomain: "fibrosymptomtracker.firebaseapp.com",
+  projectId: "fibrosymptomtracker",
+  storageBucket: "fibrosymptomtracker.firebasestorage.app",
+  messagingSenderId: "729903386531",
+  appId: "1:729903386531:web:b73385c230369ac53b9416",
+  measurementId: "G-N20WEFRW9Y"
+};
 
-// Alternate project config (currently unused):
-// const altFirebaseConfig = {
-//   apiKey: "AIzaSyD7bnVAfclKhMjfqX3VQ1FP-EKyQIMV5Kc",
-//   authDomain: "fibrosymptomtracker.firebaseapp.com",
-//   projectId: "fibrosymptomtracker",
-//   storageBucket: "fibrosymptomtracker.appspot.com",
-//   messagingSenderId: "399399538093",
-//   appId: "1:399399538093:web:8a0d4d90e0f81a5e8bb22a"
-// };
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+FibroDiag.info('FirebaseInit', 'Firebase initialised');
+FibroDiag.hookFirebase();
