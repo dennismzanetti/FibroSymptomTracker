@@ -1,5 +1,19 @@
 [
   {
+    "sha": "3b58ba39a23f519d0e91355dca6aecbbbc60509c",
+    "short": "3b58ba3",
+    "date": "2026-06-22T14:21:30-04:00",
+    "message": "saving firestore rules",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/3b58ba39a23f519d0e91355dca6aecbbbc60509c"
+  },
+  {
+    "sha": "dde5f7ebabc13d64f4db788fc0095ec9730579cc",
+    "short": "dde5f7e",
+    "date": "2026-06-22T18:20:53Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/dde5f7ebabc13d64f4db788fc0095ec9730579cc"
+  },
+  {
     "sha": "a0b1499b3ee6e84f4fb2728891c8637767cbdb51",
     "short": "a0b1499",
     "date": "2026-06-22T14:20:45-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T14:17:58-04:00",
     "message": "refactor: move app.js to js/features/ and update index.html (Step 19)",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/26b2a59ded1291beeadca3f5d3214e5a94a9cf97"
-  },
-  {
-    "sha": "eceeb1e5df60295d8e61a1b7046ad2e44e8664d2",
-    "short": "eceeb1e",
-    "date": "2026-06-22T18:15:26Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/eceeb1e5df60295d8e61a1b7046ad2e44e8664d2"
-  },
-  {
-    "sha": "069ae2b8f239daff92e67af4c1f23a2dfa5fb8ae",
-    "short": "069ae2b",
-    "date": "2026-06-22T14:15:15-04:00",
-    "message": "style: use .med-sub-tabs / .ct-sub-tab-btn classes for settings anchor nav",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/069ae2b8f239daff92e67af4c1f23a2dfa5fb8ae"
   }
 ]
