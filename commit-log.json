@@ -1,5 +1,19 @@
 [
   {
+    "sha": "576e5f56c12cebb4cf2976b0380019f0e12c7fef",
+    "short": "576e5f5",
+    "date": "2026-06-22T13:14:12-04:00",
+    "message": "fix: update index.html — build-info.js now at js/core/ (Step 4)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/576e5f56c12cebb4cf2976b0380019f0e12c7fef"
+  },
+  {
+    "sha": "2b4491fd35b091c162e7a0c0b19ec8ca47c143b4",
+    "short": "2b4491f",
+    "date": "2026-06-22T17:14:04Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2b4491fd35b091c162e7a0c0b19ec8ca47c143b4"
+  },
+  {
     "sha": "c7fd8d6b65131b6acbd50495509016c89493be01",
     "short": "c7fd8d6",
     "date": "2026-06-22T13:13:53-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T13:08:34-04:00",
     "message": "fix: replace GitHub API fetch in build footer with static BUILD_INFO",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/f06df6a41ff7586534e8f23566ed0a74770e7710"
-  },
-  {
-    "sha": "9ce92d01b956df851559883780bcea6971f689fc",
-    "short": "9ce92d0",
-    "date": "2026-06-22T17:07:34Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9ce92d01b956df851559883780bcea6971f689fc"
-  },
-  {
-    "sha": "7ef2df04fbb3da4991ab92dd5b92681bd75c4b3e",
-    "short": "7ef2df0",
-    "date": "2026-06-22T13:07:25-04:00",
-    "message": "refactor: delete root loader.js (moved to js/core/)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7ef2df04fbb3da4991ab92dd5b92681bd75c4b3e"
   }
 ]
