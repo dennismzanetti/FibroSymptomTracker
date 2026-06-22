@@ -43,7 +43,7 @@ document.addEventListener('partialsLoaded', () => {
   // ---- About section ----
   loadAboutSection();
 
-  // ---- Developer Diagnostics toggle ----
+  // ---- Developer Diagnostics ----
   injectDiagnosticsToggle();
 });
 
@@ -169,23 +169,14 @@ function escHtml(str) {
 
 // ---- Developer Diagnostics toggle ----
 function injectDiagnosticsToggle() {
-  const settingsTab = document.getElementById('settings-tab');
-  if (!settingsTab) return;
+  const container = document.getElementById('diagToggleContent');
+  if (!container) return;
 
   const isOn = !!(typeof FibroDiag !== 'undefined'
     ? FibroDiag.isDebugEnabled()
     : sessionStorage.getItem('FIBRO_DEBUG'));
 
-  const section = document.createElement('div');
-  section.id = 'diagToggleSection';
-  section.style.cssText = [
-    'margin-top:var(--space-8)',
-    'padding-top:var(--space-6)',
-    'border-top:1px solid var(--color-divider)'
-  ].join(';');
-
-  section.innerHTML = `
-    <h3 style="font-size:var(--text-base);font-weight:700;margin-bottom:var(--space-1);">Developer Diagnostics</h3>
+  container.innerHTML = `
     <p style="font-size:var(--text-sm);color:var(--color-text-muted);margin-bottom:var(--space-4);">Enable verbose console logging to help diagnose errors. The setting persists for this browser tab until you turn it off.</p>
     <div style="display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap;">
       <button id="diagToggleBtn" style="
@@ -210,8 +201,6 @@ function injectDiagnosticsToggle() {
       </span>
     </div>
   `;
-
-  settingsTab.appendChild(section);
 
   document.getElementById('diagToggleBtn').addEventListener('click', () => {
     const currentlyOn = !!(typeof FibroDiag !== 'undefined'
