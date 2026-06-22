@@ -1,5 +1,19 @@
 [
   {
+    "sha": "443d770fb84af59d29e8ba81954a1759b4018814",
+    "short": "443d770",
+    "date": "2026-06-22T14:04:35-04:00",
+    "message": "refactor: move careteam.js to js/features/ and update index.html (Step 15)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/443d770fb84af59d29e8ba81954a1759b4018814"
+  },
+  {
+    "sha": "dc7cdbdb893eda53aad8be59ce6d974c41f1ad07",
+    "short": "dc7cdbd",
+    "date": "2026-06-22T18:00:52Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/dc7cdbdb893eda53aad8be59ce6d974c41f1ad07"
+  },
+  {
     "sha": "c591e7d941007e6a6c35030cb218149659ec9336",
     "short": "c591e7d",
     "date": "2026-06-22T14:00:45-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T17:53:30Z",
     "message": "chore: update commit-log.json + build-info.js [skip ci]",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/f788800ba51120a3dbd5adaff66f56698f7b4be8"
-  },
-  {
-    "sha": "8fc27aac73f7d8318e1bbab38d53d3a428dc0016",
-    "short": "8fc27aa",
-    "date": "2026-06-22T13:53:23-04:00",
-    "message": "feat: add sticky anchor navigation to settings tab",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/8fc27aac73f7d8318e1bbab38d53d3a428dc0016"
-  },
-  {
-    "sha": "0ec9f48d1be9dc8f826af5cf3d1cc72404442178",
-    "short": "0ec9f48",
-    "date": "2026-06-22T17:51:25Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/0ec9f48d1be9dc8f826af5cf3d1cc72404442178"
   }
 ]
