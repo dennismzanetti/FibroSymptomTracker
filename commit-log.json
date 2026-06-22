@@ -1,5 +1,19 @@
 [
   {
+    "sha": "96f35436268b562071aceef9956ea87640d4f94c",
+    "short": "96f3543",
+    "date": "2026-06-22T15:07:45-04:00",
+    "message": "style: refine sub-tab pill buttons with segmented-control look",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/96f35436268b562071aceef9956ea87640d4f94c"
+  },
+  {
+    "sha": "66349e9005b3d16d1b3d241c0007b9c49a084f3b",
+    "short": "66349e9",
+    "date": "2026-06-22T18:47:24Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/66349e9005b3d16d1b3d241c0007b9c49a084f3b"
+  },
+  {
     "sha": "fcd757077bd0b8a2e379f43600c00eb5f4988c02",
     "short": "fcd7570",
     "date": "2026-06-22T14:47:14-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T14:37:51-04:00",
     "message": "refactor: extract Firebase init into js/core/firebase-init.js",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/dbe8b54dfd4f312f1735bd5aa91882e05b047451"
-  },
-  {
-    "sha": "f6897b50e5c1adf5cd98621e8f2c821edbceb661",
-    "short": "f6897b5",
-    "date": "2026-06-22T18:30:29Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/f6897b50e5c1adf5cd98621e8f2c821edbceb661"
-  },
-  {
-    "sha": "9d711e8e0cdcdb76fe69ebe479a55e0f73d484d7",
-    "short": "9d711e8",
-    "date": "2026-06-22T14:30:20-04:00",
-    "message": "fix: move anchor ids above each settings card so headings appear on scroll",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9d711e8e0cdcdb76fe69ebe479a55e0f73d484d7"
   }
 ]
