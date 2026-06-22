@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.0.0 — June 2026
+
+### Major Changes
+- Major formatting updates.
+
 ## v2.1.0 — May 22, 2026
 
 ### Major Changes
