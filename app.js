@@ -147,17 +147,57 @@ document.addEventListener('partialsLoaded', () => {
   document.getElementById('importConfirmBtn')?.addEventListener('click', confirmImport);
   document.getElementById('importCancelBtn')?.addEventListener('click', cancelImport);
 
-  // ---- Build footer — read from static build-info.js (no API call) ----
-  const shaEl = document.getElementById('buildSha');
-  const msgEl = document.getElementById('buildMsg');
-  if (window.BUILD_INFO) {
-    if (shaEl) shaEl.textContent = window.BUILD_INFO.sha;
-    if (msgEl) msgEl.textContent = window.BUILD_INFO.message;
-    FibroDiag.debug('App', `Build info: ${window.BUILD_INFO.sha} — ${window.BUILD_INFO.message}`);
-  } else {
-    if (msgEl) msgEl.textContent = 'build info unavailable';
-    FibroDiag.warn('App', 'BUILD_INFO not found — build-info.js may not have loaded');
-  }
+  // ---- Build footer — live GitHub API, falls back to static build-info.js ----
+  (function loadBuildInfo() {
+    const shaEl = document.getElementById('buildSha');
+    const msgEl = document.getElementById('buildMsg');
+
+    function applyBuildInfo(sha, message, url) {
+      if (shaEl) {
+        if (url) {
+          shaEl.innerHTML = `<a href="${url}" target="_blank" rel="noopener noreferrer">${sha}</a>`;
+        } else {
+          shaEl.textContent = sha;
+        }
+      }
+      if (msgEl) msgEl.textContent = message;
+      FibroDiag.debug('App', `Build info: ${sha} — ${message}`);
+    }
+
+    function applyFallback() {
+      if (window.BUILD_INFO) {
+        applyBuildInfo(
+          window.BUILD_INFO.sha,
+          window.BUILD_INFO.message,
+          window.BUILD_INFO.url
+        );
+        FibroDiag.debug('App', 'Build info: loaded from static BUILD_INFO fallback');
+      } else {
+        if (msgEl) msgEl.textContent = 'build info unavailable';
+        FibroDiag.warn('App', 'BUILD_INFO not found and GitHub API failed');
+      }
+    }
+
+    fetch('https://api.github.com/repos/dennismzanetti/FibroSymptomTracker/commits/main', {
+      headers: { 'Accept': 'application/vnd.github.v3+json' }
+    })
+      .then(r => {
+        if (!r.ok) throw new Error(`GitHub API ${r.status}`);
+        return r.json();
+      })
+      .then(data => {
+        const sha     = data.sha.slice(0, 7);
+        const shaFull = data.sha;
+        const message = (data.commit.message || '').split('\n')[0];
+        const url     = `https://github.com/dennismzanetti/FibroSymptomTracker/commit/${shaFull}`;
+        applyBuildInfo(sha, message, url);
+        FibroDiag.debug('App', 'Build info: loaded live from GitHub API');
+      })
+      .catch(err => {
+        FibroDiag.warn('App', `GitHub API failed (${err.message}) — falling back to BUILD_INFO`);
+        applyFallback();
+      });
+  })();
 
   FibroDiag.info('App', 'UI setup complete');
 
@@ -457,7 +497,7 @@ function loadDayFromCloud(date) {
       showToast('No entry for that date \u2014 form cleared');
     }
   }).catch((error) => {
-    FibroDiag.error('App', `Cloud load failed for ${date}`, error);
+    FibroDiag.error('App', `Cloud load failed for ${date}`, err);
     clearFormFieldsExceptDate();
     showToast('\u26A0 Cloud load failed', true);
   });
