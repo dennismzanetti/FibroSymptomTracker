@@ -1,5 +1,19 @@
 [
   {
+    "sha": "ee091ec4d34878719fae28a05e933ab10ac4bc4c",
+    "short": "ee091ec",
+    "date": "2026-06-22T13:06:16-04:00",
+    "message": "refactor: move loader.js to js/core/ (Step 3 of folder restructure)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ee091ec4d34878719fae28a05e933ab10ac4bc4c"
+  },
+  {
+    "sha": "3cf12aa4603acd4a1b5e9b2194d789b5ba552fe0",
+    "short": "3cf12aa",
+    "date": "2026-06-22T17:02:20Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/3cf12aa4603acd4a1b5e9b2194d789b5ba552fe0"
+  },
+  {
     "sha": "01ef8ac2ce9bab8901e005364f6b0c79d168f8d7",
     "short": "01ef8ac",
     "date": "2026-06-22T13:02:06-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T16:52:54Z",
     "message": "chore: update commit-log.json + build-info.js [skip ci]",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/977fea89eaaf8792be8737e8c0834e31941d87b4"
-  },
-  {
-    "sha": "eb4180c71e28ade028e32a43be0d8abf7d485e7d",
-    "short": "eb4180c",
-    "date": "2026-06-22T12:52:44-04:00",
-    "message": "feat: show full SHA hash in About section commit list",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/eb4180c71e28ade028e32a43be0d8abf7d485e7d"
-  },
-  {
-    "sha": "32413299387715c64be610dd3dcb468b152dc192",
-    "short": "3241329",
-    "date": "2026-06-22T16:50:43Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/32413299387715c64be610dd3dcb468b152dc192"
   }
 ]
