@@ -1,5 +1,19 @@
 [
   {
+    "sha": "6dc48985f66eda9ccc1963ac2239f8f051411b59",
+    "short": "6dc4898",
+    "date": "2026-06-22T12:40:57-04:00",
+    "message": "Fix build-info.js with correct SHA for d426e5b commit",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/6dc48985f66eda9ccc1963ac2239f8f051411b59"
+  },
+  {
+    "sha": "f9d4e63ed2e1162ff45e118209f3f0e060ed64e7",
+    "short": "f9d4e63",
+    "date": "2026-06-22T16:37:38Z",
+    "message": "chore: update commit-log.json [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/f9d4e63ed2e1162ff45e118209f3f0e060ed64e7"
+  },
+  {
     "sha": "d426e5b15763bbcb0eaf5cfe3e4296dacf0c7fad",
     "short": "d426e5b",
     "date": "2026-06-22T12:37:07-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T12:19:28-04:00",
     "message": "Add diagnostics.js — console diagnostics module with log levels, timers, Firebase hook, and global error handlers",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/182e7c5369f0b1b9ee5a47f8d4b57eecc64dab7f"
-  },
-  {
-    "sha": "d1856e8e26dc50754a73e3def23696445e805233",
-    "short": "d1856e8",
-    "date": "2026-06-22T16:14:01Z",
-    "message": "chore: update commit-log.json [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d1856e8e26dc50754a73e3def23696445e805233"
-  },
-  {
-    "sha": "ab4ccdb79110b9c1d67a300c206c2f21c2d9bd64",
-    "short": "ab4ccdb",
-    "date": "2026-06-22T12:13:50-04:00",
-    "message": "Add favicon link tag to index.html",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ab4ccdb79110b9c1d67a300c206c2f21c2d9bd64"
   }
 ]
