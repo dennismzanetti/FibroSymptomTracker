@@ -1,5 +1,19 @@
 [
   {
+    "sha": "1bc74f04a54deeddc16e1738e5ad90fb685f4e3e",
+    "short": "1bc74f0",
+    "date": "2026-06-22T14:05:28-04:00",
+    "message": "refactor: delete root careteam.js (moved to js/features/)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/1bc74f04a54deeddc16e1738e5ad90fb685f4e3e"
+  },
+  {
+    "sha": "e17335ba811a1bb1d78ce593428a3923972bb16d",
+    "short": "e17335b",
+    "date": "2026-06-22T18:04:43Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e17335ba811a1bb1d78ce593428a3923972bb16d"
+  },
+  {
     "sha": "443d770fb84af59d29e8ba81954a1759b4018814",
     "short": "443d770",
     "date": "2026-06-22T14:04:35-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T17:54:28Z",
     "message": "chore: update commit-log.json + build-info.js [skip ci]",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ec231c6ce9867166f98d1864be46d9dd2a2b70c1"
-  },
-  {
-    "sha": "1fdd5bfa188374fcb775f4cfd20f22267ef86a32",
-    "short": "1fdd5bf",
-    "date": "2026-06-22T13:54:20-04:00",
-    "message": "fix: add persist-credentials to fix git push in workflow",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/1fdd5bfa188374fcb775f4cfd20f22267ef86a32"
-  },
-  {
-    "sha": "f788800ba51120a3dbd5adaff66f56698f7b4be8",
-    "short": "f788800",
-    "date": "2026-06-22T17:53:30Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/f788800ba51120a3dbd5adaff66f56698f7b4be8"
   }
 ]
