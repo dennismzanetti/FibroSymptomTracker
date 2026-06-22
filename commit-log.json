@@ -1,5 +1,19 @@
 [
   {
+    "sha": "f518700d3d8dd56915346a32181b572aef84156e",
+    "short": "f518700",
+    "date": "2026-06-22T12:55:18-04:00",
+    "message": "refactor: move firebase-init.js to js/core/ (Step 1 of folder restructure)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/f518700d3d8dd56915346a32181b572aef84156e"
+  },
+  {
+    "sha": "977fea89eaaf8792be8737e8c0834e31941d87b4",
+    "short": "977fea8",
+    "date": "2026-06-22T16:52:54Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/977fea89eaaf8792be8737e8c0834e31941d87b4"
+  },
+  {
     "sha": "eb4180c71e28ade028e32a43be0d8abf7d485e7d",
     "short": "eb4180c",
     "date": "2026-06-22T12:52:44-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T16:45:17Z",
     "message": "chore: update commit-log.json [skip ci]",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ae94da36e9c872b7c63771dcc3604363eb99a9d4"
-  },
-  {
-    "sha": "b66f0514cfbe80216f916c995b85011952c30f89",
-    "short": "b66f051",
-    "date": "2026-06-22T12:45:08-04:00",
-    "message": "Add FibroDiag instrumentation to loader, app, history, trends, medications, conditions, careteam",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b66f0514cfbe80216f916c995b85011952c30f89"
-  },
-  {
-    "sha": "a1241f028b4bddbbb6c32917b2c04a6d7ce0e330",
-    "short": "a1241f0",
-    "date": "2026-06-22T16:42:31Z",
-    "message": "chore: update commit-log.json [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/a1241f028b4bddbbb6c32917b2c04a6d7ce0e330"
   }
 ]
