@@ -42,6 +42,9 @@ document.addEventListener('partialsLoaded', () => {
 
   // ---- About section: read from static build-info.js (no API call) ----
   loadAboutSection();
+
+  // ---- Developer Diagnostics toggle ----
+  injectDiagnosticsToggle();
 });
 
 function loadAboutSection() {
@@ -56,7 +59,6 @@ function loadAboutSection() {
     return;
   }
 
-  // Show latest commit SHA as the app version
   if (versionEl) {
     versionEl.textContent = 'Build: ' + info.shaFull;
   }
@@ -94,4 +96,75 @@ function escHtml(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+// ---- Developer Diagnostics toggle ----
+function injectDiagnosticsToggle() {
+  // Find a stable anchor in the settings tab to append to
+  const settingsTab = document.getElementById('settings-tab');
+  if (!settingsTab) return;
+
+  const isOn = !!(typeof FibroDiag !== 'undefined'
+    ? FibroDiag.isDebugEnabled()
+    : sessionStorage.getItem('FIBRO_DEBUG'));
+
+  const section = document.createElement('div');
+  section.id = 'diagToggleSection';
+  section.style.cssText = [
+    'margin-top:var(--space-8)',
+    'padding-top:var(--space-6)',
+    'border-top:1px solid var(--color-divider)'
+  ].join(';');
+
+  section.innerHTML = `
+    <h3 style="font-size:var(--text-base);font-weight:700;margin-bottom:var(--space-1);">Developer Diagnostics</h3>
+    <p style="font-size:var(--text-sm);color:var(--color-text-muted);margin-bottom:var(--space-4);">Enable verbose console logging to help diagnose errors. The setting persists for this browser tab until you turn it off.</p>
+    <div style="display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap;">
+      <button id="diagToggleBtn" style="
+        display:inline-flex;align-items:center;gap:var(--space-2);
+        padding:var(--space-2) var(--space-4);
+        border-radius:var(--radius-full);
+        font-size:var(--text-sm);font-weight:600;
+        border:2px solid ${isOn ? 'var(--color-success)' : 'var(--color-border)'};
+        background:${isOn ? 'var(--color-success-highlight)' : 'var(--color-surface)'};
+        color:${isOn ? 'var(--color-success)' : 'var(--color-text-muted)'};
+        cursor:pointer;transition:all 0.18s ease;
+      ">
+        <span id="diagToggleDot" style="
+          width:10px;height:10px;border-radius:50%;
+          background:${isOn ? 'var(--color-success)' : 'var(--color-text-faint)'};
+          display:inline-block;
+        "></span>
+        <span id="diagToggleLabel">Debug logging: ${isOn ? 'ON' : 'OFF'}</span>
+      </button>
+      <span id="diagToggleHint" style="font-size:var(--text-xs);color:var(--color-text-faint);">
+        ${isOn ? '&#x1F41E; Open DevTools console to see debug output.' : 'Page will reload when enabled.'}
+      </span>
+    </div>
+  `;
+
+  settingsTab.appendChild(section);
+
+  document.getElementById('diagToggleBtn').addEventListener('click', () => {
+    const currentlyOn = !!(typeof FibroDiag !== 'undefined'
+      ? FibroDiag.isDebugEnabled()
+      : sessionStorage.getItem('FIBRO_DEBUG'));
+    if (currentlyOn) {
+      sessionStorage.removeItem('FIBRO_DEBUG');
+      showToast('\uD83D\uDD15 Debug logging disabled');
+      // Update button immediately without reload
+      const btn  = document.getElementById('diagToggleBtn');
+      const dot  = document.getElementById('diagToggleDot');
+      const lbl  = document.getElementById('diagToggleLabel');
+      const hint = document.getElementById('diagToggleHint');
+      if (btn)  { btn.style.borderColor = 'var(--color-border)'; btn.style.background = 'var(--color-surface)'; btn.style.color = 'var(--color-text-muted)'; }
+      if (dot)  dot.style.background = 'var(--color-text-faint)';
+      if (lbl)  lbl.textContent = 'Debug logging: OFF';
+      if (hint) hint.textContent = 'Page will reload when enabled.';
+    } else {
+      sessionStorage.setItem('FIBRO_DEBUG', '1');
+      showToast('\uD83D\uDC1E Debug logging enabled \u2014 reloading...');
+      setTimeout(() => location.reload(), 900);
+    }
+  });
 }

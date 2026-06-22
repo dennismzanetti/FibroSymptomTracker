@@ -9,9 +9,12 @@
  *   FibroDiag.time('operationLabel');
  *   FibroDiag.timeEnd('operationLabel');
  *
- * Toggle verbose debug output:
- *   window.FIBRO_DEBUG = true;   // enable in browser console
- *   window.FIBRO_DEBUG = false;  // disable
+ * Toggle verbose debug output (persists across refreshes for this tab):
+ *   sessionStorage.setItem('FIBRO_DEBUG', '1');  // enable
+ *   sessionStorage.removeItem('FIBRO_DEBUG');     // disable
+ *
+ * Or use the toggle in Settings > Developer Diagnostics.
+ * window.FIBRO_DEBUG = true also works for the current page load only.
  */
 
 (function () {
@@ -23,12 +26,16 @@
     MODULE:'color:#555;font-weight:500',
   };
 
+  function isDebugEnabled() {
+    return !!(window.FIBRO_DEBUG || sessionStorage.getItem('FIBRO_DEBUG'));
+  }
+
   function timestamp() {
-    return new Date().toISOString().substring(11, 23); // HH:MM:SS.mmm
+    return new Date().toISOString().substring(11, 23);
   }
 
   function log(level, module, message, data) {
-    if (level === 'DEBUG' && !window.FIBRO_DEBUG) return;
+    if (level === 'DEBUG' && !isDebugEnabled()) return;
     const prefix = `%c${level}%c [${module}] ${timestamp()} — ${message}`;
     if (data !== undefined) {
       console[level === 'ERROR' ? 'error' : level === 'WARN' ? 'warn' : 'log'](
@@ -48,6 +55,7 @@
     warn:    (module, msg, data) => log('WARN',  module, msg, data),
     error:   (module, msg, data) => log('ERROR', module, msg, data),
     debug:   (module, msg, data) => log('DEBUG', module, msg, data),
+    isDebugEnabled,
 
     time: (label) => {
       timers[label] = performance.now();
@@ -63,7 +71,6 @@
       log('INFO', 'Timer', `⏱ END: ${label} — ${ms}ms`);
     },
 
-    // Call this after Firebase is initialized to hook auth & Firestore events
     hookFirebase: function () {
       try {
         if (typeof firebase === 'undefined') {
@@ -99,5 +106,9 @@
     log('ERROR', 'Global', 'Unhandled promise rejection', event.reason);
   });
 
-  log('INFO', 'Diagnostics', 'FibroDiag loaded. Set window.FIBRO_DEBUG=true for verbose output.');
+  if (isDebugEnabled()) {
+    log('INFO', 'Diagnostics', 'FibroDiag loaded — DEBUG MODE ON (via sessionStorage)');
+  } else {
+    log('INFO', 'Diagnostics', 'FibroDiag loaded. Enable debug in Settings > Developer Diagnostics or: sessionStorage.setItem("FIBRO_DEBUG","1") then reload.');
+  }
 })();
