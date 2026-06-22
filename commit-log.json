@@ -1,5 +1,19 @@
 [
   {
+    "sha": "806379071c9b89f035fc40a7c31b217d5bad9231",
+    "short": "8063790",
+    "date": "2026-06-22T14:25:22-04:00",
+    "message": "cleaning up fb rules",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/806379071c9b89f035fc40a7c31b217d5bad9231"
+  },
+  {
+    "sha": "d77a5700b5e742e0e6721b7f4a0412e1c4179413",
+    "short": "d77a570",
+    "date": "2026-06-22T18:22:50Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d77a5700b5e742e0e6721b7f4a0412e1c4179413"
+  },
+  {
     "sha": "78c329b604823986738973b4405186342f26496b",
     "short": "78c329b",
     "date": "2026-06-22T14:22:42-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T14:19:51-04:00",
     "message": "Add firestore.rules for version control",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e5e62a9a2d41694f7fe173dfc146c738f5290859"
-  },
-  {
-    "sha": "451a33add5d49c1b7973cb20ce21b527b8af2c0b",
-    "short": "451a33a",
-    "date": "2026-06-22T18:19:21Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/451a33add5d49c1b7973cb20ce21b527b8af2c0b"
-  },
-  {
-    "sha": "831611f5e454054586468224a5d65f06458282b4",
-    "short": "831611f",
-    "date": "2026-06-22T14:19:13-04:00",
-    "message": "refactor: delete root app.js (moved to js/features/)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/831611f5e454054586468224a5d65f06458282b4"
   }
 ]
