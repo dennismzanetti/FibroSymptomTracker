@@ -1,5 +1,19 @@
 [
   {
+    "sha": "f0fff1651ed73d0bf4dcad24b93abd51f6158a72",
+    "short": "f0fff16",
+    "date": "2026-06-22T13:48:59-04:00",
+    "message": "refactor: delete root trends.js (moved to js/features/)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/f0fff1651ed73d0bf4dcad24b93abd51f6158a72"
+  },
+  {
+    "sha": "ab385b184bf5fa6f49124819679a9e9e40093aff",
+    "short": "ab385b1",
+    "date": "2026-06-22T17:48:46Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ab385b184bf5fa6f49124819679a9e9e40093aff"
+  },
+  {
     "sha": "d22b2f7fdbcf82c04fbc19bba6cbe6bab3cf4d79",
     "short": "d22b2f7",
     "date": "2026-06-22T13:48:36-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T17:43:40Z",
     "message": "chore: update commit-log.json + build-info.js [skip ci]",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/83f50f03f0fbb4c7974203919e3c70778b7a17ec"
-  },
-  {
-    "sha": "ff74cad021cab8f3712c00020b7ea74c70e482ef",
-    "short": "ff74cad",
-    "date": "2026-06-22T13:43:32-04:00",
-    "message": "feat: switch build footer to live GitHub API with BUILD_INFO fallback",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ff74cad021cab8f3712c00020b7ea74c70e482ef"
-  },
-  {
-    "sha": "4eb1c215ea7d50eaf79a0759cd36de0c18232a21",
-    "short": "4eb1c21",
-    "date": "2026-06-22T13:43:31-04:00",
-    "message": "refactor: delete root mood.js (moved to js/features/)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/4eb1c215ea7d50eaf79a0759cd36de0c18232a21"
   }
 ]
