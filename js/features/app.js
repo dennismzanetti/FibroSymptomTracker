@@ -42,7 +42,7 @@ document.addEventListener('partialsLoaded', () => {
         setupCareTeamTab();
         if (typeof setupConditionsTab === 'function') setupConditionsTab();
         runPostLoadSetup();
-        if (typeof window.applySettingsOnAuth === 'function') window.applySettingsOnAuth();
+        if (typeof window.applySettingsOnAuth === 'function') window.applySettingsOnAuth(user);
       }
     } else {
       FibroDiag.info('App', 'Auth: signed out');
@@ -563,7 +563,7 @@ function refreshHistory() {
   const toEl   = document.getElementById('historyTo');
   const from   = fromEl?.value || nDaysAgo(13);
   const to     = toEl?.value   || todayStr();
-  FibroDiag.debug('App', `refreshHistory: ${from} → ${to}`);
+  FibroDiag.debug('App', `refreshHistory: ${from} \u2192 ${to}`);
   if (typeof window.loadAndRenderHistory === 'function') {
     window.loadAndRenderHistory(from, to, 'historyList');
   } else {
@@ -759,7 +759,7 @@ async function confirmImport() {
   statusEl.className = 'settings-status settings-status-info';
   statusEl.textContent = 'Importing\u2026 please wait.';
   confirmBtn.disabled = true;
-  FibroDiag.info('App', 'Import confirmed — writing to Firestore');
+  FibroDiag.info('App', 'Import confirmed \u2014 writing to Firestore');
   FibroDiag.time('import-all');
   try {
     const collections = pendingImportData.collections;
