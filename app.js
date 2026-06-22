@@ -13,6 +13,9 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
+FibroDiag.info('App', 'Firebase initialised');
+FibroDiag.hookFirebase();
+
 let _windowLoaded = false;
 let _pendingSetup = false;
 let _appInitialised = false;
@@ -20,12 +23,14 @@ let _appInitialised = false;
 function runPostLoadSetup() {
   if (!_windowLoaded || !_pendingSetup) return;
   _pendingSetup = false;
+  FibroDiag.debug('App', 'runPostLoadSetup: loading today date and cloud data');
   loadTodayDate();
   loadDayFromCloud(currentDateStr);
 }
 
 // ---- All DOM wiring deferred until partials are injected ----
 document.addEventListener('partialsLoaded', () => {
+  FibroDiag.info('App', 'partialsLoaded event received — wiring up UI');
 
   const signOutBtn       = document.getElementById('signOutBtn');
   const signOutBtnMobile = document.getElementById('signOutBtnMobile');
@@ -36,16 +41,17 @@ document.addEventListener('partialsLoaded', () => {
   // ---- Auth state ----
   auth.onAuthStateChanged((user) => {
     if (user) {
+      FibroDiag.info('App', `Auth: signed in as ${user.email} (uid: ${user.uid})`);
       const authOverlay = document.getElementById('authOverlay');
       if (authOverlay) authOverlay.style.display = 'none';
       if (appMain) appMain.style.display = '';
       if (signOutBtn) signOutBtn.style.display = 'inline-block';
       if (signOutBtnMobile) signOutBtnMobile.style.display = 'inline-flex';
-      console.log('Signed in as', user.displayName, 'UID:', user.uid);
 
       if (!_appInitialised) {
         _appInitialised = true;
         _pendingSetup = true;
+        FibroDiag.debug('App', 'First auth — running first-time setup');
         setupMedicationsTab();
         setupCareTeamTab();
         if (typeof setupConditionsTab === 'function') setupConditionsTab();
@@ -53,6 +59,7 @@ document.addEventListener('partialsLoaded', () => {
         if (typeof window.applySettingsOnAuth === 'function') window.applySettingsOnAuth();
       }
     } else {
+      FibroDiag.info('App', 'Auth: signed out');
       const authOverlay = document.getElementById('authOverlay');
       if (authOverlay) authOverlay.style.display = 'flex';
       if (appMain) appMain.style.display = 'none';
@@ -71,34 +78,36 @@ document.addEventListener('partialsLoaded', () => {
 
     auth.getRedirectResult().then(result => {
       if (result && result.user) {
-        console.log('Redirect sign-in complete:', result.user.displayName);
+        FibroDiag.info('App', `Redirect sign-in complete: ${result.user.displayName}`);
       }
     }).catch(err => {
-      console.error('Redirect sign-in error:', err);
+      FibroDiag.error('App', 'Redirect sign-in error', err);
       if (authError) authError.textContent = 'Sign-in failed. Please try again.';
     });
 
     signInBtn.addEventListener('click', () => {
       if (authError) authError.textContent = '';
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      FibroDiag.debug('App', `Sign-in clicked — method: ${isMobile ? 'redirect' : 'popup'}`);
       if (isMobile) {
         auth.signInWithRedirect(provider).catch(err => {
-          console.error('Redirect sign-in error:', err);
+          FibroDiag.error('App', 'Redirect sign-in error', err);
           if (authError) authError.textContent = 'Sign-in failed. Please try again.';
         });
       } else {
         auth.signInWithPopup(provider).catch(err => {
-          console.error('Sign-in error:', err);
+          FibroDiag.error('App', 'Popup sign-in error', err);
           if (authError) authError.textContent = 'Sign-in failed. Please try again.';
         });
       }
     });
   }
 
-  signOutBtn?.addEventListener('click', () => auth.signOut());
-  signOutBtnMobile?.addEventListener('click', () => auth.signOut());
+  signOutBtn?.addEventListener('click', () => { FibroDiag.info('App', 'User clicked sign out'); auth.signOut(); });
+  signOutBtnMobile?.addEventListener('click', () => { FibroDiag.info('App', 'User clicked sign out (mobile)'); auth.signOut(); });
 
   // ---- UI setup ----
+  FibroDiag.debug('App', 'Setting up UI components...');
   setupTabs();
   setupExerciseToggle();
   setupSaveDay();
@@ -118,6 +127,7 @@ document.addEventListener('partialsLoaded', () => {
     dateInput.addEventListener('change', () => {
       const v = dateInput.value;
       if (v && v !== currentDateStr) {
+        FibroDiag.debug('App', `Date picker changed to ${v}`);
         currentDateStr = v;
         updateDateDisplay();
         loadDayFromCloud(currentDateStr);
@@ -143,9 +153,13 @@ document.addEventListener('partialsLoaded', () => {
   if (window.BUILD_INFO) {
     if (shaEl) shaEl.textContent = window.BUILD_INFO.sha;
     if (msgEl) msgEl.textContent = window.BUILD_INFO.message;
+    FibroDiag.debug('App', `Build info: ${window.BUILD_INFO.sha} — ${window.BUILD_INFO.message}`);
   } else {
     if (msgEl) msgEl.textContent = 'build info unavailable';
+    FibroDiag.warn('App', 'BUILD_INFO not found — build-info.js may not have loaded');
   }
+
+  FibroDiag.info('App', 'UI setup complete');
 
 }); // end partialsLoaded
 
@@ -262,11 +276,10 @@ function setupTabs() {
   const tabSelect = document.getElementById('tabSelect');
 
   function activate(target) {
+    FibroDiag.debug('App', `Tab activated: ${target}`);
     buttons.forEach(b => b.classList.toggle('active', b.getAttribute('data-tab') === target));
     tabs.forEach(t => t.classList.toggle('active', t.id === target));
-    // Keep the mobile dropdown in sync
     if (tabSelect && tabSelect.value !== target) tabSelect.value = target;
-    // Tab-specific refresh hooks
     if (target === 'history-tab') refreshHistory();
     if (target === 'journal-tab') renderJournal();
     if (target === 'trends-tab') refreshTrends();
@@ -284,12 +297,10 @@ function setupTabs() {
     if (target === 'entry-tab') syncDateInput();
   }
 
-  // Desktop tab button clicks
   buttons.forEach(btn => {
     btn.addEventListener('click', () => activate(btn.getAttribute('data-tab')));
   });
 
-  // Mobile dropdown — drives the same activate() path
   if (tabSelect) {
     tabSelect.addEventListener('change', () => activate(tabSelect.value));
   }
@@ -308,6 +319,7 @@ function setupExerciseToggle() {
 
 function loadTodayDate() {
   currentDateStr = todayStr();
+  FibroDiag.debug('App', `loadTodayDate: set to ${currentDateStr}`);
   syncDateInput();
 }
 
@@ -318,6 +330,8 @@ function setupSaveDay() {
     const dayData = collectFormData();
     if (!dayData.date) { if (status) status.textContent = 'Please select a date.'; return; }
     if (status) status.textContent = '';
+    FibroDiag.info('App', `Saving day: ${dayData.date}`);
+    FibroDiag.time('save-day');
     const days = loadAllDays();
     const existingIndex = days.findIndex(d => d.date === dayData.date);
     if (existingIndex >= 0) days[existingIndex] = dayData;
@@ -325,9 +339,11 @@ function setupSaveDay() {
     saveAllDays(days);
     try {
       await db.collection('days').doc(dayData.date).set(dayData, { merge: false });
+      FibroDiag.timeEnd('save-day');
+      FibroDiag.info('App', `Day saved to Firestore: ${dayData.date}`);
       showToast('\u2713 Day saved');
     } catch (err) {
-      console.error('Error saving to cloud:', err);
+      FibroDiag.error('App', `Firestore save failed for ${dayData.date}`, err);
       showToast('\u26A0 Cloud save failed \u2014 check connection', true);
     }
     refreshHistory();
@@ -427,16 +443,21 @@ function clearFormFieldsExceptDate() {
 
 function loadDayFromCloud(date) {
   if (!date) return;
+  FibroDiag.debug('App', `loadDayFromCloud: fetching ${date}`);
+  FibroDiag.time(`cloud-load-${date}`);
   db.collection('days').doc(date).get().then((doc) => {
+    FibroDiag.timeEnd(`cloud-load-${date}`);
     if (doc.exists) {
+      FibroDiag.info('App', `Cloud load success: ${date}`);
       fillFormFromData(Object.assign({ date: doc.id }, doc.data()));
       showToast('\u2601 Updated from cloud');
     } else {
+      FibroDiag.debug('App', `No cloud entry for ${date} — clearing form`);
       clearFormFieldsExceptDate();
       showToast('No entry for that date \u2014 form cleared');
     }
   }).catch((error) => {
-    console.error('Error getting document:', error);
+    FibroDiag.error('App', `Cloud load failed for ${date}`, error);
     clearFormFieldsExceptDate();
     showToast('\u26A0 Cloud load failed', true);
   });
@@ -516,6 +537,7 @@ function refreshHistory() {
   const toEl   = document.getElementById('historyTo');
   const from   = fromEl?.value || nDaysAgo(13);
   const to     = toEl?.value   || todayStr();
+  FibroDiag.debug('App', `refreshHistory: ${from} → ${to}`);
   if (typeof window.loadAndRenderHistory === 'function') {
     window.loadAndRenderHistory(from, to, 'historyList');
   } else {
@@ -578,6 +600,7 @@ function changeDateBy(days) {
   if (isNaN(current.getTime())) return;
   current.setDate(current.getDate() + days);
   currentDateStr = `${current.getFullYear()}-${String(current.getMonth()+1).padStart(2,'0')}-${String(current.getDate()).padStart(2,'0')}`;
+  FibroDiag.debug('App', `changeDateBy(${days}): now ${currentDateStr}`);
   syncDateInput();
   loadDayFromCloud(currentDateStr);
 }
@@ -600,9 +623,13 @@ function formatText(value, fallback = 'Not recorded.') { return value && String(
 
 let functionalityChart = null;
 async function refreshTrends() {
+  if (typeof window.refreshTrends === 'function' && window.refreshTrends !== refreshTrends) {
+    return window.refreshTrends();
+  }
   const canvas = document.getElementById('functionalityChart');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  FibroDiag.debug('App', 'refreshTrends: fetching from Firestore');
   try {
     const snapshot = await db.collection('days').orderBy(firebase.firestore.FieldPath.documentId()).get();
     const labels = [], data = [];
@@ -610,13 +637,14 @@ async function refreshTrends() {
       const d = doc.data();
       if (typeof d.avgFunctionality === 'number') { labels.push(d.date || doc.id); data.push(d.avgFunctionality); }
     });
+    FibroDiag.debug('App', `refreshTrends: ${data.length} data points`);
     if (functionalityChart) functionalityChart.destroy();
     functionalityChart = new Chart(ctx, {
       type: 'line',
       data: { labels, datasets: [{ label: 'Average daily functionality', data, borderColor: '#3f51b5', backgroundColor: 'rgba(63,81,181,0.15)', tension: 0.2 }] },
       options: { scales: { y: { suggestedMin: 0, suggestedMax: 10 } } }
     });
-  } catch (err) { console.error('Error loading trends:', err); }
+  } catch (err) { FibroDiag.error('App', 'refreshTrends failed', err); console.error('Error loading trends:', err); }
 }
 
 // ================================================================
@@ -630,6 +658,8 @@ async function exportAllData() {
   statusEl.className = 'settings-status settings-status-info';
   statusEl.textContent = 'Exporting\u2026 please wait.';
   btn.disabled = true;
+  FibroDiag.info('App', 'Export started');
+  FibroDiag.time('export-all');
   try {
     const collections = ['days','medications','supplements','medicationHistory','careTeam','appointments','automaticThoughtRecords','conditions'];
     const backup = { exportedAt: new Date().toISOString(), appVersion: 'FibroSymptomTracker', collections: {} };
@@ -637,6 +667,7 @@ async function exportAllData() {
       const snap = await db.collection(col).get();
       backup.collections[col] = {};
       snap.forEach(doc => { backup.collections[col][doc.id] = doc.data(); });
+      FibroDiag.debug('App', `Exported ${col}: ${snap.size} records`);
       statusEl.textContent = `Exporting ${col}\u2026 (${snap.size} records)`;
     }
     const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
@@ -648,10 +679,12 @@ async function exportAllData() {
     URL.revokeObjectURL(url);
     let total = 0;
     for (const col of collections) total += Object.keys(backup.collections[col]).length;
+    FibroDiag.timeEnd('export-all');
+    FibroDiag.info('App', `Export complete: ${total} total records`);
     statusEl.className = 'settings-status settings-status-success';
     statusEl.textContent = `\u2713 Export complete \u2014 ${total} total records downloaded.`;
   } catch (err) {
-    console.error('Export error:', err);
+    FibroDiag.error('App', 'Export failed', err);
     statusEl.className = 'settings-status settings-status-error';
     statusEl.textContent = 'Export failed: ' + err.message;
   } finally { btn.disabled = false; }
@@ -662,6 +695,7 @@ let pendingImportData = null;
 function handleImportFile(e) {
   const file = e.target.files[0];
   if (!file) return;
+  FibroDiag.info('App', `Import file selected: ${file.name}`);
   const statusEl    = document.getElementById('exportImportStatus');
   const confirmBox  = document.getElementById('importConfirmBox');
   const confirmMsg  = document.getElementById('importConfirmMsg');
@@ -673,11 +707,13 @@ function handleImportFile(e) {
       let total = 0;
       const cols = Object.keys(data.collections);
       cols.forEach(c => total += Object.keys(data.collections[c]).length);
+      FibroDiag.debug('App', `Import file parsed: ${total} records across ${cols.length} collections`);
       pendingImportData = data;
       confirmMsg.textContent = `Import ${total} records across ${cols.length} collections from backup dated ${data.exportedAt ? data.exportedAt.slice(0,10) : 'unknown'}? This will overwrite existing matching records.`;
       confirmBox.style.display = 'block';
       statusEl.style.display = 'none';
     } catch (err) {
+      FibroDiag.error('App', 'Import file parse error', err);
       statusEl.style.display = 'block';
       statusEl.className = 'settings-status settings-status-error';
       statusEl.textContent = 'Could not read file: ' + err.message;
@@ -697,6 +733,8 @@ async function confirmImport() {
   statusEl.className = 'settings-status settings-status-info';
   statusEl.textContent = 'Importing\u2026 please wait.';
   confirmBtn.disabled = true;
+  FibroDiag.info('App', 'Import confirmed — writing to Firestore');
+  FibroDiag.time('import-all');
   try {
     const collections = pendingImportData.collections;
     let total = 0;
@@ -706,13 +744,16 @@ async function confirmImport() {
         await db.collection(col).doc(id).set(data, { merge: true });
         total++;
       }
+      FibroDiag.debug('App', `Imported collection: ${col}`);
       statusEl.textContent = `Importing ${col}\u2026`;
     }
+    FibroDiag.timeEnd('import-all');
+    FibroDiag.info('App', `Import complete: ${total} records`);
     statusEl.className = 'settings-status settings-status-success';
     statusEl.textContent = `\u2713 Import complete \u2014 ${total} records restored.`;
     pendingImportData = null;
   } catch (err) {
-    console.error('Import error:', err);
+    FibroDiag.error('App', 'Import failed', err);
     statusEl.className = 'settings-status settings-status-error';
     statusEl.textContent = 'Import failed: ' + err.message;
   } finally { confirmBtn.disabled = false; }
@@ -722,4 +763,5 @@ function cancelImport() {
   pendingImportData = null;
   document.getElementById('importConfirmBox').style.display = 'none';
   document.getElementById('importFileInput').value = '';
+  FibroDiag.debug('App', 'Import cancelled');
 }

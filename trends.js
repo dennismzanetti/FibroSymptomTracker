@@ -1,53 +1,52 @@
-// trends.js — uses global `db` and `auth` from app.js (no ES module import needed)
-// NOTE: days are stored at the top-level `days` collection (not under users/{uid}/days)
+// trends.js
+window.setupTrends = function setupTrends(getUid) {
+  // nothing to wire up at init time; refreshTrends() in app.js drives rendering
+};
 
-function setupTrends(getUid) {
-  const fromEl  = document.getElementById('trendsFrom');
-  const toEl    = document.getElementById('trendsTo');
-  const loadBtn = document.getElementById('loadTrendsBtn');
-  const canvas  = document.getElementById('trendsChart');
-  let chart     = null;
+window.refreshTrends = async function refreshTrends() {
+  const canvas = document.getElementById('functionalityChart');
+  if (!canvas) return;
 
-  if (!loadBtn || !canvas) return;
+  FibroDiag.debug('Trends', 'Fetching trend data from Firestore...');
+  FibroDiag.time('trends-fetch');
 
-  loadBtn.addEventListener('click', async () => {
-    const from = fromEl ? fromEl.value : null;
-    const to   = toEl   ? toEl.value   : null;
-    if (!from || !to) return;
+  const ctx = canvas.getContext('2d');
+  try {
+    const snapshot = await db.collection('days')
+      .orderBy(firebase.firestore.FieldPath.documentId())
+      .get();
 
-    try {
-      const snap = await db
-        .collection('days')
-        .where(firebase.firestore.FieldPath.documentId(), '>=', from)
-        .where(firebase.firestore.FieldPath.documentId(), '<=', to)
-        .orderBy(firebase.firestore.FieldPath.documentId())
-        .get();
+    const labels = [], data = [];
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      if (typeof d.avgFunctionality === 'number') {
+        labels.push(d.date || doc.id);
+        data.push(d.avgFunctionality);
+      }
+    });
 
-      const days = snap.docs.map(d => ({ date: d.id, ...d.data() }));
+    FibroDiag.timeEnd('trends-fetch');
+    FibroDiag.debug('Trends', `${snapshot.size} day docs fetched, ${data.length} have avgFunctionality`);
 
-      const labels  = days.map(d => d.date);
-      const pain    = days.map(d => d.painScore    ?? null);
-      const fatigue = days.map(d => d.fatigueScore ?? null);
-      const mood    = days.map(d => d.mood ? (d.mood.score ?? null) : null);
+    if (window.functionalityChart) window.functionalityChart.destroy();
+    window.functionalityChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Average daily functionality',
+          data,
+          borderColor: '#3f51b5',
+          backgroundColor: 'rgba(63,81,181,0.15)',
+          tension: 0.2
+        }]
+      },
+      options: { scales: { y: { suggestedMin: 0, suggestedMax: 10 } } }
+    });
 
-      if (chart) chart.destroy();
-      chart = new Chart(canvas, {
-        type: 'line',
-        data: {
-          labels,
-          datasets: [
-            { label: 'Pain',    data: pain,    borderColor: '#e05',  tension: 0.3, spanGaps: true },
-            { label: 'Fatigue', data: fatigue, borderColor: '#f80',  tension: 0.3, spanGaps: true },
-            { label: 'Mood',    data: mood,    borderColor: '#08a',  tension: 0.3, spanGaps: true },
-          ]
-        },
-        options: {
-          scales: { y: { min: 1, max: 10 } },
-          plugins: { legend: { position: 'top' } }
-        }
-      });
-    } catch (err) {
-      console.error('Error loading trends range:', err);
-    }
-  });
-}
+    FibroDiag.debug('Trends', 'Chart rendered successfully');
+  } catch (err) {
+    FibroDiag.error('Trends', 'Failed to load trend data', err);
+    console.error('Error loading trends:', err);
+  }
+};

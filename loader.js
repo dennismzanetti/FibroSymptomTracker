@@ -20,6 +20,10 @@
     { id: 'partial-tab-settings',    src: 'partials/tab-settings.html' },
   ];
 
+  const diag = window.FibroDiag || null;
+  diag && diag.debug('Loader', `Loading ${partials.length} partials...`);
+  FibroDiag.time('partials-load');
+
   Promise.all(
     partials.map(({ id, src }) =>
       fetch(src)
@@ -29,11 +33,21 @@
         })
         .then(html => {
           const el = document.getElementById(id);
-          if (el) el.innerHTML = html;
+          if (el) {
+            el.innerHTML = html;
+            diag && diag.debug('Loader', `✓ Loaded: ${src}`);
+          } else {
+            diag && diag.warn('Loader', `Mount point not found: #${id}`);
+          }
         })
-        .catch(err => console.error(err))
+        .catch(err => {
+          diag && diag.error('Loader', `Failed to fetch ${src}`, err);
+          console.error(err);
+        })
     )
   ).then(() => {
+    diag && FibroDiag.timeEnd('partials-load');
+    diag && diag.info('Loader', 'All partials loaded — dispatching partialsLoaded');
     document.dispatchEvent(new Event('partialsLoaded'));
   });
 })();
