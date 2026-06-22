@@ -47,32 +47,43 @@ document.addEventListener('partialsLoaded', () => {
   injectDiagnosticsToggle();
 });
 
+// Shared card style used by every build card in the About section
+function buildCardStyle(highlight) {
+  const base = [
+    'padding:var(--space-3)',
+    'background:var(--color-surface-offset)',
+    'border-radius:var(--radius-md)',
+    'margin-bottom:var(--space-2)',
+  ];
+  if (highlight) {
+    base.push(
+      'border:2px solid var(--color-primary)',
+      'box-shadow:0 0 0 3px var(--color-primary-highlight)'
+    );
+  } else {
+    base.push('border:1px solid var(--color-border)');
+  }
+  return base.join(';');
+}
+
 function loadAboutSection() {
   const container = document.getElementById('settingsAboutCommits');
   if (!container) return;
 
-  // Render shell immediately using BUILD_INFO fallback, then upgrade with live API
   function renderAbout(sha, shaFull, message, date, url) {
     const currentDate = date ? new Date(date).toLocaleString() : '';
 
     const html = `
-      <div style="margin-bottom:var(--space-4);">
-        <p style="font-size:var(--text-xs);font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:var(--space-2);">Current Build</p>
-        <div style="
-          padding:var(--space-3);
-          background:var(--color-surface-offset);
-          border-radius:var(--radius-md);
-          border:1px solid var(--color-border);
-        ">
-          <span style="display:inline-block;font-size:var(--text-xs);font-weight:700;background:var(--color-primary-highlight);color:var(--color-primary);border-radius:var(--radius-full);padding:0.1em 0.6em;margin-bottom:var(--space-1);">latest</span>
-          <p style="font-size:var(--text-sm);font-weight:600;color:var(--color-text);margin:0 0 var(--space-1);word-break:break-word;">${escHtml(message)}</p>
-          <a href="${escHtml(url)}" target="_blank" rel="noopener noreferrer"
-             style="font-size:var(--text-xs);color:var(--color-primary);font-family:monospace;word-break:break-all;text-decoration:none;display:block;margin-bottom:var(--space-1);"
-             title="Open commit on GitHub">${escHtml(shaFull || sha)}</a>
-          <p style="font-size:var(--text-xs);color:var(--color-text-faint);margin:0;">${escHtml(currentDate)}</p>
-        </div>
+      <p style="font-size:var(--text-xs);font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:var(--space-2);">Current Build</p>
+      <div style="${buildCardStyle(true)}">
+        <span style="display:inline-block;font-size:var(--text-xs);font-weight:700;background:var(--color-primary-highlight);color:var(--color-primary);border-radius:var(--radius-full);padding:0.1em 0.6em;margin-bottom:var(--space-1);">latest</span>
+        <p style="font-size:var(--text-sm);font-weight:600;color:var(--color-text);margin:0 0 var(--space-1);word-break:break-word;">${escHtml(message)}</p>
+        <a href="${escHtml(url)}" target="_blank" rel="noopener noreferrer"
+           style="font-size:var(--text-xs);color:var(--color-primary);font-family:monospace;word-break:break-all;text-decoration:none;display:block;margin-bottom:var(--space-1);"
+           title="Open commit on GitHub">${escHtml(shaFull || sha)}</a>
+        <p style="font-size:var(--text-xs);color:var(--color-text-faint);margin:0;">${escHtml(currentDate)}</p>
       </div>
-      <p style="font-size:var(--text-xs);font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:var(--space-2);">Recent Changes</p>
+      <p style="font-size:var(--text-xs);font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-top:var(--space-4);margin-bottom:var(--space-2);">Recent Changes</p>
       <div id="aboutCommitList" style="font-size:var(--text-xs);color:var(--color-text-faint);">Loading&hellip;</div>
       <p style="margin-top:var(--space-4);font-size:var(--text-xs);color:var(--color-text-faint);">
         Full history on <a href="https://github.com/dennismzanetti/FibroSymptomTracker/commits/main" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary);">GitHub</a>.
@@ -81,7 +92,6 @@ function loadAboutSection() {
 
     container.innerHTML = html;
 
-    // Load commit-log.json for Recent Changes list (skip bot chore commits)
     fetch('./commit-log.json')
       .then(r => r.json())
       .then(commits => {
@@ -98,16 +108,12 @@ function loadAboutSection() {
           return;
         }
 
-        listEl.innerHTML = real.map((c, i) => {
+        listEl.innerHTML = real.map((c) => {
           const d = c.date ? new Date(c.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
-          const isFirst = i === 0;
           const fullSha = c.sha || c.short || '';
           return `
-            <div style="
-              padding:var(--space-2) 0;
-              ${i < real.length - 1 ? 'border-bottom:1px solid var(--color-divider);' : ''}
-            ">
-              <span style="display:block;font-size:var(--text-xs);color:var(--color-text);word-break:break-word;margin-bottom:2px;${isFirst ? 'font-weight:600;' : ''}">${escHtml(c.message)}</span>
+            <div style="${buildCardStyle(false)}">
+              <span style="display:block;font-size:var(--text-xs);color:var(--color-text);word-break:break-word;margin-bottom:2px;font-weight:600;">${escHtml(c.message)}</span>
               <a href="${escHtml(c.url)}" target="_blank" rel="noopener noreferrer"
                  style="display:block;font-size:var(--text-xs);color:var(--color-primary);font-family:monospace;word-break:break-all;text-decoration:none;margin-bottom:2px;"
                  title="Open commit on GitHub">${escHtml(fullSha)}</a>
@@ -122,7 +128,6 @@ function loadAboutSection() {
       });
   }
 
-  // Try live GitHub API first (same source as the build footer)
   fetch('https://api.github.com/repos/dennismzanetti/FibroSymptomTracker/commits/main', {
     headers: { 'Accept': 'application/vnd.github.v3+json' }
   })
@@ -139,7 +144,6 @@ function loadAboutSection() {
       renderAbout(sha, shaFull, message, date, url);
     })
     .catch(() => {
-      // Fallback to static BUILD_INFO
       const info = window.BUILD_INFO;
       if (info) {
         renderAbout(
