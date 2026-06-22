@@ -1,5 +1,19 @@
 [
   {
+    "sha": "195bebf406e0c70abe9022aaf84764c105042445",
+    "short": "195bebf",
+    "date": "2026-06-22T15:19:15-04:00",
+    "message": "refactor: remove root local-fibro.html (moved to dev/)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/195bebf406e0c70abe9022aaf84764c105042445"
+  },
+  {
+    "sha": "d87ab22113dbb4e56e8ca490972e38b897806ce1",
+    "short": "d87ab22",
+    "date": "2026-06-22T19:19:06Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d87ab22113dbb4e56e8ca490972e38b897806ce1"
+  },
+  {
     "sha": "fb8e2b50566b36e17bac02e9b34a2a52b3885b1e",
     "short": "fb8e2b5",
     "date": "2026-06-22T15:18:56-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T15:07:45-04:00",
     "message": "style: refine sub-tab pill buttons with segmented-control look",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/96f35436268b562071aceef9956ea87640d4f94c"
-  },
-  {
-    "sha": "66349e9005b3d16d1b3d241c0007b9c49a084f3b",
-    "short": "66349e9",
-    "date": "2026-06-22T18:47:24Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/66349e9005b3d16d1b3d241c0007b9c49a084f3b"
-  },
-  {
-    "sha": "fcd757077bd0b8a2e379f43600c00eb5f4988c02",
-    "short": "fcd7570",
-    "date": "2026-06-22T14:47:14-04:00",
-    "message": "fix: load firebase-init.js after Firebase CDN scripts; move loader.js after Firebase init",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/fcd757077bd0b8a2e379f43600c00eb5f4988c02"
   }
 ]
