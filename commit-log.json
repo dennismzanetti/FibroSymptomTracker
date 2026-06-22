@@ -1,5 +1,19 @@
 [
   {
+    "sha": "9d711e8e0cdcdb76fe69ebe479a55e0f73d484d7",
+    "short": "9d711e8",
+    "date": "2026-06-22T14:30:20-04:00",
+    "message": "fix: move anchor ids above each settings card so headings appear on scroll",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9d711e8e0cdcdb76fe69ebe479a55e0f73d484d7"
+  },
+  {
+    "sha": "bdeabec8ccf50c3783e1873a538873a9fdab72a6",
+    "short": "bdeabec",
+    "date": "2026-06-22T18:28:51Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/bdeabec8ccf50c3783e1873a538873a9fdab72a6"
+  },
+  {
     "sha": "ac5fb590632836d8f1908cfe44c0009faa8c2ce6",
     "short": "ac5fb59",
     "date": "2026-06-22T14:28:38-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T14:22:42-04:00",
     "message": "style: add shared .med-sub-tabs and .ct-sub-tab-btn rules to styles.css",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/78c329b604823986738973b4405186342f26496b"
-  },
-  {
-    "sha": "0d77ae6f1d2e78a7dfc9430b63fcd71ab4086c43",
-    "short": "0d77ae6",
-    "date": "2026-06-22T18:22:11Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/0d77ae6f1d2e78a7dfc9430b63fcd71ab4086c43"
-  },
-  {
-    "sha": "3b58ba39a23f519d0e91355dca6aecbbbc60509c",
-    "short": "3b58ba3",
-    "date": "2026-06-22T14:21:30-04:00",
-    "message": "saving firestore rules",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/3b58ba39a23f519d0e91355dca6aecbbbc60509c"
   }
 ]
