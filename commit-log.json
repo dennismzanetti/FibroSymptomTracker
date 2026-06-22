@@ -1,5 +1,19 @@
 [
   {
+    "sha": "02d532e0016e927c8f5598a8785b567fb9a33987",
+    "short": "02d532e",
+    "date": "2026-06-22T13:36:45-04:00",
+    "message": "fix: update index.html — diagnostics.js now at js/utils/ (Step 8)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/02d532e0016e927c8f5598a8785b567fb9a33987"
+  },
+  {
+    "sha": "140bbb5e428acd55209af754cba56f52e9f54bf2",
+    "short": "140bbb5",
+    "date": "2026-06-22T17:31:07Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/140bbb5e428acd55209af754cba56f52e9f54bf2"
+  },
+  {
     "sha": "e709e4295f29e8380b224490efecab87460fc365",
     "short": "e709e42",
     "date": "2026-06-22T13:30:57-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T17:22:23Z",
     "message": "chore: update commit-log.json + build-info.js [skip ci]",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/da1f864a1164277bc718a58cc4aa2e339831a209"
-  },
-  {
-    "sha": "d6155b5178cf9d28cd9f8b5049359c673608afe3",
-    "short": "d6155b5",
-    "date": "2026-06-22T13:22:17-04:00",
-    "message": "refactor: delete root cloud.js (moved to js/utils/)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d6155b5178cf9d28cd9f8b5049359c673608afe3"
-  },
-  {
-    "sha": "d79336e77e7b3db8c5f1adeaaf4d085aeb2be883",
-    "short": "d79336e",
-    "date": "2026-06-22T13:22:08-04:00",
-    "message": "refactor: move cloud.js to js/utils/ (Step 7 of folder restructure)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d79336e77e7b3db8c5f1adeaaf4d085aeb2be883"
   }
 ]
