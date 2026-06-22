@@ -64,27 +64,21 @@ function loadAboutSection() {
   const currentMsg  = info.message || '';
 
   // Render current build header
-  let html = `
+  const html = `
     <div style="margin-bottom:var(--space-4);">
       <p style="font-size:var(--text-xs);font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:var(--space-2);">Current Build</p>
       <div style="
-        display:grid;
-        grid-template-columns:1fr auto;
-        align-items:start;
-        gap:var(--space-1) var(--space-3);
         padding:var(--space-3);
         background:var(--color-surface-offset);
         border-radius:var(--radius-md);
         border:1px solid var(--color-border);
       ">
-        <div style="min-width:0;">
-          <span style="display:inline-block;font-size:var(--text-xs);font-weight:700;background:var(--color-primary-highlight);color:var(--color-primary);border-radius:var(--radius-full);padding:0.1em 0.6em;margin-bottom:var(--space-1);">latest</span>
-          <p style="font-size:var(--text-sm);font-weight:600;color:var(--color-text);margin:0;word-break:break-word;">${escHtml(currentMsg)}</p>
-          <p style="font-size:var(--text-xs);color:var(--color-text-faint);margin:var(--space-1) 0 0;">${escHtml(currentDate)}</p>
-        </div>
+        <span style="display:inline-block;font-size:var(--text-xs);font-weight:700;background:var(--color-primary-highlight);color:var(--color-primary);border-radius:var(--radius-full);padding:0.1em 0.6em;margin-bottom:var(--space-1);">latest</span>
+        <p style="font-size:var(--text-sm);font-weight:600;color:var(--color-text);margin:0 0 var(--space-1);word-break:break-word;">${escHtml(currentMsg)}</p>
         <a href="${escHtml(currentUrl)}" target="_blank" rel="noopener noreferrer"
-           style="font-size:var(--text-xs);color:var(--color-primary);font-family:monospace;white-space:nowrap;text-decoration:none;padding-top:2px;"
-           title="Open commit on GitHub">${escHtml(currentSha.slice(0, 7))}</a>
+           style="font-size:var(--text-xs);color:var(--color-primary);font-family:monospace;word-break:break-all;text-decoration:none;display:block;margin-bottom:var(--space-1);"
+           title="Open commit on GitHub">${escHtml(currentSha)}</a>
+        <p style="font-size:var(--text-xs);color:var(--color-text-faint);margin:0;">${escHtml(currentDate)}</p>
       </div>
     </div>
     <p style="font-size:var(--text-xs);font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:var(--space-2);">Recent Changes</p>
@@ -116,22 +110,17 @@ function loadAboutSection() {
       listEl.innerHTML = real.map((c, i) => {
         const d = c.date ? new Date(c.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
         const isFirst = i === 0;
+        const fullSha = c.sha || c.short || '';
         return `
           <div style="
-            display:grid;
-            grid-template-columns:1fr auto;
-            align-items:baseline;
-            gap:var(--space-1) var(--space-3);
             padding:var(--space-2) 0;
             ${i < real.length - 1 ? 'border-bottom:1px solid var(--color-divider);' : ''}
           ">
-            <div style="min-width:0;">
-              <span style="font-size:var(--text-xs);color:var(--color-text);word-break:break-word;${isFirst ? 'font-weight:600;' : ''}">${escHtml(c.message)}</span>
-              <span style="display:block;font-size:var(--text-xs);color:var(--color-text-faint);margin-top:2px;">${escHtml(d)}</span>
-            </div>
+            <span style="display:block;font-size:var(--text-xs);color:var(--color-text);word-break:break-word;margin-bottom:2px;${isFirst ? 'font-weight:600;' : ''}">${escHtml(c.message)}</span>
             <a href="${escHtml(c.url)}" target="_blank" rel="noopener noreferrer"
-               style="font-size:var(--text-xs);color:var(--color-primary);font-family:monospace;white-space:nowrap;text-decoration:none;"
-               title="Open commit on GitHub">${escHtml(c.short)}</a>
+               style="display:block;font-size:var(--text-xs);color:var(--color-primary);font-family:monospace;word-break:break-all;text-decoration:none;margin-bottom:2px;"
+               title="Open commit on GitHub">${escHtml(fullSha)}</a>
+            <span style="font-size:var(--text-xs);color:var(--color-text-faint);">${escHtml(d)}</span>
           </div>
         `;
       }).join('');
