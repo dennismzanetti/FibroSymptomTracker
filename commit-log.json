@@ -1,5 +1,19 @@
 [
   {
+    "sha": "c00e5a99e89f53af0259f0b0fd4d6d2a94c51e7d",
+    "short": "c00e5a9",
+    "date": "2026-06-22T14:27:03-04:00",
+    "message": "Revert ATR query: remove userId filter from refreshAtrList",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c00e5a99e89f53af0259f0b0fd4d6d2a94c51e7d"
+  },
+  {
+    "sha": "e7b2ae55b6f2228bd1c74b03c3fbc0e87d694de6",
+    "short": "e7b2ae5",
+    "date": "2026-06-22T18:25:45Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e7b2ae55b6f2228bd1c74b03c3fbc0e87d694de6"
+  },
+  {
     "sha": "806379071c9b89f035fc40a7c31b217d5bad9231",
     "short": "8063790",
     "date": "2026-06-22T14:25:22-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T14:20:45-04:00",
     "message": "Fix ATR permissions: scope reads/writes to current user's UID",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/a0b1499b3ee6e84f4fb2728891c8637767cbdb51"
-  },
-  {
-    "sha": "7732afc7a792404fb20f117579f9df705a968a18",
-    "short": "7732afc",
-    "date": "2026-06-22T18:19:59Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7732afc7a792404fb20f117579f9df705a968a18"
-  },
-  {
-    "sha": "e5e62a9a2d41694f7fe173dfc146c738f5290859",
-    "short": "e5e62a9",
-    "date": "2026-06-22T14:19:51-04:00",
-    "message": "Add firestore.rules for version control",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e5e62a9a2d41694f7fe173dfc146c738f5290859"
   }
 ]
