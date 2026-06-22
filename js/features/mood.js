@@ -121,11 +121,18 @@ async function saveAtr() {
   if (!data.automaticThought) { alert("Please enter the automatic thought."); return; }
   const editingId = document.getElementById("atrEditingId").value;
   const now = new Date().toISOString();
+  const uid = auth.currentUser && auth.currentUser.uid;
+  if (!uid) { alert("You must be signed in to save a record."); return; }
   try {
     if (editingId) {
-      await db.collection("automaticThoughtRecords").doc(editingId).set({ ...data, updatedAt: now }, { merge: true });
+      await db.collection("automaticThoughtRecords").doc(editingId).set(
+        { ...data, userId: uid, updatedAt: now },
+        { merge: true }
+      );
     } else {
-      await db.collection("automaticThoughtRecords").add({ ...data, createdAt: now, updatedAt: now });
+      await db.collection("automaticThoughtRecords").add(
+        { ...data, userId: uid, createdAt: now, updatedAt: now }
+      );
     }
     resetAtrForm();
     await refreshAtrList();
@@ -165,8 +172,14 @@ async function refreshAtrList() {
   const container = document.getElementById("atrList");
   if (!container) return;
   container.innerHTML = `<p class="atr-empty">Loading&#8230;</p>`;
+  const uid = auth.currentUser && auth.currentUser.uid;
+  if (!uid) {
+    container.innerHTML = `<p class="atr-empty">Sign in to view your records.</p>`;
+    return;
+  }
   try {
     const snapshot = await db.collection("automaticThoughtRecords")
+      .where("userId", "==", uid)
       .orderBy("date", "desc")
       .get();
 
