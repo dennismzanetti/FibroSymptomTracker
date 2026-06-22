@@ -1,5 +1,19 @@
 [
   {
+    "sha": "e5e62a9a2d41694f7fe173dfc146c738f5290859",
+    "short": "e5e62a9",
+    "date": "2026-06-22T14:19:51-04:00",
+    "message": "Add firestore.rules for version control",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e5e62a9a2d41694f7fe173dfc146c738f5290859"
+  },
+  {
+    "sha": "451a33add5d49c1b7973cb20ce21b527b8af2c0b",
+    "short": "451a33a",
+    "date": "2026-06-22T18:19:21Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/451a33add5d49c1b7973cb20ce21b527b8af2c0b"
+  },
+  {
     "sha": "831611f5e454054586468224a5d65f06458282b4",
     "short": "831611f",
     "date": "2026-06-22T14:19:13-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T14:13:21-04:00",
     "message": "refactor: delete root print.js (moved to js/output/)",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ecd7e8a795f1fa9d5b2901fceeaa48aef3663cdc"
-  },
-  {
-    "sha": "df4932896d7c49fd6375fde09ee622afdc41bdd8",
-    "short": "df49328",
-    "date": "2026-06-22T18:13:14Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/df4932896d7c49fd6375fde09ee622afdc41bdd8"
-  },
-  {
-    "sha": "ae5e556ff468a3b3c0797430b3adc312331603f0",
-    "short": "ae5e556",
-    "date": "2026-06-22T14:13:04-04:00",
-    "message": "refactor: move print.js to js/output/ and update index.html (Step 18)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ae5e556ff468a3b3c0797430b3adc312331603f0"
   }
 ]
