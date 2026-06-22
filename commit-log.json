@@ -1,5 +1,19 @@
 [
   {
+    "sha": "78c329b604823986738973b4405186342f26496b",
+    "short": "78c329b",
+    "date": "2026-06-22T14:22:42-04:00",
+    "message": "style: add shared .med-sub-tabs and .ct-sub-tab-btn rules to styles.css",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/78c329b604823986738973b4405186342f26496b"
+  },
+  {
+    "sha": "0d77ae6f1d2e78a7dfc9430b63fcd71ab4086c43",
+    "short": "0d77ae6",
+    "date": "2026-06-22T18:22:11Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/0d77ae6f1d2e78a7dfc9430b63fcd71ab4086c43"
+  },
+  {
     "sha": "3b58ba39a23f519d0e91355dca6aecbbbc60509c",
     "short": "3b58ba3",
     "date": "2026-06-22T14:21:30-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T14:19:13-04:00",
     "message": "refactor: delete root app.js (moved to js/features/)",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/831611f5e454054586468224a5d65f06458282b4"
-  },
-  {
-    "sha": "745ac5e3d6462ad8fcaab23bd74af8f7aece8fac",
-    "short": "745ac5e",
-    "date": "2026-06-22T18:18:06Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/745ac5e3d6462ad8fcaab23bd74af8f7aece8fac"
-  },
-  {
-    "sha": "26b2a59ded1291beeadca3f5d3214e5a94a9cf97",
-    "short": "26b2a59",
-    "date": "2026-06-22T14:17:58-04:00",
-    "message": "refactor: move app.js to js/features/ and update index.html (Step 19)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/26b2a59ded1291beeadca3f5d3214e5a94a9cf97"
   }
 ]
