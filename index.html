@@ -41,17 +41,23 @@
   </div>
 </div>
 
-<!-- js/utils/ -->
+<!-- js/utils/ — diagnostics must be first so all other scripts can log -->
 <script src="js/utils/diagnostics.js"></script>
 
-<!-- js/core/ -->
+<!-- js/core/ — build-info provides static fallback before Firebase loads -->
 <script src="js/core/build-info.js"></script>
-<script src="js/core/loader.js"></script>
 
-<!-- Firebase v8 compat SDKs (must load before any app script) -->
+<!-- Firebase v8 compat SDKs (must load before firebase-init.js) -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<!-- Firebase init — defines global `db` and `auth` used by app.js -->
+<script src="js/core/firebase-init.js"></script>
+
+<!-- Partial loader — must run after Firebase is ready so auth is defined
+     when the partialsLoaded event fires and app.js wires up auth listeners -->
+<script src="js/core/loader.js"></script>
 
 <!-- Chart.js (UMD build exposes global Chart used by trends.js and app.js) -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
