@@ -1,5 +1,19 @@
 [
   {
+    "sha": "f7e0ef0679ab35ee9db6cb64e81d3acbe0f0a5b7",
+    "short": "f7e0ef0",
+    "date": "2026-06-22T14:09:40-04:00",
+    "message": "feat: add Diagnostics sub-tab to Settings nav",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/f7e0ef0679ab35ee9db6cb64e81d3acbe0f0a5b7"
+  },
+  {
+    "sha": "6a7ae7491d14c64dfc6807bad69f05a5b301b345",
+    "short": "6a7ae74",
+    "date": "2026-06-22T18:08:59Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/6a7ae7491d14c64dfc6807bad69f05a5b301b345"
+  },
+  {
     "sha": "1ca00d3fb55f9b9c14a29cd00deadaa1d26f6504",
     "short": "1ca00d3",
     "date": "2026-06-22T14:08:49-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T14:04:35-04:00",
     "message": "refactor: move careteam.js to js/features/ and update index.html (Step 15)",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/443d770fb84af59d29e8ba81954a1759b4018814"
-  },
-  {
-    "sha": "dc7cdbdb893eda53aad8be59ce6d974c41f1ad07",
-    "short": "dc7cdbd",
-    "date": "2026-06-22T18:00:52Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/dc7cdbdb893eda53aad8be59ce6d974c41f1ad07"
-  },
-  {
-    "sha": "c591e7d941007e6a6c35030cb218149659ec9336",
-    "short": "c591e7d",
-    "date": "2026-06-22T14:00:45-04:00",
-    "message": "style: uniform About build cards; highlight Current Build with teal border",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c591e7d941007e6a6c35030cb218149659ec9336"
   }
 ]
