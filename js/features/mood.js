@@ -172,14 +172,8 @@ async function refreshAtrList() {
   const container = document.getElementById("atrList");
   if (!container) return;
   container.innerHTML = `<p class="atr-empty">Loading&#8230;</p>`;
-  const uid = auth.currentUser && auth.currentUser.uid;
-  if (!uid) {
-    container.innerHTML = `<p class="atr-empty">Sign in to view your records.</p>`;
-    return;
-  }
   try {
     const snapshot = await db.collection("automaticThoughtRecords")
-      .where("userId", "==", uid)
       .orderBy("date", "desc")
       .get();
 
