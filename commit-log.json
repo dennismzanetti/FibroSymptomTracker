@@ -1,5 +1,19 @@
 [
   {
+    "sha": "03c0ac0f943ecacc87f1451bd56961b6a9d533f4",
+    "short": "03c0ac0",
+    "date": "2026-06-22T15:08:27-04:00",
+    "message": "fix: pass user object to applySettingsOnAuth so Account section displays user info",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/03c0ac0f943ecacc87f1451bd56961b6a9d533f4"
+  },
+  {
+    "sha": "787a3b649aaaf6b2b8b2fd15a04d9eff9da111ba",
+    "short": "787a3b6",
+    "date": "2026-06-22T19:07:58Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/787a3b649aaaf6b2b8b2fd15a04d9eff9da111ba"
+  },
+  {
     "sha": "96f35436268b562071aceef9956ea87640d4f94c",
     "short": "96f3543",
     "date": "2026-06-22T15:07:45-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T14:38:02-04:00",
     "message": "refactor: remove duplicate root build-info.js (canonical copy is js/core/build-info.js)",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c7a35593d047767bc94a8310a6ed7cd1f242a04c"
-  },
-  {
-    "sha": "a4c7f262e25aa423c22570d87194f4a789938928",
-    "short": "a4c7f26",
-    "date": "2026-06-22T14:37:53-04:00",
-    "message": "feat: display signed-in user info in Account card; right-justify Sign Out button",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/a4c7f262e25aa423c22570d87194f4a789938928"
-  },
-  {
-    "sha": "dbe8b54dfd4f312f1735bd5aa91882e05b047451",
-    "short": "dbe8b54",
-    "date": "2026-06-22T14:37:51-04:00",
-    "message": "refactor: extract Firebase init into js/core/firebase-init.js",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/dbe8b54dfd4f312f1735bd5aa91882e05b047451"
   }
 ]
