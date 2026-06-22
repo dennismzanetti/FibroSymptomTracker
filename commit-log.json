@@ -1,5 +1,19 @@
 [
   {
+    "sha": "e202ec410a6950ee8652afb7a3bd08982a134aa8",
+    "short": "e202ec4",
+    "date": "2026-06-22T12:42:17-04:00",
+    "message": "docs: update README for v3.0 architecture and full feature set",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e202ec410a6950ee8652afb7a3bd08982a134aa8"
+  },
+  {
+    "sha": "b161b5c3cd41e646c665eed5a26bb949e19ed574",
+    "short": "b161b5c",
+    "date": "2026-06-22T16:41:12Z",
+    "message": "chore: update commit-log.json [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b161b5c3cd41e646c665eed5a26bb949e19ed574"
+  },
+  {
     "sha": "6dc48985f66eda9ccc1963ac2239f8f051411b59",
     "short": "6dc4898",
     "date": "2026-06-22T12:40:57-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T12:21:10-04:00",
     "message": "Load diagnostics.js first in index.html for global error handling coverage",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ae6f6aebae52241dc2250bece9a0ce2732c9a48d"
-  },
-  {
-    "sha": "cabf7a9a62170d5ae6b66300c34b1a94c4c557ea",
-    "short": "cabf7a9",
-    "date": "2026-06-22T16:20:17Z",
-    "message": "chore: update commit-log.json [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/cabf7a9a62170d5ae6b66300c34b1a94c4c557ea"
-  },
-  {
-    "sha": "182e7c5369f0b1b9ee5a47f8d4b57eecc64dab7f",
-    "short": "182e7c5",
-    "date": "2026-06-22T12:19:28-04:00",
-    "message": "Add diagnostics.js — console diagnostics module with log levels, timers, Firebase hook, and global error handlers",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/182e7c5369f0b1b9ee5a47f8d4b57eecc64dab7f"
   }
 ]
