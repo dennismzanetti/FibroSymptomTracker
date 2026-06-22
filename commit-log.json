@@ -1,5 +1,19 @@
 [
   {
+    "sha": "182e7c5369f0b1b9ee5a47f8d4b57eecc64dab7f",
+    "short": "182e7c5",
+    "date": "2026-06-22T12:19:28-04:00",
+    "message": "Add diagnostics.js — console diagnostics module with log levels, timers, Firebase hook, and global error handlers",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/182e7c5369f0b1b9ee5a47f8d4b57eecc64dab7f"
+  },
+  {
+    "sha": "d1856e8e26dc50754a73e3def23696445e805233",
+    "short": "d1856e8",
+    "date": "2026-06-22T16:14:01Z",
+    "message": "chore: update commit-log.json [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d1856e8e26dc50754a73e3def23696445e805233"
+  },
+  {
     "sha": "ab4ccdb79110b9c1d67a300c206c2f21c2d9bd64",
     "short": "ab4ccdb",
     "date": "2026-06-22T12:13:50-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-20T20:54:50-04:00",
     "message": "fix: style sign out button with btn-danger; fix btn-danger to use defined CSS vars",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/6fa1882b359dca7614f2135b134f1f9bafe2f884"
-  },
-  {
-    "sha": "9fc32895f9e309d89708dc49ec40101c8f0dc0ed",
-    "short": "9fc3289",
-    "date": "2026-06-21T00:52:30Z",
-    "message": "chore: update commit-log.json [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9fc32895f9e309d89708dc49ec40101c8f0dc0ed"
-  },
-  {
-    "sha": "2bac288a46fa86fe33b7d025056d1021ab60c10b",
-    "short": "2bac288",
-    "date": "2026-06-20T20:52:24-04:00",
-    "message": "fix: split 14-date Firestore query into two batches to stay under 10-item 'in' limit",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2bac288a46fa86fe33b7d025056d1021ab60c10b"
   }
 ]
