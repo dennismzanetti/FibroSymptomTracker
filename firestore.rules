@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Daily symptom entries — any authenticated user can read/write their own session
+    match /days/{dayId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Automatic Thought Records — scoped to the owning user
+    match /automaticThoughtRecords/{recordId} {
+      allow read, update, delete: if request.auth != null
+        && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid;
+    }
+
+  }
+}
