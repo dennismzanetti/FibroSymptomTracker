@@ -1,5 +1,19 @@
 [
   {
+    "sha": "f5c463ade8dc91f3ccf01eb472ceac9b5c34b62c",
+    "short": "f5c463a",
+    "date": "2026-06-22T15:15:09-04:00",
+    "message": "style: sub-tab pills — warm neutral colors, no violet",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/f5c463ade8dc91f3ccf01eb472ceac9b5c34b62c"
+  },
+  {
+    "sha": "65d22b34f06a63cecf9330c9bc1541baf8d0d44a",
+    "short": "65d22b3",
+    "date": "2026-06-22T19:08:39Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/65d22b34f06a63cecf9330c9bc1541baf8d0d44a"
+  },
+  {
     "sha": "03c0ac0f943ecacc87f1451bd56961b6a9d533f4",
     "short": "03c0ac0",
     "date": "2026-06-22T15:08:27-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-22T14:38:48-04:00",
     "message": "chore: update workflow to write build-info.js only to js/core/",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c0d29a7a0acfa21fd2c3f6243cff2746c2f1491e"
-  },
-  {
-    "sha": "9e07426399ed42e83a6696bc1bd66487ed8233dc",
-    "short": "9e07426",
-    "date": "2026-06-22T18:38:11Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9e07426399ed42e83a6696bc1bd66487ed8233dc"
-  },
-  {
-    "sha": "c7a35593d047767bc94a8310a6ed7cd1f242a04c",
-    "short": "c7a3559",
-    "date": "2026-06-22T14:38:02-04:00",
-    "message": "refactor: remove duplicate root build-info.js (canonical copy is js/core/build-info.js)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c7a35593d047767bc94a8310a6ed7cd1f242a04c"
   }
 ]
