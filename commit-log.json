@@ -1,5 +1,26 @@
 [
   {
+    "sha": "37b43a3a54fa19248ab4592b1bd302ff55d57bd9",
+    "short": "37b43a3",
+    "date": "2026-06-22T13:51:00-04:00",
+    "message": "fix: About section now uses live GitHub API (same as build footer)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/37b43a3a54fa19248ab4592b1bd302ff55d57bd9"
+  },
+  {
+    "sha": "1c773db5aace914167f5d873c0e0fe08266cb028",
+    "short": "1c773db",
+    "date": "2026-06-22T13:50:58-04:00",
+    "message": "refactor: move history.js to js/features/ and update index.html (Step 13)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/1c773db5aace914167f5d873c0e0fe08266cb028"
+  },
+  {
+    "sha": "e4a5b569185766e2eae1faf142bb17e4d5202b73",
+    "short": "e4a5b56",
+    "date": "2026-06-22T17:49:07Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e4a5b569185766e2eae1faf142bb17e4d5202b73"
+  },
+  {
     "sha": "f0fff1651ed73d0bf4dcad24b93abd51f6158a72",
     "short": "f0fff16",
     "date": "2026-06-22T13:48:59-04:00",
@@ -40,26 +61,5 @@
     "date": "2026-06-22T13:45:40-04:00",
     "message": "fix: mkdir -p js/core before tee to ensure directory exists",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/0133c263966a12bae14069287575f2bea5711e85"
-  },
-  {
-    "sha": "ea9f245e7aaaa70fc3afb388a13d6d44b32dd389",
-    "short": "ea9f245",
-    "date": "2026-06-22T17:45:24Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ea9f245e7aaaa70fc3afb388a13d6d44b32dd389"
-  },
-  {
-    "sha": "c41162a897937e10d90af774f98d4687d4b81a25",
-    "short": "c41162a",
-    "date": "2026-06-22T13:45:10-04:00",
-    "message": "refactor: move entry.js to js/features/ and update index.html (Step 11)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c41162a897937e10d90af774f98d4687d4b81a25"
-  },
-  {
-    "sha": "83f50f03f0fbb4c7974203919e3c70778b7a17ec",
-    "short": "83f50f0",
-    "date": "2026-06-22T17:43:40Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/83f50f03f0fbb4c7974203919e3c70778b7a17ec"
   }
 ]
