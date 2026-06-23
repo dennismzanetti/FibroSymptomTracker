@@ -1,5 +1,19 @@
 [
   {
+    "sha": "38839eab9c2fc7d822d4f04e7f8222139b53cd19",
+    "short": "38839ea",
+    "date": "2026-06-23T15:08:56-04:00",
+    "message": "feat: about section — replace card layout with single commit table (top 10, no bots, latest build highlighted)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/38839eab9c2fc7d822d4f04e7f8222139b53cd19"
+  },
+  {
+    "sha": "7f47d42e9a6ec895f789176b8ebd702cfff6c063",
+    "short": "7f47d42",
+    "date": "2026-06-23T19:07:43Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7f47d42e9a6ec895f789176b8ebd702cfff6c063"
+  },
+  {
     "sha": "ebea4234327c820b4c47faca065e6cd016cc5e1c",
     "short": "ebea423",
     "date": "2026-06-23T15:07:25-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-23T18:47:55Z",
     "message": "chore: update commit-log.json + build-info.js [skip ci]",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7ac9b2c7d61f2605ca0b3fd409b3f5b88f0edf9a"
-  },
-  {
-    "sha": "9f23cd834fc5e50da7427fe693d894b2b390124f",
-    "short": "9f23cd8",
-    "date": "2026-06-23T14:47:41-04:00",
-    "message": "feat: about section — single commit table (top 10, no bots, latest build highlighted)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9f23cd834fc5e50da7427fe693d894b2b390124f"
-  },
-  {
-    "sha": "26d8af173f450e0e142bbcd4fb0f72cd5bf10c80",
-    "short": "26d8af1",
-    "date": "2026-06-23T01:42:11Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/26d8af173f450e0e142bbcd4fb0f72cd5bf10c80"
   }
 ]
