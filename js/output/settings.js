@@ -47,7 +47,6 @@ function loadAccountSection(user) {
     photoEl.style.display = 'block';
     if (initialsEl) initialsEl.style.display = 'none';
   } else if (initialsEl) {
-    // Fallback: show initials avatar
     const name = user.displayName || user.email || '?';
     const initials = name
       .split(' ')
@@ -85,115 +84,82 @@ document.addEventListener('partialsLoaded', () => {
   injectDiagnosticsToggle();
 });
 
-// Shared card style used by every build card in the About section
-function buildCardStyle(highlight) {
-  const base = [
-    'padding:var(--space-3)',
-    'background:var(--color-surface-offset)',
-    'border-radius:var(--radius-md)',
-    'margin-bottom:var(--space-2)',
-  ];
-  if (highlight) {
-    base.push(
-      'border:2px solid var(--color-primary)',
-      'box-shadow:0 0 0 3px var(--color-primary-highlight)'
-    );
-  } else {
-    base.push('border:1px solid var(--color-border)');
-  }
-  return base.join(';');
-}
-
+// ---- About — single commit table (top 10, no bots, latest build highlighted) ----
 function loadAboutSection() {
   const container = document.getElementById('settingsAboutCommits');
   if (!container) return;
 
-  function renderAbout(sha, shaFull, message, date, url) {
-    const currentDate = date ? new Date(date).toLocaleString() : '';
+  const buildShaFull = (window.BUILD_INFO && window.BUILD_INFO.shaFull) || '';
 
-    const html = `
-      <p style="font-size:var(--text-xs);font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:var(--space-2);">Current Build</p>
-      <div style="${buildCardStyle(true)}">
-        <span style="display:inline-block;font-size:var(--text-xs);font-weight:700;background:var(--color-primary-highlight);color:var(--color-primary);border-radius:var(--radius-full);padding:0.1em 0.6em;margin-bottom:var(--space-1);">latest</span>
-        <p style="font-size:var(--text-sm);font-weight:600;color:var(--color-text);margin:0 0 var(--space-1);word-break:break-word;">${escHtml(message)}</p>
-        <a href="${escHtml(url)}" target="_blank" rel="noopener noreferrer"
-           style="font-size:var(--text-xs);color:var(--color-primary);font-family:monospace;word-break:break-all;text-decoration:none;display:block;margin-bottom:var(--space-1);"
-           title="Open commit on GitHub">${escHtml(shaFull || sha)}</a>
-        <p style="font-size:var(--text-xs);color:var(--color-text-faint);margin:0;">${escHtml(currentDate)}</p>
-      </div>
-      <p style="font-size:var(--text-xs);font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-top:var(--space-4);margin-bottom:var(--space-2);">Recent Changes</p>
-      <div id="aboutCommitList" style="font-size:var(--text-xs);color:var(--color-text-faint);">Loading&hellip;</div>
-      <p style="margin-top:var(--space-4);font-size:var(--text-xs);color:var(--color-text-faint);">
-        Full history on <a href="https://github.com/dennismzanetti/FibroSymptomTracker/commits/main" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary);">GitHub</a>.
-      </p>
-    `;
-
-    container.innerHTML = html;
-
-    fetch('./commit-log.json')
-      .then(r => r.json())
-      .then(commits => {
-        const listEl = document.getElementById('aboutCommitList');
-        if (!listEl) return;
-
-        const real = commits.filter(c =>
-          !c.message.includes('[skip ci]') &&
-          !c.message.startsWith('chore: update commit-log')
-        );
-
-        if (!real.length) {
-          listEl.textContent = 'No recent commits found.';
-          return;
-        }
-
-        listEl.innerHTML = real.map((c) => {
-          const d = c.date ? new Date(c.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
-          const fullSha = c.sha || c.short || '';
-          return `
-            <div style="${buildCardStyle(false)}">
-              <span style="display:block;font-size:var(--text-xs);color:var(--color-text);word-break:break-word;margin-bottom:2px;font-weight:600;">${escHtml(c.message)}</span>
-              <a href="${escHtml(c.url)}" target="_blank" rel="noopener noreferrer"
-                 style="display:block;font-size:var(--text-xs);color:var(--color-primary);font-family:monospace;word-break:break-all;text-decoration:none;margin-bottom:2px;"
-                 title="Open commit on GitHub">${escHtml(fullSha)}</a>
-              <span style="font-size:var(--text-xs);color:var(--color-text-faint);">${escHtml(d)}</span>
-            </div>
-          `;
-        }).join('');
-      })
-      .catch(() => {
-        const listEl = document.getElementById('aboutCommitList');
-        if (listEl) listEl.textContent = 'Could not load commit history.';
-      });
-  }
-
-  fetch('https://api.github.com/repos/dennismzanetti/FibroSymptomTracker/commits/main', {
-    headers: { 'Accept': 'application/vnd.github.v3+json' }
-  })
+  fetch('./commit-log.json')
     .then(r => {
-      if (!r.ok) throw new Error(`GitHub API ${r.status}`);
+      if (!r.ok) throw new Error('commit-log.json not found (' + r.status + ')');
       return r.json();
     })
-    .then(data => {
-      const shaFull = data.sha;
-      const sha     = shaFull.slice(0, 7);
-      const message = (data.commit.message || '').split('\n')[0];
-      const date    = data.commit.author.date;
-      const url     = `https://github.com/dennismzanetti/FibroSymptomTracker/commit/${shaFull}`;
-      renderAbout(sha, shaFull, message, date, url);
-    })
-    .catch(() => {
-      const info = window.BUILD_INFO;
-      if (info) {
-        renderAbout(
-          info.sha,
-          info.shaFull || info.sha,
-          info.message || '',
-          info.date    || '',
-          info.url     || '#'
-        );
-      } else {
-        container.innerHTML = '<p style="font-size:var(--text-sm);color:var(--color-text-faint);">Build info unavailable.</p>';
+    .then(commits => {
+      // Filter out bot / automated commits
+      const human = commits.filter(c =>
+        !c.message.includes('[skip ci]') &&
+        !c.message.startsWith('chore: update commit-log')
+      );
+      const top10 = human.slice(0, 10);
+
+      if (!top10.length) {
+        container.innerHTML = '<p style="color:var(--color-text-muted);font-size:var(--text-sm);">No commits found.</p>';
+        return;
       }
+
+      let html = [
+        '<div style="overflow-x:auto;">',
+        '<table style="width:100%;border-collapse:collapse;font-size:var(--text-sm);font-variant-numeric:tabular-nums;">',
+        '<thead>',
+        '<tr style="border-bottom:2px solid var(--color-border);">',
+        '  <th style="text-align:left;padding:var(--space-2) var(--space-3);color:var(--color-text-muted);font-weight:600;white-space:nowrap;">SHA</th>',
+        '  <th style="text-align:left;padding:var(--space-2) var(--space-3);color:var(--color-text-muted);font-weight:600;white-space:nowrap;">Date / Time</th>',
+        '  <th style="text-align:left;padding:var(--space-2) var(--space-3);color:var(--color-text-muted);font-weight:600;">Commit Message</th>',
+        '</tr>',
+        '</thead>',
+        '<tbody>'
+      ].join('\n');
+
+      top10.forEach((c, i) => {
+        const isLatestBuild = buildShaFull && c.sha === buildShaFull;
+        const rowBg = isLatestBuild
+          ? 'background:var(--color-primary-highlight);'
+          : (i % 2 === 0 ? '' : 'background:var(--color-surface-offset);');
+
+        const dateStr = c.date
+          ? new Date(c.date).toLocaleString(undefined, {
+              year: 'numeric', month: 'short', day: 'numeric',
+              hour: '2-digit', minute: '2-digit'
+            })
+          : '\u2014';
+
+        const msg = escHtml((c.message || '').split('\n')[0]);
+        const shaDisplay = escHtml(c.sha || c.short || '');
+        const shaLink = c.url
+          ? `<a href="${escHtml(c.url)}" target="_blank" rel="noopener noreferrer" style="font-family:monospace;color:var(--color-primary);text-decoration:none;word-break:break-all;">${shaDisplay}</a>`
+          : `<span style="font-family:monospace;word-break:break-all;">${shaDisplay}</span>`;
+
+        const buildBadge = isLatestBuild
+          ? ' <span style="display:inline-block;margin-left:var(--space-2);padding:1px 6px;border-radius:var(--radius-full);background:var(--color-primary);color:white;font-size:0.7rem;font-weight:700;vertical-align:middle;">latest build</span>'
+          : '';
+
+        html += [
+          `<tr style="border-bottom:1px solid var(--color-divider);${rowBg}">`,
+          `  <td style="padding:var(--space-2) var(--space-3);vertical-align:top;">${shaLink}</td>`,
+          `  <td style="padding:var(--space-2) var(--space-3);vertical-align:top;white-space:nowrap;color:var(--color-text-muted);">${dateStr}</td>`,
+          `  <td style="padding:var(--space-2) var(--space-3);vertical-align:top;">${msg}${buildBadge}</td>`,
+          '</tr>'
+        ].join('\n');
+      });
+
+      html += '</tbody></table></div>';
+      container.innerHTML = html;
+    })
+    .catch(err => {
+      container.innerHTML = '<p style="color:var(--color-text-muted);font-size:var(--text-sm);">Could not load commit history: ' + escHtml(err.message) + '</p>';
+      if (window.FibroDiag) FibroDiag.warn('Settings', 'loadAboutSection failed: ' + err.message);
     });
 }
 
@@ -207,8 +173,6 @@ function escHtml(str) {
 
 // ---- Developer Diagnostics toggle ----
 function injectDiagnosticsToggle() {
-  // Render into the existing #diagToggleContent placeholder inside the
-  // Developer Diagnostics card — do NOT create a separate appended section.
   const container = document.getElementById('diagToggleContent');
   if (!container) return;
 
