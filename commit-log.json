@@ -1,5 +1,19 @@
 [
   {
+    "sha": "e3e28d38201cb716e14047d680cb7305d62a7bd2",
+    "short": "e3e28d3",
+    "date": "2026-06-23T15:12:44-04:00",
+    "message": "refactor: link css/subtabs.css in index.html",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e3e28d38201cb716e14047d680cb7305d62a7bd2"
+  },
+  {
+    "sha": "36411b721095030682807e9642bae64694c91886",
+    "short": "36411b7",
+    "date": "2026-06-23T19:09:05Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/36411b721095030682807e9642bae64694c91886"
+  },
+  {
     "sha": "38839eab9c2fc7d822d4f04e7f8222139b53cd19",
     "short": "38839ea",
     "date": "2026-06-23T15:08:56-04:00",
@@ -47,19 +61,5 @@
     "date": "2026-06-23T18:48:40Z",
     "message": "chore: update commit-log.json + build-info.js [skip ci]",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b4fbb32282ed2cb1d9fa1f2a2504e7c60cb8048c"
-  },
-  {
-    "sha": "2d9651fc8d169a401f585952e426c3b8e6698711",
-    "short": "2d9651f",
-    "date": "2026-06-23T14:48:28-04:00",
-    "message": "feat: about section — render top-10 non-bot commits table, highlight latest build",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2d9651fc8d169a401f585952e426c3b8e6698711"
-  },
-  {
-    "sha": "7ac9b2c7d61f2605ca0b3fd409b3f5b88f0edf9a",
-    "short": "7ac9b2c",
-    "date": "2026-06-23T18:47:55Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7ac9b2c7d61f2605ca0b3fd409b3f5b88f0edf9a"
   }
 ]
