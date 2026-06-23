@@ -1,5 +1,26 @@
 [
   {
+    "sha": "ebea4234327c820b4c47faca065e6cd016cc5e1c",
+    "short": "ebea423",
+    "date": "2026-06-23T15:07:25-04:00",
+    "message": "Merge remote-tracking branch 'origin/main'",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ebea4234327c820b4c47faca065e6cd016cc5e1c"
+  },
+  {
+    "sha": "ca57250687f93049cdaa75705faf353a5a85f253",
+    "short": "ca57250",
+    "date": "2026-06-23T15:06:42-04:00",
+    "message": "moving sub tab styles",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ca57250687f93049cdaa75705faf353a5a85f253"
+  },
+  {
+    "sha": "9a6397956fc4c4e3b7399fbd9cef61f59d4d8dfb",
+    "short": "9a63979",
+    "date": "2026-06-23T19:04:48Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9a6397956fc4c4e3b7399fbd9cef61f59d4d8dfb"
+  },
+  {
     "sha": "5ad9504f41eee67651891484b55a0c0a96833539",
     "short": "5ad9504",
     "date": "2026-06-23T15:04:13-04:00",
@@ -40,26 +61,5 @@
     "date": "2026-06-23T01:42:11Z",
     "message": "chore: update commit-log.json + build-info.js [skip ci]",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/26d8af173f450e0e142bbcd4fb0f72cd5bf10c80"
-  },
-  {
-    "sha": "3454b2ce1668de27f0f6efa31bad19e006519cb2",
-    "short": "3454b2c",
-    "date": "2026-06-22T15:21:51-04:00",
-    "message": "style: extract sub-tab pill styles to base.css as shared component",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/3454b2ce1668de27f0f6efa31bad19e006519cb2"
-  },
-  {
-    "sha": "e81e1601926fedcf6f5218ebc8a6f26b17793e29",
-    "short": "e81e160",
-    "date": "2026-06-22T19:20:24Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e81e1601926fedcf6f5218ebc8a6f26b17793e29"
-  },
-  {
-    "sha": "bf7f55fb8a63145206600917def4071666327482",
-    "short": "bf7f55f",
-    "date": "2026-06-22T15:20:15-04:00",
-    "message": "refactor: remove release_notes.md (merged into CHANGELOG.md)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/bf7f55fb8a63145206600917def4071666327482"
   }
 ]
