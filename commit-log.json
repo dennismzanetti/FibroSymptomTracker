@@ -1,5 +1,12 @@
 [
   {
+    "sha": "a62ac6dce4c50a0d806a97a201ec2651ff5738d0",
+    "short": "a62ac6d",
+    "date": "2026-06-24T16:48:39-04:00",
+    "message": "Update journal CSS: replace old journal/heatmap styles with jv3 day-card styles",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/a62ac6dce4c50a0d806a97a201ec2651ff5738d0"
+  },
+  {
     "sha": "76497e440494fab0866e8ffd6bda3096c2ec37ce",
     "short": "76497e4",
     "date": "2026-06-24T16:45:45-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T14:32:24-04:00",
     "message": "chore: filter bot commits from commit-log.json and build-info.js",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/180642ab8a5ed782508fb28cdca15e2a56e2eacf"
-  },
-  {
-    "sha": "ff9c161c1716f4474a04253b484df29d2342477e",
-    "short": "ff9c161",
-    "date": "2026-06-24T14:29:39-04:00",
-    "message": "Fix medications sub-tab default selection and persist user's last selection",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ff9c161c1716f4474a04253b484df29d2342477e"
   }
 ]
