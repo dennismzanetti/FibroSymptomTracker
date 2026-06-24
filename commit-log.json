@@ -1,5 +1,12 @@
 [
   {
+    "sha": "2c5079b97c0423aaae76845c60a7e3aa36142240",
+    "short": "2c5079b",
+    "date": "2026-06-24T16:55:15-04:00",
+    "message": "Journal: condense notes into two-column table, plain color labels",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2c5079b97c0423aaae76845c60a7e3aa36142240"
+  },
+  {
     "sha": "4898a4281d932ec491660d7cf862cc9311b784af",
     "short": "4898a42",
     "date": "2026-06-24T16:53:25-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T14:44:49-04:00",
     "message": "fix: add maintainAspectRatio:false so trends chart respects fixed container height",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/95319954df5b4e118f1ada91091953826d74701c"
-  },
-  {
-    "sha": "9f02c8d8f142c3713a667d33c5a8fc34257a68a5",
-    "short": "9f02c8d",
-    "date": "2026-06-24T14:40:40-04:00",
-    "message": "style: pill buttons — white text when active, remove borders",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9f02c8d8f142c3713a667d33c5a8fc34257a68a5"
   }
 ]
