@@ -1,5 +1,12 @@
 [
   {
+    "sha": "05ae3d9079d5550b52dbea422372e74e6b7acbc3",
+    "short": "05ae3d9",
+    "date": "2026-06-24T16:37:01-04:00",
+    "message": "feat: add tagged-day triangle markers to trends chart",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/05ae3d9079d5550b52dbea422372e74e6b7acbc3"
+  },
+  {
     "sha": "21db6bd3d5ba788546455c891db9e9ee5c6bb6a8",
     "short": "21db6bd",
     "date": "2026-06-24T16:25:16-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T13:34:00-04:00",
     "message": "Trends tab: date filter, stat cards, moving avg trendline, Pain/Mood overlay, empty state, theme colors",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d641ad1a47113b8986bf19611cfa00c78aec4e26"
-  },
-  {
-    "sha": "0db3d39a0df89f77b17fa0357f2f2a35a4d712e9",
-    "short": "0db3d39",
-    "date": "2026-06-24T13:11:35-04:00",
-    "message": "Fix trends filtering: remove duplicate local refreshTrends() from app.js, delegate to window.refreshTrends",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/0db3d39a0df89f77b17fa0357f2f2a35a4d712e9"
   }
 ]
