@@ -56,12 +56,13 @@
 <!-- Firebase init — defines global `db` and `auth` used by app.js -->
 <script src="js/core/firebase-init.js"></script>
 
+<!-- Chart.js (UMD build exposes global Chart used by trends.js) -->
+<!-- MUST load before loader.js so Chart is defined before partialsLoaded fires -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
 <!-- Partial loader — must run after Firebase is ready so auth is defined
      when the partialsLoaded event fires and app.js wires up auth listeners -->
 <script src="js/core/loader.js"></script>
-
-<!-- Chart.js (UMD build exposes global Chart used by trends.js and app.js) -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 
 <!-- js/utils/ -->
 <script src="js/utils/date.js"></script>
