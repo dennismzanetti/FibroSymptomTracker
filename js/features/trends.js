@@ -69,15 +69,16 @@ function updateStatCards(allDocs) {
     return allDocs.filter(d => (d.date || '') >= cutoffStr);
   }
 
+  // Prior 30-day window: days 31–60 ago
   function prevPeriodDocs() {
-    const from = new Date(today); from.setDate(from.getDate() - 14);
-    const to   = new Date(today); to.setDate(to.getDate() - 7);
-    return allDocs.filter(d => (d.date || '') >= from.toISOString().slice(0,10) &&
-                               (d.date || '') <  to.toISOString().slice(0,10));
+    const from = new Date(today); from.setDate(from.getDate() - 60);
+    const to   = new Date(today); to.setDate(to.getDate() - 30);
+    return allDocs.filter(d => (d.date || '') >= from.toISOString().slice(0, 10) &&
+                               (d.date || '') <  to.toISOString().slice(0, 10));
   }
 
-  const docs7   = docsInLastDays(7);
-  const docs30  = docsInLastDays(30);
+  const docs7    = docsInLastDays(7);
+  const docs30   = docsInLastDays(30);
   const docsPrev = prevPeriodDocs();
 
   const getters = {
@@ -92,40 +93,40 @@ function updateStatCards(allDocs) {
   const el   = id => document.getElementById(id);
 
   // Functionality
-  const func7  = avgField(docs7,   getters.func);
-  const func30 = avgField(docs30,  getters.func);
+  const func7  = avgField(docs7,    getters.func);
+  const func30 = avgField(docs30,   getters.func);
   const funcP  = avgField(docsPrev, getters.func);
   if (el('statFuncAvg7'))    el('statFuncAvg7').textContent    = fmt(func7);
   if (el('statFuncAvg7Sub')) el('statFuncAvg7Sub').textContent = fmt(func7);
   if (el('statFuncAvg30'))   el('statFuncAvg30').textContent   = fmt(func30);
-  renderTrendPill(el('statFuncTrend'), func7, funcP);
+  renderTrendPill(el('statFuncTrend'), func30, funcP);
 
   // Mood
-  const mood7  = avgField(docs7,   getters.mood);
-  const mood30 = avgField(docs30,  getters.mood);
+  const mood7  = avgField(docs7,    getters.mood);
+  const mood30 = avgField(docs30,   getters.mood);
   const moodP  = avgField(docsPrev, getters.mood);
   if (el('statMoodAvg7'))    el('statMoodAvg7').textContent    = fmt(mood7);
   if (el('statMoodAvg7Sub')) el('statMoodAvg7Sub').textContent = fmt(mood7);
   if (el('statMoodAvg30'))   el('statMoodAvg30').textContent   = fmt(mood30);
-  renderTrendPill(el('statMoodTrend'), mood7, moodP);
+  renderTrendPill(el('statMoodTrend'), mood30, moodP);
 
   // Hours Slept
-  const sleep7  = avgField(docs7,   getters.sleep);
-  const sleep30 = avgField(docs30,  getters.sleep);
+  const sleep7  = avgField(docs7,    getters.sleep);
+  const sleep30 = avgField(docs30,   getters.sleep);
   const sleepP  = avgField(docsPrev, getters.sleep);
   if (el('statSleepAvg7'))    el('statSleepAvg7').textContent    = fmt(sleep7);
   if (el('statSleepAvg7Sub')) el('statSleepAvg7Sub').textContent = fmtH(sleep7);
   if (el('statSleepAvg30'))   el('statSleepAvg30').textContent   = fmtH(sleep30);
-  renderTrendPill(el('statSleepTrend'), sleep7, sleepP);
+  renderTrendPill(el('statSleepTrend'), sleep30, sleepP);
 
   // Sleep Quality
-  const qual7  = avgField(docs7,   getters.sleepQual);
-  const qual30 = avgField(docs30,  getters.sleepQual);
+  const qual7  = avgField(docs7,    getters.sleepQual);
+  const qual30 = avgField(docs30,   getters.sleepQual);
   const qualP  = avgField(docsPrev, getters.sleepQual);
   if (el('statSleepQualAvg7'))    el('statSleepQualAvg7').textContent    = fmt(qual7);
   if (el('statSleepQualAvg7Sub')) el('statSleepQualAvg7Sub').textContent = fmt(qual7);
   if (el('statSleepQualAvg30'))   el('statSleepQualAvg30').textContent   = fmt(qual30);
-  renderTrendPill(el('statSleepQualTrend'), qual7, qualP);
+  renderTrendPill(el('statSleepQualTrend'), qual30, qualP);
 }
 
 window.refreshTrends = async function refreshTrends() {
@@ -174,19 +175,19 @@ window.refreshTrends = async function refreshTrends() {
       allDocs.push({ date: doc.id, ...doc.data() });
     });
 
-    // Stat cards always use a full 30-day window regardless of chart range
+    // Stat cards always need up to 60 days of data (30 current + 30 prior) regardless of chart range
     let statDocs = allDocs;
-    if (days > 0 && days < 30) {
+    if (days > 0 && days < 60) {
       try {
-        const cutoff30 = new Date();
-        cutoff30.setDate(cutoff30.getDate() - 29);
-        const cutoff30Str = cutoff30.toISOString().slice(0, 10);
-        const snap30 = await db.collection('days')
+        const cutoff60 = new Date();
+        cutoff60.setDate(cutoff60.getDate() - 59);
+        const cutoff60Str = cutoff60.toISOString().slice(0, 10);
+        const snap60 = await db.collection('days')
           .orderBy(firebase.firestore.FieldPath.documentId())
-          .where(firebase.firestore.FieldPath.documentId(), '>=', cutoff30Str)
+          .where(firebase.firestore.FieldPath.documentId(), '>=', cutoff60Str)
           .get();
         statDocs = [];
-        snap30.forEach(d => statDocs.push({ date: d.id, ...d.data() }));
+        snap60.forEach(d => statDocs.push({ date: d.id, ...d.data() }));
       } catch (_) { /* fall back to allDocs */ }
     }
     updateStatCards(statDocs);
@@ -215,7 +216,7 @@ window.refreshTrends = async function refreshTrends() {
     const totalSleepData = allDocs.map(d => typeof d.sleep?.hours === 'number' ? d.sleep.hours : null);
     const sleepQualData  = allDocs.map(d => typeof d.sleep?.quality === 'number' ? d.sleep.quality : null);
 
-    // --- Tagged days: array of {x: dateStr, y: 0.5, tags: [...]} per tagged doc ---
+    // --- Tagged days: array of {x: dateStr, y: 0.5} per tagged doc ---
     const taggedPoints = allDocs
       .filter(d => Array.isArray(d.tags) && d.tags.length > 0)
       .map(d => ({ x: d.date, y: 0.5, tags: d.tags }));
@@ -322,7 +323,6 @@ window.refreshTrends = async function refreshTrends() {
       datasets.push({
         label: 'Tagged Day \u25b2',
         data: taggedPoints.map(p => ({ x: p.x, y: p.y })),
-        // Store tags on dataset for tooltip access
         _tagMap: Object.fromEntries(taggedPoints.map(p => [p.x, p.tags])),
         type: 'scatter',
         borderColor: colWarning,
@@ -331,7 +331,7 @@ window.refreshTrends = async function refreshTrends() {
         pointRadius: 7,
         pointHoverRadius: 9,
         showLine: false,
-        order: -1  // draw on top
+        order: -1
       });
     }
 
@@ -355,7 +355,6 @@ window.refreshTrends = async function refreshTrends() {
           tooltip: {
             callbacks: {
               label: ctx => {
-                // Tagged Day dataset: show tag names instead of y value
                 if (ctx.dataset._tagMap) {
                   const date = ctx.dataset.data[ctx.dataIndex]?.x;
                   const tags = date && ctx.dataset._tagMap[date];
