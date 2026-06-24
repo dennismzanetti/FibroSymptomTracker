@@ -1,5 +1,12 @@
 [
   {
+    "sha": "7a1e0de5af47c10c43f3764b1286e30a0a7e49f4",
+    "short": "7a1e0de",
+    "date": "2026-06-24T16:09:29-04:00",
+    "message": "Remove Pain Level line; add Total Hours Slept and Sleep Quality lines to trends chart",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7a1e0de5af47c10c43f3764b1286e30a0a7e49f4"
+  },
+  {
     "sha": "2554ac7b0ab4101f6f54cdae79f132cfc8c59bad",
     "short": "2554ac7",
     "date": "2026-06-24T15:49:50-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T12:09:37-04:00",
     "message": "style: refine sub-tab pills — more padding, active shadow, fixed hover tokens",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/f80238fe0108671d04a9e037dbc6a456a6dd9623"
-  },
-  {
-    "sha": "162a22f6e9a7ac93c727b89b7f74dd75a273d6ee",
-    "short": "162a22f",
-    "date": "2026-06-24T12:00:23-04:00",
-    "message": "chore: increase commit-log fetch-depth to 26 and log depth to 25 for 10 human commits",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/162a22f6e9a7ac93c727b89b7f74dd75a273d6ee"
   }
 ]
