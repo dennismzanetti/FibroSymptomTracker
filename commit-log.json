@@ -1,5 +1,12 @@
 [
   {
+    "sha": "c4ebb04182563b674665ace5d60e57876ac1d0c7",
+    "short": "c4ebb04",
+    "date": "2026-06-24T15:25:43-04:00",
+    "message": "fix: remove hardcoded height=\"200\" from canvas; Chart.js must size from CSS wrapper",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c4ebb04182563b674665ace5d60e57876ac1d0c7"
+  },
+  {
     "sha": "ba1fcd18a5cf242a17f06a0afb73410d0e64e610",
     "short": "ba1fcd1",
     "date": "2026-06-24T15:12:48-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-23T15:04:13-04:00",
     "message": "removing sub-tab styles from styles.css",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/5ad9504f41eee67651891484b55a0c0a96833539"
-  },
-  {
-    "sha": "2d9651fc8d169a401f585952e426c3b8e6698711",
-    "short": "2d9651f",
-    "date": "2026-06-23T14:48:28-04:00",
-    "message": "feat: about section — render top-10 non-bot commits table, highlight latest build",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2d9651fc8d169a401f585952e426c3b8e6698711"
   }
 ]
