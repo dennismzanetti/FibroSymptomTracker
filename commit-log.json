@@ -1,5 +1,12 @@
 [
   {
+    "sha": "c59aebe77a2c001262f962817b75092995524a47",
+    "short": "c59aebe",
+    "date": "2026-06-24T16:17:06-04:00",
+    "message": "feat: add back-to-top links at the bottom of each settings card",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c59aebe77a2c001262f962817b75092995524a47"
+  },
+  {
     "sha": "d736c18a53a7e2e206e7a0f46dabb818e102d6b7",
     "short": "d736c18",
     "date": "2026-06-24T16:13:25-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T13:01:06-04:00",
     "message": "Fix trends filter buttons: restyle with base.css classes, fix selector in trends.js",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/14c72fc856f579ff3e423036b4f218010dc443cf"
-  },
-  {
-    "sha": "c60e1bdd712bb885e72ef99b14f9cb619b736593",
-    "short": "c60e1bd",
-    "date": "2026-06-24T12:24:24-04:00",
-    "message": "feat(trends): add date range filter buttons (7/30/90/All)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c60e1bdd712bb885e72ef99b14f9cb619b736593"
   }
 ]
