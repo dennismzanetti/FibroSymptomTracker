@@ -13,13 +13,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 11
+          fetch-depth: 26
           token: ${{ secrets.GITHUB_TOKEN }}
           persist-credentials: true
 
       - name: Build commit-log.json
         run: |
-          git log -10 --pretty=format:"%H|%h|%aI|%s" \
+          git log -25 --pretty=format:"%H|%h|%aI|%s" \
             | while IFS='|' read -r sha short date msg; do
                 jq -n \
                   --arg sha "$sha" \
