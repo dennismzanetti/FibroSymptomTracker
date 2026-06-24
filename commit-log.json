@@ -1,5 +1,12 @@
 [
   {
+    "sha": "2d0fa1a31c5f91f959157752a1a6b5226125c071",
+    "short": "2d0fa1a",
+    "date": "2026-06-24T15:12:04-04:00",
+    "message": "fix: build footer now skips bot commits, matching About tab behavior",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2d0fa1a31c5f91f959157752a1a6b5226125c071"
+  },
+  {
     "sha": "a76b45e2ccc0b97c9936e766ce13d08b9ab3b495",
     "short": "a76b45e",
     "date": "2026-06-24T15:09:20-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-23T14:47:41-04:00",
     "message": "feat: about section — single commit table (top 10, no bots, latest build highlighted)",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9f23cd834fc5e50da7427fe693d894b2b390124f"
-  },
-  {
-    "sha": "3454b2ce1668de27f0f6efa31bad19e006519cb2",
-    "short": "3454b2c",
-    "date": "2026-06-22T15:21:51-04:00",
-    "message": "style: extract sub-tab pill styles to base.css as shared component",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/3454b2ce1668de27f0f6efa31bad19e006519cb2"
   }
 ]
