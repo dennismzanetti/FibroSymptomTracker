@@ -1,5 +1,12 @@
 [
   {
+    "sha": "0903b875653f948a16a14ad4ea3824cb54e59efa",
+    "short": "0903b87",
+    "date": "2026-06-24T15:47:03-04:00",
+    "message": "fix: anchor nav scrolls to correct section headers; add bottom padding for Diagnostics",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/0903b875653f948a16a14ad4ea3824cb54e59efa"
+  },
+  {
     "sha": "7f5693ace5162aac0b2fd0f1b1ac6a1484195a12",
     "short": "7f5693a",
     "date": "2026-06-24T15:40:45-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-23T15:08:56-04:00",
     "message": "feat: about section — replace card layout with single commit table (top 10, no bots, latest build highlighted)",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/38839eab9c2fc7d822d4f04e7f8222139b53cd19"
-  },
-  {
-    "sha": "ebea4234327c820b4c47faca065e6cd016cc5e1c",
-    "short": "ebea423",
-    "date": "2026-06-23T15:07:25-04:00",
-    "message": "Merge remote-tracking branch 'origin/main'",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ebea4234327c820b4c47faca065e6cd016cc5e1c"
   }
 ]
