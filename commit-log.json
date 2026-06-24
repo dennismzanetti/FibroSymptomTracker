@@ -1,5 +1,12 @@
 [
   {
+    "sha": "690436e0e3f7c404a8f0b3fce465ba9bb0535006",
+    "short": "690436e",
+    "date": "2026-06-24T17:04:01-04:00",
+    "message": "fix: revert tagged-day markers — caused app-level JS crash",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/690436e0e3f7c404a8f0b3fce465ba9bb0535006"
+  },
+  {
     "sha": "80b8ed8d23936b912626dae10f3998865c97e254",
     "short": "80b8ed8",
     "date": "2026-06-24T17:00:57-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T15:07:08-04:00",
     "message": "fix: medications tab always activates medListView button on tab switch",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/bbd3bab1737d1f5b74d15346bebf3d05464e7698"
-  },
-  {
-    "sha": "9331e06bd08fc515894a8d010c43cc3d72bb9cf4",
-    "short": "9331e06",
-    "date": "2026-06-24T14:56:22-04:00",
-    "message": "Fix trends chart: correct moodScore/painLevel field names and showFunc checkbox logic",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9331e06bd08fc515894a8d010c43cc3d72bb9cf4"
   }
 ]
