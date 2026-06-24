@@ -1,5 +1,12 @@
 [
   {
+    "sha": "b80eaa47a665dd5b2c260340d074fb35c3644c91",
+    "short": "b80eaa4",
+    "date": "2026-06-24T15:08:11-04:00",
+    "message": "fix: skip chart render when tab hidden, reset canvas dimensions before re-render",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b80eaa47a665dd5b2c260340d074fb35c3644c91"
+  },
+  {
     "sha": "bbd3bab1737d1f5b74d15346bebf3d05464e7698",
     "short": "bbd3bab",
     "date": "2026-06-24T15:07:08-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-22T15:20:15-04:00",
     "message": "refactor: remove release_notes.md (merged into CHANGELOG.md)",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/bf7f55fb8a63145206600917def4071666327482"
-  },
-  {
-    "sha": "195bebf406e0c70abe9022aaf84764c105042445",
-    "short": "195bebf",
-    "date": "2026-06-22T15:19:15-04:00",
-    "message": "refactor: remove root local-fibro.html (moved to dev/)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/195bebf406e0c70abe9022aaf84764c105042445"
   }
 ]
