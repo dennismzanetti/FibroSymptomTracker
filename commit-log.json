@@ -1,5 +1,19 @@
 [
   {
+    "sha": "f80238fe0108671d04a9e037dbc6a456a6dd9623",
+    "short": "f80238f",
+    "date": "2026-06-24T12:09:37-04:00",
+    "message": "style: refine sub-tab pills — more padding, active shadow, fixed hover tokens",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/f80238fe0108671d04a9e037dbc6a456a6dd9623"
+  },
+  {
+    "sha": "71be957d1b394bafcbe0485e1b7947622358f910",
+    "short": "71be957",
+    "date": "2026-06-24T16:00:33Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/71be957d1b394bafcbe0485e1b7947622358f910"
+  },
+  {
     "sha": "162a22f6e9a7ac93c727b89b7f74dd75a273d6ee",
     "short": "162a22f",
     "date": "2026-06-24T12:00:23-04:00",
@@ -152,19 +166,5 @@
     "date": "2026-06-22T15:18:56-04:00",
     "message": "refactor: move local-fibro.html to dev/ and merge release_notes into CHANGELOG",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/fb8e2b50566b36e17bac02e9b34a2a52b3885b1e"
-  },
-  {
-    "sha": "a11f15f03981456bb0c447ba4761cf9384d2f0a1",
-    "short": "a11f15f",
-    "date": "2026-06-22T19:15:23Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/a11f15f03981456bb0c447ba4761cf9384d2f0a1"
-  },
-  {
-    "sha": "f5c463ade8dc91f3ccf01eb472ceac9b5c34b62c",
-    "short": "f5c463a",
-    "date": "2026-06-22T15:15:09-04:00",
-    "message": "style: sub-tab pills — warm neutral colors, no violet",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/f5c463ade8dc91f3ccf01eb472ceac9b5c34b62c"
   }
 ]
