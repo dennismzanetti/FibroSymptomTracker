@@ -87,7 +87,8 @@ function updateStatCards(allDocs) {
 }
 
 window.refreshTrends = async function refreshTrends() {
-  const canvas = document.getElementById('functionalityChart');
+  // Use the renamed canvas id (avoids window.functionalityChart browser global collision)
+  const canvas = document.getElementById('trends-chart-canvas');
   if (!canvas) return;
 
   // --- GUARD: Chart.js renders into whatever dimensions the canvas currently has.
@@ -156,14 +157,12 @@ window.refreshTrends = async function refreshTrends() {
     FibroDiag.timeEnd('trends-fetch');
     FibroDiag.debug('Trends', `${snapshot.size} day docs fetched`);
 
-    // --- Destroy old chart and fully reset canvas ---
-    // Chart.js writes explicit style="width:Xpx; height:Ypx" on the canvas element.
-    // Even after destroy(), those inline styles persist and constrain the new chart.
-    // Remove all of them so the canvas inherits its dimensions from CSS/.trends-chart-wrap.
-    if (window.functionalityChart) {
-      window.functionalityChart.destroy();
-      window.functionalityChart = null;
+    // --- Destroy old chart instance and fully reset canvas ---
+    // Guard with instanceof Chart so a stale DOM reference never causes .destroy() to throw.
+    if (window._trendsChartInstance instanceof Chart) {
+      window._trendsChartInstance.destroy();
     }
+    window._trendsChartInstance = null;
     canvas.removeAttribute('style');
     canvas.removeAttribute('width');
     canvas.removeAttribute('height');
@@ -261,7 +260,7 @@ window.refreshTrends = async function refreshTrends() {
       });
     }
 
-    window.functionalityChart = new Chart(ctx, {
+    window._trendsChartInstance = new Chart(ctx, {
       type: 'line',
       data: { labels, datasets },
       options: {
