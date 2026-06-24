@@ -1,5 +1,7 @@
 // ---- Medications & Supplements ----
 
+let activeMedView = 'medListView';
+
 const FREQ_LABELS = {
   "once-daily":  "Once daily",
   "twice-daily": "Twice daily",
@@ -48,6 +50,7 @@ function setupMedicationsTab() {
       const targetViewId = btn.getAttribute("data-med-view");
       document.querySelectorAll("#medications-tab .ct-sub-tab-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
+      activeMedView = targetViewId;
       document.querySelectorAll(".med-view").forEach(view => {
         view.style.display = view.id === targetViewId ? "" : "none";
       });
@@ -88,16 +91,10 @@ function setupMedicationsTab() {
   // Print button
   document.getElementById("printMedBtn")?.addEventListener("click", () => window.print());
 
-  // Set default active sub-tab to Medications
-  const defaultBtn = document.querySelector('#medications-tab .ct-sub-tab-btn[data-med-view="medListView"]');
-  if (defaultBtn) {
-    defaultBtn.classList.add('active');
-    document.querySelectorAll('.med-view').forEach(v => {
-      v.style.display = v.id === 'medListView' ? '' : 'none';
-    });
-  }
-
-  refreshMedList();
+  // Restore last active sub-tab (defaults to medListView on first visit)
+  const restoreBtn = document.querySelector(`#medications-tab .ct-sub-tab-btn[data-med-view="${activeMedView}"]`);
+  if (restoreBtn) restoreBtn.click();
+  else refreshMedList();
 }
 
 function refreshMedView(viewId) {
