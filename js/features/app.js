@@ -621,8 +621,9 @@ function fillFormFromData(d) {
     document.getElementById('didExerciseInput').value = 'no';
   }
   document.getElementById('didExerciseInput').dispatchEvent(new Event('change'));
-  document.getElementById('moodScoreInput').value = d.mood?.score ?? '';
-  document.getElementById('moodNotesInput').value = d.mood?.notes || '';
+  // Fall back to legacy top-level moodScore for entries saved before the mood object was introduced
+  document.getElementById('moodScoreInput').value = d.mood?.score ?? d.moodScore ?? '';
+  document.getElementById('moodNotesInput').value = d.mood?.notes || d.moodNotes || '';
   const painScoreEl  = document.getElementById('painScoreInput');   if (painScoreEl)  painScoreEl.value  = d.painScore    ?? '';
   const painNotesEl  = document.getElementById('painNotesInput');   if (painNotesEl)  painNotesEl.value  = d.painNotes    || '';
   const fatScoreEl   = document.getElementById('fatigueScoreInput'); if (fatScoreEl)   fatScoreEl.value   = d.fatigueScore ?? '';
@@ -652,7 +653,7 @@ function setupDateNavigation() {
 
 function switchToTab(tabId) {
   document.querySelectorAll('.tab-button').forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId));
-  document.querySelectorAll('.tab').forEach(tab => tab.classList.toggle('active', tab.id === tabId));
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.toggle('active', tab.id === tabId)));
   const tabSelect = document.getElementById('tabSelect');
   if (tabSelect && tabSelect.value !== tabId) tabSelect.value = tabId;
   if (tabId === 'entry-tab') syncDateInput();
