@@ -5,22 +5,99 @@
 
     <!-- Stat Cards -->
     <div class="trends-stat-cards" id="trendsStatCards">
-      <div class="trends-stat-card">
-        <span class="trends-stat-label">7-Day Avg</span>
-        <span class="trends-stat-value" id="statAvg7">—</span>
+
+      <!-- Functionality -->
+      <div class="trends-stat-card trends-stat-card--func">
+        <div class="stat-category">
+          <span class="stat-dot"></span>
+          Functionality
+        </div>
+        <div class="stat-value-row">
+          <span class="stat-value" id="statFuncAvg7">—</span>
+          <span class="stat-unit">/ 10</span>
+        </div>
+        <div class="stat-periods">
+          <div class="stat-period">
+            <span class="stat-period-label">7-Day</span>
+            <span class="stat-period-value" id="statFuncAvg7Sub">—</span>
+          </div>
+          <div class="stat-period">
+            <span class="stat-period-label">30-Day</span>
+            <span class="stat-period-value" id="statFuncAvg30">—</span>
+          </div>
+        </div>
+        <span class="stat-trend" id="statFuncTrend">—</span>
       </div>
-      <div class="trends-stat-card">
-        <span class="trends-stat-label">30-Day Avg</span>
-        <span class="trends-stat-value" id="statAvg30">—</span>
+
+      <!-- Mood -->
+      <div class="trends-stat-card trends-stat-card--mood">
+        <div class="stat-category">
+          <span class="stat-dot"></span>
+          Mood
+        </div>
+        <div class="stat-value-row">
+          <span class="stat-value" id="statMoodAvg7">—</span>
+          <span class="stat-unit">/ 10</span>
+        </div>
+        <div class="stat-periods">
+          <div class="stat-period">
+            <span class="stat-period-label">7-Day</span>
+            <span class="stat-period-value" id="statMoodAvg7Sub">—</span>
+          </div>
+          <div class="stat-period">
+            <span class="stat-period-label">30-Day</span>
+            <span class="stat-period-value" id="statMoodAvg30">—</span>
+          </div>
+        </div>
+        <span class="stat-trend" id="statMoodTrend">—</span>
       </div>
-      <div class="trends-stat-card">
-        <span class="trends-stat-label">Best This Month</span>
-        <span class="trends-stat-value" id="statBestMonth">—</span>
+
+      <!-- Hours Slept -->
+      <div class="trends-stat-card trends-stat-card--sleep">
+        <div class="stat-category">
+          <span class="stat-dot"></span>
+          Hours Slept
+        </div>
+        <div class="stat-value-row">
+          <span class="stat-value" id="statSleepAvg7">—</span>
+          <span class="stat-unit">hrs avg</span>
+        </div>
+        <div class="stat-periods">
+          <div class="stat-period">
+            <span class="stat-period-label">7-Day</span>
+            <span class="stat-period-value" id="statSleepAvg7Sub">—</span>
+          </div>
+          <div class="stat-period">
+            <span class="stat-period-label">30-Day</span>
+            <span class="stat-period-value" id="statSleepAvg30">—</span>
+          </div>
+        </div>
+        <span class="stat-trend" id="statSleepTrend">—</span>
       </div>
-      <div class="trends-stat-card">
-        <span class="trends-stat-label">Trend</span>
-        <span class="trends-stat-value" id="statTrend">—</span>
+
+      <!-- Sleep Quality -->
+      <div class="trends-stat-card trends-stat-card--qual">
+        <div class="stat-category">
+          <span class="stat-dot"></span>
+          Sleep Quality
+        </div>
+        <div class="stat-value-row">
+          <span class="stat-value" id="statSleepQualAvg7">—</span>
+          <span class="stat-unit">/ 10</span>
+        </div>
+        <div class="stat-periods">
+          <div class="stat-period">
+            <span class="stat-period-label">7-Day</span>
+            <span class="stat-period-value" id="statSleepQualAvg7Sub">—</span>
+          </div>
+          <div class="stat-period">
+            <span class="stat-period-label">30-Day</span>
+            <span class="stat-period-value" id="statSleepQualAvg30">—</span>
+          </div>
+        </div>
+        <span class="stat-trend" id="statSleepQualTrend">—</span>
       </div>
+
     </div>
 
     <!-- Date Range Filter -->

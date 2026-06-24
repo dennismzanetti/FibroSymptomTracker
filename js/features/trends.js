@@ -19,8 +19,6 @@ window.setupTrends = function setupTrends(getUid) {
 };
 
 // Compute a simple 7-day rolling average over a data array.
-// Returns an array of the same length; positions with fewer than
-// 3 data points are set to null so Chart.js skips them cleanly.
 function movingAverage(data, window_size = 7) {
   return data.map((_, i) => {
     const start = Math.max(0, i - window_size + 1);
@@ -29,17 +27,38 @@ function movingAverage(data, window_size = 7) {
   });
 }
 
-// Pull CSS variable value for chart colors (falls back to a hex if undefined).
+// Pull CSS variable value for chart colors.
 function cssVar(name, fallback) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
 }
 
-// Update the four stat cards above the chart.
+// Render a trend pill into an element.
+function renderTrendPill(el, recent, prev) {
+  if (!el) return;
+  if (recent === null || prev === null) {
+    el.textContent = '\u2014';
+    el.className = 'stat-trend';
+    return;
+  }
+  const diff = recent - prev;
+  if (diff > 0.3) {
+    el.className = 'stat-trend stat-trend--up';
+    el.innerHTML = '<span class="trend-arrow">\u2191</span> Improving';
+  } else if (diff < -0.3) {
+    el.className = 'stat-trend stat-trend--down';
+    el.innerHTML = '<span class="trend-arrow">\u2193</span> Declining';
+  } else {
+    el.className = 'stat-trend stat-trend--stable';
+    el.innerHTML = '<span class="trend-arrow">\u2192</span> Stable';
+  }
+}
+
+// Update the four per-category stat cards.
 function updateStatCards(allDocs) {
   const today = new Date();
 
-  function avg(docs, field) {
-    const vals = docs.map(d => d[field]).filter(v => typeof v === 'number');
+  function avgField(docs, getter) {
+    const vals = docs.map(getter).filter(v => typeof v === 'number');
     return vals.length ? (vals.reduce((a, b) => a + b, 0) / vals.length) : null;
   }
 
@@ -50,40 +69,63 @@ function updateStatCards(allDocs) {
     return allDocs.filter(d => (d.date || '') >= cutoffStr);
   }
 
-  // 7-day and 30-day averages
-  const avg7  = avg(docsInLastDays(7),  'avgFunctionality');
-  const avg30 = avg(docsInLastDays(30), 'avgFunctionality');
-
-  // Best single day this calendar month
-  const thisMonthStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
-  const thisMonthDocs = allDocs.filter(d => (d.date || '').startsWith(thisMonthStr));
-  const bestVal = thisMonthDocs.reduce((best, d) =>
-    typeof d.avgFunctionality === 'number' && d.avgFunctionality > best ? d.avgFunctionality : best, null);
-
-  // Trend direction: compare last 7 days avg vs previous 7 days avg
-  const recent  = avg(docsInLastDays(7),  'avgFunctionality');
-  const prevDocs = (() => {
+  function prevPeriodDocs() {
     const from = new Date(today); from.setDate(from.getDate() - 14);
     const to   = new Date(today); to.setDate(to.getDate() - 7);
-    const fromStr = from.toISOString().slice(0, 10);
-    const toStr   = to.toISOString().slice(0, 10);
-    return allDocs.filter(d => (d.date || '') >= fromStr && (d.date || '') < toStr);
-  })();
-  const prev = avg(prevDocs, 'avgFunctionality');
-  let trendLabel = '\u2014';
-  if (recent !== null && prev !== null) {
-    const diff = recent - prev;
-    if (diff > 0.3)       trendLabel = '\u2191 Better';
-    else if (diff < -0.3) trendLabel = '\u2193 Worse';
-    else                  trendLabel = '\u2192 Stable';
+    return allDocs.filter(d => (d.date || '') >= from.toISOString().slice(0,10) &&
+                               (d.date || '') <  to.toISOString().slice(0,10));
   }
 
-  const fmt = v => v !== null ? v.toFixed(1) : '\u2014';
-  const el = id => document.getElementById(id);
-  if (el('statAvg7'))       el('statAvg7').textContent       = fmt(avg7);
-  if (el('statAvg30'))      el('statAvg30').textContent      = fmt(avg30);
-  if (el('statBestMonth'))  el('statBestMonth').textContent  = fmt(bestVal);
-  if (el('statTrend'))      el('statTrend').textContent      = trendLabel;
+  const docs7   = docsInLastDays(7);
+  const docs30  = docsInLastDays(30);
+  const docsPrev = prevPeriodDocs();
+
+  const getters = {
+    func:      d => typeof d.avgFunctionality === 'number' ? d.avgFunctionality : null,
+    mood:      d => { const s = d.mood?.score ?? d.moodScore; return typeof s === 'number' ? s : null; },
+    sleep:     d => typeof d.sleep?.hours === 'number' ? d.sleep.hours : null,
+    sleepQual: d => typeof d.sleep?.quality === 'number' ? d.sleep.quality : null
+  };
+
+  const fmt  = v => v !== null ? v.toFixed(1) : '\u2014';
+  const fmtH = v => v !== null ? v.toFixed(1) + 'h' : '\u2014';
+  const el   = id => document.getElementById(id);
+
+  // Functionality
+  const func7  = avgField(docs7,   getters.func);
+  const func30 = avgField(docs30,  getters.func);
+  const funcP  = avgField(docsPrev, getters.func);
+  if (el('statFuncAvg7'))    el('statFuncAvg7').textContent    = fmt(func7);
+  if (el('statFuncAvg7Sub')) el('statFuncAvg7Sub').textContent = fmt(func7);
+  if (el('statFuncAvg30'))   el('statFuncAvg30').textContent   = fmt(func30);
+  renderTrendPill(el('statFuncTrend'), func7, funcP);
+
+  // Mood
+  const mood7  = avgField(docs7,   getters.mood);
+  const mood30 = avgField(docs30,  getters.mood);
+  const moodP  = avgField(docsPrev, getters.mood);
+  if (el('statMoodAvg7'))    el('statMoodAvg7').textContent    = fmt(mood7);
+  if (el('statMoodAvg7Sub')) el('statMoodAvg7Sub').textContent = fmt(mood7);
+  if (el('statMoodAvg30'))   el('statMoodAvg30').textContent   = fmt(mood30);
+  renderTrendPill(el('statMoodTrend'), mood7, moodP);
+
+  // Hours Slept
+  const sleep7  = avgField(docs7,   getters.sleep);
+  const sleep30 = avgField(docs30,  getters.sleep);
+  const sleepP  = avgField(docsPrev, getters.sleep);
+  if (el('statSleepAvg7'))    el('statSleepAvg7').textContent    = fmt(sleep7);
+  if (el('statSleepAvg7Sub')) el('statSleepAvg7Sub').textContent = fmtH(sleep7);
+  if (el('statSleepAvg30'))   el('statSleepAvg30').textContent   = fmtH(sleep30);
+  renderTrendPill(el('statSleepTrend'), sleep7, sleepP);
+
+  // Sleep Quality
+  const qual7  = avgField(docs7,   getters.sleepQual);
+  const qual30 = avgField(docs30,  getters.sleepQual);
+  const qualP  = avgField(docsPrev, getters.sleepQual);
+  if (el('statSleepQualAvg7'))    el('statSleepQualAvg7').textContent    = fmt(qual7);
+  if (el('statSleepQualAvg7Sub')) el('statSleepQualAvg7Sub').textContent = fmt(qual7);
+  if (el('statSleepQualAvg30'))   el('statSleepQualAvg30').textContent   = fmt(qual30);
+  renderTrendPill(el('statSleepQualTrend'), qual7, qualP);
 }
 
 window.refreshTrends = async function refreshTrends() {
@@ -132,7 +174,7 @@ window.refreshTrends = async function refreshTrends() {
       allDocs.push({ date: doc.id, ...doc.data() });
     });
 
-    // Always compute stat cards from a full 30-day fetch even if chart shows less
+    // Stat cards always use a full 30-day window regardless of chart range
     let statDocs = allDocs;
     if (days > 0 && days < 30) {
       try {
