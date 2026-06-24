@@ -1,7 +1,7 @@
 /* ================================================================
    SUB-TAB PILL NAVIGATION
    Shared by Medications, Care Team, and Settings tabs.
-   .med-sub-tabs  — the pill strip container
+   .med-sub-tabs   — the pill strip container
    .ct-sub-tab-btn — individual pill button or anchor link
    ================================================================ */
 
@@ -20,7 +20,7 @@
 
 .ct-sub-tab-btn {
   font-size: var(--text-sm);
-  font-weight: 500;
+  font-weight: 600;                        /* was 500 — matches btn system weight */
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-full);
   border: 1px solid var(--color-border);
@@ -28,7 +28,9 @@
   color: var(--color-text-muted);
   text-decoration: none;
   cursor: pointer;
-  transition: background 180ms ease, color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  transition: background 180ms ease, color 180ms ease,
+              border-color 180ms ease, box-shadow 180ms ease,
+              transform 120ms ease;        /* added for :active press */
   white-space: nowrap;
 }
 
@@ -36,12 +38,26 @@
   background: var(--color-primary);
   color: var(--color-text-inverse);
   border-color: var(--color-primary);
-  font-weight: 600;
-  box-shadow: 0 2px 8px rgba(108, 99, 255, 0.30);
+  font-weight: 700;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primary) 30%, transparent);
+                                           /* was rgba(108,99,255,.30) — now theme-correct */
 }
 
 .ct-sub-tab-btn:hover:not(.active) {
   background: var(--color-primary-light);
   color: var(--color-primary);
   border-color: var(--color-primary-border);
+}
+
+/* Press feedback — mirrors .btn-primary:active scale */
+.ct-sub-tab-btn:active {
+  transform: scale(0.97);
+  box-shadow: none;
+}
+
+/* Explicit focus ring — theme-correct teal, not relying on global fallback */
+.ct-sub-tab-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-full);
 }
