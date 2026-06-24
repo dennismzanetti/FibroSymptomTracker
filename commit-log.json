@@ -1,5 +1,12 @@
 [
   {
+    "sha": "df466c1cfc3a3db5eb7037896e9f3181b4c31a45",
+    "short": "df466c1",
+    "date": "2026-06-24T15:37:24-04:00",
+    "message": "fix: move Chart.js script before loader.js to prevent Chart undefined race condition",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/df466c1cfc3a3db5eb7037896e9f3181b4c31a45"
+  },
+  {
     "sha": "c4ebb04182563b674665ace5d60e57876ac1d0c7",
     "short": "c4ebb04",
     "date": "2026-06-24T15:25:43-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-23T15:06:42-04:00",
     "message": "moving sub tab styles",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ca57250687f93049cdaa75705faf353a5a85f253"
-  },
-  {
-    "sha": "5ad9504f41eee67651891484b55a0c0a96833539",
-    "short": "5ad9504",
-    "date": "2026-06-23T15:04:13-04:00",
-    "message": "removing sub-tab styles from styles.css",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/5ad9504f41eee67651891484b55a0c0a96833539"
   }
 ]
