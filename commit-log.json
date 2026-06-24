@@ -1,5 +1,19 @@
 [
   {
+    "sha": "d641ad1a47113b8986bf19611cfa00c78aec4e26",
+    "short": "d641ad1",
+    "date": "2026-06-24T13:34:00-04:00",
+    "message": "Trends tab: date filter, stat cards, moving avg trendline, Pain/Mood overlay, empty state, theme colors",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d641ad1a47113b8986bf19611cfa00c78aec4e26"
+  },
+  {
+    "sha": "180941c0dfb0fa3e20cb66c34834070b42e80c28",
+    "short": "180941c",
+    "date": "2026-06-24T17:11:43Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/180941c0dfb0fa3e20cb66c34834070b42e80c28"
+  },
+  {
     "sha": "0db3d39a0df89f77b17fa0357f2f2a35a4d712e9",
     "short": "0db3d39",
     "date": "2026-06-24T13:11:35-04:00",
@@ -152,19 +166,5 @@
     "date": "2026-06-23T14:47:41-04:00",
     "message": "feat: about section — single commit table (top 10, no bots, latest build highlighted)",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9f23cd834fc5e50da7427fe693d894b2b390124f"
-  },
-  {
-    "sha": "26d8af173f450e0e142bbcd4fb0f72cd5bf10c80",
-    "short": "26d8af1",
-    "date": "2026-06-23T01:42:11Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/26d8af173f450e0e142bbcd4fb0f72cd5bf10c80"
-  },
-  {
-    "sha": "3454b2ce1668de27f0f6efa31bad19e006519cb2",
-    "short": "3454b2c",
-    "date": "2026-06-22T15:21:51-04:00",
-    "message": "style: extract sub-tab pill styles to base.css as shared component",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/3454b2ce1668de27f0f6efa31bad19e006519cb2"
   }
 ]
