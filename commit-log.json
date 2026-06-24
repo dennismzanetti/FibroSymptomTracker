@@ -1,5 +1,12 @@
 [
   {
+    "sha": "4898a4281d932ec491660d7cf862cc9311b784af",
+    "short": "4898a42",
+    "date": "2026-06-24T16:53:25-04:00",
+    "message": "Fix: fall back to legacy moodScore field when loading old day entries",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/4898a4281d932ec491660d7cf862cc9311b784af"
+  },
+  {
     "sha": "a62ac6dce4c50a0d806a97a201ec2651ff5738d0",
     "short": "a62ac6d",
     "date": "2026-06-24T16:48:39-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T14:40:40-04:00",
     "message": "style: pill buttons — white text when active, remove borders",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9f02c8d8f142c3713a667d33c5a8fc34257a68a5"
-  },
-  {
-    "sha": "180642ab8a5ed782508fb28cdca15e2a56e2eacf",
-    "short": "180642a",
-    "date": "2026-06-24T14:32:24-04:00",
-    "message": "chore: filter bot commits from commit-log.json and build-info.js",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/180642ab8a5ed782508fb28cdca15e2a56e2eacf"
   }
 ]
