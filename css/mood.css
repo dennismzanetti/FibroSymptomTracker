@@ -1,9 +1,173 @@
 /* MOOD STYLES — FibroSymptomTracker */
-/* ATR (Thought Records) card geometry is aligned to the global
-   .app-card system defined in base.css. */
 
 /* ================================================================
-   MOOD TAB — DAILY MOOD CARD
+   STAT STRIP
+   ================================================================ */
+
+.mood-stat-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.mood-stat-item {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.mood-stat-value {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.mood-stat-best { color: var(--color-success); }
+.mood-stat-hard { color: var(--color-error); }
+
+.mood-stat-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+}
+
+/* ================================================================
+   CHART CARD
+   ================================================================ */
+
+.mood-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.mood-card-header h3 {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: 600;
+}
+
+.mood-card-badge {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  background: var(--color-surface-offset);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+.mood-chart-wrap {
+  position: relative;
+  width: 100%;
+  height: 190px;
+}
+
+.mood-chart-legend {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-divider);
+}
+
+.mood-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.mood-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mood-legend-dot-filled { background: var(--color-primary); }
+.mood-legend-dot-note   { background: var(--color-primary-highlight); border: 1px solid var(--color-primary); }
+
+/* ================================================================
+   NOTES TABLE
+   ================================================================ */
+
+.mood-notes-table-wrap {
+  overflow-x: auto;
+  margin-top: var(--space-1);
+}
+
+.mood-notes-table {
+  width: 100%;
+  font-size: var(--text-sm);
+  border-collapse: collapse;
+}
+
+.mood-notes-table thead th {
+  text-align: left;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-divider);
+  white-space: nowrap;
+}
+
+.mood-notes-table tbody tr {
+  border-bottom: 1px solid var(--color-divider);
+  transition: background var(--transition-fast);
+}
+
+.mood-notes-table tbody tr:hover { background: var(--color-surface-offset); }
+.mood-notes-table tbody tr:last-child { border-bottom: none; }
+
+.mood-notes-table td {
+  padding: var(--space-3);
+  vertical-align: top;
+  color: var(--color-text);
+}
+
+.mood-date-cell  { white-space: nowrap; font-weight: 500; width: 130px; }
+.mood-score-cell { width: 60px; }
+
+.mood-score-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.mood-score-pill-none {
+  background: var(--color-surface-offset);
+  color: var(--color-text-faint);
+}
+
+.mood-note-text  { color: var(--color-text-muted); font-size: var(--text-sm); }
+.mood-note-empty { color: var(--color-text-faint); font-style: italic; font-size: var(--text-xs); }
+
+.mood-table-empty {
+  text-align: center;
+  padding: var(--space-4);
+  color: var(--color-text-faint);
+  font-style: italic;
+}
+
+/* ================================================================
+   MOOD TAB — DAILY MOOD CARD (Today tab)
    ================================================================ */
 
 .mood-card {
@@ -71,15 +235,8 @@
 .mood-emoji-btn.selected { border-color: var(--color-primary); background: var(--color-primary-light); }
 
 /* ================================================================
-   MOOD SUMMARY TABLE — SCORE PILLS
+   MOOD SCORE PILLS (legacy — kept for backward compat)
    ================================================================ */
-
-.mood-table-empty {
-  text-align: center;
-  padding: var(--space-4);
-  color: var(--color-text-faint);
-  font-style: italic;
-}
 
 .mood-pill {
   display: inline-block;
@@ -99,37 +256,7 @@
 .mood-pill-none { color: var(--color-text-faint); }
 
 /* ================================================================
-   MOOD HISTORY CHART
-   ================================================================ */
-
-.mood-history-chart {
-  position: relative;
-  width: 100%;
-  height: 180px;
-  margin-bottom: var(--space-4);
-}
-
-/* ================================================================
-   MOOD BREAKDOWN LIST
-   ================================================================ */
-
-.mood-breakdown-list { list-style: none; padding: 0; margin: 0; }
-
-.mood-breakdown-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) 0;
-  border-bottom: 1px solid var(--color-divider);
-}
-
-.mood-breakdown-item:last-child { border-bottom: none; }
-.mood-breakdown-emoji  { font-size: 1.4rem; }
-.mood-breakdown-label  { font-size: var(--text-base); color: var(--color-text-muted); flex: 1; }
-.mood-breakdown-count  { font-size: var(--text-sm); font-weight: 700; color: var(--color-text-muted); }
-
-/* ================================================================
-   ATR SECTION HEADING
+   ATR SECTION
    ================================================================ */
 
 .atr-section-title {
@@ -144,10 +271,6 @@
   color: var(--color-text-faint);
   margin-bottom: var(--space-4);
 }
-
-/* ================================================================
-   ATR FORM CARD
-   ================================================================ */
 
 .atr-form-card {
   background: var(--color-surface);
@@ -229,8 +352,7 @@
 }
 
 /* ================================================================
-   ATR RECORD CARDS (Thought Records list)
-   Aligned to .app-card system — same shell, header band, body, footer
+   ATR RECORD CARDS
    ================================================================ */
 
 .atr-list {
@@ -239,7 +361,6 @@
   gap: var(--space-3);
 }
 
-/* Card shell */
 .atr-record {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -253,7 +374,6 @@
   transform: translateY(-1px);
 }
 
-/* Header band — matches .app-card-header */
 .atr-record-header {
   display: flex;
   align-items: center;
@@ -302,7 +422,6 @@
   flex-shrink: 0;
 }
 
-/* Buttons — aligned to .app-btn */
 .atr-edit-btn,
 .atr-delete-btn {
   font-size: var(--text-xs);
@@ -333,7 +452,6 @@
   border-color: var(--color-error-border);
 }
 
-/* Card body — matches .app-card-body */
 .atr-record-body {
   padding: var(--space-3) var(--space-4);
   display: flex;
@@ -390,9 +508,12 @@
    ================================================================ */
 
 @media (max-width: 540px) {
-  .atr-record-header { gap: var(--space-1); }
-  .atr-record-body   { padding: var(--space-3); }
-  .atr-form-card     { padding: var(--space-4); }
-  .atr-form-actions  { justify-content: stretch; }
+  .mood-stat-strip     { gap: var(--space-2); }
+  .mood-stat-item      { padding: var(--space-2) var(--space-3); }
+  .atr-record-header   { gap: var(--space-1); }
+  .atr-record-body     { padding: var(--space-3); }
+  .atr-form-card       { padding: var(--space-4); }
+  .atr-form-actions    { justify-content: stretch; }
   .atr-form-actions .btn { flex: 1; justify-content: center; }
+  .mood-date-cell      { width: auto; }
 }
