@@ -175,6 +175,15 @@ document.addEventListener('partialsLoaded', () => {
       }
     }
 
+    function isBotCommit(data) {
+      const committer = (data.commit?.committer?.name || '').toLowerCase();
+      const author    = (data.commit?.author?.name || '').toLowerCase();
+      const message   = (data.commit?.message || '');
+      return committer.includes('github-actions') ||
+             author.includes('github-actions') ||
+             /\[skip ci\]/i.test(message);
+    }
+
     fetch('https://api.github.com/repos/dennismzanetti/FibroSymptomTracker/commits/main', {
       headers: { 'Accept': 'application/vnd.github.v3+json' }
     })
@@ -183,6 +192,11 @@ document.addEventListener('partialsLoaded', () => {
         return r.json();
       })
       .then(data => {
+        if (isBotCommit(data)) {
+          FibroDiag.debug('App', 'Live commit is bot-generated — falling back to BUILD_INFO');
+          applyFallback();
+          return;
+        }
         const sha     = data.sha.slice(0, 7);
         const shaFull = data.sha;
         const message = (data.commit.message || '').split('\n')[0];
