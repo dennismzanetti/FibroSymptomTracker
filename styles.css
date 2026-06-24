@@ -1166,30 +1166,32 @@ p.jv3-range-label {
 .jv3-dash { color: var(--color-text-faint); }
 
 /* ----------------------------------------------------------------
-   Notes table — plain label + left-aligned note text
+   Notes table — label column auto-sizes, note column wraps freely
    ---------------------------------------------------------------- */
 
 .jv3-notes-list {
   padding: var(--space-2) 0;
 }
 
-/* Full-width table inside the card */
+/* Auto layout: label column shrinks to fit its content */
 .jv3-notes-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: auto;
 }
 
-/* Label column — fixed narrow width */
+/* Label column — no fixed width; constrained by max-width so very
+   long labels (e.g. "Symptoms · Early Afternoon") can wrap to two
+   lines rather than shoving into the note column */
 .jv3-tbl-label {
-  width: 110px;
-  min-width: 110px;
+  width: 1%;               /* shrink to content */
+  max-width: 140px;
   padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
   vertical-align: top;
-  border-bottom: 1px solid var(--color-divider);
+  border-bottom: 1px solid var(--color-divider);;
 }
 
-/* Note text column — takes remaining width, left-aligned */
+/* Note text column — takes all remaining width */
 .jv3-tbl-note {
   padding: var(--space-2) var(--space-4) var(--space-2) var(--space-2);
   vertical-align: top;
@@ -1199,6 +1201,7 @@ p.jv3-range-label {
   line-height: 1.6;
   text-align: left;
   word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .jv3-notes-table tr:last-child .jv3-tbl-label,
@@ -1213,9 +1216,12 @@ p.jv3-range-label {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  line-height: 1.5;
+  line-height: 1.4;
   padding-top: 2px;
-  white-space: nowrap;
+  /* Allow wrapping so long labels don't overflow */
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* Label color variants by source */
@@ -1245,7 +1251,7 @@ p.jv3-range-label {
   .jv3-stat-cell { padding: var(--space-2) var(--space-3); }
   .jv3-stat-value { font-size: var(--text-sm); }
   .jv3-filter-bar { flex-direction: column; align-items: flex-start; }
-  .jv3-tbl-label { width: 90px; min-width: 90px; }
+  .jv3-tbl-label { max-width: 110px; }
 }
 
 /* ================================================================
