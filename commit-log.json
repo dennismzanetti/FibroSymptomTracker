@@ -1,5 +1,19 @@
 [
   {
+    "sha": "c60e1bdd712bb885e72ef99b14f9cb619b736593",
+    "short": "c60e1bd",
+    "date": "2026-06-24T12:24:24-04:00",
+    "message": "feat(trends): add date range filter buttons (7/30/90/All)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c60e1bdd712bb885e72ef99b14f9cb619b736593"
+  },
+  {
+    "sha": "710df412c5a82c13f626dc29c328e4fe99f25eaa",
+    "short": "710df41",
+    "date": "2026-06-24T16:09:44Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/710df412c5a82c13f626dc29c328e4fe99f25eaa"
+  },
+  {
     "sha": "f80238fe0108671d04a9e037dbc6a456a6dd9623",
     "short": "f80238f",
     "date": "2026-06-24T12:09:37-04:00",
@@ -152,19 +166,5 @@
     "date": "2026-06-22T15:19:15-04:00",
     "message": "refactor: remove root local-fibro.html (moved to dev/)",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/195bebf406e0c70abe9022aaf84764c105042445"
-  },
-  {
-    "sha": "d87ab22113dbb4e56e8ca490972e38b897806ce1",
-    "short": "d87ab22",
-    "date": "2026-06-22T19:19:06Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d87ab22113dbb4e56e8ca490972e38b897806ce1"
-  },
-  {
-    "sha": "fb8e2b50566b36e17bac02e9b34a2a52b3885b1e",
-    "short": "fb8e2b5",
-    "date": "2026-06-22T15:18:56-04:00",
-    "message": "refactor: move local-fibro.html to dev/ and merge release_notes into CHANGELOG",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/fb8e2b50566b36e17bac02e9b34a2a52b3885b1e"
   }
 ]
