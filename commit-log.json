@@ -1,5 +1,12 @@
 [
   {
+    "sha": "95319954df5b4e118f1ada91091953826d74701c",
+    "short": "9531995",
+    "date": "2026-06-24T14:44:49-04:00",
+    "message": "fix: add maintainAspectRatio:false so trends chart respects fixed container height",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/95319954df5b4e118f1ada91091953826d74701c"
+  },
+  {
     "sha": "9f02c8d8f142c3713a667d33c5a8fc34257a68a5",
     "short": "9f02c8d",
     "date": "2026-06-24T14:40:40-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-22T15:08:27-04:00",
     "message": "fix: pass user object to applySettingsOnAuth so Account section displays user info",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/03c0ac0f943ecacc87f1451bd56961b6a9d533f4"
-  },
-  {
-    "sha": "96f35436268b562071aceef9956ea87640d4f94c",
-    "short": "96f3543",
-    "date": "2026-06-22T15:07:45-04:00",
-    "message": "style: refine sub-tab pill buttons with segmented-control look",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/96f35436268b562071aceef9956ea87640d4f94c"
   }
 ]
