@@ -69,7 +69,7 @@ function updateStatCards(allDocs) {
     return allDocs.filter(d => (d.date || '') >= cutoffStr);
   }
 
-  // Prior 30-day window: days 31–60 ago
+  // Prior 30-day window: days 31-60 ago
   function prevPeriodDocs() {
     const from = new Date(today); from.setDate(from.getDate() - 60);
     const to   = new Date(today); to.setDate(to.getDate() - 30);
@@ -216,11 +216,6 @@ window.refreshTrends = async function refreshTrends() {
     const totalSleepData = allDocs.map(d => typeof d.sleep?.hours === 'number' ? d.sleep.hours : null);
     const sleepQualData  = allDocs.map(d => typeof d.sleep?.quality === 'number' ? d.sleep.quality : null);
 
-    // --- Tagged days: array of {x: dateStr, y: 0.5} per tagged doc ---
-    const taggedPoints = allDocs
-      .filter(d => Array.isArray(d.tags) && d.tags.length > 0)
-      .map(d => ({ x: d.date, y: 0.5, tags: d.tags }));
-
     const hasAny = funcData.some(v => v !== null) ||
                    moodData.some(v => v !== null) ||
                    totalSleepData.some(v => v !== null) ||
@@ -318,23 +313,6 @@ window.refreshTrends = async function refreshTrends() {
       });
     }
 
-    // --- Tagged day markers (always shown if any exist) ---
-    if (taggedPoints.length > 0) {
-      datasets.push({
-        label: 'Tagged Day \u25b2',
-        data: taggedPoints.map(p => ({ x: p.x, y: p.y })),
-        _tagMap: Object.fromEntries(taggedPoints.map(p => [p.x, p.tags])),
-        type: 'scatter',
-        borderColor: colWarning,
-        backgroundColor: colWarning,
-        pointStyle: 'triangle',
-        pointRadius: 7,
-        pointHoverRadius: 9,
-        showLine: false,
-        order: -1
-      });
-    }
-
     window._trendsChartInstance = new Chart(ctx, {
       type: 'line',
       data: { labels, datasets },
@@ -355,14 +333,6 @@ window.refreshTrends = async function refreshTrends() {
           tooltip: {
             callbacks: {
               label: ctx => {
-                if (ctx.dataset._tagMap) {
-                  const date = ctx.dataset.data[ctx.dataIndex]?.x;
-                  const tags = date && ctx.dataset._tagMap[date];
-                  if (tags && tags.length) {
-                    return '\uD83C\uDFF7\uFE0F Tags: ' + tags.join(', ');
-                  }
-                  return null;
-                }
                 return ctx.parsed.y !== null
                   ? `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}`
                   : null;
