@@ -325,8 +325,11 @@ function setupTabs() {
     }
     if (target === 'conditions-tab') refreshConditionsList();
     if (target === 'medications-tab') {
-      const activeView = document.querySelector(".med-view:not([style*='display:none']):not([style*='display: none'])");
-      if (activeView) refreshMedView(activeView.id);
+      // Reset to Medications list view on every tab visit
+      if (typeof activeMedView !== 'undefined') activeMedView = 'medListView';
+      const medListBtn = document.querySelector('#medications-tab .ct-sub-tab-btn[data-med-view="medListView"]');
+      if (medListBtn) medListBtn.click();
+      else refreshMedView('medListView');
     }
     if (target === 'entry-tab') syncDateInput();
   }
