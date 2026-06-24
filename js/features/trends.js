@@ -12,7 +12,7 @@ window.setupTrends = function setupTrends(getUid) {
     });
   });
 
-  ['overlayFunctionality', 'overlayPain', 'overlayMood', 'overlayMovingAvg'].forEach(id => {
+  ['overlayFunctionality', 'overlayMood', 'overlayTotalSleep', 'overlaySleepQuality', 'overlayMovingAvg'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('change', () => window.refreshTrends());
   });
@@ -87,16 +87,9 @@ function updateStatCards(allDocs) {
 }
 
 window.refreshTrends = async function refreshTrends() {
-  // Use the renamed canvas id (avoids window.functionalityChart browser global collision)
   const canvas = document.getElementById('trends-chart-canvas');
   if (!canvas) return;
 
-  // --- GUARD: Chart.js renders into whatever dimensions the canvas currently has.
-  // If the Trends tab is hidden via CSS (display:none on .tab without .active),
-  // the canvas has no layout and offsetParent will be null.
-  // Rendering into a hidden canvas bakes 0x0 into canvas.style and the chart
-  // never recovers even after the tab becomes visible.
-  // Solution: bail out now and let the tab-click call refreshTrends() fresh.
   if (canvas.offsetParent === null) {
     window._trendsPendingRender = true;
     FibroDiag.debug('Trends', 'Canvas not visible (tab hidden) \u2014 deferring chart render');
@@ -109,15 +102,17 @@ window.refreshTrends = async function refreshTrends() {
 
   const days = window._trendsActiveDays || 0;
 
-  const overlayFunc   = document.getElementById('overlayFunctionality');
-  const overlayPain   = document.getElementById('overlayPain');
-  const overlayMood   = document.getElementById('overlayMood');
-  const overlayMovAvg = document.getElementById('overlayMovingAvg');
+  const overlayFunc       = document.getElementById('overlayFunctionality');
+  const overlayMood       = document.getElementById('overlayMood');
+  const overlayTotalSleep = document.getElementById('overlayTotalSleep');
+  const overlaySleepQual  = document.getElementById('overlaySleepQuality');
+  const overlayMovAvg     = document.getElementById('overlayMovingAvg');
 
-  const showFunc   = overlayFunc   ? overlayFunc.checked   : true;
-  const showPain   = overlayPain   ? overlayPain.checked   : false;
-  const showMood   = overlayMood   ? overlayMood.checked   : false;
-  const showMovAvg = overlayMovAvg ? overlayMovAvg.checked : false;
+  const showFunc       = overlayFunc       ? overlayFunc.checked       : true;
+  const showMood       = overlayMood       ? overlayMood.checked       : false;
+  const showTotalSleep = overlayTotalSleep ? overlayTotalSleep.checked : false;
+  const showSleepQual  = overlaySleepQual  ? overlaySleepQual.checked  : false;
+  const showMovAvg     = overlayMovAvg     ? overlayMovAvg.checked     : false;
 
   try {
     let query = db.collection('days').orderBy(firebase.firestore.FieldPath.documentId());
@@ -158,7 +153,6 @@ window.refreshTrends = async function refreshTrends() {
     FibroDiag.debug('Trends', `${snapshot.size} day docs fetched`);
 
     // --- Destroy old chart instance and fully reset canvas ---
-    // Guard with instanceof Chart so a stale DOM reference never causes .destroy() to throw.
     if (window._trendsChartInstance instanceof Chart) {
       window._trendsChartInstance.destroy();
     }
@@ -170,17 +164,19 @@ window.refreshTrends = async function refreshTrends() {
     const ctx = canvas.getContext('2d');
 
     // --- Build labels and data series ---
-    const labels   = allDocs.map(d => d.date);
-    const funcData = allDocs.map(d => typeof d.avgFunctionality === 'number' ? d.avgFunctionality : null);
-    const painData = allDocs.map(d => typeof d.painScore === 'number' ? d.painScore : null);
-    const moodData = allDocs.map(d => {
-      const score = d.mood?.score ?? d.moodScore;  // support both new (mood.score) and legacy (moodScore)
+    const labels         = allDocs.map(d => d.date);
+    const funcData       = allDocs.map(d => typeof d.avgFunctionality === 'number' ? d.avgFunctionality : null);
+    const moodData       = allDocs.map(d => {
+      const score = d.mood?.score ?? d.moodScore;
       return typeof score === 'number' ? score : null;
     });
+    const totalSleepData = allDocs.map(d => typeof d.totalSleep === 'number' ? d.totalSleep : null);
+    const sleepQualData  = allDocs.map(d => typeof d.sleepQuality === 'number' ? d.sleepQuality : null);
 
     const hasAny = funcData.some(v => v !== null) ||
-                   painData.some(v => v !== null) ||
-                   moodData.some(v => v !== null);
+                   moodData.some(v => v !== null) ||
+                   totalSleepData.some(v => v !== null) ||
+                   sleepQualData.some(v => v !== null);
 
     // --- Empty state ---
     const existingMsg = canvas.parentElement.querySelector('.trends-empty');
@@ -200,8 +196,9 @@ window.refreshTrends = async function refreshTrends() {
 
     // --- Colors ---
     const colPrimary = cssVar('--color-primary', '#6c63ff');
-    const colError   = cssVar('--color-error',   '#d6336c');
     const colSuccess = cssVar('--color-success',  '#2f9e44');
+    const colBlue    = cssVar('--color-blue',     '#006494');
+    const colPurple  = cssVar('--color-purple',   '#7a39bb');
     const colWarning = cssVar('--color-warning',  '#e67700');
 
     // --- Datasets ---
@@ -220,19 +217,6 @@ window.refreshTrends = async function refreshTrends() {
       });
     }
 
-    if (showPain) {
-      datasets.push({
-        label: 'Pain Level',
-        data: painData,
-        borderColor: colError,
-        backgroundColor: 'transparent',
-        tension: 0.2,
-        pointRadius: labels.length <= 14 ? 3 : 1,
-        borderDash: [5, 3],
-        spanGaps: true
-      });
-    }
-
     if (showMood) {
       datasets.push({
         label: 'Mood',
@@ -242,6 +226,32 @@ window.refreshTrends = async function refreshTrends() {
         tension: 0.2,
         pointRadius: labels.length <= 14 ? 3 : 1,
         borderDash: [3, 3],
+        spanGaps: true
+      });
+    }
+
+    if (showTotalSleep) {
+      datasets.push({
+        label: 'Total Hours Slept',
+        data: totalSleepData,
+        borderColor: colBlue,
+        backgroundColor: 'transparent',
+        tension: 0.2,
+        pointRadius: labels.length <= 14 ? 3 : 1,
+        borderDash: [5, 3],
+        spanGaps: true
+      });
+    }
+
+    if (showSleepQual) {
+      datasets.push({
+        label: 'Sleep Quality',
+        data: sleepQualData,
+        borderColor: colPurple,
+        backgroundColor: 'transparent',
+        tension: 0.2,
+        pointRadius: labels.length <= 14 ? 3 : 1,
+        borderDash: [2, 4],
         spanGaps: true
       });
     }
