@@ -1,12 +1,64 @@
   <!-- Trends Tab -->
   <section id="trends-tab" class="tab">
     <h2>Trends</h2>
-    <p>Average daily functionality (all six time blocks combined).</p>
-    <div class="med-sub-tabs">
-      <button class="ct-sub-tab-btn active" data-days="7">7 Days</button>
-      <button class="ct-sub-tab-btn" data-days="30">30 Days</button>
-      <button class="ct-sub-tab-btn" data-days="90">90 Days</button>
-      <button class="ct-sub-tab-btn" data-days="0">All</button>
+    <p class="text-muted">Average daily scores across your logged days.</p>
+
+    <!-- Stat Cards -->
+    <div class="trends-stat-cards" id="trendsStatCards">
+      <div class="trends-stat-card">
+        <span class="trends-stat-label">7-Day Avg</span>
+        <span class="trends-stat-value" id="statAvg7">—</span>
+      </div>
+      <div class="trends-stat-card">
+        <span class="trends-stat-label">30-Day Avg</span>
+        <span class="trends-stat-value" id="statAvg30">—</span>
+      </div>
+      <div class="trends-stat-card">
+        <span class="trends-stat-label">Best This Month</span>
+        <span class="trends-stat-value" id="statBestMonth">—</span>
+      </div>
+      <div class="trends-stat-card">
+        <span class="trends-stat-label">Trend</span>
+        <span class="trends-stat-value" id="statTrend">—</span>
+      </div>
     </div>
-    <canvas id="functionalityChart" height="200"></canvas>
+
+    <!-- Date Range Filter -->
+    <div class="trends-filter-bar">
+      <div class="med-sub-tabs">
+        <button class="ct-sub-tab-btn active" data-days="7">7 Days</button>
+        <button class="ct-sub-tab-btn" data-days="30">30 Days</button>
+        <button class="ct-sub-tab-btn" data-days="90">90 Days</button>
+        <button class="ct-sub-tab-btn" data-days="0">All</button>
+      </div>
+    </div>
+
+    <!-- Overlay Toggles -->
+    <div class="trends-overlay-bar">
+      <label class="trends-overlay-toggle">
+        <input type="checkbox" id="overlayFunctionality" checked>
+        <span class="trends-overlay-dot" style="background:var(--color-primary)"></span>
+        Functionality
+      </label>
+      <label class="trends-overlay-toggle">
+        <input type="checkbox" id="overlayPain">
+        <span class="trends-overlay-dot" style="background:var(--color-error)"></span>
+        Pain Level
+      </label>
+      <label class="trends-overlay-toggle">
+        <input type="checkbox" id="overlayMood">
+        <span class="trends-overlay-dot" style="background:var(--color-success)"></span>
+        Mood
+      </label>
+      <label class="trends-overlay-toggle">
+        <input type="checkbox" id="overlayMovingAvg">
+        <span class="trends-overlay-dot" style="background:var(--color-warning)"></span>
+        7-Day Avg Line
+      </label>
+    </div>
+
+    <!-- Chart -->
+    <div class="trends-chart-wrap">
+      <canvas id="functionalityChart" height="200"></canvas>
+    </div>
   </section>

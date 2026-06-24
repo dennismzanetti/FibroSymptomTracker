@@ -632,6 +632,85 @@ input[type="range"] {
    TRENDS TAB
    ================================================================ */
 
+/* Stat cards row */
+.trends-stat-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+@media (max-width: 600px) {
+  .trends-stat-cards { grid-template-columns: repeat(2, 1fr); }
+}
+
+.trends-stat-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  box-shadow: var(--shadow-sm);
+}
+
+.trends-stat-label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-faint);
+}
+
+.trends-stat-value {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1.1;
+}
+
+/* Filter bar (date range pills) */
+.trends-filter-bar {
+  margin-bottom: var(--space-3);
+}
+
+/* Overlay toggles */
+.trends-overlay-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.trends-overlay-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  text-transform: none;          /* override global label uppercase */
+  letter-spacing: 0;
+  user-select: none;
+}
+
+.trends-overlay-toggle input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  accent-color: var(--color-primary);
+}
+
+.trends-overlay-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+/* Chart wrapper */
 .trends-chart-wrap {
   position: relative;
   width: 100%;
@@ -993,211 +1072,8 @@ body[data-print-context="careteam"] #ctPrintView > .card:first-child {
    ================================================================ */
 
 button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
+a:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
-}
-
-/* ================================================================
-   LOADING SPINNER
-   ================================================================ */
-
-.spinner {
-  width: 24px;
-  height: 24px;
-  border: 3px solid var(--color-border);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  flex-shrink: 0;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ================================================================
-   DANGER ZONE
-   ================================================================ */
-
-.danger-zone {
-  border: 1.5px solid var(--color-danger-border);
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
-  margin-top: var(--space-4);
-  background: var(--color-danger-bg);
-}
-
-.danger-zone-title {
-  font-size: var(--text-sm);
-  font-weight: 700;
-  color: var(--color-danger);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: var(--space-2);
-}
-
-/* ================================================================
-   CARD LIST SPACING — universal gap for all item list containers
-   Applies flex column + 12px gap to every dynamically-rendered
-   list so cards never touch, without changing JS or HTML.
-   ================================================================ */
-
-#medList,
-#suppList,
-#conditionsList,
-#ctProviderList,
-#ctUpcomingAppts,
-#ctPastAppts,
-#medHistoryList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);   /* 12px between cards */
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* ================================================================
-   CARE TEAM — provider meta fields (phone, fax, portal)
-   Pill-style links/labels displayed below specialty/org line.
-   ================================================================ */
-
-.ct-provider-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-  margin-top: var(--space-2);
-}
-
-/* Clickable pill — phone and portal URL */
-.ct-meta-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-1) var(--space-3);
-  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface));
-  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
-  border-radius: var(--radius-full);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--color-primary);
-  text-decoration: none;
-  transition: background var(--transition-fast), border-color var(--transition-fast);
-  white-space: nowrap;
-}
-
-.ct-meta-link:hover {
-  background: color-mix(in oklch, var(--color-primary) 16%, var(--color-surface));
-  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
-}
-
-/* Non-clickable pill — fax, symptom focus */
-.ct-meta-text {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-1) var(--space-3);
-  background: var(--color-surface-offset, var(--color-surface-2));
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-full);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--color-text-muted);
-  white-space: nowrap;
-}
-
-/* ================================================================
-   MEDICATIONS PRINT STYLES
-   ================================================================ */
-
-/* Screen: hide print-only elements */
-.med-print-header,
-.med-print-footer,
-.med-print-section-title { display: none; }
-
-.med-status-dot {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  margin-right: 5px;
-  vertical-align: middle;
-  flex-shrink: 0;
-}
-.med-status-active   { background: var(--color-success); }
-.med-status-inactive { background: var(--color-text-faint); }
-
-@media print {
-  @page { size: letter; margin: 0.5in; }
-
-  #medPrintControls { display: none !important; }
-
-  .med-print-header,
-  .med-print-footer { display: flex !important; }
-
-  .med-print-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 9pt;
-    margin-bottom: 1.5em;
-  }
-  .med-print-table colgroup col:nth-child(1) { width: 26%; }
-  .med-print-table colgroup col:nth-child(2) { width: 13%; }
-  .med-print-table colgroup col:nth-child(3) { width: 18%; }
-  .med-print-table colgroup col:nth-child(4) { width: 16%; }
-  .med-print-table colgroup col:nth-child(5) { width: 27%; }
-  .med-print-table thead th {
-    padding: 5pt 7pt;
-    background: #e8f0ef !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-    color: #01696f;
-    font-weight: 700;
-    font-size: 7.5pt;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    border-bottom: 1.5pt solid #01696f;
-    text-align: left;
-  }
-  .med-print-table td {
-    padding: 5pt 7pt;
-    border-bottom: 0.5pt solid #e0ddd8;
-    vertical-align: top;
-    font-size: 9pt;
-  }
-  .med-print-table tr:nth-child(even) td {
-    background: #f7f6f2 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-  .med-print-header {
-    justify-content: space-between;
-    align-items: flex-start;
-    padding-bottom: 8pt;
-    margin-bottom: 12pt;
-    border-bottom: 2pt solid #01696f;
-  }
-  .med-print-header-title { font-size: 13pt; font-weight: 700; color: #01696f; }
-  .med-print-header-sub   { font-size: 8pt; color: #666; margin-top: 2pt; }
-  .med-print-header-date  { font-size: 8pt; color: #666; text-align: right; }
-  .med-print-section-title {
-    display: block !important;
-    font-size: 8pt;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #01696f;
-    margin: 14pt 0 4pt 0;
-  }
-  .med-print-footer {
-    justify-content: space-between;
-    font-size: 7pt;
-    color: #999;
-    border-top: 0.5pt solid #dcd9d5;
-    padding-top: 6pt;
-    margin-top: 12pt;
-  }
+  border-radius: var(--radius-sm);
 }
