@@ -1,5 +1,12 @@
 [
   {
+    "sha": "7f5693ace5162aac0b2fd0f1b1ac6a1484195a12",
+    "short": "7f5693a",
+    "date": "2026-06-24T15:40:45-04:00",
+    "message": "fix: rename canvas id to trends-chart-canvas to prevent window.functionalityChart collision",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7f5693ace5162aac0b2fd0f1b1ac6a1484195a12"
+  },
+  {
     "sha": "df466c1cfc3a3db5eb7037896e9f3181b4c31a45",
     "short": "df466c1",
     "date": "2026-06-24T15:37:24-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-23T15:07:25-04:00",
     "message": "Merge remote-tracking branch 'origin/main'",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ebea4234327c820b4c47faca065e6cd016cc5e1c"
-  },
-  {
-    "sha": "ca57250687f93049cdaa75705faf353a5a85f253",
-    "short": "ca57250",
-    "date": "2026-06-23T15:06:42-04:00",
-    "message": "moving sub tab styles",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ca57250687f93049cdaa75705faf353a5a85f253"
   }
 ]
