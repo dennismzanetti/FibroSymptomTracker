@@ -1,5 +1,19 @@
 [
   {
+    "sha": "ff9c161c1716f4474a04253b484df29d2342477e",
+    "short": "ff9c161",
+    "date": "2026-06-24T14:29:39-04:00",
+    "message": "Fix medications sub-tab default selection and persist user's last selection",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ff9c161c1716f4474a04253b484df29d2342477e"
+  },
+  {
+    "sha": "79d25e0250cf30f87a7855947af0c8c56e376ec7",
+    "short": "79d25e0",
+    "date": "2026-06-24T18:27:53Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/79d25e0250cf30f87a7855947af0c8c56e376ec7"
+  },
+  {
     "sha": "977ea22b5d3fdc9457933a2d2be5ee7ebfaea5d8",
     "short": "977ea22",
     "date": "2026-06-24T14:27:46-04:00",
@@ -152,19 +166,5 @@
     "date": "2026-06-23T15:06:42-04:00",
     "message": "moving sub tab styles",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ca57250687f93049cdaa75705faf353a5a85f253"
-  },
-  {
-    "sha": "9a6397956fc4c4e3b7399fbd9cef61f59d4d8dfb",
-    "short": "9a63979",
-    "date": "2026-06-23T19:04:48Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9a6397956fc4c4e3b7399fbd9cef61f59d4d8dfb"
-  },
-  {
-    "sha": "5ad9504f41eee67651891484b55a0c0a96833539",
-    "short": "5ad9504",
-    "date": "2026-06-23T15:04:13-04:00",
-    "message": "removing sub-tab styles from styles.css",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/5ad9504f41eee67651891484b55a0c0a96833539"
   }
 ]
