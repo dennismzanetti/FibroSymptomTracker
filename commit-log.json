@@ -1,5 +1,12 @@
 [
   {
+    "sha": "ba1fcd18a5cf242a17f06a0afb73410d0e64e610",
+    "short": "ba1fcd1",
+    "date": "2026-06-24T15:12:48-04:00",
+    "message": "fix: use offsetParent visibility guard in trends.js; remove premature refreshTrends() on auth",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ba1fcd18a5cf242a17f06a0afb73410d0e64e610"
+  },
+  {
     "sha": "2d0fa1a31c5f91f959157752a1a6b5226125c071",
     "short": "2d0fa1a",
     "date": "2026-06-24T15:12:04-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-23T14:48:28-04:00",
     "message": "feat: about section — render top-10 non-bot commits table, highlight latest build",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2d9651fc8d169a401f585952e426c3b8e6698711"
-  },
-  {
-    "sha": "9f23cd834fc5e50da7427fe693d894b2b390124f",
-    "short": "9f23cd8",
-    "date": "2026-06-23T14:47:41-04:00",
-    "message": "feat: about section — single commit table (top 10, no bots, latest build highlighted)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9f23cd834fc5e50da7427fe693d894b2b390124f"
   }
 ]
