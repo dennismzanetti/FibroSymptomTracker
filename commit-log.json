@@ -1,5 +1,12 @@
 [
   {
+    "sha": "21db6bd3d5ba788546455c891db9e9ee5c6bb6a8",
+    "short": "21db6bd",
+    "date": "2026-06-24T16:25:16-04:00",
+    "message": "Redesign trends stat cards: per-category cards with 7-day avg, 30-day avg, and trend pill",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/21db6bd3d5ba788546455c891db9e9ee5c6bb6a8"
+  },
+  {
     "sha": "c59aebe77a2c001262f962817b75092995524a47",
     "short": "c59aebe",
     "date": "2026-06-24T16:17:06-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T13:11:35-04:00",
     "message": "Fix trends filtering: remove duplicate local refreshTrends() from app.js, delegate to window.refreshTrends",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/0db3d39a0df89f77b17fa0357f2f2a35a4d712e9"
-  },
-  {
-    "sha": "14c72fc856f579ff3e423036b4f218010dc443cf",
-    "short": "14c72fc",
-    "date": "2026-06-24T13:01:06-04:00",
-    "message": "Fix trends filter buttons: restyle with base.css classes, fix selector in trends.js",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/14c72fc856f579ff3e423036b4f218010dc443cf"
   }
 ]
