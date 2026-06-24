@@ -32,6 +32,9 @@
         <!-- Right: sign out -->
         <button id="settingsSignOutBtn" class="btn btn-danger" style="flex-shrink:0;">Sign out</button>
       </div>
+      <div style="text-align:right;margin-top:var(--space-4);">
+        <a href="#settings-tab" class="settings-back-top">&#8679; Back to top</a>
+      </div>
     </div>
 
     <!-- Display Preferences -->
@@ -61,6 +64,9 @@
       </div>
       <button id="settingsSaveDisplayBtn" class="btn btn-primary">Save Display Settings</button>
       <p id="settingsDisplayStatus" style="margin-top:var(--space-2);font-size:var(--text-sm);color:var(--color-success);display:none;">&#10003; Saved</p>
+      <div style="text-align:right;margin-top:var(--space-4);">
+        <a href="#settings-tab" class="settings-back-top">&#8679; Back to top</a>
+      </div>
     </div>
 
     <!-- Export / Import -->
@@ -86,6 +92,9 @@
       </div>
 
       <p id="exportImportStatus" style="display:none;padding:var(--space-3);border-radius:var(--radius-md);font-size:var(--text-sm);"></p>
+      <div style="text-align:right;margin-top:var(--space-4);">
+        <a href="#settings-tab" class="settings-back-top">&#8679; Back to top</a>
+      </div>
     </div>
 
     <!-- About -->
@@ -95,6 +104,9 @@
       <div id="settingsAboutCommits">
         <p style="color:var(--color-text-muted);font-size:var(--text-sm);">Loading commit history&hellip;</p>
       </div>
+      <div style="text-align:right;margin-top:var(--space-4);">
+        <a href="#settings-tab" class="settings-back-top">&#8679; Back to top</a>
+      </div>
     </div>
 
     <!-- Diagnostics -->
@@ -102,9 +114,26 @@
     <div class="card">
       <h3>Developer Diagnostics</h3>
       <div id="diagToggleContent"></div>
+      <div style="text-align:right;margin-top:var(--space-4);">
+        <a href="#settings-tab" class="settings-back-top">&#8679; Back to top</a>
+      </div>
     </div>
 
   </section>
+
+  <style>
+    .settings-back-top {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      text-decoration: none;
+      border-top: 1px solid var(--color-divider);
+      padding-top: var(--space-3);
+      display: inline-block;
+    }
+    .settings-back-top:hover {
+      color: var(--color-primary);
+    }
+  </style>
 
   <!-- Anchor nav active-state highlighting via IntersectionObserver -->
   <script>
@@ -147,6 +176,15 @@
           e.preventDefault();
           const targetId = link.getAttribute('href').slice(1);
           const target = document.getElementById(targetId);
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      // Smooth scroll for back-to-top links
+      document.querySelectorAll('.settings-back-top').forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          const target = document.getElementById('settings-tab');
           if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
       });
