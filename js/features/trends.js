@@ -2,9 +2,9 @@
 window._trendsActiveDays = 7;
 
 window.setupTrends = function setupTrends(getUid) {
-  document.querySelectorAll('.trends-filter-btn').forEach(btn => {
+  document.querySelectorAll('#trends-tab .ct-sub-tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.trends-filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#trends-tab .ct-sub-tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       window._trendsActiveDays = parseInt(btn.dataset.days, 10);
       window.refreshTrends();
