@@ -95,10 +95,16 @@ window.refreshTrends = async function refreshTrends() {
   const ctx  = canvas.getContext('2d');
   const days = window._trendsActiveDays || 0;
 
-  const showFunc   = document.getElementById('overlayFunctionality')?.checked !== false;
-  const showPain   = document.getElementById('overlayPain')?.checked   === true;
-  const showMood   = document.getElementById('overlayMood')?.checked   === true;
-  const showMovAvg = document.getElementById('overlayMovingAvg')?.checked === true;
+  // FIX: use explicit boolean coercion — ?.checked defaults to false when element missing
+  const overlayFunc   = document.getElementById('overlayFunctionality');
+  const overlayPain   = document.getElementById('overlayPain');
+  const overlayMood   = document.getElementById('overlayMood');
+  const overlayMovAvg = document.getElementById('overlayMovingAvg');
+
+  const showFunc   = overlayFunc   ? overlayFunc.checked   : true;
+  const showPain   = overlayPain   ? overlayPain.checked   : false;
+  const showMood   = overlayMood   ? overlayMood.checked   : false;
+  const showMovAvg = overlayMovAvg ? overlayMovAvg.checked : false;
 
   try {
     let query = db.collection('days').orderBy(firebase.firestore.FieldPath.documentId());
@@ -119,8 +125,6 @@ window.refreshTrends = async function refreshTrends() {
     });
 
     // Always compute stat cards from a full 30-day fetch even if chart shows less
-    // (allDocs already covers at least the selected window; for stat cards that
-    // need >30 days we do a separate lightweight fetch when days < 30).
     let statDocs = allDocs;
     if (days > 0 && days < 30) {
       try {
@@ -142,11 +146,18 @@ window.refreshTrends = async function refreshTrends() {
 
     if (window.functionalityChart) window.functionalityChart.destroy();
 
-    // --- Build labels from all docs that have at least one data series ---
-    const labels = allDocs.map(d => d.date);
+    // --- Build labels and data series ---
+    const labels   = allDocs.map(d => d.date);
     const funcData = allDocs.map(d => typeof d.avgFunctionality === 'number' ? d.avgFunctionality : null);
-    const painData = allDocs.map(d => typeof d.painLevel       === 'number' ? d.painLevel       : null);
-    const moodData = allDocs.map(d => typeof d.moodScore       === 'number' ? d.moodScore       : null);
+
+    // FIX: painLevel → painScore (matches collectFormData in app.js)
+    const painData = allDocs.map(d => typeof d.painScore === 'number' ? d.painScore : null);
+
+    // FIX: moodScore top-level → d.mood?.score (matches collectFormData in app.js)
+    const moodData = allDocs.map(d => {
+      const score = d.mood?.score ?? d.moodScore;  // support both old and new field layouts
+      return typeof score === 'number' ? score : null;
+    });
 
     // Determine if we have any plottable data at all
     const hasAny = funcData.some(v => v !== null) ||
