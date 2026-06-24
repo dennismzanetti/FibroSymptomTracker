@@ -653,7 +653,7 @@ function setupDateNavigation() {
 
 function switchToTab(tabId) {
   document.querySelectorAll('.tab-button').forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId));
-  document.querySelectorAll('.tab').forEach(tab => tab.classList.toggle('active', tab.id === tabId)));
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.toggle('active', tab.id === tabId));
   const tabSelect = document.getElementById('tabSelect');
   if (tabSelect && tabSelect.value !== tabId) tabSelect.value = tabId;
   if (tabId === 'entry-tab') syncDateInput();
