@@ -1,5 +1,12 @@
 [
   {
+    "sha": "22016bbc1b2ba0506b71218ba03ea0c122e0c4df",
+    "short": "22016bb",
+    "date": "2026-06-24T17:07:26-04:00",
+    "message": "fix: remove stray extra ) in switchToTab causing SyntaxError at line 656",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/22016bbc1b2ba0506b71218ba03ea0c122e0c4df"
+  },
+  {
     "sha": "690436e0e3f7c404a8f0b3fce465ba9bb0535006",
     "short": "690436e",
     "date": "2026-06-24T17:04:01-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T15:08:11-04:00",
     "message": "fix: skip chart render when tab hidden, reset canvas dimensions before re-render",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b80eaa47a665dd5b2c260340d074fb35c3644c91"
-  },
-  {
-    "sha": "bbd3bab1737d1f5b74d15346bebf3d05464e7698",
-    "short": "bbd3bab",
-    "date": "2026-06-24T15:07:08-04:00",
-    "message": "fix: medications tab always activates medListView button on tab switch",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/bbd3bab1737d1f5b74d15346bebf3d05464e7698"
   }
 ]
