@@ -42,6 +42,8 @@ document.addEventListener('partialsLoaded', () => {
         setupCareTeamTab();
         if (typeof setupConditionsTab === 'function') setupConditionsTab();
         runPostLoadSetup();
+        // refreshTrends must run after auth so Firestore security rules are satisfied
+        if (typeof window.refreshTrends === 'function') window.refreshTrends();
         if (typeof window.applySettingsOnAuth === 'function') window.applySettingsOnAuth(user);
       }
     } else {
@@ -122,7 +124,8 @@ document.addEventListener('partialsLoaded', () => {
   }
 
   refreshHistory();
-  window.refreshTrends();
+  // NOTE: refreshTrends is intentionally NOT called here — it is called inside
+  // auth.onAuthStateChanged after sign-in so Firestore security rules are satisfied.
 
   _windowLoaded = true;
   runPostLoadSetup();
