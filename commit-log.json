@@ -1,5 +1,19 @@
 [
   {
+    "sha": "14c72fc856f579ff3e423036b4f218010dc443cf",
+    "short": "14c72fc",
+    "date": "2026-06-24T13:01:06-04:00",
+    "message": "Fix trends filter buttons: restyle with base.css classes, fix selector in trends.js",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/14c72fc856f579ff3e423036b4f218010dc443cf"
+  },
+  {
+    "sha": "104d3334bf4500c61de6f5ea151b7b3bf78e221b",
+    "short": "104d333",
+    "date": "2026-06-24T16:24:42Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/104d3334bf4500c61de6f5ea151b7b3bf78e221b"
+  },
+  {
     "sha": "c60e1bdd712bb885e72ef99b14f9cb619b736593",
     "short": "c60e1bd",
     "date": "2026-06-24T12:24:24-04:00",
@@ -152,19 +166,5 @@
     "date": "2026-06-22T15:20:15-04:00",
     "message": "refactor: remove release_notes.md (merged into CHANGELOG.md)",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/bf7f55fb8a63145206600917def4071666327482"
-  },
-  {
-    "sha": "d06b035f6ff45655f2a49a47cd0e30ef019cc20b",
-    "short": "d06b035",
-    "date": "2026-06-22T19:19:26Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d06b035f6ff45655f2a49a47cd0e30ef019cc20b"
-  },
-  {
-    "sha": "195bebf406e0c70abe9022aaf84764c105042445",
-    "short": "195bebf",
-    "date": "2026-06-22T15:19:15-04:00",
-    "message": "refactor: remove root local-fibro.html (moved to dev/)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/195bebf406e0c70abe9022aaf84764c105042445"
   }
 ]
