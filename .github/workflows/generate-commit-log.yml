@@ -13,13 +13,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 26
+          fetch-depth: 51
           token: ${{ secrets.GITHUB_TOKEN }}
           persist-credentials: true
 
       - name: Build commit-log.json
         run: |
-          git log -25 --pretty=format:"%H|%h|%aI|%s" \
+          git log -50 --perl-regexp --author='^(?!github-actions\[bot\])' \
+            --pretty=format:"%H|%h|%aI|%s" \
+            | head -25 \
             | while IFS='|' read -r sha short date msg; do
                 jq -n \
                   --arg sha "$sha" \
@@ -33,10 +35,10 @@ jobs:
 
       - name: Build build-info.js
         run: |
-          SHA=$(git log -1 --pretty=format:"%H")
-          SHORT=$(git log -1 --pretty=format:"%h")
-          DATE=$(git log -1 --pretty=format:"%aI")
-          MSG=$(git log -1 --pretty=format:"%s")
+          SHA=$(git log -1 --perl-regexp --author='^(?!github-actions\[bot\])' --pretty=format:"%H")
+          SHORT=$(git log -1 --perl-regexp --author='^(?!github-actions\[bot\])' --pretty=format:"%h")
+          DATE=$(git log -1 --perl-regexp --author='^(?!github-actions\[bot\])' --pretty=format:"%aI")
+          MSG=$(git log -1 --perl-regexp --author='^(?!github-actions\[bot\])' --pretty=format:"%s")
           URL="https://github.com/dennismzanetti/FibroSymptomTracker/commit/$SHA"
           mkdir -p js/core
           {
