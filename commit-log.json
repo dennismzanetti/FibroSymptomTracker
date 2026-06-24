@@ -1,5 +1,19 @@
 [
   {
+    "sha": "d88e304e8f696299b4dd3c209c768fdb9a742d15",
+    "short": "d88e304",
+    "date": "2026-06-24T13:58:24-04:00",
+    "message": "fix: call refreshTrends after auth — chart was rendering before Firestore was accessible",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d88e304e8f696299b4dd3c209c768fdb9a742d15"
+  },
+  {
+    "sha": "acbf693ce2c3ad5a1715d885db4112cc0b6e31d0",
+    "short": "acbf693",
+    "date": "2026-06-24T17:34:08Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/acbf693ce2c3ad5a1715d885db4112cc0b6e31d0"
+  },
+  {
     "sha": "d641ad1a47113b8986bf19611cfa00c78aec4e26",
     "short": "d641ad1",
     "date": "2026-06-24T13:34:00-04:00",
@@ -152,19 +166,5 @@
     "date": "2026-06-23T14:48:28-04:00",
     "message": "feat: about section — render top-10 non-bot commits table, highlight latest build",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2d9651fc8d169a401f585952e426c3b8e6698711"
-  },
-  {
-    "sha": "7ac9b2c7d61f2605ca0b3fd409b3f5b88f0edf9a",
-    "short": "7ac9b2c",
-    "date": "2026-06-23T18:47:55Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7ac9b2c7d61f2605ca0b3fd409b3f5b88f0edf9a"
-  },
-  {
-    "sha": "9f23cd834fc5e50da7427fe693d894b2b390124f",
-    "short": "9f23cd8",
-    "date": "2026-06-23T14:47:41-04:00",
-    "message": "feat: about section — single commit table (top 10, no bots, latest build highlighted)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9f23cd834fc5e50da7427fe693d894b2b390124f"
   }
 ]
