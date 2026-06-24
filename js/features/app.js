@@ -122,7 +122,7 @@ document.addEventListener('partialsLoaded', () => {
   }
 
   refreshHistory();
-  refreshTrends();
+  window.refreshTrends();
 
   _windowLoaded = true;
   runPostLoadSetup();
@@ -308,7 +308,7 @@ function setupTabs() {
     if (tabSelect && tabSelect.value !== target) tabSelect.value = target;
     if (target === 'history-tab') refreshHistory();
     if (target === 'journal-tab') renderJournal();
-    if (target === 'trends-tab') refreshTrends();
+    if (target === 'trends-tab') window.refreshTrends();
     if (target === 'mood-tab') refreshMoodTab();
     if (target === 'careteam-tab') {
       const defaultCTBtn = document.querySelector('.ct-sub-tab-btn[data-ct-view="ctProvidersView"]');
@@ -374,7 +374,7 @@ function setupSaveDay() {
     }
     refreshHistory();
     renderJournal();
-    refreshTrends();
+    window.refreshTrends();
   };
   floatBtn?.addEventListener('click', handleSaveClick);
 }
@@ -646,32 +646,6 @@ function switchToTab(tabId) {
 
 function formatScore(value) { return typeof value === 'number' ? value : 'not recorded'; }
 function formatText(value, fallback = 'Not recorded.') { return value && String(value).trim() ? value : fallback; }
-
-let functionalityChart = null;
-async function refreshTrends() {
-  if (typeof window.refreshTrends === 'function' && window.refreshTrends !== refreshTrends) {
-    return window.refreshTrends();
-  }
-  const canvas = document.getElementById('functionalityChart');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  FibroDiag.debug('App', 'refreshTrends: fetching from Firestore');
-  try {
-    const snapshot = await db.collection('days').orderBy(firebase.firestore.FieldPath.documentId()).get();
-    const labels = [], data = [];
-    snapshot.forEach(doc => {
-      const d = doc.data();
-      if (typeof d.avgFunctionality === 'number') { labels.push(d.date || doc.id); data.push(d.avgFunctionality); }
-    });
-    FibroDiag.debug('App', `refreshTrends: ${data.length} data points`);
-    if (functionalityChart) functionalityChart.destroy();
-    functionalityChart = new Chart(ctx, {
-      type: 'line',
-      data: { labels, datasets: [{ label: 'Average daily functionality', data, borderColor: '#3f51b5', backgroundColor: 'rgba(63,81,181,0.15)', tension: 0.2 }] },
-      options: { scales: { y: { suggestedMin: 0, suggestedMax: 10 } } }
-    });
-  } catch (err) { FibroDiag.error('App', 'refreshTrends failed', err); console.error('Error loading trends:', err); }
-}
 
 // ================================================================
 //  EXPORT / IMPORT DATA
