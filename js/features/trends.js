@@ -215,6 +215,11 @@ window.refreshTrends = async function refreshTrends() {
     const totalSleepData = allDocs.map(d => typeof d.sleep?.hours === 'number' ? d.sleep.hours : null);
     const sleepQualData  = allDocs.map(d => typeof d.sleep?.quality === 'number' ? d.sleep.quality : null);
 
+    // --- Tagged days: array of {x: dateStr, y: 0.5, tags: [...]} per tagged doc ---
+    const taggedPoints = allDocs
+      .filter(d => Array.isArray(d.tags) && d.tags.length > 0)
+      .map(d => ({ x: d.date, y: 0.5, tags: d.tags }));
+
     const hasAny = funcData.some(v => v !== null) ||
                    moodData.some(v => v !== null) ||
                    totalSleepData.some(v => v !== null) ||
@@ -312,6 +317,24 @@ window.refreshTrends = async function refreshTrends() {
       });
     }
 
+    // --- Tagged day markers (always shown if any exist) ---
+    if (taggedPoints.length > 0) {
+      datasets.push({
+        label: 'Tagged Day \u25b2',
+        data: taggedPoints.map(p => ({ x: p.x, y: p.y })),
+        // Store tags on dataset for tooltip access
+        _tagMap: Object.fromEntries(taggedPoints.map(p => [p.x, p.tags])),
+        type: 'scatter',
+        borderColor: colWarning,
+        backgroundColor: colWarning,
+        pointStyle: 'triangle',
+        pointRadius: 7,
+        pointHoverRadius: 9,
+        showLine: false,
+        order: -1  // draw on top
+      });
+    }
+
     window._trendsChartInstance = new Chart(ctx, {
       type: 'line',
       data: { labels, datasets },
@@ -323,11 +346,30 @@ window.refreshTrends = async function refreshTrends() {
           legend: {
             display: datasets.length > 1,
             position: 'top',
-            labels: { boxWidth: 12, font: { size: 11 } }
+            labels: {
+              boxWidth: 12,
+              font: { size: 11 },
+              usePointStyle: true
+            }
           },
-          tooltip: { callbacks: {
-            label: ctx => ctx.parsed.y !== null ? `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}` : null
-          }}
+          tooltip: {
+            callbacks: {
+              label: ctx => {
+                // Tagged Day dataset: show tag names instead of y value
+                if (ctx.dataset._tagMap) {
+                  const date = ctx.dataset.data[ctx.dataIndex]?.x;
+                  const tags = date && ctx.dataset._tagMap[date];
+                  if (tags && tags.length) {
+                    return '\uD83C\uDFF7\uFE0F Tags: ' + tags.join(', ');
+                  }
+                  return null;
+                }
+                return ctx.parsed.y !== null
+                  ? `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}`
+                  : null;
+              }
+            }
+          }
         },
         scales: {
           y: {
