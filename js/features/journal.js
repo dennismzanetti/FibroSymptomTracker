@@ -43,11 +43,16 @@ function scorePillHtml(score) {
 function collectNotes(d) {
   const notes = [];
 
+  // Day title as a note (pinned first)
+  if (d.dayTitle && d.dayTitle.trim()) {
+    notes.unshift({ source: "general", label: "Day Title", text: `"${d.dayTitle.trim()}"` });
+  }
+
   // Functionality time-block notes
   TIME_BLOCKS.forEach(({ key, label }) => {
     const b = d.functionality?.[key] || {};
     if (b.symptoms && b.symptoms.trim()) {
-      notes.push({ source: "functionality", label: `Functionality · ${label}`, text: b.symptoms.trim() });
+      notes.push({ source: "functionality", label: `Symptoms · ${label}`, text: b.symptoms.trim() });
     }
     if (b.activity && b.activity.trim()) {
       notes.push({ source: "functionality", label: `Activity · ${label}`, text: b.activity.trim() });
@@ -74,30 +79,20 @@ function collectNotes(d) {
     notes.push({ source: "general", label: "General", text: d.overallNotes.trim() });
   }
 
-  // Day title as a note
-  if (d.dayTitle && d.dayTitle.trim()) {
-    notes.unshift({ source: "general", label: "Day Title", text: `"${d.dayTitle.trim()}"` });
-  }
-
   return notes;
 }
 
 // ================================================================
-// SOURCE BADGE HTML
+// SOURCE LABEL COLOR CLASS
 // ================================================================
 
-const SOURCE_BADGE = {
-  functionality: "jv3-badge-func",
-  sleep:         "jv3-badge-sleep",
-  exercise:      "jv3-badge-exercise",
-  mood:          "jv3-badge-mood",
-  general:       "jv3-badge-general"
+const SOURCE_LABEL_CLASS = {
+  functionality: "jv3-lbl-func",
+  sleep:         "jv3-lbl-sleep",
+  exercise:      "jv3-lbl-exercise",
+  mood:          "jv3-lbl-mood",
+  general:       "jv3-lbl-general"
 };
-
-function noteBadgeHtml(source, label) {
-  const cls = SOURCE_BADGE[source] || "jv3-badge-general";
-  return `<span class="jv3-note-badge ${cls}">${label}</span>`;
-}
 
 // ================================================================
 // STATS BANNER HTML
@@ -162,13 +157,19 @@ function buildJournalCard(dateStr, d, activeFilter) {
     ? allNotes
     : allNotes.filter(n => n.source === activeFilter);
 
-  const notesHtml = filteredNotes.length
-    ? filteredNotes.map(n => `
-        <div class="jv3-note-item">
-          ${noteBadgeHtml(n.source, n.label)}
-          <p class="jv3-note-text">${n.text}</p>
-        </div>`).join("")
-    : `<p class="jv3-no-notes">No notes recorded for this day.</p>`;
+  let notesHtml;
+  if (filteredNotes.length) {
+    const rows = filteredNotes.map(n => {
+      const cls = SOURCE_LABEL_CLASS[n.source] || "jv3-lbl-general";
+      return `<tr>
+        <td class="jv3-tbl-label"><span class="jv3-note-label ${cls}">${n.label}</span></td>
+        <td class="jv3-tbl-note">${n.text}</td>
+      </tr>`;
+    }).join("");
+    notesHtml = `<table class="jv3-notes-table"><tbody>${rows}</tbody></table>`;
+  } else {
+    notesHtml = `<p class="jv3-no-notes">No notes recorded for this day.</p>`;
+  }
 
   return `
     <article class="jv3-day-card" data-journal-date="${dateStr}">
