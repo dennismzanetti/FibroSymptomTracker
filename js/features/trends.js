@@ -170,8 +170,8 @@ window.refreshTrends = async function refreshTrends() {
       const score = d.mood?.score ?? d.moodScore;
       return typeof score === 'number' ? score : null;
     });
-    const totalSleepData = allDocs.map(d => typeof d.totalSleep === 'number' ? d.totalSleep : null);
-    const sleepQualData  = allDocs.map(d => typeof d.sleepQuality === 'number' ? d.sleepQuality : null);
+    const totalSleepData = allDocs.map(d => typeof d.sleep?.hours === 'number' ? d.sleep.hours : null);
+    const sleepQualData  = allDocs.map(d => typeof d.sleep?.quality === 'number' ? d.sleep.quality : null);
 
     const hasAny = funcData.some(v => v !== null) ||
                    moodData.some(v => v !== null) ||
