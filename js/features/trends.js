@@ -1,5 +1,6 @@
 // trends.js
 window._trendsActiveDays = 7;
+window._trendsPendingRender = false;  // flag: render was deferred because tab was hidden
 
 window.setupTrends = function setupTrends(getUid) {
   document.querySelectorAll('#trends-tab .ct-sub-tab-btn').forEach(btn => {
@@ -89,10 +90,20 @@ window.refreshTrends = async function refreshTrends() {
   const canvas = document.getElementById('functionalityChart');
   if (!canvas) return;
 
+  // --- GUARD: if the trends tab is hidden (display:none), Chart.js will render
+  // into a 0x0 canvas and bake those zero dimensions into canvas.style.
+  // Defer the render and let the tab-activation call handle it fresh.
+  const trendsTab = document.getElementById('trends-tab');
+  if (trendsTab && trendsTab.style.display === 'none') {
+    window._trendsPendingRender = true;
+    FibroDiag.debug('Trends', 'Tab hidden — deferring chart render');
+    return;
+  }
+  window._trendsPendingRender = false;
+
   FibroDiag.debug('Trends', 'Fetching trend data from Firestore...');
   FibroDiag.time('trends-fetch');
 
-  const ctx  = canvas.getContext('2d');
   const days = window._trendsActiveDays || 0;
 
   // FIX: use explicit boolean coercion — ?.checked defaults to false when element missing
@@ -144,7 +155,19 @@ window.refreshTrends = async function refreshTrends() {
     FibroDiag.timeEnd('trends-fetch');
     FibroDiag.debug('Trends', `${snapshot.size} day docs fetched`);
 
-    if (window.functionalityChart) window.functionalityChart.destroy();
+    // --- Destroy old chart instance and RESET canvas dimensions ---
+    // Chart.js writes explicit style="width:Xpx; height:Ypx" onto the canvas.
+    // If the chart was previously rendered while the tab was hidden (0x0),
+    // those stale zero dimensions persist even after destroy(). Clear them.
+    if (window.functionalityChart) {
+      window.functionalityChart.destroy();
+      window.functionalityChart = null;
+    }
+    canvas.removeAttribute('style');
+    canvas.removeAttribute('width');
+    canvas.removeAttribute('height');
+
+    const ctx = canvas.getContext('2d');
 
     // --- Build labels and data series ---
     const labels   = allDocs.map(d => d.date);
@@ -153,9 +176,9 @@ window.refreshTrends = async function refreshTrends() {
     // FIX: painLevel → painScore (matches collectFormData in app.js)
     const painData = allDocs.map(d => typeof d.painScore === 'number' ? d.painScore : null);
 
-    // FIX: moodScore top-level → d.mood?.score (matches collectFormData in app.js)
+    // FIX: support both d.mood.score (new) and top-level d.moodScore (legacy)
     const moodData = allDocs.map(d => {
-      const score = d.mood?.score ?? d.moodScore;  // support both old and new field layouts
+      const score = d.mood?.score ?? d.moodScore;
       return typeof score === 'number' ? score : null;
     });
 
