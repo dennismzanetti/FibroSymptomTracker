@@ -1,5 +1,12 @@
 [
   {
+    "sha": "22f17188f6578ba28ea4b1aa5270323097fff6b0",
+    "short": "22f1718",
+    "date": "2026-06-24T16:40:26-04:00",
+    "message": "fix: move back-to-top links above each card; scroll to page top",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/22f17188f6578ba28ea4b1aa5270323097fff6b0"
+  },
+  {
     "sha": "05ae3d9079d5550b52dbea422372e74e6b7acbc3",
     "short": "05ae3d9",
     "date": "2026-06-24T16:37:01-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T13:58:24-04:00",
     "message": "fix: call refreshTrends after auth — chart was rendering before Firestore was accessible",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d88e304e8f696299b4dd3c209c768fdb9a742d15"
-  },
-  {
-    "sha": "d641ad1a47113b8986bf19611cfa00c78aec4e26",
-    "short": "d641ad1",
-    "date": "2026-06-24T13:34:00-04:00",
-    "message": "Trends tab: date filter, stat cards, moving avg trendline, Pain/Mood overlay, empty state, theme colors",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d641ad1a47113b8986bf19611cfa00c78aec4e26"
   }
 ]
