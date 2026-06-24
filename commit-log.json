@@ -1,5 +1,12 @@
 [
   {
+    "sha": "a83d34fdda030afbe49681e3fd0b1f2a0ea5a776",
+    "short": "a83d34f",
+    "date": "2026-06-24T14:50:41-04:00",
+    "message": "fix: refresh medListView and suppListView after auth so Firestore reads succeed",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/a83d34fdda030afbe49681e3fd0b1f2a0ea5a776"
+  },
+  {
     "sha": "95319954df5b4e118f1ada91091953826d74701c",
     "short": "9531995",
     "date": "2026-06-24T14:44:49-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-22T15:15:09-04:00",
     "message": "style: sub-tab pills — warm neutral colors, no violet",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/f5c463ade8dc91f3ccf01eb472ceac9b5c34b62c"
-  },
-  {
-    "sha": "03c0ac0f943ecacc87f1451bd56961b6a9d533f4",
-    "short": "03c0ac0",
-    "date": "2026-06-22T15:08:27-04:00",
-    "message": "fix: pass user object to applySettingsOnAuth so Account section displays user info",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/03c0ac0f943ecacc87f1451bd56961b6a9d533f4"
   }
 ]
