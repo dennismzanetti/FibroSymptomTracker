@@ -1,5 +1,19 @@
 [
   {
+    "sha": "0db3d39a0df89f77b17fa0357f2f2a35a4d712e9",
+    "short": "0db3d39",
+    "date": "2026-06-24T13:11:35-04:00",
+    "message": "Fix trends filtering: remove duplicate local refreshTrends() from app.js, delegate to window.refreshTrends",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/0db3d39a0df89f77b17fa0357f2f2a35a4d712e9"
+  },
+  {
+    "sha": "4ec4d6e4d54e46e119b221da77ba91bb180090aa",
+    "short": "4ec4d6e",
+    "date": "2026-06-24T17:01:14Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/4ec4d6e4d54e46e119b221da77ba91bb180090aa"
+  },
+  {
     "sha": "14c72fc856f579ff3e423036b4f218010dc443cf",
     "short": "14c72fc",
     "date": "2026-06-24T13:01:06-04:00",
@@ -152,19 +166,5 @@
     "date": "2026-06-22T15:21:51-04:00",
     "message": "style: extract sub-tab pill styles to base.css as shared component",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/3454b2ce1668de27f0f6efa31bad19e006519cb2"
-  },
-  {
-    "sha": "e81e1601926fedcf6f5218ebc8a6f26b17793e29",
-    "short": "e81e160",
-    "date": "2026-06-22T19:20:24Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e81e1601926fedcf6f5218ebc8a6f26b17793e29"
-  },
-  {
-    "sha": "bf7f55fb8a63145206600917def4071666327482",
-    "short": "bf7f55f",
-    "date": "2026-06-22T15:20:15-04:00",
-    "message": "refactor: remove release_notes.md (merged into CHANGELOG.md)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/bf7f55fb8a63145206600917def4071666327482"
   }
 ]
