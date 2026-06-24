@@ -42,8 +42,11 @@ document.addEventListener('partialsLoaded', () => {
         setupCareTeamTab();
         if (typeof setupConditionsTab === 'function') setupConditionsTab();
         runPostLoadSetup();
-        // refreshTrends must run after auth so Firestore security rules are satisfied
-        if (typeof window.refreshTrends === 'function') window.refreshTrends();
+        // NOTE: refreshTrends is NOT called here on auth.
+        // The Trends tab is hidden (display:none via CSS) at this point, so
+        // Chart.js would render into a 0x0 canvas and bake zero dimensions
+        // into canvas.style. The tab-click handler calls refreshTrends() fresh
+        // on a visible canvas — that is the correct and only render path.
         if (typeof window.applySettingsOnAuth === 'function') window.applySettingsOnAuth(user);
         // Refresh medications views after auth so Firestore reads succeed
         if (typeof refreshMedView === 'function') {
@@ -129,8 +132,8 @@ document.addEventListener('partialsLoaded', () => {
   }
 
   refreshHistory();
-  // NOTE: refreshTrends is intentionally NOT called here — it is called inside
-  // auth.onAuthStateChanged after sign-in so Firestore security rules are satisfied.
+  // NOTE: refreshTrends is intentionally NOT called here — the Trends tab is
+  // hidden at page load. Chart.js must only render into a visible canvas.
 
   _windowLoaded = true;
   runPostLoadSetup();
@@ -155,7 +158,7 @@ document.addEventListener('partialsLoaded', () => {
         }
       }
       if (msgEl) msgEl.textContent = message;
-      FibroDiag.debug('App', `Build info: ${sha} — ${message}`);
+      FibroDiag.debug('App', `Build info: ${sha} \u2014 ${message}`);
     }
 
     function applyFallback() {
@@ -172,30 +175,23 @@ document.addEventListener('partialsLoaded', () => {
       }
     }
 
-    function isBotCommit(c) {
-      const msg = (c.commit?.message || '').toLowerCase();
-      return msg.includes('[skip ci]') || msg.startsWith('chore: update commit-log');
-    }
-
-    fetch('https://api.github.com/repos/dennismzanetti/FibroSymptomTracker/commits?sha=main&per_page=10', {
+    fetch('https://api.github.com/repos/dennismzanetti/FibroSymptomTracker/commits/main', {
       headers: { 'Accept': 'application/vnd.github.v3+json' }
     })
       .then(r => {
         if (!r.ok) throw new Error(`GitHub API ${r.status}`);
         return r.json();
       })
-      .then(commits => {
-        const real = commits.find(c => !isBotCommit(c));
-        if (!real) throw new Error('No non-bot commits found');
-        const sha     = real.sha.slice(0, 7);
-        const shaFull = real.sha;
-        const message = (real.commit.message || '').split('\n')[0];
+      .then(data => {
+        const sha     = data.sha.slice(0, 7);
+        const shaFull = data.sha;
+        const message = (data.commit.message || '').split('\n')[0];
         const url     = `https://github.com/dennismzanetti/FibroSymptomTracker/commit/${shaFull}`;
         applyBuildInfo(sha, message, url);
         FibroDiag.debug('App', 'Build info: loaded live from GitHub API');
       })
       .catch(err => {
-        FibroDiag.warn('App', `GitHub API failed (${err.message}) — falling back to BUILD_INFO`);
+        FibroDiag.warn('App', `GitHub API failed (${err.message}) \u2014 falling back to BUILD_INFO`);
         applyFallback();
       });
   })();
@@ -275,192 +271,511 @@ function updateDateDisplay() {
     if (entryDayLabel) entryDayLabel.textContent = '';
     return;
   }
-  const [y, m, d] = val.split('-').map(Number);
-  const dt = new Date(y, m - 1, d);
-  const dow = dt.toLocaleDateString(undefined, { weekday: 'long' });
-  const md = dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-  if (dowEl) dowEl.textContent = dow;
-  if (dateEl) dateEl.textContent = md;
-  if (entryDayLabel) entryDayLabel.textContent = `${dow}, ${md}`;
+  const [year, month, day] = val.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  if (isNaN(date.getTime())) return;
+  const fullDow = date.toLocaleDateString(undefined, { weekday: 'long' });
+  if (dowEl) dowEl.textContent = fullDow;
+  if (dateEl) dateEl.textContent = date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  if (entryDayLabel) entryDayLabel.textContent = fullDow;
 }
 
-function loadTodayDate() {
-  currentDateStr = todayStr();
-  syncDateInput();
+function updateDayOfWeek() { updateDateDisplay(); }
+
+function getJournalDayOfWeek(dateStr) {
+  if (!dateStr) return '';
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  if (isNaN(date.getTime())) return '';
+  return date.toLocaleDateString(undefined, { weekday: 'long' });
 }
 
-function setupDateNavigation() {
-  document.getElementById('prevDayBtn')?.addEventListener('click', () => {
-    currentDateStr = nDaysAgo((new Date() - new Date(currentDateStr)) / 86400000 + 1);
-    syncDateInput();
-    loadDayFromCloud(currentDateStr);
-  });
-  document.getElementById('nextDayBtn')?.addEventListener('click', () => {
-    const cur = new Date(currentDateStr);
-    cur.setDate(cur.getDate() + 1);
-    currentDateStr = `${cur.getFullYear()}-${String(cur.getMonth()+1).padStart(2,'0')}-${String(cur.getDate()).padStart(2,'0')}`;
-    syncDateInput();
-    loadDayFromCloud(currentDateStr);
-  });
+function getJournalDateLine(dateStr) {
+  if (!dateStr) return 'No date recorded';
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  if (isNaN(date.getTime())) return dateStr;
+  return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
 function setupDatePicker() {
-  const dateInput = document.getElementById('dateInput');
-  dateInput?.addEventListener('change', () => {
-    currentDateStr = dateInput.value;
-    syncDateInput();
-    loadDayFromCloud(currentDateStr);
+  const btn = document.getElementById('datePickerBtn');
+  const input = document.getElementById('dateInput');
+  if (!btn || !input) return;
+  btn.addEventListener('click', () => {
+    try { input.showPicker(); } catch (e) { input.focus(); input.click(); }
   });
 }
 
 function setupTabs() {
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      const pane = document.getElementById(btn.dataset.tab);
-      if (pane) pane.classList.add('active');
-    });
+  const buttons = document.querySelectorAll('.tab-button');
+  const tabs = document.querySelectorAll('.tab');
+  const tabSelect = document.getElementById('tabSelect');
+
+  function activate(target) {
+    FibroDiag.debug('App', `Tab activated: ${target}`);
+    buttons.forEach(b => b.classList.toggle('active', b.getAttribute('data-tab') === target));
+    tabs.forEach(t => t.classList.toggle('active', t.id === target));
+    if (tabSelect && tabSelect.value !== target) tabSelect.value = target;
+    if (target === 'history-tab') refreshHistory();
+    if (target === 'journal-tab') renderJournal();
+    if (target === 'trends-tab') window.refreshTrends();
+    if (target === 'mood-tab') refreshMoodTab();
+    if (target === 'careteam-tab') {
+      const defaultCTBtn = document.querySelector('.ct-sub-tab-btn[data-ct-view="ctProvidersView"]');
+      if (defaultCTBtn) defaultCTBtn.click();
+      else refreshProviderList();
+    }
+    if (target === 'conditions-tab') refreshConditionsList();
+    if (target === 'medications-tab') {
+      // Reset to Medications list view on every tab visit
+      if (typeof activeMedView !== 'undefined') activeMedView = 'medListView';
+      const medListBtn = document.querySelector('#medications-tab .ct-sub-tab-btn[data-med-view="medListView"]');
+      if (medListBtn) medListBtn.click();
+      else refreshMedView('medListView');
+    }
+    if (target === 'entry-tab') syncDateInput();
+  }
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => activate(btn.getAttribute('data-tab')));
   });
+
+  if (tabSelect) {
+    tabSelect.addEventListener('change', () => activate(tabSelect.value));
+  }
 }
 
 function setupExerciseToggle() {
-  const checkbox = document.getElementById('exerciseDid');
-  const details = document.getElementById('exerciseDetails');
-  if (!checkbox || !details) return;
-  checkbox.addEventListener('change', () => {
-    details.style.display = checkbox.checked ? 'block' : 'none';
+  const didExerciseInput = document.getElementById('didExerciseInput');
+  const exerciseDetails  = document.getElementById('exerciseDetails');
+  if (!didExerciseInput || !exerciseDetails) return;
+  function updateVisibility() {
+    exerciseDetails.style.display = didExerciseInput.value === 'yes' ? 'block' : 'none';
+  }
+  didExerciseInput.addEventListener('change', updateVisibility);
+  updateVisibility();
+}
+
+function loadTodayDate() {
+  currentDateStr = todayStr();
+  FibroDiag.debug('App', `loadTodayDate: set to ${currentDateStr}`);
+  syncDateInput();
+}
+
+function setupSaveDay() {
+  const floatBtn = document.getElementById('saveDayFloat');
+  const status   = document.getElementById('saveStatus');
+  const handleSaveClick = async () => {
+    const dayData = collectFormData();
+    if (!dayData.date) { if (status) status.textContent = 'Please select a date.'; return; }
+    if (status) status.textContent = '';
+    FibroDiag.info('App', `Saving day: ${dayData.date}`);
+    FibroDiag.time('save-day');
+    const days = loadAllDays();
+    const existingIndex = days.findIndex(d => d.date === dayData.date);
+    if (existingIndex >= 0) days[existingIndex] = dayData;
+    else days.push(dayData);
+    saveAllDays(days);
+    try {
+      await db.collection('days').doc(dayData.date).set(dayData, { merge: false });
+      FibroDiag.timeEnd('save-day');
+      FibroDiag.info('App', `Day saved to Firestore: ${dayData.date}`);
+      showToast('\u2713 Day saved');
+    } catch (err) {
+      FibroDiag.error('App', `Firestore save failed for ${dayData.date}`, err);
+      showToast('\u26A0 Cloud save failed \u2014 check connection', true);
+    }
+    refreshHistory();
+    renderJournal();
+    window.refreshTrends();
+  };
+  floatBtn?.addEventListener('click', handleSaveClick);
+}
+
+function setupNumberSteppers() {
+  document.querySelectorAll('.number-stepper').forEach((stepper) => {
+    const input = stepper.querySelector('input[type="number"]');
+    const buttons = stepper.querySelectorAll('.stepper-btn');
+    if (!input) return;
+    const min = input.min !== '' ? Number(input.min) : null;
+    const max = input.max !== '' ? Number(input.max) : null;
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const step = Number(button.dataset.step || 0);
+        let current = input.value === '' ? min ?? 0 : Number(input.value);
+        let next = current + step;
+        if (min !== null && next < min) next = min;
+        if (max !== null && next > max) next = max;
+        input.value = next;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    });
   });
 }
 
 function setupSleepCalculation() {
-  const start = document.getElementById('sleepStart');
-  const end = document.getElementById('sleepEnd');
-  const output = document.getElementById('sleepHours');
-  function recalc() {
-    if (!start?.value || !end?.value || !output) return;
-    const [sh, sm] = start.value.split(':').map(Number);
-    const [eh, em] = end.value.split(':').map(Number);
-    let mins = (eh * 60 + em) - (sh * 60 + sm);
-    if (mins < 0) mins += 24 * 60;
-    output.value = (mins / 60).toFixed(1);
-  }
-  start?.addEventListener('change', recalc);
-  end?.addEventListener('change', recalc);
+  const bedtimeInput  = document.getElementById('bedtimeInput');
+  const wakeTimeInput = document.getElementById('wakeTimeInput');
+  if (!bedtimeInput || !wakeTimeInput) return;
+  bedtimeInput.addEventListener('input', updateSleepDuration);
+  wakeTimeInput.addEventListener('input', updateSleepDuration);
+  bedtimeInput.addEventListener('change', updateSleepDuration);
+  wakeTimeInput.addEventListener('change', updateSleepDuration);
+  updateSleepDuration();
 }
 
-function setupNumberSteppers() {
-  document.querySelectorAll('.num-stepper').forEach(wrap => {
-    const input = wrap.querySelector('input');
-    const dec = wrap.querySelector('.step-dec');
-    const inc = wrap.querySelector('.step-inc');
-    if (!input || !dec || !inc) return;
-    const step = parseFloat(input.step || '1');
-    const min = input.min === '' ? -Infinity : parseFloat(input.min);
-    const max = input.max === '' ? Infinity : parseFloat(input.max);
-    dec.addEventListener('click', () => {
-      const cur = input.value === '' ? 0 : parseFloat(input.value);
-      input.value = Math.max(min, cur - step);
-      input.dispatchEvent(new Event('change', { bubbles: true }));
-    });
-    inc.addEventListener('click', () => {
-      const cur = input.value === '' ? 0 : parseFloat(input.value);
-      input.value = Math.min(max, cur + step);
-      input.dispatchEvent(new Event('change', { bubbles: true }));
-    });
+function updateSleepDuration() {
+  const bedtimeInput    = document.getElementById('bedtimeInput');
+  const wakeTimeInput   = document.getElementById('wakeTimeInput');
+  const hoursSleptInput = document.getElementById('hoursSleptInput');
+  const hoursSleptDisplay = document.getElementById('hoursSleptDisplay');
+  if (!bedtimeInput || !wakeTimeInput || !hoursSleptInput) return;
+  const bedtime  = bedtimeInput.value;
+  const wakeTime = wakeTimeInput.value;
+  if (!bedtime || !wakeTime) {
+    hoursSleptInput.value = '';
+    if (hoursSleptDisplay) hoursSleptDisplay.textContent = '\u2014';
+    return;
+  }
+  const [bedHour, bedMinute]   = bedtime.split(':').map(Number);
+  const [wakeHour, wakeMinute] = wakeTime.split(':').map(Number);
+  let bedtimeMinutes  = bedHour  * 60 + bedMinute;
+  let wakeTimeMinutes = wakeHour * 60 + wakeMinute;
+  if (wakeTimeMinutes <= bedtimeMinutes) wakeTimeMinutes += 24 * 60;
+  const totalHours = Math.round(((wakeTimeMinutes - bedtimeMinutes) / 60) * 10) / 10;
+  hoursSleptInput.value = totalHours;
+  if (hoursSleptDisplay) hoursSleptDisplay.textContent = `${totalHours.toFixed(1)} hours`;
+}
+
+function clearFormFieldsExceptDate() {
+  document.getElementById('dayTitleInput').value = '';
+  document.getElementById('overallNotesInput').value = '';
+  const clearBlock = (prefix) => {
+    document.getElementById(prefix + 'Score').value = '';
+    document.getElementById(prefix + 'Activity').value = '';
+    document.getElementById(prefix + 'Symptoms').value = '';
+  };
+  ['earlyMorning','lateMorning','earlyAfternoon','lateAfternoon','earlyEvening','lateEvening'].forEach(clearBlock);
+  document.getElementById('bedtimeInput').value = '';
+  document.getElementById('wakeTimeInput').value = '';
+  document.getElementById('hoursSleptInput').value = '';
+  document.getElementById('sleepQualityInput').value = '';
+  document.getElementById('awakeningsInput').value = '';
+  document.getElementById('sleepNotesInput').value = '';
+  updateSleepDuration();
+  document.getElementById('didExerciseInput').value = 'no';
+  document.getElementById('didExerciseInput').dispatchEvent(new Event('change'));
+  document.getElementById('exerciseTypeInput').value = '';
+  document.getElementById('exerciseMinutesInput').value = '';
+  document.getElementById('exerciseIntensityInput').value = '';
+  document.getElementById('exerciseTimingInput').value = '';
+  document.getElementById('exerciseNotesInput').value = '';
+  document.getElementById('moodScoreInput').value = '';
+  document.getElementById('moodNotesInput').value = '';
+  const painScoreEl   = document.getElementById('painScoreInput');   if (painScoreEl)   painScoreEl.value = '';
+  const painNotesEl   = document.getElementById('painNotesInput');   if (painNotesEl)   painNotesEl.value = '';
+  const fatScoreEl    = document.getElementById('fatigueScoreInput'); if (fatScoreEl)    fatScoreEl.value = '';
+  const fatNotesEl    = document.getElementById('fatigueNotesInput'); if (fatNotesEl)    fatNotesEl.value = '';
+  document.querySelectorAll('#tagsContainer input[type=checkbox]').forEach(cb => cb.checked = false);
+}
+
+function loadDayFromCloud(date) {
+  if (!date) return;
+  FibroDiag.debug('App', `loadDayFromCloud: fetching ${date}`);
+  FibroDiag.time(`cloud-load-${date}`);
+  db.collection('days').doc(date).get().then((doc) => {
+    FibroDiag.timeEnd(`cloud-load-${date}`);
+    if (doc.exists) {
+      FibroDiag.info('App', `Cloud load success: ${date}`);
+      fillFormFromData(Object.assign({ date: doc.id }, doc.data()));
+      showToast('\u2601 Updated from cloud');
+    } else {
+      FibroDiag.debug('App', `No cloud entry for ${date} \u2014 clearing form`);
+      clearFormFieldsExceptDate();
+      showToast('No entry for that date \u2014 form cleared');
+    }
+  }).catch((error) => {
+    FibroDiag.error('App', `Cloud load failed for ${date}`, error);
+    clearFormFieldsExceptDate();
+    showToast('\u26A0 Cloud load failed', true);
   });
 }
 
-function setupAtrForm() {}
-function setupHistoryControls() {}
-function setupSaveDay() {
-  document.getElementById('saveDayBtn')?.addEventListener('click', saveDayToCloud);
-}
-
-async function saveDayToCloud() {
-  if (!auth.currentUser) return showToast('Please sign in first', true);
-  const uid = auth.currentUser.uid;
-  const date = currentDateStr || todayStr();
-  const payload = collectFormData();
-  FibroDiag.debug('App', `Save: writing day ${date}`);
-  try {
-    await db.collection('users').doc(uid).collection('days').doc(date).set(payload, { merge: true });
-    showToast('Day saved');
-    refreshHistory();
-    if (typeof window.refreshTrends === 'function') window.refreshTrends();
-  } catch (err) {
-    FibroDiag.error('App', 'Save failed', err);
-    showToast('Save failed', true);
-  }
-}
-
 function collectFormData() {
-  const get = id => document.getElementById(id);
+  const date = currentDateStr || document.getElementById('dateInput').value;
+  const dayTitle = document.getElementById('dayTitleInput').value;
+  const overallNotes = document.getElementById('overallNotesInput').value;
+  const getBlock = (prefix) => ({
+    score:    numberOrNull(document.getElementById(prefix + 'Score').value),
+    activity: document.getElementById(prefix + 'Activity').value,
+    symptoms: document.getElementById(prefix + 'Symptoms').value
+  });
+  const functionality = {
+    earlyMorning:    getBlock('earlyMorning'),
+    lateMorning:     getBlock('lateMorning'),
+    earlyAfternoon:  getBlock('earlyAfternoon'),
+    lateAfternoon:   getBlock('lateAfternoon'),
+    earlyEvening:    getBlock('earlyEvening'),
+    lateEvening:     getBlock('lateEvening')
+  };
+  const sleep = {
+    bedtime:    document.getElementById('bedtimeInput').value,
+    wakeTime:   document.getElementById('wakeTimeInput').value,
+    hours:      numberOrNull(document.getElementById('hoursSleptInput').value),
+    quality:    numberOrNull(document.getElementById('sleepQualityInput').value),
+    awakenings: numberOrNull(document.getElementById('awakeningsInput').value),
+    notes:      document.getElementById('sleepNotesInput').value
+  };
+  const didExercise = document.getElementById('didExerciseInput').value === 'yes';
+  const exercise = didExercise ? {
+    type:      document.getElementById('exerciseTypeInput').value,
+    minutes:   numberOrNull(document.getElementById('exerciseMinutesInput').value),
+    intensity: document.getElementById('exerciseIntensityInput').value,
+    timing:    document.getElementById('exerciseTimingInput').value,
+    notes:     document.getElementById('exerciseNotesInput').value
+  } : null;
+  const tags = [];
+  document.querySelectorAll('#tagsContainer input[type=checkbox]').forEach(cb => { if (cb.checked) tags.push(cb.value); });
+  const scores = Object.values(functionality).map(b => b.score).filter(v => typeof v === 'number');
+  const avgFunctionality = scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
+  const moodScore = numberOrNull(document.getElementById('moodScoreInput').value);
+  const moodNotes = document.getElementById('moodNotesInput').value;
+  const painScoreEl  = document.getElementById('painScoreInput');
+  const painNotesEl  = document.getElementById('painNotesInput');
+  const fatScoreEl   = document.getElementById('fatigueScoreInput');
+  const fatNotesEl   = document.getElementById('fatigueNotesInput');
   return {
-    date: currentDateStr,
-    painLevel: numberOrNull(get('painLevel')?.value),
-    fatigueLevel: numberOrNull(get('fatigueLevel')?.value),
-    moodScore: numberOrNull(get('moodScore')?.value),
-    sleepHours: numberOrNull(get('sleepHours')?.value),
-    exerciseDid: !!get('exerciseDid')?.checked,
-    exerciseDetails: get('exerciseDetails')?.value || '',
-    notes: get('dailyNotes')?.value || '',
-    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    date, dayTitle, overallNotes, functionality, sleep,
+    didExercise, exercise, tags, avgFunctionality,
+    mood: { score: moodScore, notes: moodNotes },
+    painScore:    painScoreEl  ? numberOrNull(painScoreEl.value)  : null,
+    painNotes:    painNotesEl  ? painNotesEl.value  : '',
+    fatigueScore: fatScoreEl   ? numberOrNull(fatScoreEl.value)   : null,
+    fatigueNotes: fatNotesEl   ? fatNotesEl.value   : ''
   };
 }
 
-async function loadDayFromCloud(date) {
-  if (!auth.currentUser || !date) return;
-  const uid = auth.currentUser.uid;
-  FibroDiag.debug('App', `Load: reading day ${date}`);
-  try {
-    const snap = await db.collection('users').doc(uid).collection('days').doc(date).get();
-    fillForm(snap.exists ? snap.data() : {});
-  } catch (err) {
-    FibroDiag.error('App', 'Load failed', err);
-    showToast('Load failed', true);
+function scoreChipClass(score) {
+  if (score == null) return '';
+  if (score <= 3) return 'score-low';
+  if (score <= 6) return 'score-mid';
+  return 'score-high';
+}
+
+function setupHistoryControls() {
+  const fromEl = document.getElementById('historyFrom');
+  const toEl   = document.getElementById('historyTo');
+  if (fromEl && !fromEl.value) fromEl.value = nDaysAgo(13);
+  if (toEl   && !toEl.value)   toEl.value   = todayStr();
+  document.getElementById('loadHistoryBtn')?.addEventListener('click', refreshHistory);
+}
+
+function refreshHistory() {
+  const fromEl = document.getElementById('historyFrom');
+  const toEl   = document.getElementById('historyTo');
+  const from   = fromEl?.value || nDaysAgo(13);
+  const to     = toEl?.value   || todayStr();
+  FibroDiag.debug('App', `refreshHistory: ${from} \u2192 ${to}`);
+  if (typeof window.loadAndRenderHistory === 'function') {
+    window.loadAndRenderHistory(from, to, 'historyList');
+  } else {
+    const list = document.getElementById('historyList');
+    if (list) list.innerHTML = "<p class='history-empty'>History renderer not loaded.</p>";
   }
 }
 
-function fillForm(d) {
-  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val ?? ''; };
-  const setCheck = (id, val) => { const el = document.getElementById(id); if (el) el.checked = !!val; };
-  set('painLevel', d.painLevel);
-  set('fatigueLevel', d.fatigueLevel);
-  set('moodScore', d.moodScore);
-  set('sleepHours', d.sleepHours);
-  setCheck('exerciseDid', d.exerciseDid);
-  set('exerciseDetails', d.exerciseDetails);
-  set('dailyNotes', d.notes);
-  const details = document.getElementById('exerciseDetails');
-  if (details) details.style.display = d.exerciseDid ? 'block' : 'none';
+function fillFormFromData(d) {
+  if (d.date) currentDateStr = d.date;
+  syncDateInput();
+  document.getElementById('dayTitleInput').value    = d.dayTitle || '';
+  document.getElementById('overallNotesInput').value = d.overallNotes || '';
+  const setBlock = (prefix, obj = {}) => {
+    document.getElementById(prefix + 'Score').value    = obj.score ?? '';
+    document.getElementById(prefix + 'Activity').value = obj.activity || '';
+    document.getElementById(prefix + 'Symptoms').value = obj.symptoms || '';
+  };
+  setBlock('earlyMorning',   d.functionality?.earlyMorning);
+  setBlock('lateMorning',    d.functionality?.lateMorning);
+  setBlock('earlyAfternoon', d.functionality?.earlyAfternoon);
+  setBlock('lateAfternoon',  d.functionality?.lateAfternoon);
+  setBlock('earlyEvening',   d.functionality?.earlyEvening);
+  setBlock('lateEvening',    d.functionality?.lateEvening);
+  if (d.sleep) {
+    document.getElementById('bedtimeInput').value    = d.sleep.bedtime || '';
+    document.getElementById('wakeTimeInput').value   = d.sleep.wakeTime || '';
+    document.getElementById('hoursSleptInput').value = d.sleep.hours ?? '';
+    document.getElementById('sleepQualityInput').value = d.sleep.quality ?? '';
+    document.getElementById('awakeningsInput').value = d.sleep.awakenings ?? '';
+    document.getElementById('sleepNotesInput').value = d.sleep.notes || '';
+  }
+  if (d.didExercise && d.exercise) {
+    document.getElementById('didExerciseInput').value    = 'yes';
+    document.getElementById('exerciseTypeInput').value   = d.exercise.type || '';
+    document.getElementById('exerciseMinutesInput').value = d.exercise.minutes ?? '';
+    document.getElementById('exerciseIntensityInput').value = d.exercise.intensity || '';
+    document.getElementById('exerciseTimingInput').value = d.exercise.timing || '';
+    document.getElementById('exerciseNotesInput').value  = d.exercise.notes || '';
+  } else {
+    document.getElementById('didExerciseInput').value = 'no';
+  }
+  document.getElementById('didExerciseInput').dispatchEvent(new Event('change'));
+  document.getElementById('moodScoreInput').value = d.mood?.score ?? '';
+  document.getElementById('moodNotesInput').value = d.mood?.notes || '';
+  const painScoreEl  = document.getElementById('painScoreInput');   if (painScoreEl)  painScoreEl.value  = d.painScore    ?? '';
+  const painNotesEl  = document.getElementById('painNotesInput');   if (painNotesEl)  painNotesEl.value  = d.painNotes    || '';
+  const fatScoreEl   = document.getElementById('fatigueScoreInput'); if (fatScoreEl)   fatScoreEl.value   = d.fatigueScore ?? '';
+  const fatNotesEl   = document.getElementById('fatigueNotesInput'); if (fatNotesEl)   fatNotesEl.value   = d.fatigueNotes || '';
+  updateSleepDuration();
+  renderJournal();
+  const tagsSet = new Set(d.tags || []);
+  document.querySelectorAll('#tagsContainer input[type=checkbox]').forEach(cb => cb.checked = tagsSet.has(cb.value));
 }
 
-async function refreshHistory() {
-  const list = document.getElementById('historyList');
-  if (!list || !auth.currentUser) return;
-  list.innerHTML = '<p style="color:var(--color-text-muted);font-size:var(--text-sm);">Loading…</p>';
+function changeDateBy(days) {
+  if (!currentDateStr) currentDateStr = todayStr();
+  const [y, mo, dy] = currentDateStr.split('-').map(Number);
+  const current = new Date(y, mo - 1, dy);
+  if (isNaN(current.getTime())) return;
+  current.setDate(current.getDate() + days);
+  currentDateStr = `${current.getFullYear()}-${String(current.getMonth()+1).padStart(2,'0')}-${String(current.getDate()).padStart(2,'0')}`;
+  FibroDiag.debug('App', `changeDateBy(${days}): now ${currentDateStr}`);
+  syncDateInput();
+  loadDayFromCloud(currentDateStr);
+}
+
+function setupDateNavigation() {
+  document.getElementById('prevDayBtn')?.addEventListener('click', () => changeDateBy(-1));
+  document.getElementById('nextDayBtn')?.addEventListener('click', () => changeDateBy(1));
+}
+
+function switchToTab(tabId) {
+  document.querySelectorAll('.tab-button').forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId));
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.toggle('active', tab.id === tabId));
+  const tabSelect = document.getElementById('tabSelect');
+  if (tabSelect && tabSelect.value !== tabId) tabSelect.value = tabId;
+  if (tabId === 'entry-tab') syncDateInput();
+}
+
+function formatScore(value) { return typeof value === 'number' ? value : 'not recorded'; }
+function formatText(value, fallback = 'Not recorded.') { return value && String(value).trim() ? value : fallback; }
+
+// ================================================================
+//  EXPORT / IMPORT DATA
+// ================================================================
+
+async function exportAllData() {
+  const statusEl = document.getElementById('exportImportStatus');
+  const btn = document.getElementById('exportDataBtn');
+  statusEl.style.display = 'block';
+  statusEl.className = 'settings-status settings-status-info';
+  statusEl.textContent = 'Exporting\u2026 please wait.';
+  btn.disabled = true;
+  FibroDiag.info('App', 'Export started');
+  FibroDiag.time('export-all');
   try {
-    const uid = auth.currentUser.uid;
-    const snap = await db.collection('users').doc(uid).collection('days').orderBy('date', 'desc').limit(30).get();
-    if (snap.empty) {
-      list.innerHTML = '<p style="color:var(--color-text-muted);font-size:var(--text-sm);">No entries yet.</p>';
-      return;
+    const collections = ['days','medications','supplements','medicationHistory','careTeam','appointments','automaticThoughtRecords','conditions'];
+    const backup = { exportedAt: new Date().toISOString(), appVersion: 'FibroSymptomTracker', collections: {} };
+    for (const col of collections) {
+      const snap = await db.collection(col).get();
+      backup.collections[col] = {};
+      snap.forEach(doc => { backup.collections[col][doc.id] = doc.data(); });
+      FibroDiag.debug('App', `Exported ${col}: ${snap.size} records`);
+      statusEl.textContent = `Exporting ${col}\u2026 (${snap.size} records)`;
     }
-    list.innerHTML = snap.docs.map(doc => {
-      const d = doc.data() || {};
-      return `<button class="history-row" data-date="${doc.id}">${doc.id} — Pain ${d.painLevel ?? '-'}, Fatigue ${d.fatigueLevel ?? '-'}, Mood ${d.moodScore ?? '-'}</button>`;
-    }).join('');
-    list.querySelectorAll('.history-row').forEach(btn => {
-      btn.addEventListener('click', () => {
-        currentDateStr = btn.dataset.date;
-        syncDateInput();
-        loadDayFromCloud(currentDateStr);
-      });
-    });
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `fibro-backup-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    let total = 0;
+    for (const col of collections) total += Object.keys(backup.collections[col]).length;
+    FibroDiag.timeEnd('export-all');
+    FibroDiag.info('App', `Export complete: ${total} total records`);
+    statusEl.className = 'settings-status settings-status-success';
+    statusEl.textContent = `\u2713 Export complete \u2014 ${total} total records downloaded.`;
   } catch (err) {
-    FibroDiag.error('App', 'History load failed', err);
-    list.innerHTML = '<p style="color:var(--color-error);font-size:var(--text-sm);">Failed to load history.</p>';
-  }
+    FibroDiag.error('App', 'Export failed', err);
+    statusEl.className = 'settings-status settings-status-error';
+    statusEl.textContent = 'Export failed: ' + err.message;
+  } finally { btn.disabled = false; }
+}
+
+let pendingImportData = null;
+
+function handleImportFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  FibroDiag.info('App', `Import file selected: ${file.name}`);
+  const statusEl    = document.getElementById('exportImportStatus');
+  const confirmBox  = document.getElementById('importConfirmBox');
+  const confirmMsg  = document.getElementById('importConfirmMsg');
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    try {
+      const data = JSON.parse(evt.target.result);
+      if (!data.collections) throw new Error('Invalid backup file format.');
+      let total = 0;
+      const cols = Object.keys(data.collections);
+      cols.forEach(c => total += Object.keys(data.collections[c]).length);
+      FibroDiag.debug('App', `Import file parsed: ${total} records across ${cols.length} collections`);
+      pendingImportData = data;
+      confirmMsg.textContent = `Import ${total} records across ${cols.length} collections from backup dated ${data.exportedAt ? data.exportedAt.slice(0,10) : 'unknown'}? This will overwrite existing matching records.`;
+      confirmBox.style.display = 'block';
+      statusEl.style.display = 'none';
+    } catch (err) {
+      FibroDiag.error('App', 'Import file parse error', err);
+      statusEl.style.display = 'block';
+      statusEl.className = 'settings-status settings-status-error';
+      statusEl.textContent = 'Could not read file: ' + err.message;
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+async function confirmImport() {
+  const statusEl   = document.getElementById('exportImportStatus');
+  const confirmBox = document.getElementById('importConfirmBox');
+  const confirmBtn = document.getElementById('importConfirmBtn');
+  if (!pendingImportData) return;
+  confirmBox.style.display = 'none';
+  statusEl.style.display = 'block';
+  statusEl.className = 'settings-status settings-status-info';
+  statusEl.textContent = 'Importing\u2026 please wait.';
+  confirmBtn.disabled = true;
+  FibroDiag.info('App', 'Import confirmed \u2014 writing to Firestore');
+  FibroDiag.time('import-all');
+  try {
+    const collections = pendingImportData.collections;
+    let total = 0;
+    for (const col of Object.keys(collections)) {
+      const docs = collections[col];
+      for (const [id, data] of Object.entries(docs)) {
+        await db.collection(col).doc(id).set(data, { merge: true });
+        total++;
+      }
+      FibroDiag.debug('App', `Imported collection: ${col}`);
+      statusEl.textContent = `Importing ${col}\u2026`;
+    }
+    FibroDiag.timeEnd('import-all');
+    FibroDiag.info('App', `Import complete: ${total} records`);
+    statusEl.className = 'settings-status settings-status-success';
+    statusEl.textContent = `\u2713 Import complete \u2014 ${total} records restored.`;
+    pendingImportData = null;
+  } catch (err) {
+    FibroDiag.error('App', 'Import failed', err);
+    statusEl.className = 'settings-status settings-status-error';
+    statusEl.textContent = 'Import failed: ' + err.message;
+  } finally { confirmBtn.disabled = false; }
+}
+
+function cancelImport() {
+  pendingImportData = null;
+  document.getElementById('importConfirmBox').style.display = 'none';
+  document.getElementById('importFileInput').value = '';
+  FibroDiag.debug('App', 'Import cancelled');
 }

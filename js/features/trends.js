@@ -70,15 +70,15 @@ function updateStatCards(allDocs) {
     return allDocs.filter(d => (d.date || '') >= fromStr && (d.date || '') < toStr);
   })();
   const prev = avg(prevDocs, 'avgFunctionality');
-  let trendLabel = '—';
+  let trendLabel = '\u2014';
   if (recent !== null && prev !== null) {
     const diff = recent - prev;
-    if (diff > 0.3)       trendLabel = '↑ Better';
-    else if (diff < -0.3) trendLabel = '↓ Worse';
-    else                  trendLabel = '→ Stable';
+    if (diff > 0.3)       trendLabel = '\u2191 Better';
+    else if (diff < -0.3) trendLabel = '\u2193 Worse';
+    else                  trendLabel = '\u2192 Stable';
   }
 
-  const fmt = v => v !== null ? v.toFixed(1) : '—';
+  const fmt = v => v !== null ? v.toFixed(1) : '\u2014';
   const el = id => document.getElementById(id);
   if (el('statAvg7'))       el('statAvg7').textContent       = fmt(avg7);
   if (el('statAvg30'))      el('statAvg30').textContent      = fmt(avg30);
@@ -90,13 +90,15 @@ window.refreshTrends = async function refreshTrends() {
   const canvas = document.getElementById('functionalityChart');
   if (!canvas) return;
 
-  // --- GUARD: if the trends tab is hidden (display:none), Chart.js will render
-  // into a 0x0 canvas and bake those zero dimensions into canvas.style.
-  // Defer the render and let the tab-activation call handle it fresh.
-  const trendsTab = document.getElementById('trends-tab');
-  if (trendsTab && trendsTab.style.display === 'none') {
+  // --- GUARD: Chart.js renders into whatever dimensions the canvas currently has.
+  // If the Trends tab is hidden via CSS (display:none on .tab without .active),
+  // the canvas has no layout and offsetParent will be null.
+  // Rendering into a hidden canvas bakes 0x0 into canvas.style and the chart
+  // never recovers even after the tab becomes visible.
+  // Solution: bail out now and let the tab-click call refreshTrends() fresh.
+  if (canvas.offsetParent === null) {
     window._trendsPendingRender = true;
-    FibroDiag.debug('Trends', 'Tab hidden — deferring chart render');
+    FibroDiag.debug('Trends', 'Canvas not visible (tab hidden) \u2014 deferring chart render');
     return;
   }
   window._trendsPendingRender = false;
@@ -106,7 +108,6 @@ window.refreshTrends = async function refreshTrends() {
 
   const days = window._trendsActiveDays || 0;
 
-  // FIX: use explicit boolean coercion — ?.checked defaults to false when element missing
   const overlayFunc   = document.getElementById('overlayFunctionality');
   const overlayPain   = document.getElementById('overlayPain');
   const overlayMood   = document.getElementById('overlayMood');
@@ -155,10 +156,10 @@ window.refreshTrends = async function refreshTrends() {
     FibroDiag.timeEnd('trends-fetch');
     FibroDiag.debug('Trends', `${snapshot.size} day docs fetched`);
 
-    // --- Destroy old chart instance and RESET canvas dimensions ---
-    // Chart.js writes explicit style="width:Xpx; height:Ypx" onto the canvas.
-    // If the chart was previously rendered while the tab was hidden (0x0),
-    // those stale zero dimensions persist even after destroy(). Clear them.
+    // --- Destroy old chart and fully reset canvas ---
+    // Chart.js writes explicit style="width:Xpx; height:Ypx" on the canvas element.
+    // Even after destroy(), those inline styles persist and constrain the new chart.
+    // Remove all of them so the canvas inherits its dimensions from CSS/.trends-chart-wrap.
     if (window.functionalityChart) {
       window.functionalityChart.destroy();
       window.functionalityChart = null;
@@ -172,38 +173,33 @@ window.refreshTrends = async function refreshTrends() {
     // --- Build labels and data series ---
     const labels   = allDocs.map(d => d.date);
     const funcData = allDocs.map(d => typeof d.avgFunctionality === 'number' ? d.avgFunctionality : null);
-
-    // FIX: painLevel → painScore (matches collectFormData in app.js)
     const painData = allDocs.map(d => typeof d.painScore === 'number' ? d.painScore : null);
-
-    // FIX: support both d.mood.score (new) and top-level d.moodScore (legacy)
     const moodData = allDocs.map(d => {
-      const score = d.mood?.score ?? d.moodScore;
+      const score = d.mood?.score ?? d.moodScore;  // support both new (mood.score) and legacy (moodScore)
       return typeof score === 'number' ? score : null;
     });
 
-    // Determine if we have any plottable data at all
     const hasAny = funcData.some(v => v !== null) ||
                    painData.some(v => v !== null) ||
                    moodData.some(v => v !== null);
 
-    // --- Empty state handling ---
+    // --- Empty state ---
     const existingMsg = canvas.parentElement.querySelector('.trends-empty');
     if (!hasAny) {
       if (!existingMsg) {
         const msg = document.createElement('div');
         msg.className = 'trends-empty empty-state';
-        msg.innerHTML = '<div class="empty-state-icon">📈</div><p>No data yet — start logging in the Today tab!</p>';
+        msg.innerHTML = '<div class="empty-state-icon">\ud83d\udcc8</div><p>No data yet \u2014 start logging in the Today tab!</p>';
         canvas.parentElement.insertBefore(msg, canvas);
       }
       canvas.style.display = 'none';
-      FibroDiag.debug('Trends', 'No data — showing empty state');
+      FibroDiag.debug('Trends', 'No data \u2014 showing empty state');
       return;
     }
     if (existingMsg) existingMsg.remove();
     canvas.style.display = '';
 
-    // --- CSS-variable colors ---
+    // --- Colors ---
     const colPrimary = cssVar('--color-primary', '#6c63ff');
     const colError   = cssVar('--color-error',   '#d6336c');
     const colSuccess = cssVar('--color-success',  '#2f9e44');
@@ -217,7 +213,7 @@ window.refreshTrends = async function refreshTrends() {
         label: 'Functionality',
         data: funcData,
         borderColor: colPrimary,
-        backgroundColor: colPrimary + '26',  // ~15% opacity
+        backgroundColor: colPrimary + '26',
         tension: 0.2,
         pointRadius: labels.length <= 14 ? 4 : 2,
         fill: true,
