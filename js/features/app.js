@@ -45,6 +45,11 @@ document.addEventListener('partialsLoaded', () => {
         // refreshTrends must run after auth so Firestore security rules are satisfied
         if (typeof window.refreshTrends === 'function') window.refreshTrends();
         if (typeof window.applySettingsOnAuth === 'function') window.applySettingsOnAuth(user);
+        // Refresh medications views after auth so Firestore reads succeed
+        if (typeof refreshMedView === 'function') {
+          refreshMedView('medListView');
+          refreshMedView('suppListView');
+        }
       }
     } else {
       FibroDiag.info('App', 'Auth: signed out');
