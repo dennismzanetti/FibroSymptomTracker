@@ -1,5 +1,19 @@
 [
   {
+    "sha": "76497e440494fab0866e8ffd6bda3096c2ec37ce",
+    "short": "76497e4",
+    "date": "2026-06-24T16:45:45-04:00",
+    "message": "Redesign journal tab: unified chronological notes feed, remove heatmap",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/76497e440494fab0866e8ffd6bda3096c2ec37ce"
+  },
+  {
+    "sha": "7b3f96de31f182b0ff4c0863b19a73dc64ace914",
+    "short": "7b3f96d",
+    "date": "2026-06-24T16:45:39-04:00",
+    "message": "feat: trend pills now compare 30-day avg vs prior 30-day avg",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7b3f96de31f182b0ff4c0863b19a73dc64ace914"
+  },
+  {
     "sha": "22f17188f6578ba28ea4b1aa5270323097fff6b0",
     "short": "22f1718",
     "date": "2026-06-24T16:40:26-04:00",
@@ -159,19 +173,5 @@
     "date": "2026-06-24T14:29:39-04:00",
     "message": "Fix medications sub-tab default selection and persist user's last selection",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ff9c161c1716f4474a04253b484df29d2342477e"
-  },
-  {
-    "sha": "977ea22b5d3fdc9457933a2d2be5ee7ebfaea5d8",
-    "short": "977ea22",
-    "date": "2026-06-24T14:27:46-04:00",
-    "message": "style: improve sub-tab pill button styles",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/977ea22b5d3fdc9457933a2d2be5ee7ebfaea5d8"
-  },
-  {
-    "sha": "d88e304e8f696299b4dd3c209c768fdb9a742d15",
-    "short": "d88e304",
-    "date": "2026-06-24T13:58:24-04:00",
-    "message": "fix: call refreshTrends after auth — chart was rendering before Firestore was accessible",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d88e304e8f696299b4dd3c209c768fdb9a742d15"
   }
 ]
