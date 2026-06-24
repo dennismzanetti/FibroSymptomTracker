@@ -1,5 +1,12 @@
 [
   {
+    "sha": "9f02c8d8f142c3713a667d33c5a8fc34257a68a5",
+    "short": "9f02c8d",
+    "date": "2026-06-24T14:40:40-04:00",
+    "message": "style: pill buttons — white text when active, remove borders",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9f02c8d8f142c3713a667d33c5a8fc34257a68a5"
+  },
+  {
     "sha": "180642ab8a5ed782508fb28cdca15e2a56e2eacf",
     "short": "180642a",
     "date": "2026-06-24T14:32:24-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-22T15:07:45-04:00",
     "message": "style: refine sub-tab pill buttons with segmented-control look",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/96f35436268b562071aceef9956ea87640d4f94c"
-  },
-  {
-    "sha": "fcd757077bd0b8a2e379f43600c00eb5f4988c02",
-    "short": "fcd7570",
-    "date": "2026-06-22T14:47:14-04:00",
-    "message": "fix: load firebase-init.js after Firebase CDN scripts; move loader.js after Firebase init",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/fcd757077bd0b8a2e379f43600c00eb5f4988c02"
   }
 ]
