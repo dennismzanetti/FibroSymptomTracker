@@ -236,6 +236,7 @@ window.refreshTrends = async function refreshTrends() {
       data: { labels, datasets },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         interaction: { mode: 'index', intersect: false },
         plugins: {
           legend: {
