@@ -1,5 +1,19 @@
 [
   {
+    "sha": "977ea22b5d3fdc9457933a2d2be5ee7ebfaea5d8",
+    "short": "977ea22",
+    "date": "2026-06-24T14:27:46-04:00",
+    "message": "style: improve sub-tab pill button styles",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/977ea22b5d3fdc9457933a2d2be5ee7ebfaea5d8"
+  },
+  {
+    "sha": "45ca3d587706444d20f42a8c65fb6759c6dc036a",
+    "short": "45ca3d5",
+    "date": "2026-06-24T17:58:30Z",
+    "message": "chore: update commit-log.json + build-info.js [skip ci]",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/45ca3d587706444d20f42a8c65fb6759c6dc036a"
+  },
+  {
     "sha": "d88e304e8f696299b4dd3c209c768fdb9a742d15",
     "short": "d88e304",
     "date": "2026-06-24T13:58:24-04:00",
@@ -152,19 +166,5 @@
     "date": "2026-06-23T15:04:13-04:00",
     "message": "removing sub-tab styles from styles.css",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/5ad9504f41eee67651891484b55a0c0a96833539"
-  },
-  {
-    "sha": "b4fbb32282ed2cb1d9fa1f2a2504e7c60cb8048c",
-    "short": "b4fbb32",
-    "date": "2026-06-23T18:48:40Z",
-    "message": "chore: update commit-log.json + build-info.js [skip ci]",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b4fbb32282ed2cb1d9fa1f2a2504e7c60cb8048c"
-  },
-  {
-    "sha": "2d9651fc8d169a401f585952e426c3b8e6698711",
-    "short": "2d9651f",
-    "date": "2026-06-23T14:48:28-04:00",
-    "message": "feat: about section — render top-10 non-bot commits table, highlight latest build",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2d9651fc8d169a401f585952e426c3b8e6698711"
   }
 ]
