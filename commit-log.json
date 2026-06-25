@@ -1,5 +1,12 @@
 [
   {
+    "sha": "00670a3ab0873a24c142821d3c3906b2a80f4ff1",
+    "short": "00670a3",
+    "date": "2026-06-25T18:20:48-04:00",
+    "message": "Journal: render quick tags with daily entry pill styling (icons + colors)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/00670a3ab0873a24c142821d3c3906b2a80f4ff1"
+  },
+  {
     "sha": "26df7e1a365564c812ea7c081bfaf2ad5f382734",
     "short": "26df7e1",
     "date": "2026-06-25T18:13:58-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T15:40:45-04:00",
     "message": "fix: rename canvas id to trends-chart-canvas to prevent window.functionalityChart collision",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7f5693ace5162aac0b2fd0f1b1ac6a1484195a12"
-  },
-  {
-    "sha": "df466c1cfc3a3db5eb7037896e9f3181b4c31a45",
-    "short": "df466c1",
-    "date": "2026-06-24T15:37:24-04:00",
-    "message": "fix: move Chart.js script before loader.js to prevent Chart undefined race condition",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/df466c1cfc3a3db5eb7037896e9f3181b4c31a45"
   }
 ]
