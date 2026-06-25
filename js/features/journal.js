@@ -36,6 +36,21 @@ function scorePillHtml(score) {
 }
 
 // ================================================================
+// QUICK TAGS STRIP
+// Renders a row of tag pills below the stats banner.
+// Returns empty string if no tags recorded.
+// ================================================================
+
+function tagsStripHtml(d) {
+  const tags = Array.isArray(d.tags) ? d.tags.filter(t => t && String(t).trim()) : [];
+  if (!tags.length) return '';
+  const pills = tags.map(tag =>
+    `<span class="jv3-tag-pill">${tag}</span>`
+  ).join('');
+  return `<div class="jv3-tags-strip">${pills}</div>`;
+}
+
+// ================================================================
 // COLLECT ALL NOTES FROM A DAY DOCUMENT
 // Returns array of { source, label, text, score } objects
 // ================================================================
@@ -183,6 +198,7 @@ function buildJournalCard(dateStr, d, activeFilter) {
         <span class="jv3-date">${dlbl}</span>
       </div>
       ${statsBannerHtml(d)}
+      ${tagsStripHtml(d)}
       <div class="jv3-notes-list">${notesHtml}</div>
     </article>`;
 }
