@@ -50,9 +50,6 @@ function scorePillHtml(score) {
 
 // ================================================================
 // QUICK TAGS STRIP
-// Renders quick-tag pills matching the daily entry page styling
-// (icon + label + per-tag color class, read-only display).
-// Returns empty string if no tags recorded.
 // ================================================================
 
 function tagsStripHtml(d) {
@@ -67,7 +64,6 @@ function tagsStripHtml(d) {
            + `<span class="tag-pill-label">${meta.label}</span>`
            + `</span>`;
     }
-    // Fallback for any unknown tag values
     return `<span class="tag-pill jv3-tag-readonly">`
          + `<span class="tag-pill-label">${tag}</span>`
          + `</span>`;
@@ -78,18 +74,15 @@ function tagsStripHtml(d) {
 
 // ================================================================
 // COLLECT ALL NOTES FROM A DAY DOCUMENT
-// Returns array of { source, label, text, score } objects
 // ================================================================
 
 function collectNotes(d) {
   const notes = [];
 
-  // Day title as a note (pinned first)
   if (d.dayTitle && d.dayTitle.trim()) {
     notes.unshift({ source: "general", label: "Day Title", text: `"${d.dayTitle.trim()}"`, score: null });
   }
 
-  // Functionality time-block notes
   TIME_BLOCKS.forEach(({ key, label }) => {
     const b = d.functionality?.[key] || {};
     const blockScore = typeof b.score === "number" ? b.score : null;
@@ -101,25 +94,21 @@ function collectNotes(d) {
     }
   });
 
-  // Sleep notes
   if (d.sleep?.notes && d.sleep.notes.trim()) {
     const sleepScore = typeof d.sleep?.quality === "number" ? d.sleep.quality : null;
     notes.push({ source: "sleep", label: "Sleep", text: d.sleep.notes.trim(), score: sleepScore });
   }
 
-  // Exercise notes
   if (d.exercise?.notes && d.exercise.notes.trim()) {
     const exScore = typeof d.exercise?.score === "number" ? d.exercise.score : null;
     notes.push({ source: "exercise", label: "Exercise", text: d.exercise.notes.trim(), score: exScore });
   }
 
-  // Mood notes
   if (d.mood?.notes && d.mood.notes.trim()) {
     const moodScore = typeof d.mood?.score === "number" ? d.mood.score : null;
     notes.push({ source: "mood", label: "Mood", text: d.mood.notes.trim(), score: moodScore });
   }
 
-  // Overall / general notes
   if (d.overallNotes && d.overallNotes.trim()) {
     notes.push({ source: "general", label: "General", text: d.overallNotes.trim(), score: null });
   }
@@ -140,10 +129,130 @@ const SOURCE_LABEL_CLASS = {
 };
 
 // ================================================================
+// MINI CHART HELPERS
+// ================================================================
+
+/**
+ * Returns the 7 dates ending on (and including) dateStr, oldest first.
+ */
+function sevenDayWindow(dateStr) {
+  const dates = [];
+  const base = new Date(dateStr + "T12:00:00");
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(base);
+    d.setDate(d.getDate() - i);
+    dates.push(d.toISOString().slice(0, 10));
+  }
+  return dates;
+}
+
+/**
+ * Returns the short weekday label (Mo, Tu, …) for a YYYY-MM-DD string.
+ */
+function shortDay(dateStr) {
+  const d = new Date(dateStr + "T12:00:00");
+  return ['Su','Mo','Tu','We','Th','Fr','Sa'][d.getDay()];
+}
+
+/**
+ * Generates the canvas placeholder HTML for the mini chart cell.
+ */
+function miniChartCellHtml(dateStr) {
+  return `
+    <div class="jv3-stat-cell jv3-stat-cell--chart">
+      <span class="jv3-stat-label">7-Day Trend</span>
+      <div class="jv3-mini-chart-wrap">
+        <canvas id="jv3-mini-chart-${dateStr}" class="jv3-mini-chart-canvas" aria-label="7-day functionality trend"></canvas>
+      </div>
+    </div>`;
+}
+
+/**
+ * After the DOM has been updated, draw Chart.js sparklines for every
+ * mini chart canvas, using the allDocsMap for lookups.
+ */
+function renderMiniCharts(allDocsMap) {
+  document.querySelectorAll('.jv3-mini-chart-canvas').forEach(canvas => {
+    const dateStr = canvas.id.replace('jv3-mini-chart-', '');
+    const dates   = sevenDayWindow(dateStr);
+
+    const labels  = dates.map(shortDay);
+    const data    = dates.map(d => {
+      const doc = allDocsMap[d];
+      if (!doc) return null;
+      const scores = TIME_BLOCKS.map(({ key }) => {
+        const s = doc.functionality?.[key]?.score;
+        return typeof s === 'number' ? s : null;
+      }).filter(s => s !== null);
+      if (!scores.length) return null;
+      return parseFloat((scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1));
+    });
+
+    // Skip if no data at all
+    if (data.every(v => v === null)) return;
+
+    // Destroy any existing instance on this canvas
+    const existing = Chart.getChart(canvas);
+    if (existing) existing.destroy();
+
+    const colPrimary = getComputedStyle(document.documentElement)
+      .getPropertyValue('--color-primary').trim() || '#01696f';
+
+    new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          data,
+          borderColor: colPrimary,
+          backgroundColor: colPrimary + '26',
+          borderWidth: 1.5,
+          tension: 0.3,
+          pointRadius: 2.5,
+          pointHoverRadius: 4,
+          fill: true,
+          spanGaps: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: ctx => ctx[0].label,
+              label: ctx => ctx.parsed.y !== null ? `Func: ${ctx.parsed.y.toFixed(1)}` : 'No data'
+            }
+          }
+        },
+        scales: {
+          y: {
+            display: false,
+            suggestedMin: 0,
+            suggestedMax: 10
+          },
+          x: {
+            ticks: {
+              font: { size: 9 },
+              color: '#999',
+              maxRotation: 0
+            },
+            grid: { display: false },
+            border: { display: false }
+          }
+        }
+      }
+    });
+  });
+}
+
+// ================================================================
 // STATS BANNER HTML
 // ================================================================
 
-function statsBannerHtml(d) {
+function statsBannerHtml(d, dateStr) {
   const scores = TIME_BLOCKS.map(({ key }) => {
     const s = d.functionality?.[key]?.score;
     return typeof s === "number" ? s : null;
@@ -160,6 +269,8 @@ function statsBannerHtml(d) {
       <span class="jv3-stat-label">Avg Function</span>
       <span class="jv3-stat-value">${avg !== null ? scorePillHtml(avg) : '<span class="jv3-dash">&mdash;</span>'}</span>
     </div>`;
+
+  const chartCell = miniChartCellHtml(dateStr);
 
   const sleepHrsCell = `
     <div class="jv3-stat-cell">
@@ -183,7 +294,7 @@ function statsBannerHtml(d) {
       <span class="jv3-stat-value ${qualCls}">${qualLabel}</span>
     </div>`;
 
-  return `<div class="jv3-stats-banner">${avgCell}${sleepHrsCell}${sleepQualCell}</div>`;
+  return `<div class="jv3-stats-banner">${avgCell}${chartCell}${sleepHrsCell}${sleepQualCell}</div>`;
 }
 
 // ================================================================
@@ -223,7 +334,7 @@ function buildJournalCard(dateStr, d, activeFilter) {
         <span class="jv3-dow">${dow}</span>
         <span class="jv3-date">${dlbl}</span>
       </div>
-      ${statsBannerHtml(d)}
+      ${statsBannerHtml(d, dateStr)}
       ${tagsStripHtml(d)}
       <div class="jv3-notes-list">${notesHtml}</div>
     </article>`;
@@ -319,6 +430,8 @@ async function renderJournal() {
     const sel  = document.getElementById("jv3RangeSelect");
     const days = sel ? parseInt(sel.value, 10) : 30;
 
+    // For the mini charts we need up to 6 extra days before the range window.
+    // Fetch those extra docs separately so the displayed cards are not affected.
     let query = db.collection("days").orderBy("__name__", "desc");
     if (days > 0) {
       const cutoff = new Date();
@@ -334,10 +447,34 @@ async function renderJournal() {
       return;
     }
 
+    // Build a map of ALL fetched docs for mini-chart lookups.
+    // Also fetch the 6 days before the earliest date so the oldest cards
+    // can still show a 7-day window.
+    const allDocsMap = {};
+    snapshot.docs.forEach(doc => { allDocsMap[doc.id] = doc.data(); });
+
+    // Fetch the 6 preceding days for sparkline context (best-effort).
+    try {
+      const sortedIds = snapshot.docs.map(d => d.id).sort();
+      const earliest  = sortedIds[0];
+      const lookback  = new Date(earliest + "T12:00:00");
+      lookback.setDate(lookback.getDate() - 6);
+      const lookbackStr = lookback.toISOString().slice(0, 10);
+
+      const priorSnap = await db.collection("days")
+        .where(firebase.firestore.FieldPath.documentId(), ">=", lookbackStr)
+        .where(firebase.firestore.FieldPath.documentId(), "<", earliest)
+        .get();
+      priorSnap.forEach(doc => { allDocsMap[doc.id] = doc.data(); });
+    } catch (_) { /* non-critical — sparklines will just show null for missing prior days */ }
+
     renderRangeLabel(snapshot.docs);
     container.innerHTML = snapshot.docs
       .map(doc => buildJournalCard(doc.id, doc.data(), _activeFilter))
       .join("");
+
+    // Draw sparkline charts after DOM is updated.
+    renderMiniCharts(allDocsMap);
 
   } catch (err) {
     console.error("renderJournal error:", err);

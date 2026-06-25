@@ -645,7 +645,6 @@
    JV3 QUICK TAGS STRIP — read-only daily-entry pill styling
    ================================================================ */
 
-/* Strip container that wraps the pills */
 .jv3-tags-strip {
   display: flex;
   flex-wrap: wrap;
@@ -653,18 +652,11 @@
   padding: var(--space-2) 0 var(--space-1) 0;
 }
 
-/*
-  Read-only override for .tag-pill used in the journal.
-  Removes interactivity (cursor, hover state) and forces
-  the checked-state colours on so the pill always shows
-  its colour even without a checkbox.
-*/
 .jv3-tag-readonly {
   cursor: default !important;
   pointer-events: none;
 }
 
-/* Force the per-tag checked appearance permanently */
 .jv3-tag-readonly.tag-flare {
   background: #fff0f0;
   border-color: #e57373;
@@ -699,4 +691,47 @@
   background: #e3f2fd;
   border-color: #90caf9;
   color: #1565c0;
+}
+
+/* ================================================================
+   JV3 MINI CHART — 7-day functionality sparkline in stats banner
+   ================================================================ */
+
+/* The chart cell sits between Avg Function and Sleep in the banner */
+.jv3-stat-cell--chart {
+  flex: 2 1 180px;   /* wider than the other stat cells */
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border-left: 1px solid var(--color-divider);
+  border-right: 1px solid var(--color-divider);
+}
+
+.jv3-mini-chart-wrap {
+  position: relative;
+  width: 100%;
+  height: 54px;   /* compact but readable */
+}
+
+.jv3-mini-chart-canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* On narrow screens collapse the chart cell below the other stats */
+@media (max-width: 560px) {
+  .jv3-stat-cell--chart {
+    flex-basis: 100%;
+    border-left: none;
+    border-right: none;
+    border-top: 1px solid var(--color-divider);
+    padding: var(--space-2) 0 0 0;
+  }
+
+  .jv3-mini-chart-wrap {
+    height: 48px;
+  }
 }
