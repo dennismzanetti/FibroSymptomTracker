@@ -1,5 +1,12 @@
 [
   {
+    "sha": "50067848688b3355d92e30144d4bd35d6cad706a",
+    "short": "5006784",
+    "date": "2026-06-25T19:48:40-04:00",
+    "message": "feat(journal): unify stats banner — 3 equal chart cells (avg func, func trend, sleep trend)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/50067848688b3355d92e30144d4bd35d6cad706a"
+  },
+  {
     "sha": "c4095ea1227fc92a29959c9e9a03481201715265",
     "short": "c4095ea",
     "date": "2026-06-25T19:44:09-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T15:49:50-04:00",
     "message": "fix: restore anchor divs above cards with padding-top for visual spacing",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2554ac7b0ab4101f6f54cdae79f132cfc8c59bad"
-  },
-  {
-    "sha": "6c0d29efe615b0fcf53e60bfe1d3161ace80de71",
-    "short": "6c0d29e",
-    "date": "2026-06-24T15:49:16-04:00",
-    "message": "Remove Pain Level overlay toggle; add Total Sleep and Sleep Quality toggles",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/6c0d29efe615b0fcf53e60bfe1d3161ace80de71"
   }
 ]
