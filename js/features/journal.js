@@ -296,13 +296,74 @@ function renderMiniCharts(allDocsMap) {
       }
     });
   });
+
+  // ── Mood sparklines ────────────────────────────────────────────
+  document.querySelectorAll('.jv3-mood-chart-canvas').forEach(canvas => {
+    const dateStr = canvas.id.replace('jv3-mood-chart-', '');
+    const dates   = sevenDayWindow(dateStr);
+    const labels  = dates.map(shortDay);
+    const data    = dates.map(d => {
+      const doc = allDocsMap[d];
+      if (!doc) return null;
+      return typeof doc.mood?.score === 'number' ? doc.mood.score : null;
+    });
+
+    if (data.every(v => v === null)) return;
+
+    const existing = Chart.getChart(canvas);
+    if (existing) existing.destroy();
+
+    const colPurple = getComputedStyle(document.documentElement)
+      .getPropertyValue('--color-purple').trim() || '#7a39bb';
+
+    new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          data,
+          borderColor: colPurple,
+          backgroundColor: colPurple + '22',
+          borderWidth: 1.5,
+          tension: 0.3,
+          pointRadius: 2.5,
+          pointHoverRadius: 4,
+          fill: true,
+          spanGaps: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: ctx => ctx[0].label,
+              label: ctx => ctx.parsed.y !== null ? `Mood: ${ctx.parsed.y}/10` : 'No data'
+            }
+          }
+        },
+        scales: {
+          y: { display: false, suggestedMin: 0, suggestedMax: 10 },
+          x: {
+            ticks: { font: { size: 9 }, color: '#999', maxRotation: 0 },
+            grid: { display: false },
+            border: { display: false }
+          }
+        }
+      }
+    });
+  });
 }
 
 // ================================================================
-// STATS BANNER HTML — 2 uniform chart cells
+// STATS BANNER HTML — 3 uniform chart cells
 // ================================================================
 
 function statsBannerHtml(d, dateStr) {
+  // ── Functionality ──────────────────────────────────────────────
   const scores = TIME_BLOCKS.map(({ key }) => {
     const s = d.functionality?.[key]?.score;
     return typeof s === "number" ? s : null;
@@ -311,9 +372,9 @@ function statsBannerHtml(d, dateStr) {
   const avg = valid.length
     ? parseFloat((valid.reduce((a, b) => a + b, 0) / valid.length).toFixed(1))
     : null;
-
   const avgBadge = avg !== null ? scorePillHtml(avg) : '<span class="jv3-dash">&mdash;</span>';
 
+  // ── Sleep ──────────────────────────────────────────────────────
   const sl = d.sleep || {};
   const hoursVal = sl.hours  != null ? sl.hours  : null;
   const qualVal  = sl.quality != null ? sl.quality : null;
@@ -331,6 +392,11 @@ function statsBannerHtml(d, dateStr) {
       + (qualLabel ? `<span class="${qualCls}">${qualLabel}</span>` : '')
     : '';
 
+  // ── Mood ───────────────────────────────────────────────────────
+  const moodScore = typeof d.mood?.score === 'number' ? d.mood.score : null;
+  const moodBadge = moodScore !== null ? scorePillHtml(moodScore) : '<span class="jv3-dash">&mdash;</span>';
+
+  // ── Cells ──────────────────────────────────────────────────────
   const funcCell  = chartCellHtml({
     id: `jv3-func-chart-${dateStr}`,
     canvasCls: 'jv3-func-chart-canvas',
@@ -344,11 +410,19 @@ function statsBannerHtml(d, dateStr) {
     canvasCls: 'jv3-sleep-chart-canvas',
     label: '7-Day Sleep',
     badge: sleepBadge,
-    ariaLabel: '7-day sleep trend',
+    ariaLabel: '7-day sleep trend'
+  });
+
+  const moodCell  = chartCellHtml({
+    id: `jv3-mood-chart-${dateStr}`,
+    canvasCls: 'jv3-mood-chart-canvas',
+    label: 'Mood',
+    badge: moodBadge,
+    ariaLabel: '7-day mood trend',
     isLast: true
   });
 
-  return `<div class="jv3-stats-banner">${funcCell}${sleepCell}</div>`;
+  return `<div class="jv3-stats-banner">${funcCell}${sleepCell}${moodCell}</div>`;
 }
 
 // ================================================================
