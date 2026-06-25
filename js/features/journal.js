@@ -147,7 +147,7 @@ function sevenDayWindow(dateStr) {
 }
 
 /**
- * Returns the short weekday label (Mo, Tu, …) for a YYYY-MM-DD string.
+ * Returns the short weekday label (Su, Mo, …) for a YYYY-MM-DD string.
  */
 function shortDay(dateStr) {
   const d = new Date(dateStr + "T12:00:00");
@@ -155,63 +155,34 @@ function shortDay(dateStr) {
 }
 
 /**
- * Generates the canvas placeholder HTML for the functionality mini chart cell.
+ * Builds the unified chart cell used for all three stats banner slots.
+ * @param {string} id        - canvas element id
+ * @param {string} canvasCls - CSS class for the canvas
+ * @param {string} label     - cell heading text
+ * @param {string} badge     - optional inline HTML badge after the label
+ * @param {string} ariaLabel - canvas aria-label
+ * @param {boolean} isLast   - true for the rightmost cell (no right border)
  */
-function miniChartCellHtml(dateStr) {
+function chartCellHtml({ id, canvasCls, label, badge = '', ariaLabel, isLast = false }) {
+  const extraCls = isLast ? ' jv3-stat-cell--last' : '';
   return `
-    <div class="jv3-stat-cell jv3-stat-cell--chart">
-      <span class="jv3-stat-label">7-Day Trend</span>
+    <div class="jv3-stat-cell jv3-stat-cell--chart${extraCls}">
+      <span class="jv3-stat-label">${label}${badge ? `<span class="jv3-stat-badge">${badge}</span>` : ''}</span>
       <div class="jv3-mini-chart-wrap">
-        <canvas id="jv3-mini-chart-${dateStr}" class="jv3-mini-chart-canvas" aria-label="7-day functionality trend"></canvas>
+        <canvas id="${id}" class="${canvasCls}" aria-label="${ariaLabel}"></canvas>
       </div>
     </div>`;
 }
 
-/**
- * Generates the canvas placeholder HTML for the sleep mini chart cell.
- * Replaces the two static Sleep / Sleep Quality cells.
- * Shows today's hours + quality as an inline badge in the label.
- */
-function sleepChartCellHtml(dateStr, sl) {
-  const hoursVal  = sl && sl.hours   != null ? sl.hours   : null;
-  const qualVal   = sl && sl.quality != null ? sl.quality : null;
+// ================================================================
+// RENDER ALL SPARKLINES
+// ================================================================
 
-  let qualLabel = '';
-  let qualCls   = '';
-  if (qualVal != null) {
-    const t = scoreTier(qualVal);
-    if      (t <= 2) { qualLabel = 'Poor';      qualCls = 'jv3-qual-poor'; }
-    else if (t <= 3) { qualLabel = 'Fair';      qualCls = 'jv3-qual-mid';  }
-    else if (t <= 4) { qualLabel = 'Good';      qualCls = 'jv3-qual-good'; }
-    else             { qualLabel = 'Excellent'; qualCls = 'jv3-qual-good'; }
-  }
-
-  const badge = (hoursVal != null || qualLabel)
-    ? `<span class="jv3-sleep-today-badge">`
-      + (hoursVal != null ? `${hoursVal}h` : '')
-      + (hoursVal != null && qualLabel ? ` &middot; ` : '')
-      + (qualLabel ? `<span class="${qualCls}">${qualLabel}</span>` : '')
-      + `</span>`
-    : '';
-
-  return `
-    <div class="jv3-stat-cell jv3-stat-cell--chart jv3-stat-cell--sleep">
-      <span class="jv3-stat-label">7-Day Sleep${badge}</span>
-      <div class="jv3-mini-chart-wrap">
-        <canvas id="jv3-sleep-chart-${dateStr}" class="jv3-sleep-chart-canvas" aria-label="7-day sleep trend"></canvas>
-      </div>
-    </div>`;
-}
-
-/**
- * After the DOM has been updated, draw Chart.js sparklines for every
- * mini chart canvas, using the allDocsMap for lookups.
- */
 function renderMiniCharts(allDocsMap) {
 
-  // ── Functionality sparklines ──────────────────────────────────
-  document.querySelectorAll('.jv3-mini-chart-canvas').forEach(canvas => {
-    const dateStr = canvas.id.replace('jv3-mini-chart-', '');
+  // ── Functionality sparklines (Avg Func cell) ───────────────────
+  document.querySelectorAll('.jv3-func-chart-canvas').forEach(canvas => {
+    const dateStr = canvas.id.replace('jv3-func-chart-', '');
     const dates   = sevenDayWindow(dateStr);
     const labels  = dates.map(shortDay);
     const data    = dates.map(d => {
@@ -258,7 +229,7 @@ function renderMiniCharts(allDocsMap) {
           tooltip: {
             callbacks: {
               title: ctx => ctx[0].label,
-              label: ctx => ctx.parsed.y !== null ? `Func: ${ctx.parsed.y.toFixed(1)}` : 'No data'
+              label: ctx => ctx.parsed.y !== null ? `Func: ${ctx.parsed.y.toFixed(1)}/10` : 'No data'
             }
           }
         },
@@ -274,7 +245,7 @@ function renderMiniCharts(allDocsMap) {
     });
   });
 
-  // ── Sleep sparklines ──────────────────────────────────────────
+  // ── Sleep sparklines ─────────────────────────────────────────
   document.querySelectorAll('.jv3-sleep-chart-canvas').forEach(canvas => {
     const dateStr  = canvas.id.replace('jv3-sleep-chart-', '');
     const dates    = sevenDayWindow(dateStr);
@@ -345,10 +316,11 @@ function renderMiniCharts(allDocsMap) {
 }
 
 // ================================================================
-// STATS BANNER HTML
+// STATS BANNER HTML — 3 uniform chart cells
 // ================================================================
 
 function statsBannerHtml(d, dateStr) {
+  // — Avg functionality score for today —
   const scores = TIME_BLOCKS.map(({ key }) => {
     const s = d.functionality?.[key]?.score;
     return typeof s === "number" ? s : null;
@@ -358,18 +330,45 @@ function statsBannerHtml(d, dateStr) {
     ? parseFloat((valid.reduce((a, b) => a + b, 0) / valid.length).toFixed(1))
     : null;
 
+  const avgBadge = avg !== null ? scorePillHtml(avg) : '<span class="jv3-dash">&mdash;</span>';
+
+  // — Sleep today badge —
   const sl = d.sleep || {};
+  const hoursVal = sl.hours  != null ? sl.hours  : null;
+  const qualVal  = sl.quality != null ? sl.quality : null;
+  let qualLabel = '', qualCls = '';
+  if (qualVal != null) {
+    const t = scoreTier(qualVal);
+    if      (t <= 2) { qualLabel = 'Poor';      qualCls = 'jv3-qual-poor'; }
+    else if (t <= 3) { qualLabel = 'Fair';      qualCls = 'jv3-qual-mid';  }
+    else if (t <= 4) { qualLabel = 'Good';      qualCls = 'jv3-qual-good'; }
+    else             { qualLabel = 'Excellent'; qualCls = 'jv3-qual-good'; }
+  }
+  const sleepBadge = (hoursVal != null || qualLabel)
+    ? (hoursVal != null ? `${hoursVal}h` : '')
+      + (hoursVal != null && qualLabel ? ` &middot; ` : '')
+      + (qualLabel ? `<span class="${qualCls}">${qualLabel}</span>` : '')
+    : '';
 
-  const avgCell = `
-    <div class="jv3-stat-cell">
-      <span class="jv3-stat-label">Avg Function</span>
-      <span class="jv3-stat-value">${avg !== null ? scorePillHtml(avg) : '<span class="jv3-dash">&mdash;</span>'}</span>
-    </div>`;
+  // — Build the 3 uniform cells —
+  const funcCell  = chartCellHtml({
+    id: `jv3-func-chart-${dateStr}`,
+    canvasCls: 'jv3-func-chart-canvas',
+    label: 'Avg Functionality',
+    badge: avgBadge,
+    ariaLabel: '7-day functionality trend'
+  });
 
-  const funcChartCell  = miniChartCellHtml(dateStr);
-  const sleepChartCell = sleepChartCellHtml(dateStr, sl);
+  const sleepCell = chartCellHtml({
+    id: `jv3-sleep-chart-${dateStr}`,
+    canvasCls: 'jv3-sleep-chart-canvas',
+    label: '7-Day Sleep',
+    badge: sleepBadge,
+    ariaLabel: '7-day sleep trend',
+    isLast: true
+  });
 
-  return `<div class="jv3-stats-banner">${avgCell}${funcChartCell}${sleepChartCell}</div>`;
+  return `<div class="jv3-stats-banner">${funcCell}${sleepCell}</div>`;
 }
 
 // ================================================================
@@ -543,7 +542,6 @@ async function renderJournal() {
       .map(doc => buildJournalCard(doc.id, doc.data(), _activeFilter))
       .join("");
 
-    // Draw sparkline charts after DOM is updated.
     renderMiniCharts(allDocsMap);
 
   } catch (err) {
