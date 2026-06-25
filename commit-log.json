@@ -1,5 +1,12 @@
 [
   {
+    "sha": "9925b623b9015f0a30e42c0ef210aa88d49cda9d",
+    "short": "9925b62",
+    "date": "2026-06-25T18:31:31-04:00",
+    "message": "feat(journal): add 7-day functionality sparkline chart to each day card stats banner",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9925b623b9015f0a30e42c0ef210aa88d49cda9d"
+  },
+  {
     "sha": "00670a3ab0873a24c142821d3c3906b2a80f4ff1",
     "short": "00670a3",
     "date": "2026-06-25T18:20:48-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T15:47:03-04:00",
     "message": "fix: anchor nav scrolls to correct section headers; add bottom padding for Diagnostics",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/0903b875653f948a16a14ad4ea3824cb54e59efa"
-  },
-  {
-    "sha": "7f5693ace5162aac0b2fd0f1b1ac6a1484195a12",
-    "short": "7f5693a",
-    "date": "2026-06-24T15:40:45-04:00",
-    "message": "fix: rename canvas id to trends-chart-canvas to prevent window.functionalityChart collision",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7f5693ace5162aac0b2fd0f1b1ac6a1484195a12"
   }
 ]
