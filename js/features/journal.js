@@ -11,6 +11,19 @@ const TIME_BLOCKS = [
   { key: "lateEvening",    label: "Late Evening",    time: "9 pm–12 am", short: "NGT" }
 ];
 
+// ================================================================
+// QUICK TAG META — mirrors the daily entry quick-tag definitions
+// ================================================================
+
+const TAG_META = {
+  flare:          { icon: '\u{1F525}', label: 'Flare',                  cls: 'tag-flare' },
+  crash:          { icon: '\u26A1',    label: 'Crash / post-exertional', cls: 'tag-crash' },
+  better:         { icon: '\u2728',    label: 'Better than usual',       cls: 'tag-better' },
+  poor_sleep:     { icon: '\u{1F319}', label: 'Poor sleep',              cls: 'tag-poor-sleep' },
+  high_stress:    { icon: '\u{1F4A2}', label: 'High stress',             cls: 'tag-stress' },
+  weather_change: { icon: '\u{1F327}\uFE0F', label: 'Weather change',  cls: 'tag-weather' }
+};
+
 function scoreTier(s) {
   if (s === null || s === undefined) return 0;
   if (s <= 2) return 1;
@@ -37,16 +50,29 @@ function scorePillHtml(score) {
 
 // ================================================================
 // QUICK TAGS STRIP
-// Renders a row of tag pills below the stats banner.
+// Renders quick-tag pills matching the daily entry page styling
+// (icon + label + per-tag color class, read-only display).
 // Returns empty string if no tags recorded.
 // ================================================================
 
 function tagsStripHtml(d) {
   const tags = Array.isArray(d.tags) ? d.tags.filter(t => t && String(t).trim()) : [];
   if (!tags.length) return '';
-  const pills = tags.map(tag =>
-    `<span class="jv3-tag-pill">${tag}</span>`
-  ).join('');
+
+  const pills = tags.map(tag => {
+    const meta = TAG_META[tag];
+    if (meta) {
+      return `<span class="tag-pill ${meta.cls} jv3-tag-readonly" aria-label="${meta.label}">`
+           + `<span class="tag-pill-icon" aria-hidden="true">${meta.icon}</span>`
+           + `<span class="tag-pill-label">${meta.label}</span>`
+           + `</span>`;
+    }
+    // Fallback for any unknown tag values
+    return `<span class="tag-pill jv3-tag-readonly">`
+         + `<span class="tag-pill-label">${tag}</span>`
+         + `</span>`;
+  }).join('');
+
   return `<div class="jv3-tags-strip">${pills}</div>`;
 }
 

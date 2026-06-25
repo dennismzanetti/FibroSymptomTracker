@@ -640,3 +640,63 @@
   flex-direction: column;
   gap: 0;
 }
+
+/* ================================================================
+   JV3 QUICK TAGS STRIP — read-only daily-entry pill styling
+   ================================================================ */
+
+/* Strip container that wraps the pills */
+.jv3-tags-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-2) 0 var(--space-1) 0;
+}
+
+/*
+  Read-only override for .tag-pill used in the journal.
+  Removes interactivity (cursor, hover state) and forces
+  the checked-state colours on so the pill always shows
+  its colour even without a checkbox.
+*/
+.jv3-tag-readonly {
+  cursor: default !important;
+  pointer-events: none;
+}
+
+/* Force the per-tag checked appearance permanently */
+.jv3-tag-readonly.tag-flare {
+  background: #fff0f0;
+  border-color: #e57373;
+  color: var(--color-danger, #c62828);
+}
+
+.jv3-tag-readonly.tag-crash {
+  background: #fff3e0;
+  border-color: #ffb74d;
+  color: #e65100;
+}
+
+.jv3-tag-readonly.tag-better {
+  background: var(--color-success-bg, #e8f5e9);
+  border-color: #81c784;
+  color: var(--color-success, #2e7d32);
+}
+
+.jv3-tag-readonly.tag-poor-sleep {
+  background: var(--color-primary-light, #e8f4f5);
+  border-color: var(--color-primary-border, #b2d8dc);
+  color: var(--color-primary);
+}
+
+.jv3-tag-readonly.tag-stress {
+  background: var(--color-pink-bg, #fce4ec);
+  border-color: var(--color-pink-border, #f48fb1);
+  color: var(--color-pink, #c2185b);
+}
+
+.jv3-tag-readonly.tag-weather {
+  background: #e3f2fd;
+  border-color: #90caf9;
+  color: #1565c0;
+}
