@@ -1,5 +1,12 @@
 [
   {
+    "sha": "c4095ea1227fc92a29959c9e9a03481201715265",
+    "short": "c4095ea",
+    "date": "2026-06-25T19:44:09-04:00",
+    "message": "feat(journal): add 7-day sleep trend sparkline to stats banner",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c4095ea1227fc92a29959c9e9a03481201715265"
+  },
+  {
     "sha": "9925b623b9015f0a30e42c0ef210aa88d49cda9d",
     "short": "9925b62",
     "date": "2026-06-25T18:31:31-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T15:49:16-04:00",
     "message": "Remove Pain Level overlay toggle; add Total Sleep and Sleep Quality toggles",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/6c0d29efe615b0fcf53e60bfe1d3161ace80de71"
-  },
-  {
-    "sha": "0903b875653f948a16a14ad4ea3824cb54e59efa",
-    "short": "0903b87",
-    "date": "2026-06-24T15:47:03-04:00",
-    "message": "fix: anchor nav scrolls to correct section headers; add bottom padding for Diagnostics",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/0903b875653f948a16a14ad4ea3824cb54e59efa"
   }
 ]
