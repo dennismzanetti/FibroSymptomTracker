@@ -155,7 +155,7 @@ function shortDay(dateStr) {
 }
 
 /**
- * Generates the canvas placeholder HTML for the mini chart cell.
+ * Generates the canvas placeholder HTML for the functionality mini chart cell.
  */
 function miniChartCellHtml(dateStr) {
   return `
@@ -168,14 +168,51 @@ function miniChartCellHtml(dateStr) {
 }
 
 /**
+ * Generates the canvas placeholder HTML for the sleep mini chart cell.
+ * Replaces the two static Sleep / Sleep Quality cells.
+ * Shows today's hours + quality as an inline badge in the label.
+ */
+function sleepChartCellHtml(dateStr, sl) {
+  const hoursVal  = sl && sl.hours   != null ? sl.hours   : null;
+  const qualVal   = sl && sl.quality != null ? sl.quality : null;
+
+  let qualLabel = '';
+  let qualCls   = '';
+  if (qualVal != null) {
+    const t = scoreTier(qualVal);
+    if      (t <= 2) { qualLabel = 'Poor';      qualCls = 'jv3-qual-poor'; }
+    else if (t <= 3) { qualLabel = 'Fair';      qualCls = 'jv3-qual-mid';  }
+    else if (t <= 4) { qualLabel = 'Good';      qualCls = 'jv3-qual-good'; }
+    else             { qualLabel = 'Excellent'; qualCls = 'jv3-qual-good'; }
+  }
+
+  const badge = (hoursVal != null || qualLabel)
+    ? `<span class="jv3-sleep-today-badge">`
+      + (hoursVal != null ? `${hoursVal}h` : '')
+      + (hoursVal != null && qualLabel ? ` &middot; ` : '')
+      + (qualLabel ? `<span class="${qualCls}">${qualLabel}</span>` : '')
+      + `</span>`
+    : '';
+
+  return `
+    <div class="jv3-stat-cell jv3-stat-cell--chart jv3-stat-cell--sleep">
+      <span class="jv3-stat-label">7-Day Sleep${badge}</span>
+      <div class="jv3-mini-chart-wrap">
+        <canvas id="jv3-sleep-chart-${dateStr}" class="jv3-sleep-chart-canvas" aria-label="7-day sleep trend"></canvas>
+      </div>
+    </div>`;
+}
+
+/**
  * After the DOM has been updated, draw Chart.js sparklines for every
  * mini chart canvas, using the allDocsMap for lookups.
  */
 function renderMiniCharts(allDocsMap) {
+
+  // ── Functionality sparklines ──────────────────────────────────
   document.querySelectorAll('.jv3-mini-chart-canvas').forEach(canvas => {
     const dateStr = canvas.id.replace('jv3-mini-chart-', '');
     const dates   = sevenDayWindow(dateStr);
-
     const labels  = dates.map(shortDay);
     const data    = dates.map(d => {
       const doc = allDocsMap[d];
@@ -188,10 +225,8 @@ function renderMiniCharts(allDocsMap) {
       return parseFloat((scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1));
     });
 
-    // Skip if no data at all
     if (data.every(v => v === null)) return;
 
-    // Destroy any existing instance on this canvas
     const existing = Chart.getChart(canvas);
     if (existing) existing.destroy();
 
@@ -228,17 +263,78 @@ function renderMiniCharts(allDocsMap) {
           }
         },
         scales: {
-          y: {
-            display: false,
-            suggestedMin: 0,
-            suggestedMax: 10
-          },
+          y: { display: false, suggestedMin: 0, suggestedMax: 10 },
           x: {
-            ticks: {
-              font: { size: 9 },
-              color: '#999',
-              maxRotation: 0
-            },
+            ticks: { font: { size: 9 }, color: '#999', maxRotation: 0 },
+            grid: { display: false },
+            border: { display: false }
+          }
+        }
+      }
+    });
+  });
+
+  // ── Sleep sparklines ──────────────────────────────────────────
+  document.querySelectorAll('.jv3-sleep-chart-canvas').forEach(canvas => {
+    const dateStr  = canvas.id.replace('jv3-sleep-chart-', '');
+    const dates    = sevenDayWindow(dateStr);
+    const labels   = dates.map(shortDay);
+
+    const hoursData = dates.map(d => {
+      const doc = allDocsMap[d];
+      if (!doc) return null;
+      return typeof doc.sleep?.hours === 'number' ? doc.sleep.hours : null;
+    });
+
+    if (hoursData.every(v => v === null)) return;
+
+    const existing = Chart.getChart(canvas);
+    if (existing) existing.destroy();
+
+    const colBlue = getComputedStyle(document.documentElement)
+      .getPropertyValue('--color-blue').trim() || '#006494';
+
+    new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Sleep Hours',
+          data: hoursData,
+          borderColor: colBlue,
+          backgroundColor: colBlue + '22',
+          borderWidth: 1.5,
+          tension: 0.3,
+          pointRadius: 2.5,
+          pointHoverRadius: 4,
+          fill: true,
+          spanGaps: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: ctx => ctx[0].label,
+              label: ctx => {
+                if (ctx.parsed.y === null) return 'No data';
+                const d   = dates[ctx.dataIndex];
+                const doc = allDocsMap[d];
+                const q   = doc?.sleep?.quality;
+                const qs  = q != null ? ` · Quality: ${q}/10` : '';
+                return `Sleep: ${ctx.parsed.y.toFixed(1)}h${qs}`;
+              }
+            }
+          }
+        },
+        scales: {
+          y: { display: false, suggestedMin: 0, suggestedMax: 12 },
+          x: {
+            ticks: { font: { size: 9 }, color: '#999', maxRotation: 0 },
             grid: { display: false },
             border: { display: false }
           }
@@ -270,31 +366,10 @@ function statsBannerHtml(d, dateStr) {
       <span class="jv3-stat-value">${avg !== null ? scorePillHtml(avg) : '<span class="jv3-dash">&mdash;</span>'}</span>
     </div>`;
 
-  const chartCell = miniChartCellHtml(dateStr);
+  const funcChartCell  = miniChartCellHtml(dateStr);
+  const sleepChartCell = sleepChartCellHtml(dateStr, sl);
 
-  const sleepHrsCell = `
-    <div class="jv3-stat-cell">
-      <span class="jv3-stat-label">Sleep</span>
-      <span class="jv3-stat-value">${sl.hours != null ? `${sl.hours}h` : '<span class="jv3-dash">&mdash;</span>'}</span>
-    </div>`;
-
-  let qualLabel = "&mdash;";
-  let qualCls = "";
-  if (sl.quality != null) {
-    const t = scoreTier(sl.quality);
-    if (t <= 2)      { qualLabel = "Poor";      qualCls = "jv3-qual-poor"; }
-    else if (t <= 3) { qualLabel = "Fair";      qualCls = "jv3-qual-mid"; }
-    else if (t <= 4) { qualLabel = "Good";      qualCls = "jv3-qual-good"; }
-    else             { qualLabel = "Excellent"; qualCls = "jv3-qual-good"; }
-  }
-
-  const sleepQualCell = `
-    <div class="jv3-stat-cell">
-      <span class="jv3-stat-label">Sleep Quality</span>
-      <span class="jv3-stat-value ${qualCls}">${qualLabel}</span>
-    </div>`;
-
-  return `<div class="jv3-stats-banner">${avgCell}${chartCell}${sleepHrsCell}${sleepQualCell}</div>`;
+  return `<div class="jv3-stats-banner">${avgCell}${funcChartCell}${sleepChartCell}</div>`;
 }
 
 // ================================================================
@@ -430,8 +505,6 @@ async function renderJournal() {
     const sel  = document.getElementById("jv3RangeSelect");
     const days = sel ? parseInt(sel.value, 10) : 30;
 
-    // For the mini charts we need up to 6 extra days before the range window.
-    // Fetch those extra docs separately so the displayed cards are not affected.
     let query = db.collection("days").orderBy("__name__", "desc");
     if (days > 0) {
       const cutoff = new Date();
@@ -447,9 +520,6 @@ async function renderJournal() {
       return;
     }
 
-    // Build a map of ALL fetched docs for mini-chart lookups.
-    // Also fetch the 6 days before the earliest date so the oldest cards
-    // can still show a 7-day window.
     const allDocsMap = {};
     snapshot.docs.forEach(doc => { allDocsMap[doc.id] = doc.data(); });
 
@@ -466,7 +536,7 @@ async function renderJournal() {
         .where(firebase.firestore.FieldPath.documentId(), "<", earliest)
         .get();
       priorSnap.forEach(doc => { allDocsMap[doc.id] = doc.data(); });
-    } catch (_) { /* non-critical — sparklines will just show null for missing prior days */ }
+    } catch (_) { /* non-critical */ }
 
     renderRangeLabel(snapshot.docs);
     container.innerHTML = snapshot.docs
