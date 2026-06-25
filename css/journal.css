@@ -640,15 +640,37 @@
 }
 
 /* ================================================================
-   JV3 QUICK TAGS STRIP — read-only daily-entry pill styling
+   JV3 DAY CARD HEADER — date left, quick tags right
    ================================================================ */
 
-.jv3-tags-strip {
+.jv3-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+  flex-wrap: wrap;   /* wraps on very narrow screens */
+}
+
+.jv3-date-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+
+/* Tags cluster — right-justified, wraps cleanly */
+.jv3-header-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
-  padding: var(--space-2) 0 var(--space-1) 0;
+  gap: var(--space-1);
+  justify-content: flex-end;
+  align-items: flex-start;
 }
+
+/* ================================================================
+   JV3 QUICK TAGS — read-only pill colours
+   ================================================================ */
 
 .jv3-tag-readonly {
   cursor: default !important;
@@ -695,12 +717,6 @@
    JV3 STATS BANNER — uniform chart cells
    ================================================================ */
 
-/*
-  The banner is a flex row. Every cell is .jv3-stat-cell--chart.
-  All cells are equal width (flex: 1 1 0), same padding, same height.
-  Dividers are right-borders on all but the last cell.
-*/
-
 .jv3-stats-banner {
   display: flex;
   align-items: stretch;
@@ -712,8 +728,8 @@
 }
 
 .jv3-stat-cell--chart {
-  flex: 1 1 0;            /* equal width, no grow/shrink bias */
-  min-width: 0;           /* allow shrinking below content width */
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
@@ -721,12 +737,10 @@
   border-right: 1px solid var(--color-divider);
 }
 
-/* Last cell: no right divider */
 .jv3-stat-cell--last {
   border-right: none;
 }
 
-/* Label row: stat name + inline badge (score pill or sleep summary) */
 .jv3-stat-label {
   display: flex;
   align-items: center;
@@ -740,7 +754,6 @@
   overflow: hidden;
 }
 
-/* Badge sits right of the label text */
 .jv3-stat-badge {
   display: inline-flex;
   align-items: center;
@@ -753,7 +766,6 @@
   flex-shrink: 0;
 }
 
-/* Chart canvas wrapper: fixed height so all cells match */
 .jv3-mini-chart-wrap {
   position: relative;
   width: 100%;
@@ -768,27 +780,19 @@
   height: 100% !important;
 }
 
-/* Quality text color helpers */
 .jv3-qual-poor { color: #c62828; }
 .jv3-qual-mid  { color: #f57f17; }
 .jv3-qual-good { color: #2e7d32; }
 
-/* On narrow screens: stack cells vertically */
 @media (max-width: 560px) {
-  .jv3-stats-banner {
-    flex-direction: column;
-  }
+  .jv3-stats-banner { flex-direction: column; }
 
   .jv3-stat-cell--chart {
     border-right: none;
     border-bottom: 1px solid var(--color-divider);
   }
 
-  .jv3-stat-cell--last {
-    border-bottom: none;
-  }
+  .jv3-stat-cell--last { border-bottom: none; }
 
-  .jv3-mini-chart-wrap {
-    height: 48px;
-  }
+  .jv3-mini-chart-wrap { height: 48px; }
 }
