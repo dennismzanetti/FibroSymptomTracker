@@ -37,7 +37,7 @@ function scorePillHtml(score) {
 
 // ================================================================
 // COLLECT ALL NOTES FROM A DAY DOCUMENT
-// Returns array of { source, label, text } objects
+// Returns array of { source, label, text, score } objects
 // ================================================================
 
 function collectNotes(d) {
@@ -45,38 +45,42 @@ function collectNotes(d) {
 
   // Day title as a note (pinned first)
   if (d.dayTitle && d.dayTitle.trim()) {
-    notes.unshift({ source: "general", label: "Day Title", text: `"${d.dayTitle.trim()}"` });
+    notes.unshift({ source: "general", label: "Day Title", text: `"${d.dayTitle.trim()}"`, score: null });
   }
 
   // Functionality time-block notes
   TIME_BLOCKS.forEach(({ key, label }) => {
     const b = d.functionality?.[key] || {};
+    const blockScore = typeof b.score === "number" ? b.score : null;
     if (b.symptoms && b.symptoms.trim()) {
-      notes.push({ source: "functionality", label: `Symptoms · ${label}`, text: b.symptoms.trim() });
+      notes.push({ source: "functionality", label: `Symptoms · ${label}`, text: b.symptoms.trim(), score: blockScore });
     }
     if (b.activity && b.activity.trim()) {
-      notes.push({ source: "functionality", label: `Activity · ${label}`, text: b.activity.trim() });
+      notes.push({ source: "functionality", label: `Activity · ${label}`, text: b.activity.trim(), score: blockScore });
     }
   });
 
   // Sleep notes
   if (d.sleep?.notes && d.sleep.notes.trim()) {
-    notes.push({ source: "sleep", label: "Sleep", text: d.sleep.notes.trim() });
+    const sleepScore = typeof d.sleep?.quality === "number" ? d.sleep.quality : null;
+    notes.push({ source: "sleep", label: "Sleep", text: d.sleep.notes.trim(), score: sleepScore });
   }
 
   // Exercise notes
   if (d.exercise?.notes && d.exercise.notes.trim()) {
-    notes.push({ source: "exercise", label: "Exercise", text: d.exercise.notes.trim() });
+    const exScore = typeof d.exercise?.score === "number" ? d.exercise.score : null;
+    notes.push({ source: "exercise", label: "Exercise", text: d.exercise.notes.trim(), score: exScore });
   }
 
   // Mood notes
   if (d.mood?.notes && d.mood.notes.trim()) {
-    notes.push({ source: "mood", label: "Mood", text: d.mood.notes.trim() });
+    const moodScore = typeof d.mood?.score === "number" ? d.mood.score : null;
+    notes.push({ source: "mood", label: "Mood", text: d.mood.notes.trim(), score: moodScore });
   }
 
   // Overall / general notes
   if (d.overallNotes && d.overallNotes.trim()) {
-    notes.push({ source: "general", label: "General", text: d.overallNotes.trim() });
+    notes.push({ source: "general", label: "General", text: d.overallNotes.trim(), score: null });
   }
 
   return notes;
@@ -162,6 +166,7 @@ function buildJournalCard(dateStr, d, activeFilter) {
     const rows = filteredNotes.map(n => {
       const cls = SOURCE_LABEL_CLASS[n.source] || "jv3-lbl-general";
       return `<tr>
+        <td class="jv3-tbl-score">${scorePillHtml(n.score)}</td>
         <td class="jv3-tbl-label"><span class="jv3-note-label ${cls}">${n.label}</span></td>
         <td class="jv3-tbl-note">${n.text}</td>
       </tr>`;

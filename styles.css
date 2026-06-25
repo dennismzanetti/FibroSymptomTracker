@@ -1166,7 +1166,7 @@ p.jv3-range-label {
 .jv3-dash { color: var(--color-text-faint); }
 
 /* ----------------------------------------------------------------
-   Notes table — label column = 33%, note column = 67%
+   Notes table — score column (left) + label column + note column
    ---------------------------------------------------------------- */
 
 .jv3-notes-list {
@@ -1179,15 +1179,25 @@ p.jv3-range-label {
   table-layout: fixed;
 }
 
-/* Label column — one third of the table width */
+/* Score pill column — fixed narrow width, center-aligned */
+.jv3-tbl-score {
+  width: 68px;
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-divider);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Label column — roughly 28% of remaining width */
 .jv3-tbl-label {
-  width: 33%;
-  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
+  width: 28%;
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-2);
   vertical-align: top;
   border-bottom: 1px solid var(--color-divider);
 }
 
-/* Note text column — remaining two thirds */
+/* Note text column — fills remaining space */
 .jv3-tbl-note {
   padding: var(--space-2) var(--space-4) var(--space-2) var(--space-2);
   vertical-align: top;
@@ -1200,6 +1210,7 @@ p.jv3-range-label {
   overflow-wrap: anywhere;
 }
 
+.jv3-notes-table tr:last-child .jv3-tbl-score,
 .jv3-notes-table tr:last-child .jv3-tbl-label,
 .jv3-notes-table tr:last-child .jv3-tbl-note {
   border-bottom: none;
@@ -1246,6 +1257,8 @@ p.jv3-range-label {
   .jv3-stat-cell { padding: var(--space-2) var(--space-3); }
   .jv3-stat-value { font-size: var(--text-sm); }
   .jv3-filter-bar { flex-direction: column; align-items: flex-start; }
+  /* On mobile, collapse score column slightly */
+  .jv3-tbl-score { width: 54px; padding-left: var(--space-2); }
 }
 
 /* ================================================================
