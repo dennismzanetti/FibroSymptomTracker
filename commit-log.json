@@ -1,5 +1,12 @@
 [
   {
+    "sha": "9f2eb644f042943369dc5793cad23363bcb03566",
+    "short": "9f2eb64",
+    "date": "2026-06-25T19:52:36-04:00",
+    "message": "style(journal): add .jv3-card-header and .jv3-header-tags for right-justified tag layout",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9f2eb644f042943369dc5793cad23363bcb03566"
+  },
+  {
     "sha": "e3295d16c263d002d6c422d70040ab38331fb313",
     "short": "e3295d1",
     "date": "2026-06-25T19:51:10-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T16:13:25-04:00",
     "message": "Read sleep.hours and sleep.quality instead of totalSleep/sleepQuality",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d736c18a53a7e2e206e7a0f46dabb818e102d6b7"
-  },
-  {
-    "sha": "7a1e0de5af47c10c43f3764b1286e30a0a7e49f4",
-    "short": "7a1e0de",
-    "date": "2026-06-24T16:09:29-04:00",
-    "message": "Remove Pain Level line; add Total Hours Slept and Sleep Quality lines to trends chart",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7a1e0de5af47c10c43f3764b1286e30a0a7e49f4"
   }
 ]
