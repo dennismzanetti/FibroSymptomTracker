@@ -49,14 +49,14 @@ function scorePillHtml(score) {
 }
 
 // ================================================================
-// QUICK TAGS STRIP
+// QUICK TAGS — returns array of pill HTML strings (no wrapper div)
 // ================================================================
 
-function tagsStripHtml(d) {
+function tagPillsHtml(d) {
   const tags = Array.isArray(d.tags) ? d.tags.filter(t => t && String(t).trim()) : [];
   if (!tags.length) return '';
 
-  const pills = tags.map(tag => {
+  return tags.map(tag => {
     const meta = TAG_META[tag];
     if (meta) {
       return `<span class="tag-pill ${meta.cls} jv3-tag-readonly" aria-label="${meta.label}">`
@@ -68,8 +68,6 @@ function tagsStripHtml(d) {
          + `<span class="tag-pill-label">${tag}</span>`
          + `</span>`;
   }).join('');
-
-  return `<div class="jv3-tags-strip">${pills}</div>`;
 }
 
 // ================================================================
@@ -132,9 +130,6 @@ const SOURCE_LABEL_CLASS = {
 // MINI CHART HELPERS
 // ================================================================
 
-/**
- * Returns the 7 dates ending on (and including) dateStr, oldest first.
- */
 function sevenDayWindow(dateStr) {
   const dates = [];
   const base = new Date(dateStr + "T12:00:00");
@@ -146,23 +141,11 @@ function sevenDayWindow(dateStr) {
   return dates;
 }
 
-/**
- * Returns the short weekday label (Su, Mo, …) for a YYYY-MM-DD string.
- */
 function shortDay(dateStr) {
   const d = new Date(dateStr + "T12:00:00");
   return ['Su','Mo','Tu','We','Th','Fr','Sa'][d.getDay()];
 }
 
-/**
- * Builds the unified chart cell used for all three stats banner slots.
- * @param {string} id        - canvas element id
- * @param {string} canvasCls - CSS class for the canvas
- * @param {string} label     - cell heading text
- * @param {string} badge     - optional inline HTML badge after the label
- * @param {string} ariaLabel - canvas aria-label
- * @param {boolean} isLast   - true for the rightmost cell (no right border)
- */
 function chartCellHtml({ id, canvasCls, label, badge = '', ariaLabel, isLast = false }) {
   const extraCls = isLast ? ' jv3-stat-cell--last' : '';
   return `
@@ -180,7 +163,7 @@ function chartCellHtml({ id, canvasCls, label, badge = '', ariaLabel, isLast = f
 
 function renderMiniCharts(allDocsMap) {
 
-  // ── Functionality sparklines (Avg Func cell) ───────────────────
+  // ── Functionality sparklines ───────────────────────────────────
   document.querySelectorAll('.jv3-func-chart-canvas').forEach(canvas => {
     const dateStr = canvas.id.replace('jv3-func-chart-', '');
     const dates   = sevenDayWindow(dateStr);
@@ -245,7 +228,7 @@ function renderMiniCharts(allDocsMap) {
     });
   });
 
-  // ── Sleep sparklines ─────────────────────────────────────────
+  // ── Sleep sparklines ───────────────────────────────────────────
   document.querySelectorAll('.jv3-sleep-chart-canvas').forEach(canvas => {
     const dateStr  = canvas.id.replace('jv3-sleep-chart-', '');
     const dates    = sevenDayWindow(dateStr);
@@ -316,11 +299,10 @@ function renderMiniCharts(allDocsMap) {
 }
 
 // ================================================================
-// STATS BANNER HTML — 3 uniform chart cells
+// STATS BANNER HTML — 2 uniform chart cells
 // ================================================================
 
 function statsBannerHtml(d, dateStr) {
-  // — Avg functionality score for today —
   const scores = TIME_BLOCKS.map(({ key }) => {
     const s = d.functionality?.[key]?.score;
     return typeof s === "number" ? s : null;
@@ -332,7 +314,6 @@ function statsBannerHtml(d, dateStr) {
 
   const avgBadge = avg !== null ? scorePillHtml(avg) : '<span class="jv3-dash">&mdash;</span>';
 
-  // — Sleep today badge —
   const sl = d.sleep || {};
   const hoursVal = sl.hours  != null ? sl.hours  : null;
   const qualVal  = sl.quality != null ? sl.quality : null;
@@ -350,7 +331,6 @@ function statsBannerHtml(d, dateStr) {
       + (qualLabel ? `<span class="${qualCls}">${qualLabel}</span>` : '')
     : '';
 
-  // — Build the 3 uniform cells —
   const funcCell  = chartCellHtml({
     id: `jv3-func-chart-${dateStr}`,
     canvasCls: 'jv3-func-chart-canvas',
@@ -402,14 +382,21 @@ function buildJournalCard(dateStr, d, activeFilter) {
     notesHtml = `<p class="jv3-no-notes">No notes recorded for this day.</p>`;
   }
 
+  // Tags HTML — empty string when no tags
+  const tagPills = tagPillsHtml(d);
+  const tagsHtml = tagPills
+    ? `<div class="jv3-header-tags">${tagPills}</div>`
+    : '';
+
   return `
     <article class="jv3-day-card" data-journal-date="${dateStr}">
-      <div class="jv3-date-label">
-        <span class="jv3-dow">${dow}</span>
-        <span class="jv3-date">${dlbl}</span>
+      <div class="jv3-card-header">
+        <div class="jv3-date-block">
+          <span class="jv3-dow">${dow}</span>
+          <span class="jv3-date">${dlbl}</span>
+        </div>${tagsHtml}
       </div>
       ${statsBannerHtml(d, dateStr)}
-      ${tagsStripHtml(d)}
       <div class="jv3-notes-list">${notesHtml}</div>
     </article>`;
 }
@@ -522,7 +509,6 @@ async function renderJournal() {
     const allDocsMap = {};
     snapshot.docs.forEach(doc => { allDocsMap[doc.id] = doc.data(); });
 
-    // Fetch the 6 preceding days for sparkline context (best-effort).
     try {
       const sortedIds = snapshot.docs.map(d => d.id).sort();
       const earliest  = sortedIds[0];
