@@ -1,5 +1,12 @@
 [
   {
+    "sha": "5836376cfb1bc0753a900611a28ff0a8298502f5",
+    "short": "5836376",
+    "date": "2026-06-26T15:15:04-04:00",
+    "message": "Add padding to .med-list so cards don't touch container walls",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/5836376cfb1bc0753a900611a28ff0a8298502f5"
+  },
+  {
     "sha": "c724aeedd85929252666f4194a31ade3c633342b",
     "short": "c724aee",
     "date": "2026-06-26T15:09:19-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T13:09:09-04:00",
     "message": "Fix: auto-retry with backoff on 503, fallback to gemini-2.5-flash if lite unavailable",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/16441c3c8194c736b0a8bb18cff0824bc64ed307"
-  },
-  {
-    "sha": "e1e14db5cc199cc4edb01eab01b7f211be809218",
-    "short": "e1e14db",
-    "date": "2026-06-26T13:05:55-04:00",
-    "message": "Fix: switch to gemini-2.5-flash-lite with thinking disabled (2.0 models shut down June 1 2026)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e1e14db5cc199cc4edb01eab01b7f211be809218"
   }
 ]
