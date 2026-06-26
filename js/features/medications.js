@@ -211,14 +211,13 @@ async function refreshMedList() {
       li.className = "med-item";
       const freq = FREQ_LABELS[med.frequency] || med.frequency || "";
       const metaParts = [
-        med.dose || "",
         freq,
         med.doctor ? `Dr. ${escHtml(med.doctor)}` : ""
       ].filter(Boolean);
       const hasBody = metaParts.length > 0 || !!med.notes;
       li.innerHTML = `
         <div class="med-item-header">
-          <span class="med-item-name">${escHtml(med.name || "")}</span>
+          <span class="med-item-name">${escHtml(med.name || "")}${med.dose ? ` <span class="med-item-dose">${escHtml(med.dose)}</span>` : ""}</span>
           <div class="med-item-actions">
             <button class="med-btn med-btn-edit">Edit</button>
             <button class="med-btn med-btn-delete">Delete</button>
@@ -345,14 +344,13 @@ async function refreshSuppList() {
       li.className = "med-item";
       const freq = FREQ_LABELS[supp.frequency] || supp.frequency || "";
       const metaParts = [
-        supp.dose || "",
         freq,
         supp.brand || ""
       ].filter(Boolean);
       const hasBody = metaParts.length > 0 || !!supp.notes;
       li.innerHTML = `
         <div class="med-item-header">
-          <span class="med-item-name">${escHtml(supp.name || "")}</span>
+          <span class="med-item-name">${escHtml(supp.name || "")}${supp.dose ? ` <span class="med-item-dose">${escHtml(supp.dose)}</span>` : ""}</span>
           <div class="med-item-actions">
             <button class="med-btn med-btn-edit">Edit</button>
             <button class="med-btn med-btn-delete">Delete</button>
