@@ -648,12 +648,9 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-3);
-  /* Generous padding so date + tags breathe against the card edge */
   padding: var(--space-3) var(--space-4);
-  margin-bottom: 0;          /* banner sits flush below header */
+  margin-bottom: 0;
   flex-wrap: wrap;
-  /* Subtle tinted background to distinguish header from banner */
-  background: var(--color-surface-2);
   border-bottom: 1px solid var(--color-divider);
 }
 
@@ -668,11 +665,11 @@
 .jv3-header-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);        /* slightly wider gap between pills */
+  gap: var(--space-2);
   justify-content: flex-end;
-  align-items: center;        /* vertically center pills with date text */
-  padding-top: 2px;           /* fine-tune optical alignment with date text */
-  max-width: 60%;             /* prevent tags pushing date off screen */
+  align-items: center;
+  padding-top: 2px;
+  max-width: 60%;
 }
 
 /* ================================================================
@@ -721,7 +718,7 @@
 }
 
 /* ================================================================
-   JV3 STATS BANNER — uniform chart cells
+   JV3 STATS BANNER — uniform chart cells, no background
    ================================================================ */
 
 .jv3-stats-banner {
@@ -730,7 +727,7 @@
   border-bottom: 1px solid var(--color-divider);
   overflow: hidden;
   margin-bottom: 0;
-  background: var(--color-surface-2);
+  background: transparent;
 }
 
 .jv3-stat-cell--chart {
@@ -741,6 +738,7 @@
   gap: var(--space-1);
   padding: var(--space-2) var(--space-3);
   border-right: 1px solid var(--color-divider);
+  background: transparent;
 }
 
 .jv3-stat-cell--last {
@@ -803,7 +801,6 @@
 
   .jv3-mini-chart-wrap { height: 48px; }
 
-  /* Tighter header on small screens */
   .jv3-card-header { padding: var(--space-2) var(--space-3); }
   .jv3-header-tags { max-width: 55%; gap: var(--space-1); }
 }
