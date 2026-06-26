@@ -392,7 +392,7 @@ function statsBannerHtml(d, dateStr) {
   const funcCell  = chartCellHtml({
     id: `jv3-func-chart-${dateStr}`,
     canvasCls: 'jv3-func-chart-canvas',
-    label: '7-Day Avg. Functionality',
+    label: 'Functionality',
     badge: avgBadge,
     ariaLabel: '7-day functionality trend'
   });
@@ -400,7 +400,7 @@ function statsBannerHtml(d, dateStr) {
   const sleepCell = chartCellHtml({
     id: `jv3-sleep-chart-${dateStr}`,
     canvasCls: 'jv3-sleep-chart-canvas',
-    label: '7-Day Sleep',
+    label: 'Sleep',
     badge: sleepBadge,
     ariaLabel: '7-day sleep trend'
   });
@@ -408,7 +408,7 @@ function statsBannerHtml(d, dateStr) {
   const moodCell  = chartCellHtml({
     id: `jv3-mood-chart-${dateStr}`,
     canvasCls: 'jv3-mood-chart-canvas',
-    label: '7-Day Mood',
+    label: 'Mood',
     badge: moodBadge,
     ariaLabel: '7-day mood trend',
     isLast: true
