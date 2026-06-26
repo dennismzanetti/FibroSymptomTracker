@@ -158,7 +158,7 @@ document.addEventListener('partialsLoaded', () => {
         }
       }
       if (msgEl) msgEl.textContent = message;
-      FibroDiag.debug('App', `Build info: ${sha} \u2014 ${message}`);
+      FibroDiag.debug('App', `Build info: ${sha} — ${message}`);
     }
 
     function applyFallback() {
@@ -205,7 +205,7 @@ document.addEventListener('partialsLoaded', () => {
         FibroDiag.debug('App', 'Build info: loaded live from GitHub API');
       })
       .catch(err => {
-        FibroDiag.warn('App', `GitHub API failed (${err.message}) \u2014 falling back to BUILD_INFO`);
+        FibroDiag.warn('App', `GitHub API failed (${err.message}) — falling back to BUILD_INFO`);
         applyFallback();
       });
   })();
@@ -398,7 +398,7 @@ function setupSaveDay() {
       showToast('\u2713 Day saved');
     } catch (err) {
       FibroDiag.error('App', `Firestore save failed for ${dayData.date}`, err);
-      showToast('\u26A0 Cloud save failed \u2014 check connection', true);
+      showToast('\u26A0 Cloud save failed — check connection', true);
     }
     refreshHistory();
     renderJournal();
@@ -506,9 +506,9 @@ function loadDayFromCloud(date) {
       fillFormFromData(Object.assign({ date: doc.id }, doc.data()));
       showToast('\u2601 Updated from cloud');
     } else {
-      FibroDiag.debug('App', `No cloud entry for ${date} \u2014 clearing form`);
+      FibroDiag.debug('App', `No cloud entry for ${date} — clearing form`);
       clearFormFieldsExceptDate();
-      showToast('No entry for that date \u2014 form cleared');
+      showToast('No entry for that date — form cleared');
     }
   }).catch((error) => {
     FibroDiag.error('App', `Cloud load failed for ${date}`, error);
@@ -583,7 +583,11 @@ function setupHistoryControls() {
   const toEl   = document.getElementById('historyTo');
   if (fromEl && !fromEl.value) fromEl.value = nDaysAgo(13);
   if (toEl   && !toEl.value)   toEl.value   = todayStr();
-  document.getElementById('loadHistoryBtn')?.addEventListener('click', refreshHistory);
+  document.getElementById('loadHistoryBtn')?.addEventListener('click', () => {
+    // Always force a fresh API call when user explicitly clicks Analyze
+    if (typeof window.resetInsights === 'function') window.resetInsights();
+    refreshHistory();
+  });
 }
 
 function refreshHistory() {
@@ -762,7 +766,7 @@ async function confirmImport() {
   statusEl.className = 'settings-status settings-status-info';
   statusEl.textContent = 'Importing\u2026 please wait.';
   confirmBtn.disabled = true;
-  FibroDiag.info('App', 'Import confirmed \u2014 writing to Firestore');
+  FibroDiag.info('App', 'Import confirmed — writing to Firestore');
   FibroDiag.time('import-all');
   try {
     const collections = pendingImportData.collections;
