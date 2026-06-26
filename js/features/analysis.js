@@ -18,6 +18,7 @@
   // ---------- in-flight guard ----------
   let _inflight = false;
   let _hasRenderedInsights = false;
+  let _chatWired = false; // ensure we only wire listeners once
 
   // ---------- stored context for AI Chat ----------
   let _chatContext = null; // { dataByDate, days, startStr, endStr }
@@ -311,21 +312,75 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
     `;
   }
 
-  // ---------- show AI Chat panel once data is loaded ----------
-  function showChatPanel() {
-    const panel = document.getElementById('aiChatPanel');
-    if (panel) panel.style.display = '';
-  }
-
-  // ---------- wire up AI Chat interaction ----------
-  function initChatPanel() {
-    const sendBtn   = document.getElementById('aiChatSendBtn');
-    const textarea  = document.getElementById('aiChatInput');
+  // ---------- the actual ask function (defined at module scope so it's accessible) ----------
+  async function askAI() {
+    const sendBtn      = document.getElementById('aiChatSendBtn');
+    const textarea     = document.getElementById('aiChatInput');
     const responseBox  = document.getElementById('aiChatResponse');
     const responseText = document.getElementById('aiChatResponseText');
-    const chips     = document.querySelectorAll('.ai-chat-chip');
 
     if (!sendBtn || !textarea) return;
+
+    const question = textarea.value.trim();
+    if (!question) {
+      textarea.focus();
+      return;
+    }
+
+    if (!_chatContext) {
+      if (responseBox) responseBox.style.display = '';
+      if (responseText) responseText.textContent = '\u26a0\ufe0f Please run Analyze first so the AI has data to work with.';
+      return;
+    }
+
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = `<span class="ai-chat-spinner" aria-hidden="true"></span> Thinking\u2026`;
+    if (responseBox) responseBox.style.display = '';
+    if (responseText) responseText.textContent = '';
+
+    try {
+      const apiKey = await getGeminiKey();
+      const { dataByDate, days, startStr, endStr } = _chatContext;
+      const summary = buildSummary(dataByDate, days);
+
+      const prompt =
+        `You are a health data analyst helping a Fibromyalgia patient understand their symptom tracker data.\n` +
+        `Date range analyzed: ${startStr} to ${endStr} (${summary.length} days).\n` +
+        `Scores are 1-10: fatigue lower=better; mood/sleep quality/functionality higher=better.\n` +
+        `Data: ${JSON.stringify(summary)}\n\n` +
+        `The patient asks: "${question}"\n\n` +
+        `Respond in plain English, 3-6 sentences. Be specific and reference actual dates or values from the data where helpful. ` +
+        `Do not use markdown formatting. End with a one-sentence reminder that this is not medical advice.`;
+
+      const response = await callGeminiRaw(apiKey, prompt);
+      if (responseText) responseText.textContent = response;
+    } catch (err) {
+      console.error('[AI Chat] error:', err);
+      if (responseText) {
+        responseText.textContent = err.isRateLimit
+          ? '\u23f1 AI quota reached \u2014 please try again shortly.'
+          : '\u26a0\ufe0f Could not get a response: ' + err.message;
+      }
+    } finally {
+      if (sendBtn) {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send`;
+      }
+    }
+  }
+
+  // ---------- wire up AI Chat interaction (called after panel is shown) ----------
+  function initChatPanel() {
+    if (_chatWired) return; // only wire once
+
+    const sendBtn  = document.getElementById('aiChatSendBtn');
+    const textarea = document.getElementById('aiChatInput');
+    const chips    = document.querySelectorAll('.ai-chat-chip');
+
+    if (!sendBtn || !textarea) {
+      // Panel not in DOM yet — will be wired on next showChatPanel() call
+      return;
+    }
 
     // Suggestion chips fill the textarea
     chips.forEach(chip => {
@@ -335,7 +390,6 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
       });
     });
 
-    // Send on button click or Ctrl+Enter
     sendBtn.addEventListener('click', askAI);
     textarea.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
@@ -344,52 +398,17 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
       }
     });
 
-    async function askAI() {
-      const question = textarea.value.trim();
-      if (!question) {
-        textarea.focus();
-        return;
-      }
+    _chatWired = true;
+    console.log('[AI Chat] Send button wired.');
+  }
 
-      if (!_chatContext) {
-        if (responseBox) responseBox.style.display = '';
-        if (responseText) responseText.textContent = '\u26a0\ufe0f Please run Analyze first so the AI has data to work with.';
-        return;
-      }
-
-      // Show loading state
-      sendBtn.disabled = true;
-      sendBtn.innerHTML = `<span class="ai-chat-spinner" aria-hidden="true"></span> Thinking…`;
-      if (responseBox) responseBox.style.display = '';
-      if (responseText) responseText.textContent = '';
-
-      try {
-        const apiKey = await getGeminiKey();
-        const { dataByDate, days, startStr, endStr } = _chatContext;
-        const summary = buildSummary(dataByDate, days);
-
-        const prompt =
-          `You are a health data analyst helping a Fibromyalgia patient understand their symptom tracker data.\n` +
-          `Date range analyzed: ${startStr} to ${endStr} (${summary.length} days).\n` +
-          `Scores are 1-10: fatigue lower=better; mood/sleep quality/functionality higher=better.\n` +
-          `Data: ${JSON.stringify(summary)}\n\n` +
-          `The patient asks: "${question}"\n\n` +
-          `Respond in plain English, 3-6 sentences. Be specific and reference actual dates or values from the data where helpful. ` +
-          `Do not use markdown formatting. End with a one-sentence reminder that this is not medical advice.`;
-
-        const response = await callGeminiRaw(apiKey, prompt);
-        if (responseText) responseText.textContent = response;
-      } catch (err) {
-        console.error('[AI Chat] error:', err);
-        if (responseText) {
-          responseText.textContent = err.isRateLimit
-            ? '\u23f1 AI quota reached — please try again shortly.'
-            : '\u26a0\ufe0f Could not get a response: ' + err.message;
-        }
-      } finally {
-        sendBtn.disabled = false;
-        sendBtn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send`;
-      }
+  // ---------- show AI Chat panel once data is loaded ----------
+  function showChatPanel() {
+    const panel = document.getElementById('aiChatPanel');
+    if (panel) {
+      panel.style.display = '';
+      // Wire listeners now that the panel is visible in the DOM
+      initChatPanel();
     }
   }
 
@@ -448,6 +467,7 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
     _hasRenderedInsights = false;
     _inflight = false;
     _chatContext = null;
+    _chatWired = false; // allow re-wiring on next Analyze
     const panel = document.getElementById('aiChatPanel');
     if (panel) panel.style.display = 'none';
     const responseBox = document.getElementById('aiChatResponse');
@@ -458,13 +478,5 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
 
   window.generateInsights = generateInsights;
   window.resetInsights = resetInsights;
-
-  // Init chat wiring after DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initChatPanel);
-  } else {
-    // partials may load after DOMContentLoaded — use a short delay as safety net
-    setTimeout(initChatPanel, 100);
-  }
 
 })();
