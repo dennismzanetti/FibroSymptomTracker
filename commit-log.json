@@ -1,5 +1,12 @@
 [
   {
+    "sha": "ed700b3ba36e5bf9b6d6760c72eeaecfac821f71",
+    "short": "ed700b3",
+    "date": "2026-06-26T14:19:19-04:00",
+    "message": "fix: wire AI Chat send button after panel is shown, not at page load",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ed700b3ba36e5bf9b6d6760c72eeaecfac821f71"
+  },
+  {
     "sha": "a0ff999eb60471c43d38a25ed3520cf3ea523533",
     "short": "a0ff999",
     "date": "2026-06-26T14:08:43-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T12:21:30-04:00",
     "message": "Add AI Insights panel to Analysis tab using Google Gemini",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/6f14a1842e52dbfb545014d439ceb6f3a49d45f8"
-  },
-  {
-    "sha": "7f57473e97c929c85e3bbaef58f9a3805579fff0",
-    "short": "7f57473",
-    "date": "2026-06-26T12:15:58-04:00",
-    "message": "Rename History tab to Analysis and reorder between Mood and Medications",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7f57473e97c929c85e3bbaef58f9a3805579fff0"
   }
 ]
