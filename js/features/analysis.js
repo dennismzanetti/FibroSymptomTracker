@@ -165,23 +165,20 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
   // ---------- sub-tab switching ----------
   function initSubTabs() {
     if (_subTabsWired) return;
-    const insightsBtn = document.getElementById('subTabInsightsBtn');
-    const askBtn      = document.getElementById('subTabAskBtn');
+    const insightsBtn  = document.getElementById('subTabInsightsBtn');
+    const askBtn       = document.getElementById('subTabAskBtn');
     const insightsPane = document.getElementById('subPaneInsights');
     const askPane      = document.getElementById('subPaneAsk');
     if (!insightsBtn || !askBtn) return;
 
     function switchTo(tab) {
       const isInsights = tab === 'insights';
-      insightsBtn.classList.toggle('analysis-subtab-btn--active', isInsights);
-      insightsBtn.setAttribute('aria-selected', isInsights ? 'true' : 'false');
-      askBtn.classList.toggle('analysis-subtab-btn--active', !isInsights);
-      askBtn.setAttribute('aria-selected', isInsights ? 'false' : 'true');
-      insightsPane.classList.toggle('analysis-subtab-pane--active', isInsights);
+      insightsBtn.classList.toggle('active', isInsights);
+      insightsBtn.setAttribute('aria-selected', String(isInsights));
+      askBtn.classList.toggle('active', !isInsights);
+      askBtn.setAttribute('aria-selected', String(!isInsights));
       insightsPane.style.display = isInsights ? '' : 'none';
-      askPane.classList.toggle('analysis-subtab-pane--active', !isInsights);
       askPane.style.display = isInsights ? 'none' : '';
-      // Wire chat on first visit to Ask tab
       if (!isInsights) initChatPanel();
     }
 
@@ -224,7 +221,7 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
       if (responseText) responseText.textContent = response;
     } catch (err) {
       console.error('[AI Chat] error:', err);
-      if (responseText) responseText.textContent = err.isRateLimit ? '\u23f1 AI quota reached \u2014 please try again shortly.' : '\u26a0\ufe0f Could not get a response: ' + err.message;
+      if (responseText) responseText.textContent = err.isRateLimit ? '\u23f1 AI quota reached — please try again shortly.' : '\u26a0\ufe0f Could not get a response: ' + err.message;
     } finally {
       if (sendBtn) {
         sendBtn.disabled = false;
@@ -302,15 +299,15 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
     if (bar)     bar.style.display = 'none';
     if (preHint) preHint.style.display = '';
 
-    // Reset sub-tabs back to Insights as active
+    // Reset to Insights tab as active
     const insightsBtn  = document.getElementById('subTabInsightsBtn');
     const askBtn       = document.getElementById('subTabAskBtn');
     const insightsPane = document.getElementById('subPaneInsights');
     const askPane      = document.getElementById('subPaneAsk');
-    if (insightsBtn) { insightsBtn.classList.add('analysis-subtab-btn--active'); insightsBtn.setAttribute('aria-selected', 'true'); }
-    if (askBtn)      { askBtn.classList.remove('analysis-subtab-btn--active'); askBtn.setAttribute('aria-selected', 'false'); }
-    if (insightsPane) { insightsPane.style.display = ''; insightsPane.classList.add('analysis-subtab-pane--active'); }
-    if (askPane)      { askPane.style.display = 'none'; askPane.classList.remove('analysis-subtab-pane--active'); }
+    if (insightsBtn) { insightsBtn.classList.add('active'); insightsBtn.setAttribute('aria-selected', 'true'); }
+    if (askBtn)      { askBtn.classList.remove('active'); askBtn.setAttribute('aria-selected', 'false'); }
+    if (insightsPane) insightsPane.style.display = '';
+    if (askPane)      askPane.style.display = 'none';
 
     const responseBox = document.getElementById('aiChatResponse');
     if (responseBox) responseBox.style.display = 'none';

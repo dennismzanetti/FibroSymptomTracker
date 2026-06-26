@@ -25,50 +25,35 @@
     </div>
 
     <!-- Sub-tab bar — hidden until Analyze is run -->
-    <div id="analysisSubTabs" class="analysis-subtabs" style="display:none;">
-      <nav class="analysis-subtab-nav" role="tablist" aria-label="Analysis panels">
+    <div id="analysisSubTabs" style="display:none;">
+      <div class="med-sub-tabs" role="tablist" aria-label="Analysis panels">
         <button
           id="subTabInsightsBtn"
-          class="analysis-subtab-btn analysis-subtab-btn--active"
+          class="ct-sub-tab-btn active"
           role="tab"
           aria-selected="true"
           aria-controls="subPaneInsights"
           data-subtab="insights"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M12 16v-4M12 8h.01"/>
-          </svg>
-          AI Insights
-        </button>
+        >AI Insights</button>
         <button
           id="subTabAskBtn"
-          class="analysis-subtab-btn"
+          class="ct-sub-tab-btn"
           role="tab"
           aria-selected="false"
           aria-controls="subPaneAsk"
           data-subtab="ask"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-          </svg>
-          Ask AI
-        </button>
-      </nav>
+        >Ask AI</button>
+      </div>
 
       <!-- Pane: AI Insights -->
-      <div id="subPaneInsights" class="analysis-subtab-pane analysis-subtab-pane--active" role="tabpanel" aria-labelledby="subTabInsightsBtn">
-        <!-- AI Insights panel — populated by analysis.js after data loads -->
+      <div id="subPaneInsights" role="tabpanel" aria-labelledby="subTabInsightsBtn">
         <div id="aiInsightsContainer" class="ai-insights-placeholder">
           <p class="ai-insights-hint">&#10024; Select a date range and click Analyze to generate AI insights.</p>
         </div>
       </div>
 
       <!-- Pane: Ask AI -->
-      <div id="subPaneAsk" class="analysis-subtab-pane" role="tabpanel" aria-labelledby="subTabAskBtn" style="display:none;">
-        <!-- AI Chat Panel -->
+      <div id="subPaneAsk" role="tabpanel" aria-labelledby="subTabAskBtn" style="display:none;">
         <div id="aiChatPanel" class="ai-chat-panel">
           <p class="ai-chat-subtitle">Ask a custom question about the data you just analyzed. The AI has full context of your loaded entries.</p>
 
