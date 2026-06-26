@@ -273,6 +273,11 @@
         }
       });
 
+      // --- Trigger AI Insights after table renders ---
+      if (typeof window.generateInsights === 'function') {
+        window.generateInsights(dataByDate, days, startStr, endStr);
+      }
+
     } catch (err) {
       console.error('History load error:', err);
       container.innerHTML = '<p class="history-empty">&#x26A0;&#xFE0F; Failed to load history. Check your connection.</p>';
