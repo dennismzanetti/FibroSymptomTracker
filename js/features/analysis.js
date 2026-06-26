@@ -1,11 +1,12 @@
 // analysis.js — AI Insights panel for the Analysis (History) tab
 // Fetches Gemini API key from Firestore config, builds a structured prompt
-// from loaded history data, calls Gemini 2.0 Flash, and renders insight cards.
+// from loaded history data, calls Gemini 2.0 Flash Lite, and renders insight cards.
 
 (function () {
 
   // ---------- Gemini config ----------
-  const GEMINI_MODEL = 'gemini-2.0-flash';
+  // gemini-2.0-flash-lite: current stable model, no thinking tokens, fast, cost-efficient
+  const GEMINI_MODEL = 'gemini-2.0-flash-lite';
   const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
   // ---------- fetch API key from Firestore (auth-gated) ----------
@@ -220,7 +221,6 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
       </div>
     `;
 
-    // Start countdown and auto-enable the retry button
     if (retrySeconds) {
       const btn = container.querySelector('.ai-insights-retry-btn');
       const countdownEl = container.querySelector('.ai-retry-countdown');
