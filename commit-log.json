@@ -1,5 +1,12 @@
 [
   {
+    "sha": "57d2572b76ce84d8a3b43502c5ae66b92633fc39",
+    "short": "57d2572",
+    "date": "2026-06-26T14:32:41-04:00",
+    "message": "Fix med-item-body: use spans so CSS grid columns apply",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/57d2572b76ce84d8a3b43502c5ae66b92633fc39"
+  },
+  {
     "sha": "ed700b3ba36e5bf9b6d6760c72eeaecfac821f71",
     "short": "ed700b3",
     "date": "2026-06-26T14:19:19-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T12:23:45-04:00",
     "message": "Add analysis.js script tag to index.html and AI insights styles to history.css",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b4c8963299a48a65e7386156e47e1bc70c546c34"
-  },
-  {
-    "sha": "6f14a1842e52dbfb545014d439ceb6f3a49d45f8",
-    "short": "6f14a18",
-    "date": "2026-06-26T12:21:30-04:00",
-    "message": "Add AI Insights panel to Analysis tab using Google Gemini",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/6f14a1842e52dbfb545014d439ceb6f3a49d45f8"
   }
 ]
