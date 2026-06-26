@@ -1,5 +1,12 @@
 [
   {
+    "sha": "7f57473e97c929c85e3bbaef58f9a3805579fff0",
+    "short": "7f57473",
+    "date": "2026-06-26T12:15:58-04:00",
+    "message": "Rename History tab to Analysis and reorder between Mood and Medications",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7f57473e97c929c85e3bbaef58f9a3805579fff0"
+  },
+  {
     "sha": "0771c88becb05b542ca72247db24b8d694fa99b8",
     "short": "0771c88",
     "date": "2026-06-25T23:39:28-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T16:48:39-04:00",
     "message": "Update journal CSS: replace old journal/heatmap styles with jv3 day-card styles",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/a62ac6dce4c50a0d806a97a201ec2651ff5738d0"
-  },
-  {
-    "sha": "76497e440494fab0866e8ffd6bda3096c2ec37ce",
-    "short": "76497e4",
-    "date": "2026-06-24T16:45:45-04:00",
-    "message": "Redesign journal tab: unified chronological notes feed, remove heatmap",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/76497e440494fab0866e8ffd6bda3096c2ec37ce"
   }
 ]
