@@ -185,6 +185,9 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
     insightsBtn.addEventListener('click', () => switchTo('insights'));
     askBtn.addEventListener('click', () => switchTo('ask'));
     _subTabsWired = true;
+
+    // Always enforce AI Insights as the active tab on init
+    switchTo('insights');
   }
 
   // ---------- Ask AI send logic ----------
@@ -245,13 +248,6 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
     _chatWired = true;
   }
 
-  // ---------- init sub-tabs on page load ----------
-  function showSubTabs() {
-    // Sub-tabs are always visible; just wire them if not yet done
-    _chatContext = arguments[0] ? { dataByDate: arguments[0], days: arguments[1], startStr: arguments[2], endStr: arguments[3] } : _chatContext;
-    initSubTabs();
-  }
-
   // ---------- public: generate insights ----------
   async function generateInsights(dataByDate, days, startStr, endStr) {
     _chatContext = { dataByDate, days, startStr, endStr };
@@ -298,26 +294,16 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
       container.innerHTML = '<p class="ai-insights-hint">&#10024; Select a date range and click Analyze to generate AI insights.</p>';
     }
 
-    // Reset to Insights tab as active
-    const insightsBtn  = document.getElementById('subTabInsightsBtn');
-    const askBtn       = document.getElementById('subTabAskBtn');
-    const insightsPane = document.getElementById('subPaneInsights');
-    const askPane      = document.getElementById('subPaneAsk');
-    if (insightsBtn) { insightsBtn.classList.add('active'); insightsBtn.setAttribute('aria-selected', 'true'); }
-    if (askBtn)      { askBtn.classList.remove('active'); askBtn.setAttribute('aria-selected', 'false'); }
-    if (insightsPane) insightsPane.style.display = '';
-    if (askPane)      askPane.style.display = 'none';
-
     const responseBox = document.getElementById('aiChatResponse');
     if (responseBox) responseBox.style.display = 'none';
     const textarea = document.getElementById('aiChatInput');
     if (textarea) textarea.value = '';
 
-    // Re-wire sub-tabs
+    // Re-wire sub-tabs — switchTo('insights') is called inside initSubTabs()
     initSubTabs();
   }
 
-  // Wire sub-tabs as soon as the DOM is ready
+  // Wire sub-tabs as soon as partials are loaded
   document.addEventListener('partialsLoaded', initSubTabs);
 
   window.generateInsights = generateInsights;
