@@ -1,5 +1,12 @@
 [
   {
+    "sha": "5faa1de71566f787401ae7c0842ba8f7180566df",
+    "short": "5faa1de",
+    "date": "2026-06-26T12:41:10-04:00",
+    "message": "docs: add Analysis tab and Gemini AI Insights setup to README",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/5faa1de71566f787401ae7c0842ba8f7180566df"
+  },
+  {
     "sha": "a245eb68260951223ee08fea04b7ff43cd7ff18f",
     "short": "a245eb6",
     "date": "2026-06-26T12:39:02-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T17:12:43-04:00",
     "message": "fix: journal notes table column bleed — use auto layout, wrap long labels",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/4d37e2f38218c20fc4dba78bdf8b2b10872d9110"
-  },
-  {
-    "sha": "22016bbc1b2ba0506b71218ba03ea0c122e0c4df",
-    "short": "22016bb",
-    "date": "2026-06-24T17:07:26-04:00",
-    "message": "fix: remove stray extra ) in switchToTab causing SyntaxError at line 656",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/22016bbc1b2ba0506b71218ba03ea0c122e0c4df"
   }
 ]
