@@ -85,10 +85,10 @@ function collectNotes(d) {
     const b = d.functionality?.[key] || {};
     const blockScore = typeof b.score === "number" ? b.score : null;
     if (b.symptoms && b.symptoms.trim()) {
-      notes.push({ source: "functionality", label: `Symptoms · ${label}`, text: b.symptoms.trim(), score: blockScore });
+      notes.push({ source: "functionality", label: `Symptoms \u00b7 ${label}`, text: b.symptoms.trim(), score: blockScore });
     }
     if (b.activity && b.activity.trim()) {
-      notes.push({ source: "functionality", label: `Activity · ${label}`, text: b.activity.trim(), score: blockScore });
+      notes.push({ source: "functionality", label: `Activity \u00b7 ${label}`, text: b.activity.trim(), score: blockScore });
     }
   });
 
@@ -163,7 +163,7 @@ function chartCellHtml({ id, canvasCls, label, badge = '', ariaLabel, isLast = f
 
 function renderMiniCharts(allDocsMap) {
 
-  // ── Functionality sparklines ───────────────────────────────────
+  // ── Functionality sparklines ───────────────────────────────────────────────
   document.querySelectorAll('.jv3-func-chart-canvas').forEach(canvas => {
     const dateStr = canvas.id.replace('jv3-func-chart-', '');
     const dates   = sevenDayWindow(dateStr);
@@ -228,7 +228,7 @@ function renderMiniCharts(allDocsMap) {
     });
   });
 
-  // ── Sleep sparklines ───────────────────────────────────────────
+  // ── Sleep sparklines ───────────────────────────────────────────────────
   document.querySelectorAll('.jv3-sleep-chart-canvas').forEach(canvas => {
     const dateStr  = canvas.id.replace('jv3-sleep-chart-', '');
     const dates    = sevenDayWindow(dateStr);
@@ -279,7 +279,7 @@ function renderMiniCharts(allDocsMap) {
                 const d   = dates[ctx.dataIndex];
                 const doc = allDocsMap[d];
                 const q   = doc?.sleep?.quality;
-                const qs  = q != null ? ` · Quality: ${q}/10` : '';
+                const qs  = q != null ? ` \u00b7 Quality: ${q}/10` : '';
                 return `Sleep: ${ctx.parsed.y.toFixed(1)}h${qs}`;
               }
             }
@@ -297,7 +297,7 @@ function renderMiniCharts(allDocsMap) {
     });
   });
 
-  // ── Mood sparklines ────────────────────────────────────────────
+  // ── Mood sparklines ─────────────────────────────────────────────────────
   document.querySelectorAll('.jv3-mood-chart-canvas').forEach(canvas => {
     const dateStr = canvas.id.replace('jv3-mood-chart-', '');
     const dates   = sevenDayWindow(dateStr);
@@ -363,7 +363,7 @@ function renderMiniCharts(allDocsMap) {
 // ================================================================
 
 function statsBannerHtml(d, dateStr) {
-  // ── Functionality ──────────────────────────────────────────────
+  // ── Functionality ────────────────────────────────────────────────────────
   const scores = TIME_BLOCKS.map(({ key }) => {
     const s = d.functionality?.[key]?.score;
     return typeof s === "number" ? s : null;
@@ -374,29 +374,24 @@ function statsBannerHtml(d, dateStr) {
     : null;
   const avgBadge = avg !== null ? scorePillHtml(avg) : '<span class="jv3-dash">&mdash;</span>';
 
-  // ── Sleep ──────────────────────────────────────────────────────
+  // ── Sleep ──────────────────────────────────────────────────────────────
   const sl = d.sleep || {};
-  const hoursVal = sl.hours  != null ? sl.hours  : null;
+  const hoursVal = sl.hours   != null ? sl.hours   : null;
   const qualVal  = sl.quality != null ? sl.quality : null;
-  let qualLabel = '', qualCls = '';
-  if (qualVal != null) {
-    const t = scoreTier(qualVal);
-    if      (t <= 2) { qualLabel = 'Poor';      qualCls = 'jv3-qual-poor'; }
-    else if (t <= 3) { qualLabel = 'Fair';      qualCls = 'jv3-qual-mid';  }
-    else if (t <= 4) { qualLabel = 'Good';      qualCls = 'jv3-qual-good'; }
-    else             { qualLabel = 'Excellent'; qualCls = 'jv3-qual-good'; }
-  }
-  const sleepBadge = (hoursVal != null || qualLabel)
-    ? (hoursVal != null ? `${hoursVal}h` : '')
-      + (hoursVal != null && qualLabel ? ` &middot; ` : '')
-      + (qualLabel ? `<span class="${qualCls}">${qualLabel}</span>` : '')
-    : '';
 
-  // ── Mood ───────────────────────────────────────────────────────
+  // Hours badge: plain text e.g. "7h"
+  const hoursPart = hoursVal != null ? `<span class="jv3-sleep-hours">${hoursVal}h</span>` : '';
+  // Quality badge: colour-coded score pill
+  const qualPart  = qualVal  != null ? scorePillHtml(qualVal) : '';
+  // Separator only when both present
+  const sep = (hoursPart && qualPart) ? `<span class="jv3-sleep-sep">&middot;</span>` : '';
+  const sleepBadge = (hoursPart || qualPart) ? `${hoursPart}${sep}${qualPart}` : '';
+
+  // ── Mood ───────────────────────────────────────────────────────────────
   const moodScore = typeof d.mood?.score === 'number' ? d.mood.score : null;
   const moodBadge = moodScore !== null ? scorePillHtml(moodScore) : '<span class="jv3-dash">&mdash;</span>';
 
-  // ── Cells ──────────────────────────────────────────────────────
+  // ── Cells ────────────────────────────────────────────────────────────
   const funcCell  = chartCellHtml({
     id: `jv3-func-chart-${dateStr}`,
     canvasCls: 'jv3-func-chart-canvas',
@@ -545,7 +540,7 @@ function renderRangeLabel(docs) {
   const label = document.createElement("p");
   label.id = "jv3-range-label";
   label.className = "jv3-range-label";
-  label.textContent = `Showing ${count} ${noun} · ${from} – ${to}`;
+  label.textContent = `Showing ${count} ${noun} \u00b7 ${from} \u2013 ${to}`;
 
   const container = document.getElementById("journalOutput");
   if (container) container.parentElement.insertBefore(label, container);
