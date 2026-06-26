@@ -2,23 +2,19 @@
   <section id="careteam-tab" class="tab">
     <h2>Care Team</h2>
     <div class="med-sub-tabs">
-      <button class="ct-sub-tab-btn active" data-ct-view="ctProvidersView">My Providers</button>
-      <button class="ct-sub-tab-btn" data-ct-view="ctAppointmentsView">Appointments</button>
+      <button class="ct-sub-tab-btn active" data-ct-view="ctProvidersView">Providers</button>
+      <button class="ct-sub-tab-btn" data-ct-view="ctApptsView">Appointments</button>
       <button class="ct-sub-tab-btn" data-ct-view="ctPrintView">Print</button>
     </div>
-
-    <!-- Providers view -->
     <div id="ctProvidersView" class="ct-view">
       <div style="display:flex; justify-content:flex-end; margin-bottom:var(--space-4);">
-        <button id="openProviderAddModalBtn" class="btn btn-primary">&#43; Add Team Member</button>
+        <button id="openCtAddModalBtn" class="btn btn-primary">&#43; Add Provider</button>
       </div>
-      <div class="card"><h3>My Care Team</h3><ul id="ctProviderList"></ul></div>
+      <div class="card"><h3>My Care Team</h3><ul id="ctProviderList" class="ct-provider-list"></ul></div>
     </div>
-
-    <!-- Appointments view -->
-    <div id="ctAppointmentsView" class="ct-view" style="display:none;">
+    <div id="ctApptsView" class="ct-view" style="display:none;">
       <div style="display:flex; justify-content:flex-end; margin-bottom:var(--space-4);">
-        <button id="openApptModalBtn" class="btn btn-primary">&#43; Add Appointment</button>
+        <button id="openApptAddModalBtn" class="btn btn-primary">&#43; Add Appointment</button>
       </div>
       <div class="card">
         <h3>Upcoming Appointments</h3>
@@ -29,40 +25,15 @@
         <ul id="ctPastAppts" class="ct-appt-list"><li class="ct-empty">Loading&#8230;</li></ul>
       </div>
     </div>
-
-    <!-- Print view -->
     <div id="ctPrintView" class="ct-view" style="display:none;">
       <div class="card">
         <h3>Print</h3>
-        <p style="font-size:0.875rem;color:var(--color-text-muted);margin-bottom:1rem;">Generates a clean, formatted copy of your care team providers and appointments.</p>
-        <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
-         <button id="printCareTeamBtn" class="btn btn-primary">
+        <p style="font-size:0.875rem;color:var(--color-text-muted);margin-bottom:1rem;">Generates a print-ready summary of your care team and upcoming appointments.</p>
+        <button id="printCtBtn" class="btn btn-primary">Print Care Team
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;">
             <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
           </svg>
-          Print Care Team
         </button>
-          <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:var(--text-sm);color:var(--color-text);">
-            <input type="checkbox" id="includeAppointmentsChk" style="width:1.1rem;height:1.1rem;accent-color:var(--color-primary);">
-            Include Appointments
-          </label>
-        </div>
-      </div>
-      <div class="card" id="ctProviderPrintSection">
-        <h3>Providers</h3>
-        <table class="med-print-table">
-          <thead><tr><th>Name</th><th>Type</th><th>Specialty / Org</th><th>Phone</th><th>Address</th><th>Status</th><th>Notes</th></tr></thead>
-          <tbody id="ctProviderPrintTableBody"><tr><td colspan="7">Loading&#8230;</td></tr></tbody>
-        </table>
-      </div>
-      <div class="card" id="ctApptPrintSection">
-        <h3>Appointments</h3>
-        <table class="med-print-table">
-          <thead><tr><th>Provider</th><th>Date / Time</th><th>Location</th><th>Purpose</th><th>Status</th><th>Notes</th></tr></thead>
-          <tbody id="ctApptPrintTableBody"><tr><td colspan="6">Loading&#8230;</td></tr></tbody>
-        </table>
       </div>
     </div>
-
   </section>
-
