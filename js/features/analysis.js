@@ -55,37 +55,18 @@
 
   // ---------- build the prompt ----------
   function buildPrompt(summary, startStr, endStr) {
-    const dataJson = JSON.stringify(summary, null, 2);
-    return `You are a compassionate health data analyst helping someone who has Fibromyalgia track and understand their symptoms. Analyze the following daily symptom data and provide clear, empathetic, actionable insights.
+    const dataJson = JSON.stringify(summary);
+    return `You are a compassionate health data analyst helping someone with Fibromyalgia understand their symptoms. Analyze the daily data below and respond with ONLY a valid JSON object — no markdown, no code fences, no explanation outside the JSON.
 
-Date range: ${startStr} to ${endStr}
-Number of days with data: ${summary.length}
+IMPORTANT: Keep ALL string values concise (max 25 words each). The entire JSON response must be under 800 tokens.
 
-Data (scores are 1-10 unless noted; for pain/fatigue lower is better; for mood/sleep/functionality higher is better):
-${dataJson}
+Date range: ${startStr} to ${endStr} (${summary.length} days)
+Scores 1-10: pain/fatigue lower=better; mood/sleep/functionality higher=better.
 
-Please respond with ONLY a valid JSON object in this exact format (no markdown, no code fences, just raw JSON):
-{
-  "patterns": [
-    "A specific pattern you noticed (e.g. sleep quality below 5 tends to precede higher fatigue)",
-    "Another pattern..."
-  ],
-  "bestDays": {
-    "dates": ["YYYY-MM-DD", "YYYY-MM-DD"],
-    "commonFactors": "What these good days had in common"
-  },
-  "challengingDays": {
-    "dates": ["YYYY-MM-DD", "YYYY-MM-DD"],
-    "commonFactors": "What these harder days had in common"
-  },
-  "recommendations": [
-    "A gentle, specific recommendation based on the data",
-    "Another recommendation..."
-  ],
-  "summary": "A 2-3 sentence compassionate overview of this period."
-}
+Data: ${dataJson}
 
-Keep language warm, supportive, and specific to the data. Do not give medical advice. Focus on observable patterns only.`;
+Respond with ONLY this JSON structure:
+{"patterns":["pattern 1 (max 25 words)","pattern 2"],"bestDays":{"dates":["YYYY-MM-DD"],"commonFactors":"brief note (max 20 words)"},"challengingDays":{"dates":["YYYY-MM-DD"],"commonFactors":"brief note (max 20 words)"},"recommendations":["rec 1 (max 20 words)","rec 2"],"summary":"2 sentence compassionate overview (max 40 words total)"}`;
   }
 
   // ---------- call Gemini API ----------
@@ -95,7 +76,8 @@ Keep language warm, supportive, and specific to the data. Do not give medical ad
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: {
         temperature: 0.4,
-        maxOutputTokens: 1024,
+        maxOutputTokens: 2048,
+        responseMimeType: 'application/json',
       }
     };
 
@@ -134,8 +116,8 @@ Keep language warm, supportive, and specific to the data. Do not give medical ad
       `<li class="ai-insight-item">${r}</li>`
     ).join('');
 
-    const bestDates = (insights.bestDays?.dates || []).map(fmt).join(', ') || '—';
-    const hardDates = (insights.challengingDays?.dates || []).map(fmt).join(', ') || '—';
+    const bestDates = (insights.bestDays?.dates || []).map(fmt).join(', ') || '\u2014';
+    const hardDates = (insights.challengingDays?.dates || []).map(fmt).join(', ') || '\u2014';
 
     container.innerHTML = `
       <div class="ai-insights-panel">
@@ -234,15 +216,10 @@ Keep language warm, supportive, and specific to the data. Do not give medical ad
   }
 
   // ---------- public entry point ----------
-  // Call this after history data is loaded.
-  // dataByDate: { 'YYYY-MM-DD': { ...firestoreData } }
-  // days: array of 'YYYY-MM-DD' strings that have data
-  // startStr / endStr: range strings
   async function generateInsights(dataByDate, days, startStr, endStr) {
     const container = document.getElementById('aiInsightsContainer');
     if (!container) return;
 
-    // Auth guard — only run if user is signed in
     const user = auth.currentUser;
     if (!user) {
       renderError('Sign in to enable AI insights.', container);
@@ -257,9 +234,9 @@ Keep language warm, supportive, and specific to the data. Do not give medical ad
     renderLoading(container);
 
     try {
-      const apiKey  = await getGeminiKey();
-      const summary = buildSummary(dataByDate, days);
-      const prompt  = buildPrompt(summary, startStr, endStr);
+      const apiKey   = await getGeminiKey();
+      const summary  = buildSummary(dataByDate, days);
+      const prompt   = buildPrompt(summary, startStr, endStr);
       const insights = await callGemini(apiKey, prompt);
       renderInsights(insights, container);
     } catch (err) {
