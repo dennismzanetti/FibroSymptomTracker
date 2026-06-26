@@ -1,5 +1,12 @@
 [
   {
+    "sha": "b6b4b5d8094f5d3927360c70908d66e6b1e66ffb",
+    "short": "b6b4b5d",
+    "date": "2026-06-26T14:52:12-04:00",
+    "message": "Remove oval border from sub-tab buttons (radius-full → radius-sm)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b6b4b5d8094f5d3927360c70908d66e6b1e66ffb"
+  },
+  {
     "sha": "d3ec7ede04ac66f43eae871d83da2ec5e424c797",
     "short": "d3ec7ed",
     "date": "2026-06-26T14:48:47-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T12:45:12-04:00",
     "message": "Fix: friendly 429 rate-limit error with retry button, parse retryDelay from response",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e6dbc836778fb4d56b4b4d3ede92aa2854f1cb0a"
-  },
-  {
-    "sha": "43d6e0d4db53f1deb001c86cfec76b59221e91b0",
-    "short": "43d6e0d",
-    "date": "2026-06-26T12:42:51-04:00",
-    "message": "Fix: switch to gemini-2.0-flash, raise maxOutputTokens to 4096, add finishReason truncation guard",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/43d6e0d4db53f1deb001c86cfec76b59221e91b0"
   }
 ]
