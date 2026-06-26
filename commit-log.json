@@ -1,5 +1,12 @@
 [
   {
+    "sha": "33ddfd988ad47b4c3cf2ffb9ddf94b65717c1e81",
+    "short": "33ddfd9",
+    "date": "2026-06-26T13:21:47-04:00",
+    "message": "Reset insights guard on Analyze button click and tab activate",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/33ddfd988ad47b4c3cf2ffb9ddf94b65717c1e81"
+  },
+  {
     "sha": "3f39b3bd6dc26e6bee094dac7188fc3f3816d34c",
     "short": "3f39b3b",
     "date": "2026-06-26T13:17:08-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-25T19:51:10-04:00",
     "message": "feat(journal): move quick tags into day header, right-justified",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e3295d16c263d002d6c422d70040ab38331fb313"
-  },
-  {
-    "sha": "50067848688b3355d92e30144d4bd35d6cad706a",
-    "short": "5006784",
-    "date": "2026-06-25T19:48:40-04:00",
-    "message": "feat(journal): unify stats banner — 3 equal chart cells (avg func, func trend, sleep trend)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/50067848688b3355d92e30144d4bd35d6cad706a"
   }
 ]
