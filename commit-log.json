@@ -1,5 +1,12 @@
 [
   {
+    "sha": "a656e7a9e1f4ccd1b00edc55851b968626c97617",
+    "short": "a656e7a",
+    "date": "2026-06-26T12:29:06-04:00",
+    "message": "feat(journal): show only relevant chart cells based on active filter",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/a656e7a9e1f4ccd1b00edc55851b968626c97617"
+  },
+  {
     "sha": "ae6e1fd687dabdf52e929388f6c03a4599a7f600",
     "short": "ae6e1fd",
     "date": "2026-06-26T12:24:43-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T17:00:57-04:00",
     "message": "Redesign Mood tab: add chart, stat strip, and notes table",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/80b8ed8d23936b912626dae10f3998865c97e254"
-  },
-  {
-    "sha": "a56753c546b66962efa66e09c6b155bd1f5d7fef",
-    "short": "a56753c",
-    "date": "2026-06-24T17:00:02-04:00",
-    "message": "Journal redesign: table layout, plain category labels, remove heatmap",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/a56753c546b66962efa66e09c6b155bd1f5d7fef"
   }
 ]
