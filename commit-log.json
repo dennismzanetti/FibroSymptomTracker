@@ -1,5 +1,12 @@
 [
   {
+    "sha": "c8827faf857df01a637e91d3a5430751c72ae189",
+    "short": "c8827fa",
+    "date": "2026-06-26T15:23:10-04:00",
+    "message": "Add list gap classes to medList, suppList, and ctProviderList",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c8827faf857df01a637e91d3a5430751c72ae189"
+  },
+  {
     "sha": "077babf3c529e9e7585980c96e1293d5dcbec38d",
     "short": "077babf",
     "date": "2026-06-26T15:18:08-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T13:17:08-04:00",
     "message": "Rename Load History button to Analyze, add icon, align controls vertically",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/3f39b3bd6dc26e6bee094dac7188fc3f3816d34c"
-  },
-  {
-    "sha": "cf8beee1f2aab8d383d58ee54184a5c2b40e1ada",
-    "short": "cf8beee",
-    "date": "2026-06-26T13:14:44-04:00",
-    "message": "Remove data table from Analysis tab — keep data load for AI Insights",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/cf8beee1f2aab8d383d58ee54184a5c2b40e1ada"
   }
 ]
