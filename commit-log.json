@@ -1,5 +1,12 @@
 [
   {
+    "sha": "346508c5470b7f59f16d9d815bbf770623bc902c",
+    "short": "346508c",
+    "date": "2026-06-26T14:00:26-04:00",
+    "message": "feat: add AI Chat panel styles to Analysis tab",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/346508c5470b7f59f16d9d815bbf770623bc902c"
+  },
+  {
     "sha": "f8c07d36f94aae3d52dddba9404ba687662564b4",
     "short": "f8c07d3",
     "date": "2026-06-26T13:59:51-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-25T23:28:34-04:00",
     "message": "feat(journal): show sleep quality as score pill in sleep stats banner cell",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e300aeba4a345ca92595fa1fc716a265bda42fb2"
-  },
-  {
-    "sha": "e32d53239d23d55450609152469fb1eea86c09f8",
-    "short": "e32d532",
-    "date": "2026-06-25T23:22:02-04:00",
-    "message": "fix(journal): remove gray background from jv3-stats-banner and card header",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e32d53239d23d55450609152469fb1eea86c09f8"
   }
 ]
