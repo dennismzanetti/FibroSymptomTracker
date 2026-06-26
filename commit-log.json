@@ -1,5 +1,12 @@
 [
   {
+    "sha": "c84b2287a74dcf49f7ece8d0edddfef9b35ee981",
+    "short": "c84b228",
+    "date": "2026-06-26T14:45:11-04:00",
+    "message": "feat: move date controls inside AI Insights sub-tab; show sub-tabs immediately",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c84b2287a74dcf49f7ece8d0edddfef9b35ee981"
+  },
+  {
     "sha": "7680e70a525f1aef9d3133560ce08453c3615971",
     "short": "7680e70",
     "date": "2026-06-26T14:42:00-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T12:41:10-04:00",
     "message": "docs: add Analysis tab and Gemini AI Insights setup to README",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/5faa1de71566f787401ae7c0842ba8f7180566df"
-  },
-  {
-    "sha": "a245eb68260951223ee08fea04b7ff43cd7ff18f",
-    "short": "a245eb6",
-    "date": "2026-06-26T12:39:02-04:00",
-    "message": "Fix: increase maxOutputTokens to 2048, add brevity instructions to prevent JSON truncation",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/a245eb68260951223ee08fea04b7ff43cd7ff18f"
   }
 ]
