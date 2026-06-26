@@ -57,7 +57,7 @@ FibroSymptomTracker is a personal health dashboard designed to help people with 
 
 ### 👥 Care Team
 - Maintain a directory of healthcare providers (name, specialty, phone, notes)
-- Print-friendly report generation (`print.js`) for sharing with providers
+- Print-friendly report generation (`js/output/print.js`) for sharing with providers
 
 ### ⚙️ Settings
 - User profile configuration
@@ -108,7 +108,7 @@ firebase deploy --only firestore:rules
 
 ### How It Works
 
-- When a date range with 3+ days of data is loaded in the Analysis tab, `analysis.js` retrieves the API key from Firestore, builds a compact prompt from the loaded data, and calls the Gemini API.
+- When a date range with 3+ days of data is loaded in the Analysis tab, `js/features/analysis.js` retrieves the API key from Firestore, builds a compact prompt from the loaded data, and calls the Gemini API.
 - The response is parsed and rendered as insight cards above the data table.
 - If no API key is configured, the panel is silently skipped — the rest of the Analysis tab functions normally.
 - All AI output is clearly labelled as observational and non-medical.
@@ -119,20 +119,19 @@ firebase deploy --only firestore:rules
 
 ### Frontend
 - **Vanilla HTML / CSS / JavaScript** — no frontend framework
-- **Partial-based HTML loading** — `loader.js` fetches HTML partials from the `partials/` directory and injects them into the DOM at runtime, keeping `index.html` lean
-- **Modular CSS** — styles split into per-feature files in `css/` (`base.css`, `layout.css`, `entry.css`, `history.css`, `journal.css`, `mood.css`, `medications.css`, `careteam.css`, `pain-map.css`) with `styles.css` as a legacy override layer
-- **Modular JS** — each tab has a corresponding module: `entry.js`, `history.js`, `journal.js`, `mood.js`, `medications.js`, `conditions.js`, `careteam.js`, `settings.js`, `trends.js`
-- `app.js` — main application controller and tab routing
-- `ui.js` — shared UI helpers (toasts, modals, tab switching)
-- `auth.js` — authentication state management
-- `diagnostics.js` — global error handling (loaded first)
-- `build-info.js` — static build stamp displayed in the footer (SHA + commit message)
+- **Partial-based HTML loading** — `js/core/loader.js` fetches HTML partials from the `partials/` directory and injects them into the DOM at runtime, keeping `index.html` lean
+- **Modular CSS** — styles split into per-feature files in `css/` with `styles.css` as a legacy override layer
+- **Modular JS** — organised into four subdirectories under `js/`:
+  - `js/core/` — app bootstrap, auth, Firebase init, partial loader, build stamp
+  - `js/features/` — one module per tab (entry, journal, history, analysis, mood, medications, conditions, careteam, trends, app router)
+  - `js/output/` — print/report generation and settings
+  - `js/utils/` — shared helpers (Firestore, dates, diagnostics, UI)
 
 ### Backend / Cloud
 - **Firebase Authentication** (v8 compat SDK) — user sign-in/sign-out
 - **Firebase Firestore** (v8 compat SDK) — cloud storage for all user data
-- `firebase-init.js` — Firebase app initialization and config
-- `cloud.js` — Firestore read/write helpers
+- `js/core/firebase-init.js` — Firebase app initialization and config
+- `js/utils/cloud.js` — Firestore read/write helpers
 
 ### Third-Party Libraries (CDN)
 | Library | Version | Use |
@@ -149,30 +148,32 @@ firebase deploy --only firestore:rules
 
 ```
 FibroSymptomTracker/
-├── index.html              # App shell — loads partials and scripts
-├── local-fibro.html        # Standalone single-file version (no cloud)
-├── favicon.svg             # App icon
-├── styles.css              # Legacy/global CSS overrides
-├── firestore.rules         # Firestore security rules
+├── index.html                    # App shell — loads partials and scripts
+├── favicon.svg                   # App icon
+├── styles.css                    # Legacy/global CSS overrides
+├── build-info.js                 # Static build stamp (root copy)
+├── firestore.rules               # Firestore security rules
 │
-├── css/                    # Modular stylesheets (one per feature)
-│   ├── base.css
-│   ├── layout.css
-│   ├── entry.css
-│   ├── history.css         # Includes Analysis tab / AI insights styles
-│   ├── journal.css
-│   ├── mood.css
-│   ├── medications.css
-│   ├── careteam.css
-│   └── pain-map.css
+├── css/                          # Modular stylesheets (one per feature)
+│   ├── base.css                  # Design tokens, resets, shared components
+│   ├── layout.css                # App shell, header, tabs, cards
+│   ├── entry.css                 # Today / Daily Entry tab
+│   ├── history.css               # Analysis tab + AI insights
+│   ├── journal.css               # Journal tab
+│   ├── mood.css                  # Mood tab
+│   ├── medications.css           # Medications tab
+│   ├── careteam.css              # Care Team tab
+│   ├── pain-map.css              # Pain Body Map
+│   ├── subtabs.css               # Sub-tab pill navigation (shared)
+│   └── analysis-subtabs.css      # Analysis tab sub-tab overrides
 │
-├── partials/               # HTML fragments loaded at runtime
+├── partials/                     # HTML fragments loaded at runtime
 │   ├── auth.html
 │   ├── header.html
 │   ├── modals.html
 │   ├── tab-today.html
 │   ├── tab-journal.html
-│   ├── tab-history.html    # Analysis tab content (history + AI insights)
+│   ├── tab-history.html          # Analysis tab content (history + AI insights)
 │   ├── tab-trends.html
 │   ├── tab-mood.html
 │   ├── tab-medications.html
@@ -181,33 +182,40 @@ FibroSymptomTracker/
 │   └── tab-settings.html
 │
 ├── js/
-│   └── features/
-│       ├── analysis.js     # AI Insights — Gemini API integration
-│       └── history.js      # Analysis tab data table logic
+│   ├── core/                     # App bootstrap & infrastructure
+│   │   ├── app.js                # Main controller and tab routing
+│   │   ├── auth.js               # Authentication state management
+│   │   ├── build-info.js         # Build stamp displayed in footer
+│   │   ├── firebase-init.js      # Firebase configuration and init
+│   │   └── loader.js             # HTML partial loader
+│   │
+│   ├── features/                 # One module per tab/feature
+│   │   ├── analysis.js           # AI Insights — Gemini API integration
+│   │   ├── careteam.js           # Care Team feature logic
+│   │   ├── conditions.js         # Conditions feature logic
+│   │   ├── entry.js              # Today entry feature logic
+│   │   ├── history.js            # Analysis tab data table logic
+│   │   ├── journal.js            # Journal tab logic
+│   │   ├── medications.js        # Medications feature logic
+│   │   ├── mood.js               # Mood tab logic
+│   │   └── trends.js             # Chart.js trend rendering
+│   │
+│   ├── output/                   # Reporting and settings
+│   │   ├── print.js              # Print/report generation
+│   │   └── settings.js           # Settings feature logic
+│   │
+│   └── utils/                    # Shared utility helpers
+│       ├── cloud.js              # Firestore read/write helpers
+│       ├── date.js               # Date utility functions
+│       ├── diagnostics.js        # Global error handler (loads first)
+│       └── ui.js                 # Shared UI utilities (toasts, modals)
 │
-├── app.js                  # Main controller, tab routing
-├── auth.js                 # Auth state management
-├── build-info.js           # Static build stamp
-├── careteam.js             # Care team feature logic
-├── cloud.js                # Firestore helpers
-├── conditions.js           # Conditions feature logic
-├── date.js                 # Date utility functions
-├── diagnostics.js          # Global error handler (loads first)
-├── entry.js                # Today entry feature logic
-├── firebase-init.js        # Firebase configuration and init
-├── history.js              # History tab logic
-├── journal.js              # Journal tab logic
-├── loader.js               # HTML partial loader
-├── medications.js          # Medications feature logic
-├── mood.js                 # Mood tab logic
-├── print.js                # Print/report generation
-├── settings.js             # Settings feature logic
-├── trends.js               # Chart.js trend rendering
-├── ui.js                   # Shared UI utilities
+├── dev/
+│   └── local-fibro.html          # Standalone single-file version (no cloud)
 │
-├── VERSION                 # Current version number
-├── CHANGELOG.md            # Version history
-└── commit-log.json         # Commit metadata for build footer
+├── VERSION                       # Current version number
+├── CHANGELOG.md                  # Version history
+└── commit-log.json               # Commit metadata for build footer
 ```
 
 ---
@@ -227,7 +235,7 @@ FibroSymptomTracker/
 4. Your data will be saved locally and synced to your Firestore collection.
 5. Optionally, follow the [AI Insights Setup](#ai-insights-setup) steps to enable the Gemini-powered Analysis panel.
 
-> **Offline / no-cloud use:** Open `local-fibro.html` directly — this is a self-contained single-file version that stores data in `localStorage` only.
+> **Offline / no-cloud use:** Open `dev/local-fibro.html` directly — this is a self-contained single-file version that stores data in `localStorage` only.
 
 ---
 
