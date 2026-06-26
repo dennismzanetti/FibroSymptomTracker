@@ -1,5 +1,12 @@
 [
   {
+    "sha": "80a69e68e7a11f1f9aa15a55ba3bdb39f5d421ad",
+    "short": "80a69e6",
+    "date": "2026-06-26T13:11:21-04:00",
+    "message": "Fix: add in-flight guard to prevent duplicate concurrent API calls",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/80a69e68e7a11f1f9aa15a55ba3bdb39f5d421ad"
+  },
+  {
     "sha": "16441c3c8194c736b0a8bb18cff0824bc64ed307",
     "short": "16441c3",
     "date": "2026-06-26T13:09:09-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-25T18:31:31-04:00",
     "message": "feat(journal): add 7-day functionality sparkline chart to each day card stats banner",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9925b623b9015f0a30e42c0ef210aa88d49cda9d"
-  },
-  {
-    "sha": "00670a3ab0873a24c142821d3c3906b2a80f4ff1",
-    "short": "00670a3",
-    "date": "2026-06-25T18:20:48-04:00",
-    "message": "Journal: render quick tags with daily entry pill styling (icons + colors)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/00670a3ab0873a24c142821d3c3906b2a80f4ff1"
   }
 ]
