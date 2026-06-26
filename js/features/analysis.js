@@ -243,22 +243,19 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
     sendBtn.addEventListener('click', askAI);
     textarea.addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); askAI(); } });
     _chatWired = true;
-    console.log('[AI Chat] Send button wired.');
   }
 
-  // ---------- show sub-tab bar ----------
+  // ---------- init sub-tabs on page load ----------
   function showSubTabs() {
-    const bar     = document.getElementById('analysisSubTabs');
-    const preHint = document.getElementById('analysisPreHint');
-    if (bar)     bar.style.display = '';
-    if (preHint) preHint.style.display = 'none';
+    // Sub-tabs are always visible; just wire them if not yet done
+    _chatContext = arguments[0] ? { dataByDate: arguments[0], days: arguments[1], startStr: arguments[2], endStr: arguments[3] } : _chatContext;
     initSubTabs();
   }
 
   // ---------- public: generate insights ----------
   async function generateInsights(dataByDate, days, startStr, endStr) {
     _chatContext = { dataByDate, days, startStr, endStr };
-    showSubTabs();
+    initSubTabs();
 
     const container = document.getElementById('aiInsightsContainer');
     if (!container) return;
@@ -294,10 +291,12 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
     _chatWired = false;
     _subTabsWired = false;
 
-    const bar     = document.getElementById('analysisSubTabs');
-    const preHint = document.getElementById('analysisPreHint');
-    if (bar)     bar.style.display = 'none';
-    if (preHint) preHint.style.display = '';
+    // Reset insights pane to hint text
+    const container = document.getElementById('aiInsightsContainer');
+    if (container) {
+      container.className = 'ai-insights-placeholder';
+      container.innerHTML = '<p class="ai-insights-hint">&#10024; Select a date range and click Analyze to generate AI insights.</p>';
+    }
 
     // Reset to Insights tab as active
     const insightsBtn  = document.getElementById('subTabInsightsBtn');
@@ -313,7 +312,13 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
     if (responseBox) responseBox.style.display = 'none';
     const textarea = document.getElementById('aiChatInput');
     if (textarea) textarea.value = '';
+
+    // Re-wire sub-tabs
+    initSubTabs();
   }
+
+  // Wire sub-tabs as soon as the DOM is ready
+  document.addEventListener('partialsLoaded', initSubTabs);
 
   window.generateInsights = generateInsights;
   window.resetInsights = resetInsights;

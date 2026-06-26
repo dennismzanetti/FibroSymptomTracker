@@ -2,30 +2,8 @@
   <section id="history-tab" class="tab">
     <h2>Analysis</h2>
 
-    <div class="history-controls">
-      <div class="history-controls-fields">
-        <div class="history-date-field">
-          <label for="historyFrom">From</label>
-          <input type="date" id="historyFrom" />
-        </div>
-        <div class="history-date-field">
-          <label for="historyTo">To</label>
-          <input type="date" id="historyTo" />
-        </div>
-        <button id="loadHistoryBtn" class="btn btn-primary history-analyze-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="M21 21l-4.35-4.35"/>
-            <path d="M11 8v6M8 11h6"/>
-          </svg>
-          Analyze
-        </button>
-      </div>
-    </div>
-
-    <!-- Sub-tab bar — hidden until Analyze is run -->
-    <div id="analysisSubTabs" style="display:none;">
+    <!-- Sub-tab bar — always visible -->
+    <div id="analysisSubTabs">
       <div class="med-sub-tabs" role="tablist" aria-label="Analysis panels">
         <button
           id="subTabInsightsBtn"
@@ -47,6 +25,30 @@
 
       <!-- Pane: AI Insights -->
       <div id="subPaneInsights" role="tabpanel" aria-labelledby="subTabInsightsBtn">
+
+        <!-- Date controls live here -->
+        <div class="history-controls">
+          <div class="history-controls-fields">
+            <div class="history-date-field">
+              <label for="historyFrom">From</label>
+              <input type="date" id="historyFrom" />
+            </div>
+            <div class="history-date-field">
+              <label for="historyTo">To</label>
+              <input type="date" id="historyTo" />
+            </div>
+            <button id="loadHistoryBtn" class="btn btn-primary history-analyze-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="M21 21l-4.35-4.35"/>
+                <path d="M11 8v6M8 11h6"/>
+              </svg>
+              Analyze
+            </button>
+          </div>
+        </div>
+
         <div id="aiInsightsContainer" class="ai-insights-placeholder">
           <p class="ai-insights-hint">&#10024; Select a date range and click Analyze to generate AI insights.</p>
         </div>
@@ -109,11 +111,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Hint shown before Analyze is run -->
-    <div id="analysisPreHint" class="ai-insights-placeholder">
-      <p class="ai-insights-hint">&#10024; Select a date range and click Analyze to generate AI insights.</p>
     </div>
 
     <!-- History data container -->
