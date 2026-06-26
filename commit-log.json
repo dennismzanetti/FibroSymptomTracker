@@ -1,5 +1,12 @@
 [
   {
+    "sha": "1c74e8dba6189391b23fa072b9018b55e7a1e154",
+    "short": "1c74e8d",
+    "date": "2026-06-26T15:46:02-04:00",
+    "message": "Update README: correct JS folder structure, CSS files, and local-fibro.html path",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/1c74e8dba6189391b23fa072b9018b55e7a1e154"
+  },
+  {
     "sha": "c8827faf857df01a637e91d3a5430751c72ae189",
     "short": "c8827fa",
     "date": "2026-06-26T15:23:10-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T13:21:47-04:00",
     "message": "Reset insights guard on Analyze button click and tab activate",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/33ddfd988ad47b4c3cf2ffb9ddf94b65717c1e81"
-  },
-  {
-    "sha": "3f39b3bd6dc26e6bee094dac7188fc3f3816d34c",
-    "short": "3f39b3b",
-    "date": "2026-06-26T13:17:08-04:00",
-    "message": "Rename Load History button to Analyze, add icon, align controls vertically",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/3f39b3bd6dc26e6bee094dac7188fc3f3816d34c"
   }
 ]
