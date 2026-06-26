@@ -1,5 +1,12 @@
 [
   {
+    "sha": "a245eb68260951223ee08fea04b7ff43cd7ff18f",
+    "short": "a245eb6",
+    "date": "2026-06-26T12:39:02-04:00",
+    "message": "Fix: increase maxOutputTokens to 2048, add brevity instructions to prevent JSON truncation",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/a245eb68260951223ee08fea04b7ff43cd7ff18f"
+  },
+  {
     "sha": "55e41d90e166fff4b737c707723639b74981ff83",
     "short": "55e41d9",
     "date": "2026-06-26T12:37:23-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T17:07:26-04:00",
     "message": "fix: remove stray extra ) in switchToTab causing SyntaxError at line 656",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/22016bbc1b2ba0506b71218ba03ea0c122e0c4df"
-  },
-  {
-    "sha": "690436e0e3f7c404a8f0b3fce465ba9bb0535006",
-    "short": "690436e",
-    "date": "2026-06-24T17:04:01-04:00",
-    "message": "fix: revert tagged-day markers — caused app-level JS crash",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/690436e0e3f7c404a8f0b3fce465ba9bb0535006"
   }
 ]
