@@ -1,4 +1,4 @@
-// analysis.js — AI Insights panel for the Analysis (History) tab
+// analysis.js — AI Insights panel + AI Chat for the Analysis (History) tab
 // Fetches Gemini API key from Firestore config, builds a structured prompt
 // from loaded history data, calls Gemini 2.5 Flash Lite, and renders insight cards.
 // On 503 overload: retries up to 3x with exponential backoff, then falls back to
@@ -16,9 +16,11 @@
   const GEMINI_ENDPOINT_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 
   // ---------- in-flight guard ----------
-  // Prevents duplicate concurrent calls (e.g. partialsLoaded + tab activate firing together)
   let _inflight = false;
   let _hasRenderedInsights = false;
+
+  // ---------- stored context for AI Chat ----------
+  let _chatContext = null; // { dataByDate, days, startStr, endStr }
 
   // ---------- fetch API key from Firestore (auth-gated) ----------
   async function getGeminiKey() {
@@ -54,7 +56,7 @@
     }).filter(Boolean);
   }
 
-  // ---------- build the prompt ----------
+  // ---------- build the insights prompt ----------
   function buildPrompt(summary, startStr, endStr) {
     const dataJson = JSON.stringify(summary);
     return `Health data analyst for a Fibromyalgia patient. Analyze data and return ONLY raw JSON (no markdown, no code fences).
@@ -99,12 +101,11 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
           .replace(/^```\s*/i, '')
           .replace(/```\s*$/i, '')
           .trim();
-        return JSON.parse(cleaned);
+        return cleaned;
       }
 
       const errText = await res.text();
 
-      // 429 — rate limited
       if (res.status === 429) {
         let retrySeconds = null;
         try {
@@ -118,7 +119,6 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
         throw err;
       }
 
-      // 503 — overloaded: retry with exponential backoff
       if (res.status === 503 && attempt < maxRetries) {
         const delay = Math.pow(2, attempt) * 1000 + Math.random() * 500;
         console.warn(`[Gemini] ${model} 503 on attempt ${attempt + 1}, retrying in ${Math.round(delay)}ms…`);
@@ -132,8 +132,8 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
     }
   }
 
-  // ---------- call Gemini with model fallback ----------
-  async function callGemini(apiKey, prompt) {
+  // ---------- call Gemini with model fallback — returns raw text ----------
+  async function callGeminiRaw(apiKey, prompt) {
     let lastErr;
     for (const model of GEMINI_MODELS) {
       try {
@@ -145,6 +145,12 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
       }
     }
     throw lastErr;
+  }
+
+  // ---------- call Gemini and parse JSON (for insights) ----------
+  async function callGemini(apiKey, prompt) {
+    const raw = await callGeminiRaw(apiKey, prompt);
+    return JSON.parse(raw);
   }
 
   // ---------- render the insights panel ----------
@@ -272,7 +278,7 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
           btn.disabled = false;
           btn.innerHTML = 'Retry now';
           btn.addEventListener('click', () => {
-            _hasRenderedInsights = false; // allow fresh call on manual retry
+            _hasRenderedInsights = false;
             generateInsights(dataByDate, days, startStr, endStr);
           }, { once: true });
         }
@@ -305,18 +311,102 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
     `;
   }
 
+  // ---------- show AI Chat panel once data is loaded ----------
+  function showChatPanel() {
+    const panel = document.getElementById('aiChatPanel');
+    if (panel) panel.style.display = '';
+  }
+
+  // ---------- wire up AI Chat interaction ----------
+  function initChatPanel() {
+    const sendBtn   = document.getElementById('aiChatSendBtn');
+    const textarea  = document.getElementById('aiChatInput');
+    const responseBox  = document.getElementById('aiChatResponse');
+    const responseText = document.getElementById('aiChatResponseText');
+    const chips     = document.querySelectorAll('.ai-chat-chip');
+
+    if (!sendBtn || !textarea) return;
+
+    // Suggestion chips fill the textarea
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        textarea.value = chip.dataset.prompt || '';
+        textarea.focus();
+      });
+    });
+
+    // Send on button click or Ctrl+Enter
+    sendBtn.addEventListener('click', askAI);
+    textarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        askAI();
+      }
+    });
+
+    async function askAI() {
+      const question = textarea.value.trim();
+      if (!question) {
+        textarea.focus();
+        return;
+      }
+
+      if (!_chatContext) {
+        if (responseBox) responseBox.style.display = '';
+        if (responseText) responseText.textContent = '\u26a0\ufe0f Please run Analyze first so the AI has data to work with.';
+        return;
+      }
+
+      // Show loading state
+      sendBtn.disabled = true;
+      sendBtn.innerHTML = `<span class="ai-chat-spinner" aria-hidden="true"></span> Thinking…`;
+      if (responseBox) responseBox.style.display = '';
+      if (responseText) responseText.textContent = '';
+
+      try {
+        const apiKey = await getGeminiKey();
+        const { dataByDate, days, startStr, endStr } = _chatContext;
+        const summary = buildSummary(dataByDate, days);
+
+        const prompt =
+          `You are a health data analyst helping a Fibromyalgia patient understand their symptom tracker data.\n` +
+          `Date range analyzed: ${startStr} to ${endStr} (${summary.length} days).\n` +
+          `Scores are 1-10: fatigue lower=better; mood/sleep quality/functionality higher=better.\n` +
+          `Data: ${JSON.stringify(summary)}\n\n` +
+          `The patient asks: "${question}"\n\n` +
+          `Respond in plain English, 3-6 sentences. Be specific and reference actual dates or values from the data where helpful. ` +
+          `Do not use markdown formatting. End with a one-sentence reminder that this is not medical advice.`;
+
+        const response = await callGeminiRaw(apiKey, prompt);
+        if (responseText) responseText.textContent = response;
+      } catch (err) {
+        console.error('[AI Chat] error:', err);
+        if (responseText) {
+          responseText.textContent = err.isRateLimit
+            ? '\u23f1 AI quota reached — please try again shortly.'
+            : '\u26a0\ufe0f Could not get a response: ' + err.message;
+        }
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send`;
+      }
+    }
+  }
+
   // ---------- public entry point ----------
   async function generateInsights(dataByDate, days, startStr, endStr) {
+    // Store context for AI Chat
+    _chatContext = { dataByDate, days, startStr, endStr };
+    showChatPanel();
+
     const container = document.getElementById('aiInsightsContainer');
     if (!container) return;
 
-    // Skip if insights are already successfully rendered
     if (_hasRenderedInsights) {
       console.log('[Gemini] Insights already rendered — skipping duplicate call.');
       return;
     }
 
-    // Skip if a call is already in flight
     if (_inflight) {
       console.log('[Gemini] Call already in flight — ignoring duplicate request.');
       return;
@@ -341,7 +431,7 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
       const summary  = buildSummary(dataByDate, days);
       const prompt   = buildPrompt(summary, startStr, endStr);
       const insights = await callGemini(apiKey, prompt);
-      renderInsights(insights, container);  // sets _hasRenderedInsights = true
+      renderInsights(insights, container);
     } catch (err) {
       console.error('AI Insights error:', err);
       if (err.isRateLimit) {
@@ -354,13 +444,27 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
     }
   }
 
-  // Expose a reset function so app.js can force a fresh fetch on date range change
   function resetInsights() {
     _hasRenderedInsights = false;
     _inflight = false;
+    _chatContext = null;
+    const panel = document.getElementById('aiChatPanel');
+    if (panel) panel.style.display = 'none';
+    const responseBox = document.getElementById('aiChatResponse');
+    if (responseBox) responseBox.style.display = 'none';
+    const textarea = document.getElementById('aiChatInput');
+    if (textarea) textarea.value = '';
   }
 
   window.generateInsights = generateInsights;
   window.resetInsights = resetInsights;
+
+  // Init chat wiring after DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initChatPanel);
+  } else {
+    // partials may load after DOMContentLoaded — use a short delay as safety net
+    setTimeout(initChatPanel, 100);
+  }
 
 })();

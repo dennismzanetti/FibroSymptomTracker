@@ -29,6 +29,70 @@
       <p class="ai-insights-hint">&#10024; Select a date range and click Analyze to generate AI insights.</p>
     </div>
 
+    <!-- AI Chat Panel — ask custom questions about your data -->
+    <div id="aiChatPanel" class="ai-chat-panel" style="display:none;">
+      <div class="ai-chat-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+             style="color: var(--color-primary); flex-shrink:0;">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        <h3 class="ai-chat-title">Ask AI About Your Data</h3>
+      </div>
+      <p class="ai-chat-subtitle">Ask a custom question about the data you just analyzed. The AI has full context of your loaded entries.</p>
+
+      <!-- Suggestion chips -->
+      <div class="ai-chat-suggestions" id="aiChatSuggestions">
+        <button class="ai-chat-chip" data-prompt="What were my worst days and what did they have in common?">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Worst days
+        </button>
+        <button class="ai-chat-chip" data-prompt="What patterns do you see between my sleep and my functionality scores?">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          Sleep vs. function
+        </button>
+        <button class="ai-chat-chip" data-prompt="What potential triggers appear most often on my hardest days?">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Triggers
+        </button>
+        <button class="ai-chat-chip" data-prompt="Based on this data, what specific changes might help improve my quality of life?">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Recommendations
+        </button>
+      </div>
+
+      <!-- Input row -->
+      <div class="ai-chat-input-row">
+        <textarea
+          id="aiChatInput"
+          class="ai-chat-textarea"
+          placeholder="e.g. Do my mood scores correlate with my pain levels?"
+          rows="3"
+          aria-label="Ask a question about your health data"
+        ></textarea>
+        <button id="aiChatSendBtn" class="ai-chat-send-btn" aria-label="Send question">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+          Send
+        </button>
+      </div>
+
+      <!-- Response area (hidden until a reply arrives) -->
+      <div id="aiChatResponse" class="ai-chat-response" style="display:none;">
+        <div class="ai-chat-response-label">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+          AI Response
+        </div>
+        <p id="aiChatResponseText" class="ai-chat-response-text"></p>
+      </div>
+    </div>
+
     <!-- History data container (no table — data fed to AI Insights only) -->
     <div id="historyList"></div>
   </section>
