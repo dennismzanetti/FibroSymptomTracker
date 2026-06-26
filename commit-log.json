@@ -1,5 +1,12 @@
 [
   {
+    "sha": "a0ff999eb60471c43d38a25ed3520cf3ea523533",
+    "short": "a0ff999",
+    "date": "2026-06-26T14:08:43-04:00",
+    "message": "feat: move AI Chat panel above AI Insights on Analysis tab",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/a0ff999eb60471c43d38a25ed3520cf3ea523533"
+  },
+  {
     "sha": "b2a78978de7da6fe059eb911ff0427a97f4b9257",
     "short": "b2a7897",
     "date": "2026-06-26T14:06:27-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T12:15:58-04:00",
     "message": "Rename History tab to Analysis and reorder between Mood and Medications",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7f57473e97c929c85e3bbaef58f9a3805579fff0"
-  },
-  {
-    "sha": "0771c88becb05b542ca72247db24b8d694fa99b8",
-    "short": "0771c88",
-    "date": "2026-06-25T23:39:28-04:00",
-    "message": "fix(journal): shorten stat banner labels to Functionality, Sleep, Mood",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/0771c88becb05b542ca72247db24b8d694fa99b8"
   }
 ]
