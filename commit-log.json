@@ -1,5 +1,12 @@
 [
   {
+    "sha": "cb9948f64019a045e05fccff1e9b425d57060f3d",
+    "short": "cb9948f",
+    "date": "2026-06-26T14:05:56-04:00",
+    "message": "Widen notes column to 2fr, keep prescriber at 1fr",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/cb9948f64019a045e05fccff1e9b425d57060f3d"
+  },
+  {
     "sha": "346508c5470b7f59f16d9d815bbf770623bc902c",
     "short": "346508c",
     "date": "2026-06-26T14:00:26-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-25T23:33:37-04:00",
     "message": "fix(journal): update stat banner labels to '7-Day Avg. Functionality' and '7-Day Mood'",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ee5f5a9bf067aa505d89c3bb0544bfbea0701839"
-  },
-  {
-    "sha": "e300aeba4a345ca92595fa1fc716a265bda42fb2",
-    "short": "e300aeb",
-    "date": "2026-06-25T23:28:34-04:00",
-    "message": "feat(journal): show sleep quality as score pill in sleep stats banner cell",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e300aeba4a345ca92595fa1fc716a265bda42fb2"
   }
 ]
