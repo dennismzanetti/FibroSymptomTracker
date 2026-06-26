@@ -1,5 +1,12 @@
 [
   {
+    "sha": "077babf3c529e9e7585980c96e1293d5dcbec38d",
+    "short": "077babf",
+    "date": "2026-06-26T15:18:08-04:00",
+    "message": "Add med-list class to conditionsList for consistent card spacing",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/077babf3c529e9e7585980c96e1293d5dcbec38d"
+  },
+  {
     "sha": "5de1ef456bd04159368ab23e3db7881f8ee65b5a",
     "short": "5de1ef4",
     "date": "2026-06-26T15:15:20-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T13:14:44-04:00",
     "message": "Remove data table from Analysis tab — keep data load for AI Insights",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/cf8beee1f2aab8d383d58ee54184a5c2b40e1ada"
-  },
-  {
-    "sha": "80a69e68e7a11f1f9aa15a55ba3bdb39f5d421ad",
-    "short": "80a69e6",
-    "date": "2026-06-26T13:11:21-04:00",
-    "message": "Fix: add in-flight guard to prevent duplicate concurrent API calls",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/80a69e68e7a11f1f9aa15a55ba3bdb39f5d421ad"
   }
 ]
