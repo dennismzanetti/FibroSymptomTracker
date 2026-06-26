@@ -222,7 +222,7 @@ async function refreshMedList() {
           </div>
         </div>
         ${hasBody ? `<div class="med-item-body">
-          <span class="med-item-meta">${hasDoctor ? `Dr. ${escHtml(med.doctor)}` : ""}</span>
+          <span class="med-item-meta">${hasDoctor ? `<span class="med-item-label">Prescriber</span>Dr. ${escHtml(med.doctor)}` : ""}</span>
           <span class="med-item-meta med-item-notes">${hasNotes ? escHtml(med.notes) : ""}</span>
         </div>` : ""}`;
       li.querySelector(".med-btn-edit").addEventListener("click", () => startEditMedication(doc.id, med));
@@ -353,7 +353,7 @@ async function refreshSuppList() {
           </div>
         </div>
         ${hasBody ? `<div class="med-item-body">
-          <span class="med-item-meta">${hasBrand ? escHtml(supp.brand) : ""}</span>
+          <span class="med-item-meta">${hasBrand ? `<span class="med-item-label">Brand</span>${escHtml(supp.brand)}` : ""}</span>
           <span class="med-item-meta med-item-notes">${hasNotes ? escHtml(supp.notes) : ""}</span>
         </div>` : ""}`;
       li.querySelector(".med-btn-edit").addEventListener("click", () => startEditSupplement(doc.id, supp));

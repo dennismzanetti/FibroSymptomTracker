@@ -95,6 +95,16 @@
   color: var(--color-text-faint);
 }
 
+/* Faint uppercase label prefix inside a meta span ("PRESCRIBER", "BRAND") */
+.med-item-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  margin-right: 4px;
+}
+
 /* ================================================================
    EDIT / DELETE BUTTONS
    ================================================================ */
