@@ -1,5 +1,12 @@
 [
   {
+    "sha": "28a96d5dca2e450601f023a6d9ab0243a8be7a10",
+    "short": "28a96d5",
+    "date": "2026-06-26T14:35:31-04:00",
+    "message": "feat: convert AI Insights and Ask AI into sub-tabs on Analysis tab",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/28a96d5dca2e450601f023a6d9ab0243a8be7a10"
+  },
+  {
     "sha": "57d2572b76ce84d8a3b43502c5ae66b92633fc39",
     "short": "57d2572",
     "date": "2026-06-26T14:32:41-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T12:24:43-04:00",
     "message": "Wire generateInsights call after history table renders",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ae6e1fd687dabdf52e929388f6c03a4599a7f600"
-  },
-  {
-    "sha": "b4c8963299a48a65e7386156e47e1bc70c546c34",
-    "short": "b4c8963",
-    "date": "2026-06-26T12:23:45-04:00",
-    "message": "Add analysis.js script tag to index.html and AI insights styles to history.css",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b4c8963299a48a65e7386156e47e1bc70c546c34"
   }
 ]
