@@ -1,5 +1,12 @@
 [
   {
+    "sha": "c1b57ec4ea7489bab579ecb76c5eb79ffd3a9fba",
+    "short": "c1b57ec",
+    "date": "2026-06-26T13:24:54-04:00",
+    "message": "Fix Analysis tab controls layout — date fields and Analyze button alignment",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c1b57ec4ea7489bab579ecb76c5eb79ffd3a9fba"
+  },
+  {
     "sha": "33ddfd988ad47b4c3cf2ffb9ddf94b65717c1e81",
     "short": "33ddfd9",
     "date": "2026-06-26T13:21:47-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-25T19:52:36-04:00",
     "message": "style(journal): add .jv3-card-header and .jv3-header-tags for right-justified tag layout",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9f2eb644f042943369dc5793cad23363bcb03566"
-  },
-  {
-    "sha": "e3295d16c263d002d6c422d70040ab38331fb313",
-    "short": "e3295d1",
-    "date": "2026-06-25T19:51:10-04:00",
-    "message": "feat(journal): move quick tags into day header, right-justified",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e3295d16c263d002d6c422d70040ab38331fb313"
   }
 ]
