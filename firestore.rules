@@ -28,10 +28,12 @@ service cloud.firestore {
     }
     match /medicationHistory/{doc} {
       allow read, write: if request.auth != null;
-    }    
+    }
     match /automaticThoughtRecords/{recordId} {
       allow read, write: if request.auth != null;
-    }    
+    }
+    match /config/{doc} {
+      allow read: if request.auth != null;
+    }
   }
 }
-
