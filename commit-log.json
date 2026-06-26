@@ -1,5 +1,12 @@
 [
   {
+    "sha": "e32d53239d23d55450609152469fb1eea86c09f8",
+    "short": "e32d532",
+    "date": "2026-06-25T23:22:02-04:00",
+    "message": "fix(journal): remove gray background from jv3-stats-banner and card header",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e32d53239d23d55450609152469fb1eea86c09f8"
+  },
+  {
     "sha": "5ba2cb8cb6dcb490d1c5a538e62b3d40fceb9e8f",
     "short": "5ba2cb8",
     "date": "2026-06-25T23:18:19-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T16:37:01-04:00",
     "message": "feat: add tagged-day triangle markers to trends chart",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/05ae3d9079d5550b52dbea422372e74e6b7acbc3"
-  },
-  {
-    "sha": "21db6bd3d5ba788546455c891db9e9ee5c6bb6a8",
-    "short": "21db6bd",
-    "date": "2026-06-24T16:25:16-04:00",
-    "message": "Redesign trends stat cards: per-category cards with 7-day avg, 30-day avg, and trend pill",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/21db6bd3d5ba788546455c891db9e9ee5c6bb6a8"
   }
 ]
