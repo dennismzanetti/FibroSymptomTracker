@@ -210,10 +210,9 @@ async function refreshMedList() {
       const li = document.createElement("li");
       li.className = "med-item";
       const freq = FREQ_LABELS[med.frequency] || med.frequency || "";
-      const metaParts = [
-        med.doctor ? `Dr. ${escHtml(med.doctor)}` : ""
-      ].filter(Boolean);
-      const hasBody = metaParts.length > 0 || !!med.notes;
+      const hasDoctor = !!med.doctor;
+      const hasNotes  = !!med.notes;
+      const hasBody   = hasDoctor || hasNotes;
       li.innerHTML = `
         <div class="med-item-header">
           <span class="med-item-name">${escHtml(med.name || "")}${med.dose ? ` <span class="med-item-dose">${escHtml(med.dose)}</span>` : ""}${freq ? ` <span class="med-item-freq">${escHtml(freq)}</span>` : ""}</span>
@@ -223,8 +222,8 @@ async function refreshMedList() {
           </div>
         </div>
         ${hasBody ? `<div class="med-item-body">
-          ${metaParts.length ? `<div class="med-item-meta">${metaParts.map(escHtml).join(" &bull; ")}</div>` : ""}
-          ${med.notes ? `<div class="med-item-meta med-item-notes">${escHtml(med.notes)}</div>` : ""}
+          <span class="med-item-meta">${hasDoctor ? `Dr. ${escHtml(med.doctor)}` : ""}</span>
+          <span class="med-item-meta med-item-notes">${hasNotes ? escHtml(med.notes) : ""}</span>
         </div>` : ""}`;
       li.querySelector(".med-btn-edit").addEventListener("click", () => startEditMedication(doc.id, med));
       li.querySelector(".med-btn-delete").addEventListener("click", () => deleteMedication(doc.id, med.name));
@@ -342,10 +341,9 @@ async function refreshSuppList() {
       const li = document.createElement("li");
       li.className = "med-item";
       const freq = FREQ_LABELS[supp.frequency] || supp.frequency || "";
-      const metaParts = [
-        supp.brand || ""
-      ].filter(Boolean);
-      const hasBody = metaParts.length > 0 || !!supp.notes;
+      const hasBrand = !!supp.brand;
+      const hasNotes = !!supp.notes;
+      const hasBody  = hasBrand || hasNotes;
       li.innerHTML = `
         <div class="med-item-header">
           <span class="med-item-name">${escHtml(supp.name || "")}${supp.dose ? ` <span class="med-item-dose">${escHtml(supp.dose)}</span>` : ""}${freq ? ` <span class="med-item-freq">${escHtml(freq)}</span>` : ""}</span>
@@ -355,8 +353,8 @@ async function refreshSuppList() {
           </div>
         </div>
         ${hasBody ? `<div class="med-item-body">
-          ${metaParts.length ? `<div class="med-item-meta">${metaParts.map(escHtml).join(" &bull; ")}</div>` : ""}
-          ${supp.notes ? `<div class="med-item-meta med-item-notes">${escHtml(supp.notes)}</div>` : ""}
+          <span class="med-item-meta">${hasBrand ? escHtml(supp.brand) : ""}</span>
+          <span class="med-item-meta med-item-notes">${hasNotes ? escHtml(supp.notes) : ""}</span>
         </div>` : ""}`;
       li.querySelector(".med-btn-edit").addEventListener("click", () => startEditSupplement(doc.id, supp));
       li.querySelector(".med-btn-delete").addEventListener("click", () => deleteSupplement(doc.id, supp.name));
