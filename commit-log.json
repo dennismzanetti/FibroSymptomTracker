@@ -1,5 +1,12 @@
 [
   {
+    "sha": "0771c88becb05b542ca72247db24b8d694fa99b8",
+    "short": "0771c88",
+    "date": "2026-06-25T23:39:28-04:00",
+    "message": "fix(journal): shorten stat banner labels to Functionality, Sleep, Mood",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/0771c88becb05b542ca72247db24b8d694fa99b8"
+  },
+  {
     "sha": "ee5f5a9bf067aa505d89c3bb0544bfbea0701839",
     "short": "ee5f5a9",
     "date": "2026-06-25T23:33:37-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T16:45:45-04:00",
     "message": "Redesign journal tab: unified chronological notes feed, remove heatmap",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/76497e440494fab0866e8ffd6bda3096c2ec37ce"
-  },
-  {
-    "sha": "7b3f96de31f182b0ff4c0863b19a73dc64ace914",
-    "short": "7b3f96d",
-    "date": "2026-06-24T16:45:39-04:00",
-    "message": "feat: trend pills now compare 30-day avg vs prior 30-day avg",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7b3f96de31f182b0ff4c0863b19a73dc64ace914"
   }
 ]
