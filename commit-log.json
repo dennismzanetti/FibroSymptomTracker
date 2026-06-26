@@ -1,5 +1,12 @@
 [
   {
+    "sha": "d3de16577d32e295ed543cf7d7e7917e285191ac",
+    "short": "d3de165",
+    "date": "2026-06-26T15:08:40-04:00",
+    "message": "Restore pill shape on sub-tab buttons; remove border-bottom from tab strip",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d3de16577d32e295ed543cf7d7e7917e285191ac"
+  },
+  {
     "sha": "b6b4b5d8094f5d3927360c70908d66e6b1e66ffb",
     "short": "b6b4b5d",
     "date": "2026-06-26T14:52:12-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T13:02:22-04:00",
     "message": "Fix: update Gemini model to gemini-2.0-flash-lite (2.0-flash deprecated)",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2ac41773c0201893a005a2654bf6529e128a867b"
-  },
-  {
-    "sha": "e6dbc836778fb4d56b4b4d3ede92aa2854f1cb0a",
-    "short": "e6dbc83",
-    "date": "2026-06-26T12:45:12-04:00",
-    "message": "Fix: friendly 429 rate-limit error with retry button, parse retryDelay from response",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e6dbc836778fb4d56b4b4d3ede92aa2854f1cb0a"
   }
 ]
