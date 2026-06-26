@@ -5,7 +5,6 @@
 (function () {
 
   // ---------- Gemini config ----------
-  // gemini-2.0-flash: no thinking tokens, fast, reliable JSON output
   const GEMINI_MODEL = 'gemini-2.0-flash';
   const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
@@ -72,6 +71,21 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
 
     if (!res.ok) {
       const errText = await res.text();
+      // Parse 429 into a structured error so the caller can render a nice message
+      if (res.status === 429) {
+        let retrySeconds = null;
+        try {
+          const errJson = JSON.parse(errText);
+          const retryInfo = errJson?.error?.details?.find(d => d['@type']?.includes('RetryInfo'));
+          if (retryInfo?.retryDelay) {
+            retrySeconds = parseInt(retryInfo.retryDelay, 10) || null;
+          }
+        } catch (_) {}
+        const err = new Error('RATE_LIMITED');
+        err.isRateLimit = true;
+        err.retrySeconds = retrySeconds;
+        throw err;
+      }
       throw new Error(`Gemini API error ${res.status}: ${errText}`);
     }
 
@@ -185,7 +199,49 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
     `;
   }
 
-  // ---------- render error state ----------
+  // ---------- render rate-limit state with retry ----------
+  function renderRateLimit(retrySeconds, container, dataByDate, days, startStr, endStr) {
+    const retryMsg = retrySeconds
+      ? `The API will be ready in about ${retrySeconds} second${retrySeconds !== 1 ? 's' : ''}.`
+      : 'The free tier daily quota has been reached — insights will be available again tomorrow.';
+
+    container.innerHTML = `
+      <div class="ai-insights-rate-limit">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <div class="ai-insights-rate-limit-text">
+          <strong>AI Insights quota reached.</strong>
+          <span>${retryMsg}</span>
+          ${retrySeconds ? `<button class="ai-insights-retry-btn" data-retry-after="${retrySeconds}">Retry in <span class="ai-retry-countdown">${retrySeconds}s</span></button>` : ''}
+        </div>
+      </div>
+    `;
+
+    // Start countdown and auto-enable the retry button
+    if (retrySeconds) {
+      const btn = container.querySelector('.ai-insights-retry-btn');
+      const countdownEl = container.querySelector('.ai-retry-countdown');
+      let remaining = retrySeconds;
+      btn.disabled = true;
+      const tick = setInterval(() => {
+        remaining--;
+        if (countdownEl) countdownEl.textContent = `${remaining}s`;
+        if (remaining <= 0) {
+          clearInterval(tick);
+          btn.disabled = false;
+          btn.innerHTML = 'Retry now';
+          btn.addEventListener('click', () => {
+            generateInsights(dataByDate, days, startStr, endStr);
+          }, { once: true });
+        }
+      }, 1000);
+    }
+  }
+
+  // ---------- render generic error state ----------
   function renderError(message, container) {
     container.innerHTML = `
       <div class="ai-insights-error">
@@ -236,7 +292,11 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
       renderInsights(insights, container);
     } catch (err) {
       console.error('AI Insights error:', err);
-      renderError('Could not generate insights: ' + err.message, container);
+      if (err.isRateLimit) {
+        renderRateLimit(err.retrySeconds, container, dataByDate, days, startStr, endStr);
+      } else {
+        renderError('Could not generate insights: ' + err.message, container);
+      }
     }
   }
 
