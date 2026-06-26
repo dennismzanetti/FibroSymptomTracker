@@ -1,14 +1,17 @@
 // analysis.js — AI Insights panel for the Analysis (History) tab
 // Fetches Gemini API key from Firestore config, builds a structured prompt
 // from loaded history data, calls Gemini 2.5 Flash Lite, and renders insight cards.
+// On 503 overload: retries up to 3x with exponential backoff, then falls back to
+// gemini-2.5-flash if lite remains unavailable.
 
 (function () {
 
   // ---------- Gemini config ----------
-  // gemini-2.5-flash-lite: current stable model as of June 2026
-  // thinkingConfig budget=0 disables reasoning tokens so full output budget goes to response
-  const GEMINI_MODEL = 'gemini-2.5-flash-lite';
-  const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+  const GEMINI_MODELS = [
+    'gemini-2.5-flash-lite',  // preferred: fast, cheap
+    'gemini-2.5-flash',       // fallback: if lite is overloaded
+  ];
+  const GEMINI_ENDPOINT_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 
   // ---------- fetch API key from Firestore (auth-gated) ----------
   async function getGeminiKey() {
@@ -54,60 +57,89 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
 {"patterns":["string","string"],"bestDays":{"dates":["YYYY-MM-DD"],"commonFactors":"string"},"challengingDays":{"dates":["YYYY-MM-DD"],"commonFactors":"string"},"recommendations":["string","string"],"summary":"string under 40 words"}`;
   }
 
-  // ---------- call Gemini API ----------
-  async function callGemini(apiKey, prompt) {
-    const url = `${GEMINI_ENDPOINT}?key=${apiKey}`;
+  // ---------- sleep helper ----------
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  // ---------- call one Gemini model with retry on 503 ----------
+  async function callModel(apiKey, model, prompt, maxRetries = 3) {
+    const url = `${GEMINI_ENDPOINT_BASE}/${model}:generateContent?key=${apiKey}`;
     const body = {
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: {
         temperature: 0.3,
         maxOutputTokens: 4096,
-        thinkingConfig: { thinkingBudget: 0 },  // disable thinking tokens — full budget goes to response
+        thinkingConfig: { thinkingBudget: 0 },
       }
     };
 
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
 
-    if (!res.ok) {
+      if (res.ok) {
+        const data = await res.json();
+        const finishReason = data?.candidates?.[0]?.finishReason;
+        if (finishReason && finishReason !== 'STOP') {
+          throw new Error(`Gemini response cut off (finishReason: ${finishReason}). Try a shorter date range.`);
+        }
+        const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!raw) throw new Error('Empty response from Gemini');
+        const cleaned = raw
+          .replace(/^```json\s*/i, '')
+          .replace(/^```\s*/i, '')
+          .replace(/```\s*$/i, '')
+          .trim();
+        return JSON.parse(cleaned);
+      }
+
       const errText = await res.text();
+
+      // 429 — rate limited: parse retry delay and surface to UI
       if (res.status === 429) {
         let retrySeconds = null;
         try {
           const errJson = JSON.parse(errText);
           const retryInfo = errJson?.error?.details?.find(d => d['@type']?.includes('RetryInfo'));
-          if (retryInfo?.retryDelay) {
-            retrySeconds = parseInt(retryInfo.retryDelay, 10) || null;
-          }
+          if (retryInfo?.retryDelay) retrySeconds = parseInt(retryInfo.retryDelay, 10) || null;
         } catch (_) {}
         const err = new Error('RATE_LIMITED');
         err.isRateLimit = true;
         err.retrySeconds = retrySeconds;
         throw err;
       }
-      throw new Error(`Gemini API error ${res.status}: ${errText}`);
+
+      // 503 — overloaded: retry with exponential backoff
+      if (res.status === 503 && attempt < maxRetries) {
+        const delay = Math.pow(2, attempt) * 1000 + Math.random() * 500; // 1s, 2s, 4s + jitter
+        console.warn(`[Gemini] ${model} 503 on attempt ${attempt + 1}, retrying in ${Math.round(delay)}ms…`);
+        await sleep(delay);
+        continue;
+      }
+
+      // 503 exhausted retries or other error — throw so caller can try next model
+      const err = new Error(`Gemini API error ${res.status}: ${errText}`);
+      err.status = res.status;
+      throw err;
     }
+  }
 
-    const data = await res.json();
-
-    const finishReason = data?.candidates?.[0]?.finishReason;
-    if (finishReason && finishReason !== 'STOP') {
-      throw new Error(`Gemini response was cut off (finishReason: ${finishReason}). Try a shorter date range.`);
+  // ---------- call Gemini with model fallback ----------
+  async function callGemini(apiKey, prompt) {
+    let lastErr;
+    for (const model of GEMINI_MODELS) {
+      try {
+        return await callModel(apiKey, model, prompt);
+      } catch (err) {
+        // Always rethrow rate-limit errors immediately — no point trying other models
+        if (err.isRateLimit) throw err;
+        lastErr = err;
+        console.warn(`[Gemini] Model ${model} failed (${err.message}), trying next…`);
+      }
     }
-
-    const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!raw) throw new Error('Empty response from Gemini');
-
-    const cleaned = raw
-      .replace(/^```json\s*/i, '')
-      .replace(/^```\s*/i, '')
-      .replace(/```\s*$/i, '')
-      .trim();
-
-    return JSON.parse(cleaned);
+    throw lastErr;
   }
 
   // ---------- render the insights panel ----------
