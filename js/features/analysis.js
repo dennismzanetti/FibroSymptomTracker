@@ -1,11 +1,12 @@
 // analysis.js — AI Insights panel for the Analysis (History) tab
 // Fetches Gemini API key from Firestore config, builds a structured prompt
-// from loaded history data, calls Gemini 2.5 Flash, and renders insight cards.
+// from loaded history data, calls Gemini 2.0 Flash, and renders insight cards.
 
 (function () {
 
   // ---------- Gemini config ----------
-  const GEMINI_MODEL = 'gemini-2.5-flash';
+  // gemini-2.0-flash: no thinking tokens, fast, reliable JSON output
+  const GEMINI_MODEL = 'gemini-2.0-flash';
   const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
   // ---------- fetch API key from Firestore (auth-gated) ----------
@@ -27,28 +28,17 @@
       if (!obj) return undefined;
       return path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
     }
-
     return days.map(date => {
       const d = dataByDate[date];
       if (!d) return null;
       return {
         date,
-        functionality: {
-          avg:            getVal(d, 'avgFunctionality'),
-          earlyMorning:   getVal(d, 'functionality.earlyMorning.score'),
-          lateMorning:    getVal(d, 'functionality.lateMorning.score'),
-          earlyAfternoon: getVal(d, 'functionality.earlyAfternoon.score'),
-          lateAfternoon:  getVal(d, 'functionality.lateAfternoon.score'),
-          earlyEvening:   getVal(d, 'functionality.earlyEvening.score'),
-          lateEvening:    getVal(d, 'functionality.lateEvening.score'),
-        },
-        fatigue:      getVal(d, 'fatigueScore'),
-        sleep: {
-          hours:   getVal(d, 'sleep.hours'),
-          quality: getVal(d, 'sleep.quality'),
-        },
-        mood:         getVal(d, 'mood.score'),
-        symptomTags:  (d.tags || []).map(t => t.replace(/_/g, ' ')),
+        funcAvg:  getVal(d, 'avgFunctionality'),
+        fatigue:  getVal(d, 'fatigueScore'),
+        sleepHrs: getVal(d, 'sleep.hours'),
+        sleepQ:   getVal(d, 'sleep.quality'),
+        mood:     getVal(d, 'mood.score'),
+        tags:     (d.tags || []).map(t => t.replace(/_/g, ' ')),
       };
     }).filter(Boolean);
   }
@@ -56,17 +46,11 @@
   // ---------- build the prompt ----------
   function buildPrompt(summary, startStr, endStr) {
     const dataJson = JSON.stringify(summary);
-    return `You are a compassionate health data analyst helping someone with Fibromyalgia understand their symptoms. Analyze the daily data below and respond with ONLY a valid JSON object — no markdown, no code fences, no explanation outside the JSON.
-
-IMPORTANT: Keep ALL string values concise (max 25 words each). The entire JSON response must be under 800 tokens.
-
-Date range: ${startStr} to ${endStr} (${summary.length} days)
-Scores 1-10: pain/fatigue lower=better; mood/sleep/functionality higher=better.
-
+    return `Health data analyst for a Fibromyalgia patient. Analyze data and return ONLY raw JSON (no markdown, no code fences).
+Date range: ${startStr} to ${endStr} (${summary.length} days). Scores 1-10: fatigue lower=better; mood/sleep/funcAvg higher=better.
 Data: ${dataJson}
-
-Respond with ONLY this JSON structure:
-{"patterns":["pattern 1 (max 25 words)","pattern 2"],"bestDays":{"dates":["YYYY-MM-DD"],"commonFactors":"brief note (max 20 words)"},"challengingDays":{"dates":["YYYY-MM-DD"],"commonFactors":"brief note (max 20 words)"},"recommendations":["rec 1 (max 20 words)","rec 2"],"summary":"2 sentence compassionate overview (max 40 words total)"}`;
+Return exactly this JSON (no extra keys, keep strings under 20 words each):
+{"patterns":["string","string"],"bestDays":{"dates":["YYYY-MM-DD"],"commonFactors":"string"},"challengingDays":{"dates":["YYYY-MM-DD"],"commonFactors":"string"},"recommendations":["string","string"],"summary":"string under 40 words"}`;
   }
 
   // ---------- call Gemini API ----------
@@ -75,9 +59,8 @@ Respond with ONLY this JSON structure:
     const body = {
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: {
-        temperature: 0.4,
-        maxOutputTokens: 2048,
-        responseMimeType: 'application/json',
+        temperature: 0.3,
+        maxOutputTokens: 4096,
       }
     };
 
@@ -93,11 +76,23 @@ Respond with ONLY this JSON structure:
     }
 
     const data = await res.json();
+
+    // Check for truncation before trying to parse
+    const finishReason = data?.candidates?.[0]?.finishReason;
+    if (finishReason && finishReason !== 'STOP') {
+      throw new Error(`Gemini response was cut off (finishReason: ${finishReason}). Try a shorter date range.`);
+    }
+
     const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!raw) throw new Error('Empty response from Gemini');
 
     // Strip any accidental markdown code fences
-    const cleaned = raw.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+    const cleaned = raw
+      .replace(/^```json\s*/i, '')
+      .replace(/^```\s*/i, '')
+      .replace(/```\s*$/i, '')
+      .trim();
+
     return JSON.parse(cleaned);
   }
 
