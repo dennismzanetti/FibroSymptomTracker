@@ -379,11 +379,8 @@ function statsBannerHtml(d, dateStr) {
   const hoursVal = sl.hours   != null ? sl.hours   : null;
   const qualVal  = sl.quality != null ? sl.quality : null;
 
-  // Hours badge: plain text e.g. "7h"
   const hoursPart = hoursVal != null ? `<span class="jv3-sleep-hours">${hoursVal}h</span>` : '';
-  // Quality badge: colour-coded score pill
   const qualPart  = qualVal  != null ? scorePillHtml(qualVal) : '';
-  // Separator only when both present
   const sep = (hoursPart && qualPart) ? `<span class="jv3-sleep-sep">&middot;</span>` : '';
   const sleepBadge = (hoursPart || qualPart) ? `${hoursPart}${sep}${qualPart}` : '';
 
@@ -395,7 +392,7 @@ function statsBannerHtml(d, dateStr) {
   const funcCell  = chartCellHtml({
     id: `jv3-func-chart-${dateStr}`,
     canvasCls: 'jv3-func-chart-canvas',
-    label: 'Avg Functionality',
+    label: '7-Day Avg. Functionality',
     badge: avgBadge,
     ariaLabel: '7-day functionality trend'
   });
@@ -411,7 +408,7 @@ function statsBannerHtml(d, dateStr) {
   const moodCell  = chartCellHtml({
     id: `jv3-mood-chart-${dateStr}`,
     canvasCls: 'jv3-mood-chart-canvas',
-    label: 'Mood',
+    label: '7-Day Mood',
     badge: moodBadge,
     ariaLabel: '7-day mood trend',
     isLast: true
@@ -451,7 +448,6 @@ function buildJournalCard(dateStr, d, activeFilter) {
     notesHtml = `<p class="jv3-no-notes">No notes recorded for this day.</p>`;
   }
 
-  // Tags HTML — empty string when no tags
   const tagPills = tagPillsHtml(d);
   const tagsHtml = tagPills
     ? `<div class="jv3-header-tags">${tagPills}</div>`
