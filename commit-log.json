@@ -1,5 +1,12 @@
 [
   {
+    "sha": "16441c3c8194c736b0a8bb18cff0824bc64ed307",
+    "short": "16441c3",
+    "date": "2026-06-26T13:09:09-04:00",
+    "message": "Fix: auto-retry with backoff on 503, fallback to gemini-2.5-flash if lite unavailable",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/16441c3c8194c736b0a8bb18cff0824bc64ed307"
+  },
+  {
     "sha": "e1e14db5cc199cc4edb01eab01b7f211be809218",
     "short": "e1e14db",
     "date": "2026-06-26T13:05:55-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-25T18:20:48-04:00",
     "message": "Journal: render quick tags with daily entry pill styling (icons + colors)",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/00670a3ab0873a24c142821d3c3906b2a80f4ff1"
-  },
-  {
-    "sha": "26df7e1a365564c812ea7c081bfaf2ad5f382734",
-    "short": "26df7e1",
-    "date": "2026-06-25T18:13:58-04:00",
-    "message": "Show quick tags strip in journal day cards",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/26df7e1a365564c812ea7c081bfaf2ad5f382734"
   }
 ]
