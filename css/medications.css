@@ -72,14 +72,14 @@
 }
 
 /* ================================================================
-   CARD BODY — two-column grid: prescriber (left) | notes (right)
+   CARD BODY — two-column grid: prescriber (1fr left) | notes (2fr right)
    Mirrors .app-card-body from base.css
    ================================================================ */
 
 .med-item-body {
   padding: var(--space-3) var(--space-4);
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 2fr;
   gap: var(--space-1) var(--space-4);
   align-items: start;
 }
