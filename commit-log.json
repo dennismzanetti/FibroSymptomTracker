@@ -1,5 +1,12 @@
 [
   {
+    "sha": "e1e14db5cc199cc4edb01eab01b7f211be809218",
+    "short": "e1e14db",
+    "date": "2026-06-26T13:05:55-04:00",
+    "message": "Fix: switch to gemini-2.5-flash-lite with thinking disabled (2.0 models shut down June 1 2026)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/e1e14db5cc199cc4edb01eab01b7f211be809218"
+  },
+  {
     "sha": "2ac41773c0201893a005a2654bf6529e128a867b",
     "short": "2ac4177",
     "date": "2026-06-26T13:02:22-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-25T18:13:58-04:00",
     "message": "Show quick tags strip in journal day cards",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/26df7e1a365564c812ea7c081bfaf2ad5f382734"
-  },
-  {
-    "sha": "0bdfec26b57e064731d69af5233c3be488652f20",
-    "short": "0bdfec2",
-    "date": "2026-06-25T14:14:17-04:00",
-    "message": "feat(journal): add section score pills in left column of notes table",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/0bdfec26b57e064731d69af5233c3be488652f20"
   }
 ]
