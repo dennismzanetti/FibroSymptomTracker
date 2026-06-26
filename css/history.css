@@ -7,18 +7,72 @@
 /* --- Top controls bar --- */
 
 .history-controls {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  flex-wrap: wrap;
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
 }
 
-.history-controls select,
-.history-controls input[type="date"] {
+.history-controls-fields {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.history-date-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
   flex: 1;
-  min-width: 120px;
-  max-width: 180px;
+  min-width: 140px;
+  max-width: 200px;
+}
+
+.history-date-field label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.history-date-field input[type="date"] {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  height: 38px;
+  box-sizing: border-box;
+}
+
+.history-date-field input[type="date"]:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-color: var(--color-primary);
+}
+
+.history-analyze-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 38px;
+  padding: 0 var(--space-4);
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: flex-end;
+}
+
+@media (max-width: 480px) {
+  .history-controls-fields {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .history-date-field {
+    max-width: 100%;
+  }
+  .history-analyze-btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* --- History card (day entry) --- */
