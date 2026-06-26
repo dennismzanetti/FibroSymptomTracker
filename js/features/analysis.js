@@ -3,6 +3,8 @@
 // from loaded history data, calls Gemini 2.5 Flash Lite, and renders insight cards.
 // On 503 overload: retries up to 3x with exponential backoff, then falls back to
 // gemini-2.5-flash if lite remains unavailable.
+// In-flight guard: if a call is already running, subsequent calls are ignored
+// until the current one completes.
 
 (function () {
 
@@ -12,6 +14,11 @@
     'gemini-2.5-flash',       // fallback: if lite is overloaded
   ];
   const GEMINI_ENDPOINT_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
+
+  // ---------- in-flight guard ----------
+  // Prevents duplicate concurrent calls (e.g. partialsLoaded + tab activate firing together)
+  let _inflight = false;
+  let _hasRenderedInsights = false;
 
   // ---------- fetch API key from Firestore (auth-gated) ----------
   async function getGeminiKey() {
@@ -97,7 +104,7 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
 
       const errText = await res.text();
 
-      // 429 — rate limited: parse retry delay and surface to UI
+      // 429 — rate limited
       if (res.status === 429) {
         let retrySeconds = null;
         try {
@@ -113,13 +120,12 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
 
       // 503 — overloaded: retry with exponential backoff
       if (res.status === 503 && attempt < maxRetries) {
-        const delay = Math.pow(2, attempt) * 1000 + Math.random() * 500; // 1s, 2s, 4s + jitter
+        const delay = Math.pow(2, attempt) * 1000 + Math.random() * 500;
         console.warn(`[Gemini] ${model} 503 on attempt ${attempt + 1}, retrying in ${Math.round(delay)}ms…`);
         await sleep(delay);
         continue;
       }
 
-      // 503 exhausted retries or other error — throw so caller can try next model
       const err = new Error(`Gemini API error ${res.status}: ${errText}`);
       err.status = res.status;
       throw err;
@@ -133,7 +139,6 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
       try {
         return await callModel(apiKey, model, prompt);
       } catch (err) {
-        // Always rethrow rate-limit errors immediately — no point trying other models
         if (err.isRateLimit) throw err;
         lastErr = err;
         console.warn(`[Gemini] Model ${model} failed (${err.message}), trying next…`);
@@ -229,6 +234,8 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
         <p class="ai-insights-disclaimer">AI insights are observational only and not medical advice. Always consult your healthcare provider.</p>
       </div>
     `;
+
+    _hasRenderedInsights = true;
   }
 
   // ---------- render rate-limit state with retry ----------
@@ -265,6 +272,7 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
           btn.disabled = false;
           btn.innerHTML = 'Retry now';
           btn.addEventListener('click', () => {
+            _hasRenderedInsights = false; // allow fresh call on manual retry
             generateInsights(dataByDate, days, startStr, endStr);
           }, { once: true });
         }
@@ -302,6 +310,18 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
     const container = document.getElementById('aiInsightsContainer');
     if (!container) return;
 
+    // Skip if insights are already successfully rendered
+    if (_hasRenderedInsights) {
+      console.log('[Gemini] Insights already rendered — skipping duplicate call.');
+      return;
+    }
+
+    // Skip if a call is already in flight
+    if (_inflight) {
+      console.log('[Gemini] Call already in flight — ignoring duplicate request.');
+      return;
+    }
+
     const user = auth.currentUser;
     if (!user) {
       renderError('Sign in to enable AI insights.', container);
@@ -313,6 +333,7 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
       return;
     }
 
+    _inflight = true;
     renderLoading(container);
 
     try {
@@ -320,7 +341,7 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
       const summary  = buildSummary(dataByDate, days);
       const prompt   = buildPrompt(summary, startStr, endStr);
       const insights = await callGemini(apiKey, prompt);
-      renderInsights(insights, container);
+      renderInsights(insights, container);  // sets _hasRenderedInsights = true
     } catch (err) {
       console.error('AI Insights error:', err);
       if (err.isRateLimit) {
@@ -328,9 +349,18 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
       } else {
         renderError('Could not generate insights: ' + err.message, container);
       }
+    } finally {
+      _inflight = false;
     }
   }
 
+  // Expose a reset function so app.js can force a fresh fetch on date range change
+  function resetInsights() {
+    _hasRenderedInsights = false;
+    _inflight = false;
+  }
+
   window.generateInsights = generateInsights;
+  window.resetInsights = resetInsights;
 
 })();
