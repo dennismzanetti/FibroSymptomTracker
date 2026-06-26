@@ -1,5 +1,12 @@
 [
   {
+    "sha": "5de1ef456bd04159368ab23e3db7881f8ee65b5a",
+    "short": "5de1ef4",
+    "date": "2026-06-26T15:15:20-04:00",
+    "message": "Remove border from .med-sub-tabs container (sub-tab pill group)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/5de1ef456bd04159368ab23e3db7881f8ee65b5a"
+  },
+  {
     "sha": "5836376cfb1bc0753a900611a28ff0a8298502f5",
     "short": "5836376",
     "date": "2026-06-26T15:15:04-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T13:11:21-04:00",
     "message": "Fix: add in-flight guard to prevent duplicate concurrent API calls",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/80a69e68e7a11f1f9aa15a55ba3bdb39f5d421ad"
-  },
-  {
-    "sha": "16441c3c8194c736b0a8bb18cff0824bc64ed307",
-    "short": "16441c3",
-    "date": "2026-06-26T13:09:09-04:00",
-    "message": "Fix: auto-retry with backoff on 503, fallback to gemini-2.5-flash if lite unavailable",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/16441c3c8194c736b0a8bb18cff0824bc64ed307"
   }
 ]
