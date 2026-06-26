@@ -1,5 +1,12 @@
 [
   {
+    "sha": "2ac41773c0201893a005a2654bf6529e128a867b",
+    "short": "2ac4177",
+    "date": "2026-06-26T13:02:22-04:00",
+    "message": "Fix: update Gemini model to gemini-2.0-flash-lite (2.0-flash deprecated)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2ac41773c0201893a005a2654bf6529e128a867b"
+  },
+  {
     "sha": "e6dbc836778fb4d56b4b4d3ede92aa2854f1cb0a",
     "short": "e6dbc83",
     "date": "2026-06-26T12:45:12-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-25T14:14:17-04:00",
     "message": "feat(journal): add section score pills in left column of notes table",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/0bdfec26b57e064731d69af5233c3be488652f20"
-  },
-  {
-    "sha": "b11f7e2f0b3e65bc00b825cf9b71f12d2f9a17c8",
-    "short": "b11f7e2",
-    "date": "2026-06-24T17:22:12-04:00",
-    "message": "fix: build footer skips bot-generated commits from live GitHub API",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b11f7e2f0b3e65bc00b825cf9b71f12d2f9a17c8"
   }
 ]
