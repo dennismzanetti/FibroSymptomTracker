@@ -359,62 +359,139 @@ function renderMiniCharts(allDocsMap) {
 }
 
 // ================================================================
-// STATS BANNER HTML — 3 uniform chart cells
+// STATS BANNER HTML — filter-aware chart cells
 // ================================================================
 
-function statsBannerHtml(d, dateStr) {
+function statsBannerHtml(d, dateStr, activeFilter = 'all') {
+  const showFunc  = activeFilter === 'all' || activeFilter === 'functionality';
+  const showSleep = activeFilter === 'all' || activeFilter === 'sleep';
+  const showMood  = activeFilter === 'all' || activeFilter === 'mood';
+
+  // If no chart cells are relevant for this filter, hide the banner entirely
+  if (!showFunc && !showSleep && !showMood) return '';
+
   // ── Functionality ────────────────────────────────────────────────────────
-  const scores = TIME_BLOCKS.map(({ key }) => {
-    const s = d.functionality?.[key]?.score;
-    return typeof s === "number" ? s : null;
-  });
-  const valid = scores.filter(s => s !== null);
-  const avg = valid.length
-    ? parseFloat((valid.reduce((a, b) => a + b, 0) / valid.length).toFixed(1))
-    : null;
-  const avgBadge = avg !== null ? scorePillHtml(avg) : '<span class="jv3-dash">&mdash;</span>';
+  let funcCell = '';
+  if (showFunc) {
+    const scores = TIME_BLOCKS.map(({ key }) => {
+      const s = d.functionality?.[key]?.score;
+      return typeof s === "number" ? s : null;
+    });
+    const valid = scores.filter(s => s !== null);
+    const avg = valid.length
+      ? parseFloat((valid.reduce((a, b) => a + b, 0) / valid.length).toFixed(1))
+      : null;
+    const avgBadge = avg !== null ? scorePillHtml(avg) : '<span class="jv3-dash">&mdash;</span>';
+    funcCell = chartCellHtml({
+      id: `jv3-func-chart-${dateStr}`,
+      canvasCls: 'jv3-func-chart-canvas',
+      label: 'Functionality',
+      badge: avgBadge,
+      ariaLabel: '7-day functionality trend'
+    });
+  }
 
   // ── Sleep ──────────────────────────────────────────────────────────────
-  const sl = d.sleep || {};
-  const hoursVal = sl.hours   != null ? sl.hours   : null;
-  const qualVal  = sl.quality != null ? sl.quality : null;
-
-  const hoursPart = hoursVal != null ? `<span class="jv3-sleep-hours">${hoursVal}h</span>` : '';
-  const qualPart  = qualVal  != null ? scorePillHtml(qualVal) : '';
-  const sep = (hoursPart && qualPart) ? `<span class="jv3-sleep-sep">&middot;</span>` : '';
-  const sleepBadge = (hoursPart || qualPart) ? `${hoursPart}${sep}${qualPart}` : '';
+  let sleepCell = '';
+  if (showSleep) {
+    const sl = d.sleep || {};
+    const hoursVal = sl.hours   != null ? sl.hours   : null;
+    const qualVal  = sl.quality != null ? sl.quality : null;
+    const hoursPart = hoursVal != null ? `<span class="jv3-sleep-hours">${hoursVal}h</span>` : '';
+    const qualPart  = qualVal  != null ? scorePillHtml(qualVal) : '';
+    const sep = (hoursPart && qualPart) ? `<span class="jv3-sleep-sep">&middot;</span>` : '';
+    const sleepBadge = (hoursPart || qualPart) ? `${hoursPart}${sep}${qualPart}` : '';
+    sleepCell = chartCellHtml({
+      id: `jv3-sleep-chart-${dateStr}`,
+      canvasCls: 'jv3-sleep-chart-canvas',
+      label: 'Sleep',
+      badge: sleepBadge,
+      ariaLabel: '7-day sleep trend'
+    });
+  }
 
   // ── Mood ───────────────────────────────────────────────────────────────
-  const moodScore = typeof d.mood?.score === 'number' ? d.mood.score : null;
-  const moodBadge = moodScore !== null ? scorePillHtml(moodScore) : '<span class="jv3-dash">&mdash;</span>';
+  let moodCell = '';
+  if (showMood) {
+    const moodScore = typeof d.mood?.score === 'number' ? d.mood.score : null;
+    const moodBadge = moodScore !== null ? scorePillHtml(moodScore) : '<span class="jv3-dash">&mdash;</span>';
+    moodCell = chartCellHtml({
+      id: `jv3-mood-chart-${dateStr}`,
+      canvasCls: 'jv3-mood-chart-canvas',
+      label: 'Mood',
+      badge: moodBadge,
+      ariaLabel: '7-day mood trend',
+      isLast: true
+    });
+  }
 
-  // ── Cells ────────────────────────────────────────────────────────────
-  const funcCell  = chartCellHtml({
-    id: `jv3-func-chart-${dateStr}`,
-    canvasCls: 'jv3-func-chart-canvas',
-    label: 'Functionality',
-    badge: avgBadge,
-    ariaLabel: '7-day functionality trend'
-  });
+  // Build cells array and mark the last visible one with isLast border suppression
+  const visibleCells = [funcCell, sleepCell, moodCell].filter(c => c !== '');
+  if (!visibleCells.length) return '';
 
-  const sleepCell = chartCellHtml({
-    id: `jv3-sleep-chart-${dateStr}`,
-    canvasCls: 'jv3-sleep-chart-canvas',
-    label: 'Sleep',
-    badge: sleepBadge,
-    ariaLabel: '7-day sleep trend'
-  });
+  // Re-render the last visible cell with isLast=true so border-right is suppressed
+  const cells = [];
+  if (showFunc)  cells.push({ key: 'func',  show: true });
+  if (showSleep) cells.push({ key: 'sleep', show: true });
+  if (showMood)  cells.push({ key: 'mood',  show: true });
 
-  const moodCell  = chartCellHtml({
-    id: `jv3-mood-chart-${dateStr}`,
-    canvasCls: 'jv3-mood-chart-canvas',
-    label: 'Mood',
-    badge: moodBadge,
-    ariaLabel: '7-day mood trend',
-    isLast: true
-  });
+  const lastKey = cells[cells.length - 1]?.key;
 
-  return `<div class="jv3-stats-banner">${funcCell}${sleepCell}${moodCell}</div>`;
+  // Rebuild cells with correct isLast flag
+  const finalCells = [];
+
+  if (showFunc) {
+    const scores = TIME_BLOCKS.map(({ key }) => {
+      const s = d.functionality?.[key]?.score;
+      return typeof s === "number" ? s : null;
+    });
+    const valid = scores.filter(s => s !== null);
+    const avg = valid.length
+      ? parseFloat((valid.reduce((a, b) => a + b, 0) / valid.length).toFixed(1))
+      : null;
+    const avgBadge = avg !== null ? scorePillHtml(avg) : '<span class="jv3-dash">&mdash;</span>';
+    finalCells.push(chartCellHtml({
+      id: `jv3-func-chart-${dateStr}`,
+      canvasCls: 'jv3-func-chart-canvas',
+      label: 'Functionality',
+      badge: avgBadge,
+      ariaLabel: '7-day functionality trend',
+      isLast: lastKey === 'func'
+    }));
+  }
+
+  if (showSleep) {
+    const sl = d.sleep || {};
+    const hoursVal = sl.hours   != null ? sl.hours   : null;
+    const qualVal  = sl.quality != null ? sl.quality : null;
+    const hoursPart = hoursVal != null ? `<span class="jv3-sleep-hours">${hoursVal}h</span>` : '';
+    const qualPart  = qualVal  != null ? scorePillHtml(qualVal) : '';
+    const sep = (hoursPart && qualPart) ? `<span class="jv3-sleep-sep">&middot;</span>` : '';
+    const sleepBadge = (hoursPart || qualPart) ? `${hoursPart}${sep}${qualPart}` : '';
+    finalCells.push(chartCellHtml({
+      id: `jv3-sleep-chart-${dateStr}`,
+      canvasCls: 'jv3-sleep-chart-canvas',
+      label: 'Sleep',
+      badge: sleepBadge,
+      ariaLabel: '7-day sleep trend',
+      isLast: lastKey === 'sleep'
+    }));
+  }
+
+  if (showMood) {
+    const moodScore = typeof d.mood?.score === 'number' ? d.mood.score : null;
+    const moodBadge = moodScore !== null ? scorePillHtml(moodScore) : '<span class="jv3-dash">&mdash;</span>';
+    finalCells.push(chartCellHtml({
+      id: `jv3-mood-chart-${dateStr}`,
+      canvasCls: 'jv3-mood-chart-canvas',
+      label: 'Mood',
+      badge: moodBadge,
+      ariaLabel: '7-day mood trend',
+      isLast: lastKey === 'mood'
+    }));
+  }
+
+  return `<div class="jv3-stats-banner">${finalCells.join('')}</div>`;
 }
 
 // ================================================================
@@ -461,7 +538,7 @@ function buildJournalCard(dateStr, d, activeFilter) {
           <span class="jv3-date">${dlbl}</span>
         </div>${tagsHtml}
       </div>
-      ${statsBannerHtml(d, dateStr)}
+      ${statsBannerHtml(d, dateStr, activeFilter)}
       <div class="jv3-notes-list">${notesHtml}</div>
     </article>`;
 }
