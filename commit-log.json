@@ -1,5 +1,12 @@
 [
   {
+    "sha": "ae6e1fd687dabdf52e929388f6c03a4599a7f600",
+    "short": "ae6e1fd",
+    "date": "2026-06-26T12:24:43-04:00",
+    "message": "Wire generateInsights call after history table renders",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ae6e1fd687dabdf52e929388f6c03a4599a7f600"
+  },
+  {
     "sha": "b4c8963299a48a65e7386156e47e1bc70c546c34",
     "short": "b4c8963",
     "date": "2026-06-26T12:23:45-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-24T17:00:02-04:00",
     "message": "Journal redesign: table layout, plain category labels, remove heatmap",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/a56753c546b66962efa66e09c6b155bd1f5d7fef"
-  },
-  {
-    "sha": "2c5079b97c0423aaae76845c60a7e3aa36142240",
-    "short": "2c5079b",
-    "date": "2026-06-24T16:55:15-04:00",
-    "message": "Journal: condense notes into two-column table, plain color labels",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2c5079b97c0423aaae76845c60a7e3aa36142240"
   }
 ]
