@@ -1,5 +1,12 @@
 [
   {
+    "sha": "7680e70a525f1aef9d3133560ce08453c3615971",
+    "short": "7680e70",
+    "date": "2026-06-26T14:42:00-04:00",
+    "message": "cleanup: remove analysis-subtabs.css and its link from index.html",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7680e70a525f1aef9d3133560ce08453c3615971"
+  },
+  {
     "sha": "0311751da838b518d2425af83cfe6624ec36c08a",
     "short": "0311751",
     "date": "2026-06-26T14:41:35-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T12:39:02-04:00",
     "message": "Fix: increase maxOutputTokens to 2048, add brevity instructions to prevent JSON truncation",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/a245eb68260951223ee08fea04b7ff43cd7ff18f"
-  },
-  {
-    "sha": "55e41d90e166fff4b737c707723639b74981ff83",
-    "short": "55e41d9",
-    "date": "2026-06-26T12:37:23-04:00",
-    "message": "Add config collection read rule for authenticated users (AI insights API key)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/55e41d90e166fff4b737c707723639b74981ff83"
   }
 ]
