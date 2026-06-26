@@ -1,12 +1,13 @@
 // analysis.js — AI Insights panel for the Analysis (History) tab
 // Fetches Gemini API key from Firestore config, builds a structured prompt
-// from loaded history data, calls Gemini 2.0 Flash Lite, and renders insight cards.
+// from loaded history data, calls Gemini 2.5 Flash Lite, and renders insight cards.
 
 (function () {
 
   // ---------- Gemini config ----------
-  // gemini-2.0-flash-lite: current stable model, no thinking tokens, fast, cost-efficient
-  const GEMINI_MODEL = 'gemini-2.0-flash-lite';
+  // gemini-2.5-flash-lite: current stable model as of June 2026
+  // thinkingConfig budget=0 disables reasoning tokens so full output budget goes to response
+  const GEMINI_MODEL = 'gemini-2.5-flash-lite';
   const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
   // ---------- fetch API key from Firestore (auth-gated) ----------
@@ -61,6 +62,7 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
       generationConfig: {
         temperature: 0.3,
         maxOutputTokens: 4096,
+        thinkingConfig: { thinkingBudget: 0 },  // disable thinking tokens — full budget goes to response
       }
     };
 
@@ -72,7 +74,6 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
 
     if (!res.ok) {
       const errText = await res.text();
-      // Parse 429 into a structured error so the caller can render a nice message
       if (res.status === 429) {
         let retrySeconds = null;
         try {
@@ -92,7 +93,6 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
 
     const data = await res.json();
 
-    // Check for truncation before trying to parse
     const finishReason = data?.candidates?.[0]?.finishReason;
     if (finishReason && finishReason !== 'STOP') {
       throw new Error(`Gemini response was cut off (finishReason: ${finishReason}). Try a shorter date range.`);
@@ -101,7 +101,6 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
     const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!raw) throw new Error('Empty response from Gemini');
 
-    // Strip any accidental markdown code fences
     const cleaned = raw
       .replace(/^```json\s*/i, '')
       .replace(/^```\s*/i, '')
@@ -204,7 +203,7 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
   function renderRateLimit(retrySeconds, container, dataByDate, days, startStr, endStr) {
     const retryMsg = retrySeconds
       ? `The API will be ready in about ${retrySeconds} second${retrySeconds !== 1 ? 's' : ''}.`
-      : 'The free tier daily quota has been reached — insights will be available again tomorrow.';
+      : 'The daily quota has been reached — insights will be available again tomorrow.';
 
     container.innerHTML = `
       <div class="ai-insights-rate-limit">
