@@ -1,5 +1,12 @@
 [
   {
+    "sha": "b8533cefd596e15a77e5beca6e98944592dbf615",
+    "short": "b8533ce",
+    "date": "2026-06-29T22:01:43-04:00",
+    "message": "feat: show full datetime (with seconds, 24h) and full SHA in About section",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b8533cefd596e15a77e5beca6e98944592dbf615"
+  },
+  {
     "sha": "1c74e8dba6189391b23fa072b9018b55e7a1e154",
     "short": "1c74e8d",
     "date": "2026-06-26T15:46:02-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T13:24:54-04:00",
     "message": "Fix Analysis tab controls layout — date fields and Analyze button alignment",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c1b57ec4ea7489bab579ecb76c5eb79ffd3a9fba"
-  },
-  {
-    "sha": "33ddfd988ad47b4c3cf2ffb9ddf94b65717c1e81",
-    "short": "33ddfd9",
-    "date": "2026-06-26T13:21:47-04:00",
-    "message": "Reset insights guard on Analyze button click and tab activate",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/33ddfd988ad47b4c3cf2ffb9ddf94b65717c1e81"
   }
 ]
