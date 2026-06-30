@@ -1,5 +1,12 @@
 [
   {
+    "sha": "958710fc05c61f36aa8f3e04cf5611116c9c3625",
+    "short": "958710f",
+    "date": "2026-06-29T22:46:47-04:00",
+    "message": "fix: correct element IDs, cache-bust commit-log fetch, add default-tab save, exclude bot commits",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/958710fc05c61f36aa8f3e04cf5611116c9c3625"
+  },
+  {
     "sha": "b8533cefd596e15a77e5beca6e98944592dbf615",
     "short": "b8533ce",
     "date": "2026-06-29T22:01:43-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T13:32:14-04:00",
     "message": "Move dosage to medication/supplement card header next to drug name",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/711db06f78ca8ec3f23ed58937fba001aa7977ba"
-  },
-  {
-    "sha": "c1b57ec4ea7489bab579ecb76c5eb79ffd3a9fba",
-    "short": "c1b57ec",
-    "date": "2026-06-26T13:24:54-04:00",
-    "message": "Fix Analysis tab controls layout — date fields and Analyze button alignment",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c1b57ec4ea7489bab579ecb76c5eb79ffd3a9fba"
   }
 ]
