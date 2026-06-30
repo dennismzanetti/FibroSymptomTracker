@@ -1,6 +1,6 @@
 // settings.js
 
-// ---- Theme / display name settings (called from app.js after auth) ----
+// ---- Theme / display settings (called from app.js after auth) ----
 window.applySettingsOnAuth = function applySettingsOnAuth(user) {
   const saved = {};
   try {
@@ -8,28 +8,53 @@ window.applySettingsOnAuth = function applySettingsOnAuth(user) {
     if (raw) Object.assign(saved, JSON.parse(raw));
   } catch {}
 
-  const themeSelect = document.getElementById('themeSelect');
-  if (themeSelect && saved.theme) {
-    themeSelect.value = saved.theme;
-    applyTheme(saved.theme);
+  const themeSelect = document.getElementById('settingsThemeSelect');
+  if (themeSelect) {
+    if (saved.theme) themeSelect.value = saved.theme;
+    applyTheme(themeSelect.value);
   }
 
-  // Populate the Account card with the signed-in user's info
+  const defaultTabSelect = document.getElementById('settingsDefaultTabSelect');
+  if (defaultTabSelect && saved.defaultTab) {
+    defaultTabSelect.value = saved.defaultTab;
+  }
+
   if (user) loadAccountSection(user);
 };
 
 function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme || 'light');
+  if (!theme || theme === 'system') {
+    document.documentElement.removeAttribute('data-theme');
+  } else {
+    document.documentElement.setAttribute('data-theme', theme);
+  }
 }
 
-function saveSettings() {
-  const themeSelect = document.getElementById('themeSelect');
-  const settings = {
-    theme: themeSelect ? themeSelect.value : 'light'
-  };
+function saveDisplaySettings() {
+  const themeSelect      = document.getElementById('settingsThemeSelect');
+  const defaultTabSelect = document.getElementById('settingsDefaultTabSelect');
+  const statusEl         = document.getElementById('settingsDisplayStatus');
+
+  const settings = {};
+  try {
+    const raw = sessionStorage.getItem('fibroSettings');
+    if (raw) Object.assign(settings, JSON.parse(raw));
+  } catch {}
+
+  if (themeSelect)      settings.theme      = themeSelect.value;
+  if (defaultTabSelect) settings.defaultTab = defaultTabSelect.value;
+
   try { sessionStorage.setItem('fibroSettings', JSON.stringify(settings)); } catch {}
+
   if (settings.theme) applyTheme(settings.theme);
-  showToast('\u2713 Settings saved');
+
+  if (statusEl) {
+    statusEl.style.display = 'block';
+    clearTimeout(statusEl._hideTimer);
+    statusEl._hideTimer = setTimeout(() => { statusEl.style.display = 'none'; }, 2500);
+  }
+
+  if (typeof showToast === 'function') showToast('\u2713 Display settings saved');
 }
 
 function loadAccountSection(user) {
@@ -39,8 +64,8 @@ function loadAccountSection(user) {
   const initialsEl = document.getElementById('settingsUserInitials');
   const signOutBtn = document.getElementById('settingsSignOutBtn');
 
-  if (nameEl)  nameEl.textContent  = user.displayName  || '';
-  if (emailEl) emailEl.textContent = user.email        || '';
+  if (nameEl)  nameEl.textContent  = user.displayName || '';
+  if (emailEl) emailEl.textContent = user.email       || '';
 
   if (photoEl && user.photoURL) {
     photoEl.src = user.photoURL;
@@ -48,12 +73,7 @@ function loadAccountSection(user) {
     if (initialsEl) initialsEl.style.display = 'none';
   } else if (initialsEl) {
     const name = user.displayName || user.email || '?';
-    const initials = name
-      .split(' ')
-      .map(w => w[0])
-      .slice(0, 2)
-      .join('')
-      .toUpperCase();
+    const initials = name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
     initialsEl.textContent = initials;
     initialsEl.style.display = 'flex';
     if (photoEl) photoEl.style.display = 'none';
@@ -68,14 +88,15 @@ function loadAccountSection(user) {
 
 document.addEventListener('partialsLoaded', () => {
 
-  // ---- Theme selector ----
-  const themeSelect = document.getElementById('themeSelect');
-  if (themeSelect) {
-    themeSelect.addEventListener('change', saveSettings);
-  }
+  // ---- Display settings save button ----
+  const saveDisplayBtn = document.getElementById('settingsSaveDisplayBtn');
+  if (saveDisplayBtn) saveDisplayBtn.addEventListener('click', saveDisplaySettings);
 
-  const saveSettingsBtn = document.getElementById('saveSettingsBtn');
-  if (saveSettingsBtn) saveSettingsBtn.addEventListener('click', saveSettings);
+  // Live theme preview on selector change; committed on button click
+  const themeSelect = document.getElementById('settingsThemeSelect');
+  if (themeSelect) {
+    themeSelect.addEventListener('change', () => applyTheme(themeSelect.value));
+  }
 
   // ---- About section ----
   loadAboutSection();
@@ -84,24 +105,36 @@ document.addEventListener('partialsLoaded', () => {
   injectDiagnosticsToggle();
 });
 
-// ---- About — single commit table (top 10, no bots, latest build highlighted) ----
+// ---- Bot-commit detector ----
+function isBotCommit(c) {
+  const msg = (c.message || '').toLowerCase();
+  return (
+    msg.includes('[skip ci]') ||
+    msg.startsWith('chore: update commit-log') ||
+    msg.startsWith('chore: update build-info') ||
+    (c.author && /github-actions/i.test(c.author))
+  );
+}
+
+// ---- About — top 10 human commits, full datetime + full 40-char SHA ----
 function loadAboutSection() {
   const container = document.getElementById('settingsAboutCommits');
   if (!container) return;
 
   const buildShaFull = (window.BUILD_INFO && window.BUILD_INFO.shaFull) || '';
 
-  fetch('./commit-log.json')
+  // Anchor URL to page origin so it works on GitHub Pages (/FibroSymptomTracker/)
+  // and on localhost alike. Cache-bust with a minute-level timestamp.
+  const base = location.origin + location.pathname.replace(/\/[^/]*$/, '/');
+  const url  = base + 'commit-log.json?v=' + Math.floor(Date.now() / 60000);
+
+  fetch(url)
     .then(r => {
       if (!r.ok) throw new Error('commit-log.json not found (' + r.status + ')');
       return r.json();
     })
     .then(commits => {
-      // Filter out bot / automated commits
-      const human = commits.filter(c =>
-        !c.message.includes('[skip ci]') &&
-        !c.message.startsWith('chore: update commit-log')
-      );
+      const human = commits.filter(c => !isBotCommit(c));
       const top10 = human.slice(0, 10);
 
       if (!top10.length) {
@@ -114,8 +147,8 @@ function loadAboutSection() {
         '<table style="width:100%;border-collapse:collapse;font-size:var(--text-sm);font-variant-numeric:tabular-nums;">',
         '<thead>',
         '<tr style="border-bottom:2px solid var(--color-border);">',
-        '  <th style="text-align:left;padding:var(--space-2) var(--space-3);color:var(--color-text-muted);font-weight:600;white-space:nowrap;min-width:360px;">SHA</th>',
         '  <th style="text-align:left;padding:var(--space-2) var(--space-3);color:var(--color-text-muted);font-weight:600;white-space:nowrap;">Date / Time</th>',
+        '  <th style="text-align:left;padding:var(--space-2) var(--space-3);color:var(--color-text-muted);font-weight:600;white-space:nowrap;">Full SHA</th>',
         '  <th style="text-align:left;padding:var(--space-2) var(--space-3);color:var(--color-text-muted);font-weight:600;">Commit Message</th>',
         '</tr>',
         '</thead>',
@@ -128,7 +161,6 @@ function loadAboutSection() {
           ? 'background:var(--color-primary-highlight);'
           : (i % 2 === 0 ? '' : 'background:var(--color-surface-offset);');
 
-        // Full datetime with seconds, 24-hour clock, unambiguous numeric format
         const dateStr = c.date
           ? new Date(c.date).toLocaleString(undefined, {
               year: 'numeric', month: '2-digit', day: '2-digit',
@@ -137,12 +169,15 @@ function loadAboutSection() {
             })
           : '\u2014';
 
-        const msg = escHtml((c.message || '').split('\n')[0]);
-        // Always display the full 40-char SHA (c.sha), fall back to short only if absent
+        const msg     = escHtml((c.message || '').split('\n')[0]);
         const shaFull = escHtml(c.sha || c.short || '');
-        const shaLink = c.url
-          ? `<a href="${escHtml(c.url)}" target="_blank" rel="noopener noreferrer" style="font-family:monospace;font-size:0.8em;color:var(--color-primary);text-decoration:none;word-break:break-all;letter-spacing:0.01em;">${shaFull}</a>`
-          : `<span style="font-family:monospace;font-size:0.8em;word-break:break-all;letter-spacing:0.01em;">${shaFull}</span>`;
+        const shaCell = c.url
+          ? `<a href="${escHtml(c.url)}" target="_blank" rel="noopener noreferrer"
+               style="font-family:monospace;font-size:0.78em;color:var(--color-primary);
+                      text-decoration:none;word-break:break-all;letter-spacing:0.01em;"
+             >${shaFull}</a>`
+          : `<span style="font-family:monospace;font-size:0.78em;word-break:break-all;
+                          letter-spacing:0.01em;">${shaFull}</span>`;
 
         const buildBadge = isLatestBuild
           ? ' <span style="display:inline-block;margin-left:var(--space-2);padding:1px 6px;border-radius:var(--radius-full);background:var(--color-primary);color:white;font-size:0.7rem;font-weight:700;vertical-align:middle;">latest build</span>'
@@ -150,8 +185,8 @@ function loadAboutSection() {
 
         html += [
           `<tr style="border-bottom:1px solid var(--color-divider);${rowBg}">`,
-          `  <td style="padding:var(--space-2) var(--space-3);vertical-align:top;min-width:360px;">${shaLink}</td>`,
           `  <td style="padding:var(--space-2) var(--space-3);vertical-align:top;white-space:nowrap;color:var(--color-text-muted);">${dateStr}</td>`,
+          `  <td style="padding:var(--space-2) var(--space-3);vertical-align:top;">${shaCell}</td>`,
           `  <td style="padding:var(--space-2) var(--space-3);vertical-align:top;">${msg}${buildBadge}</td>`,
           '</tr>'
         ].join('\n');
@@ -215,7 +250,7 @@ function injectDiagnosticsToggle() {
       : sessionStorage.getItem('FIBRO_DEBUG'));
     if (currentlyOn) {
       sessionStorage.removeItem('FIBRO_DEBUG');
-      showToast('\uD83D\uDD15 Debug logging disabled');
+      if (typeof showToast === 'function') showToast('\uD83D\uDD15 Debug logging disabled');
       const btn  = document.getElementById('diagToggleBtn');
       const dot  = document.getElementById('diagToggleDot');
       const lbl  = document.getElementById('diagToggleLabel');
@@ -226,7 +261,7 @@ function injectDiagnosticsToggle() {
       if (hint) hint.textContent = 'Page will reload when enabled.';
     } else {
       sessionStorage.setItem('FIBRO_DEBUG', '1');
-      showToast('\uD83D\uDC1E Debug logging enabled \u2014 reloading...');
+      if (typeof showToast === 'function') showToast('\uD83D\uDC1E Debug logging enabled \u2014 reloading...');
       setTimeout(() => location.reload(), 900);
     }
   });
