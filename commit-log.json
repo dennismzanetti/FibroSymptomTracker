@@ -1,5 +1,12 @@
 [
   {
+    "sha": "9cab22e524e64ca589f0b9d813c32fed9a4c1059",
+    "short": "9cab22e",
+    "date": "2026-06-29T22:48:28-04:00",
+    "message": "fix: use absolute path for favicon to prevent 404 on GitHub Pages root",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/9cab22e524e64ca589f0b9d813c32fed9a4c1059"
+  },
+  {
     "sha": "958710fc05c61f36aa8f3e04cf5611116c9c3625",
     "short": "958710f",
     "date": "2026-06-29T22:46:47-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T13:37:59-04:00",
     "message": "Add frequency to medication/supplement card header next to name and dosage",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/04a08ecc3ca2967119b20388d73923a444226f19"
-  },
-  {
-    "sha": "711db06f78ca8ec3f23ed58937fba001aa7977ba",
-    "short": "711db06",
-    "date": "2026-06-26T13:32:14-04:00",
-    "message": "Move dosage to medication/supplement card header next to drug name",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/711db06f78ca8ec3f23ed58937fba001aa7977ba"
   }
 ]
