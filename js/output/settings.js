@@ -114,7 +114,7 @@ function loadAboutSection() {
         '<table style="width:100%;border-collapse:collapse;font-size:var(--text-sm);font-variant-numeric:tabular-nums;">',
         '<thead>',
         '<tr style="border-bottom:2px solid var(--color-border);">',
-        '  <th style="text-align:left;padding:var(--space-2) var(--space-3);color:var(--color-text-muted);font-weight:600;white-space:nowrap;">SHA</th>',
+        '  <th style="text-align:left;padding:var(--space-2) var(--space-3);color:var(--color-text-muted);font-weight:600;white-space:nowrap;min-width:360px;">SHA</th>',
         '  <th style="text-align:left;padding:var(--space-2) var(--space-3);color:var(--color-text-muted);font-weight:600;white-space:nowrap;">Date / Time</th>',
         '  <th style="text-align:left;padding:var(--space-2) var(--space-3);color:var(--color-text-muted);font-weight:600;">Commit Message</th>',
         '</tr>',
@@ -128,18 +128,21 @@ function loadAboutSection() {
           ? 'background:var(--color-primary-highlight);'
           : (i % 2 === 0 ? '' : 'background:var(--color-surface-offset);');
 
+        // Full datetime with seconds, 24-hour clock, unambiguous numeric format
         const dateStr = c.date
           ? new Date(c.date).toLocaleString(undefined, {
-              year: 'numeric', month: 'short', day: 'numeric',
-              hour: '2-digit', minute: '2-digit'
+              year: 'numeric', month: '2-digit', day: '2-digit',
+              hour: '2-digit', minute: '2-digit', second: '2-digit',
+              hour12: false
             })
           : '\u2014';
 
         const msg = escHtml((c.message || '').split('\n')[0]);
-        const shaDisplay = escHtml(c.sha || c.short || '');
+        // Always display the full 40-char SHA (c.sha), fall back to short only if absent
+        const shaFull = escHtml(c.sha || c.short || '');
         const shaLink = c.url
-          ? `<a href="${escHtml(c.url)}" target="_blank" rel="noopener noreferrer" style="font-family:monospace;color:var(--color-primary);text-decoration:none;word-break:break-all;">${shaDisplay}</a>`
-          : `<span style="font-family:monospace;word-break:break-all;">${shaDisplay}</span>`;
+          ? `<a href="${escHtml(c.url)}" target="_blank" rel="noopener noreferrer" style="font-family:monospace;font-size:0.8em;color:var(--color-primary);text-decoration:none;word-break:break-all;letter-spacing:0.01em;">${shaFull}</a>`
+          : `<span style="font-family:monospace;font-size:0.8em;word-break:break-all;letter-spacing:0.01em;">${shaFull}</span>`;
 
         const buildBadge = isLatestBuild
           ? ' <span style="display:inline-block;margin-left:var(--space-2);padding:1px 6px;border-radius:var(--radius-full);background:var(--color-primary);color:white;font-size:0.7rem;font-weight:700;vertical-align:middle;">latest build</span>'
@@ -147,7 +150,7 @@ function loadAboutSection() {
 
         html += [
           `<tr style="border-bottom:1px solid var(--color-divider);${rowBg}">`,
-          `  <td style="padding:var(--space-2) var(--space-3);vertical-align:top;">${shaLink}</td>`,
+          `  <td style="padding:var(--space-2) var(--space-3);vertical-align:top;min-width:360px;">${shaLink}</td>`,
           `  <td style="padding:var(--space-2) var(--space-3);vertical-align:top;white-space:nowrap;color:var(--color-text-muted);">${dateStr}</td>`,
           `  <td style="padding:var(--space-2) var(--space-3);vertical-align:top;">${msg}${buildBadge}</td>`,
           '</tr>'
