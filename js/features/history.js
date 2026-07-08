@@ -37,6 +37,13 @@
   async function loadAndRenderHistory(startStr, endStr, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
+
+    // Guard: don't attempt Firestore query when signed out
+    if (!firebase.auth().currentUser) {
+      container.innerHTML = '';
+      return;
+    }
+
     container.innerHTML = '';
 
     try {
