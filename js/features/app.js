@@ -106,6 +106,7 @@ document.addEventListener('partialsLoaded', () => {
   FibroDiag.debug('App', 'Setting up UI components...');
   setupTabs();
   setupExerciseToggle();
+  setupMeditationToggle();
   setupSaveDay();
   setupDateNavigation();
   setupDatePicker();
@@ -371,6 +372,17 @@ function setupExerciseToggle() {
   updateVisibility();
 }
 
+function setupMeditationToggle() {
+  const didMeditateInput  = document.getElementById('didMeditateInput');
+  const meditationDetails = document.getElementById('meditationDetails');
+  if (!didMeditateInput || !meditationDetails) return;
+  function updateVisibility() {
+    meditationDetails.style.display = didMeditateInput.value === 'yes' ? 'block' : 'none';
+  }
+  didMeditateInput.addEventListener('change', updateVisibility);
+  updateVisibility();
+}
+
 function loadTodayDate() {
   currentDateStr = todayStr();
   FibroDiag.debug('App', `loadTodayDate: set to ${currentDateStr}`);
@@ -486,6 +498,10 @@ function clearFormFieldsExceptDate() {
   document.getElementById('exerciseIntensityInput').value = '';
   document.getElementById('exerciseTimingInput').value = '';
   document.getElementById('exerciseNotesInput').value = '';
+  document.getElementById('didMeditateInput').value = 'no';
+  document.getElementById('didMeditateInput').dispatchEvent(new Event('change'));
+  document.getElementById('meditationMinutesInput').value = '';
+  document.getElementById('meditationNotesInput').value = '';
   document.getElementById('moodScoreInput').value = '';
   document.getElementById('moodNotesInput').value = '';
   const painScoreEl   = document.getElementById('painScoreInput');   if (painScoreEl)   painScoreEl.value = '';
@@ -550,6 +566,11 @@ function collectFormData() {
     timing:    document.getElementById('exerciseTimingInput').value,
     notes:     document.getElementById('exerciseNotesInput').value
   } : null;
+  const didMeditate = document.getElementById('didMeditateInput').value === 'yes';
+  const meditation = didMeditate ? {
+    minutes: numberOrNull(document.getElementById('meditationMinutesInput').value),
+    notes:   document.getElementById('meditationNotesInput').value
+  } : null;
   const tags = [];
   document.querySelectorAll('#tagsContainer input[type=checkbox]').forEach(cb => { if (cb.checked) tags.push(cb.value); });
   const scores = Object.values(functionality).map(b => b.score).filter(v => typeof v === 'number');
@@ -562,7 +583,9 @@ function collectFormData() {
   const fatNotesEl   = document.getElementById('fatigueNotesInput');
   return {
     date, dayTitle, overallNotes, functionality, sleep,
-    didExercise, exercise, tags, avgFunctionality,
+    didExercise, exercise,
+    didMeditate, meditation,
+    tags, avgFunctionality,
     mood: { score: moodScore, notes: moodNotes },
     painScore:    painScoreEl  ? numberOrNull(painScoreEl.value)  : null,
     painNotes:    painNotesEl  ? painNotesEl.value  : '',
@@ -639,6 +662,14 @@ function fillFormFromData(d) {
     document.getElementById('didExerciseInput').value = 'no';
   }
   document.getElementById('didExerciseInput').dispatchEvent(new Event('change'));
+  if (d.didMeditate && d.meditation) {
+    document.getElementById('didMeditateInput').value       = 'yes';
+    document.getElementById('meditationMinutesInput').value = d.meditation.minutes ?? '';
+    document.getElementById('meditationNotesInput').value   = d.meditation.notes || '';
+  } else {
+    document.getElementById('didMeditateInput').value = 'no';
+  }
+  document.getElementById('didMeditateInput').dispatchEvent(new Event('change'));
   // Fall back to legacy top-level moodScore for entries saved before the mood object was introduced
   document.getElementById('moodScoreInput').value = d.mood?.score ?? d.moodScore ?? '';
   document.getElementById('moodNotesInput').value = d.mood?.notes || d.moodNotes || '';

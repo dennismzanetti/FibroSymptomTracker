@@ -351,5 +351,33 @@
       </div>
     </details>
 
+    <!-- Meditation -->
+    <details class="entry-section" open>
+      <summary class="entry-section-summary">
+        <span class="entry-section-title">Meditation</span>
+        <svg class="entry-section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="entry-section-body card">
+        <div class="form-group">
+          <label for="didMeditateInput">Did you meditate today?</label>
+          <select id="didMeditateInput"><option value="no">No</option><option value="yes">Yes</option></select>
+        </div>
+        <div id="meditationDetails">
+          <div class="form-group">
+            <label for="meditationMinutesInput">Duration (minutes)</label>
+            <div class="number-stepper">
+              <button type="button" class="stepper-btn" data-step="-5" aria-label="Decrease meditation minutes">&#8722;</button>
+              <input type="number" min="0" id="meditationMinutesInput" inputmode="numeric" />
+              <button type="button" class="stepper-btn" data-step="5" aria-label="Increase meditation minutes">+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="meditationNotesInput">Description</label>
+            <textarea id="meditationNotesInput" rows="3" placeholder="Type, style, how it felt, etc."></textarea>
+          </div>
+        </div>
+      </div>
+    </details>
+
   </section>
 
