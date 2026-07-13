@@ -138,6 +138,34 @@
   -webkit-overflow-scrolling: touch;
 }
 
+/* ── Stat strip (reuses mood-stat-strip base, small tweaks) ── */
+.survey-stat-strip {
+  margin-bottom: var(--space-4);
+}
+
+/* ── Chart legend swatches ── */
+.survey-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-divider);
+}
+
+.survey-legend-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+/* Swatch colors match zone rgba but as solid fills at 60% opacity so they're legible */
+.survey-swatch-minimal  { background: var(--color-success); opacity: 0.55; }
+.survey-swatch-mild     { background: var(--color-gold);    opacity: 0.65; }
+.survey-swatch-moderate { background: var(--color-warning); opacity: 0.60; }
+.survey-swatch-severe   { background: var(--color-error);   opacity: 0.60; }
+
 /* Mobile: stack Likert buttons vertically on narrow screens */
 @media (max-width: 480px) {
   .survey-likert-group {
@@ -146,5 +174,8 @@
   .survey-likert-btn {
     width: 100%;
     justify-content: flex-start;
+  }
+  .survey-chart-legend {
+    gap: var(--space-2) var(--space-3);
   }
 }
