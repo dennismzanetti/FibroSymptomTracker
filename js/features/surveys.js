@@ -159,6 +159,54 @@ function resetSurveyForm(prefix, count, dateInputId, scoreNumId, severityFn, bad
   if (badgeEl) { badgeEl.textContent = sev.label; badgeEl.className = 'survey-severity-badge ' + sev.cls; }
 }
 
+// ── Modal open / close ────────────────────────────────────────────
+
+function openSurveyModal(type) {
+  const modal = document.getElementById('surveyModal-' + type);
+  if (!modal) return;
+  // Reset form to a clean state before showing
+  if (type === 'phq9') {
+    resetSurveyForm('phq9', PHQ9_QUESTIONS.length, 'phq9DateInput', 'phq9ScoreNum', phq9Severity, 'phq9SeverityBadge');
+  } else {
+    resetSurveyForm('gad7', GAD7_QUESTIONS.length, 'gad7DateInput', 'gad7ScoreNum', gad7Severity, 'gad7SeverityBadge');
+  }
+  modal.hidden = false;
+  modal.classList.add('survey-modal-open');
+  document.body.classList.add('survey-modal-active');
+  // Focus the date input for accessibility
+  const dateInput = document.getElementById(type + 'DateInput');
+  if (dateInput) setTimeout(() => dateInput.focus(), 50);
+}
+
+function closeSurveyModal(type) {
+  const modal = document.getElementById('surveyModal-' + type);
+  if (!modal) return;
+  modal.classList.remove('survey-modal-open');
+  document.body.classList.remove('survey-modal-active');
+  // Small delay to allow CSS transition before hiding
+  setTimeout(() => { modal.hidden = true; }, 200);
+}
+
+// Close modal on backdrop click
+function _initSurveyModalBackdropClose() {
+  ['phq9', 'gad7'].forEach(type => {
+    const modal = document.getElementById('surveyModal-' + type);
+    if (!modal) return;
+    modal.addEventListener('click', e => {
+      if (e.target === modal) closeSurveyModal(type);
+    });
+  });
+  // Close on Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      ['phq9', 'gad7'].forEach(t => {
+        const m = document.getElementById('surveyModal-' + t);
+        if (m && !m.hidden) closeSurveyModal(t);
+      });
+    }
+  });
+}
+
 // ── Save to Firestore ─────────────────────────────────────────────
 
 async function saveSurvey(type, prefix, count, dateInputId, scoreFn, severityFn) {
@@ -185,13 +233,16 @@ async function saveSurvey(type, prefix, count, dateInputId, scoreFn, severityFn)
       createdAt: now
     });
 
+    // Reset form and close modal
     resetSurveyForm(
       prefix, count, dateInputId,
       type === 'phq9' ? 'phq9ScoreNum' : 'gad7ScoreNum',
       severityFn,
       type === 'phq9' ? 'phq9SeverityBadge' : 'gad7SeverityBadge'
     );
+    closeSurveyModal(type);
 
+    // Reload history
     if (type === 'phq9') await loadSurveyHistory('phq9', 'phq9HistoryBody', 'phq9HistoryCount', phq9Severity);
     if (type === 'gad7') await loadSurveyHistory('gad7', 'gad7HistoryBody', 'gad7HistoryCount', gad7Severity);
 
@@ -199,151 +250,6 @@ async function saveSurvey(type, prefix, count, dateInputId, scoreFn, severityFn)
     console.error('Error saving survey:', err);
     alert('Failed to save. Please try again.');
   }
-}
-
-// ── Trend chart ───────────────────────────────────────────────────
-
-const _surveyCharts = {};
-
-/**
- * Severity zone band definitions for PHQ-9 and GAD-7.
- * Each zone = { min, max, color } where color is an rgba string.
- */
-const SURVEY_ZONES = {
-  phq9: [
-    { min: 0,  max: 4,  color: 'rgba(67,122,34,0.10)'  },  // Minimal — green
-    { min: 5,  max: 9,  color: 'rgba(209,153,0,0.10)'  },  // Mild — gold
-    { min: 10, max: 14, color: 'rgba(150,66,25,0.12)'  },  // Moderate — warning
-    { min: 15, max: 19, color: 'rgba(161,44,123,0.12)' },  // Moderately Severe — error
-    { min: 20, max: 27, color: 'rgba(161,53,68,0.14)'  }   // Severe — notification
-  ],
-  gad7: [
-    { min: 0,  max: 4,  color: 'rgba(67,122,34,0.10)'  },  // Minimal
-    { min: 5,  max: 9,  color: 'rgba(209,153,0,0.10)'  },  // Mild
-    { min: 10, max: 14, color: 'rgba(150,66,25,0.12)'  },  // Moderate
-    { min: 15, max: 21, color: 'rgba(161,53,68,0.14)'  }   // Severe
-  ]
-};
-
-function _renderSurveyChart(canvasId, type, labels, scores, severityFn) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas || typeof Chart === 'undefined') return;
-
-  if (_surveyCharts[canvasId]) {
-    _surveyCharts[canvasId].destroy();
-    delete _surveyCharts[canvasId];
-  }
-
-  if (!labels.length) return;
-
-  const isDark    = document.documentElement.getAttribute('data-theme') === 'dark';
-  const style     = getComputedStyle(document.documentElement);
-  const primary   = style.getPropertyValue('--color-primary').trim();
-  const hlColor   = style.getPropertyValue('--color-primary-highlight').trim();
-  const textMuted = style.getPropertyValue('--color-text-muted').trim();
-  const textColor = style.getPropertyValue('--color-text').trim();
-  const borderClr = style.getPropertyValue('--color-border').trim();
-  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
-
-  const maxY = type === 'phq9' ? 27 : 21;
-  const zones = SURVEY_ZONES[type];
-
-  // Gradient fill under the line
-  const ctx = canvas.getContext('2d');
-  const gradient = ctx.createLinearGradient(0, 0, 0, 200);
-  if (isDark) {
-    gradient.addColorStop(0, 'rgba(79,152,163,0.30)');
-    gradient.addColorStop(1, 'rgba(79,152,163,0.00)');
-  } else {
-    gradient.addColorStop(0, 'rgba(1,105,111,0.18)');
-    gradient.addColorStop(1, 'rgba(1,105,111,0.00)');
-  }
-
-  // Color each point by its severity
-  const pointColors = scores.map(s => {
-    if (s === null) return hlColor;
-    const sev = severityFn(s);
-    const map = {
-      'survey-sev-minimal':    isDark ? '#6daa45' : '#437a22',
-      'survey-sev-mild':       isDark ? '#e8af34' : '#d19900',
-      'survey-sev-moderate':   isDark ? '#bb653b' : '#964219',
-      'survey-sev-severe':     isDark ? '#d163a7' : '#a12c7b',
-      'survey-sev-verysevere': isDark ? '#dd6974' : '#a13544'
-    };
-    return map[sev.cls] || primary;
-  });
-
-  // Build annotation boxes for severity zones
-  const annotations = {};
-  zones.forEach((z, i) => {
-    annotations['zone' + i] = {
-      type: 'box',
-      yMin: z.min,
-      yMax: Math.min(z.max, maxY),
-      backgroundColor: z.color,
-      borderWidth: 0
-    };
-  });
-
-  _surveyCharts[canvasId] = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        data: scores,
-        borderColor: primary,
-        borderWidth: 2.5,
-        pointBackgroundColor: pointColors,
-        pointBorderColor: pointColors,
-        pointBorderWidth: 2,
-        pointRadius: 5,
-        pointHoverRadius: 7,
-        fill: true,
-        backgroundColor: gradient,
-        tension: 0.35,
-        spanGaps: true
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        annotation: { annotations },
-        tooltip: {
-          backgroundColor: isDark ? '#1c1b19' : '#fff',
-          titleColor: textMuted,
-          bodyColor: textColor,
-          borderColor: borderClr,
-          borderWidth: 1,
-          padding: 10,
-          callbacks: {
-            title: ctx => ctx[0].label,
-            label: ctx => {
-              const s = ctx.parsed.y;
-              if (s === null) return 'No entry';
-              const sev = severityFn(s);
-              return 'Score: ' + s + '/' + maxY + '  (' + sev.label + ')';
-            }
-          }
-        }
-      },
-      scales: {
-        x: {
-          grid: { color: gridColor, drawTicks: false },
-          border: { dash: [4, 4], display: false },
-          ticks: { color: textMuted, font: { size: 11 }, maxRotation: 45, minRotation: 0 }
-        },
-        y: {
-          min: 0,
-          max: maxY,
-          grid: { color: gridColor, drawTicks: false },
-          border: { dash: [4, 4], display: false },
-          ticks: { color: textMuted, font: { size: 11 }, stepSize: type === 'phq9' ? 5 : 3 }
-        }
-      }
-    }
-  });
 }
 
 // ── Load history ──────────────────────────────────────────────────
@@ -370,64 +276,23 @@ async function loadSurveyHistory(type, tbodyId, countBadgeId, severityFn) {
 
     if (countBadge) countBadge.textContent = snap.size + ' submission' + (snap.size === 1 ? '' : 's');
 
-    // ── Stat strip ──────────────────────────────────────────────
-    const allDocs = [];
-    snap.forEach(doc => allDocs.push(doc.data()));
-
-    const scores = allDocs.map(d => d.score ?? 0);
-    const prefix = type === 'phq9' ? 'phq9' : 'gad7';
-
-    const latestEl = document.getElementById(prefix + 'StatLatest');
-    const avgEl    = document.getElementById(prefix + 'StatAvg');
-    const bestEl   = document.getElementById(prefix + 'StatBest');
-
-    if (scores.length) {
-      const avg  = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1);
-      const best = Math.min(...scores);
-      if (latestEl) latestEl.textContent = scores[0];   // already ordered desc
-      if (avgEl)    avgEl.textContent    = avg;
-      if (bestEl)   bestEl.textContent   = best;
-    } else {
-      if (latestEl) latestEl.textContent = '—';
-      if (avgEl)    avgEl.textContent    = '—';
-      if (bestEl)   bestEl.textContent   = '—';
-    }
-
-    // ── Trend chart ─────────────────────────────────────────────
-    // Build oldest→newest for the chart
-    const chartData = allDocs.slice().reverse();
-    const MONTH = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const chartLabels = chartData.map(d => {
-      if (!d.date) return '';
-      const dt = new Date(d.date + 'T12:00:00');
-      return MONTH[dt.getMonth()] + ' ' + dt.getDate() + ', ' + dt.getFullYear();
-    });
-    const chartScores = chartData.map(d => d.score ?? null);
-    const canvasId = type === 'phq9' ? 'phq9TrendChart' : 'gad7TrendChart';
-    _renderSurveyChart(canvasId, type, chartLabels, chartScores, severityFn);
-
-    // ── History table ────────────────────────────────────────────
     if (snap.empty) {
       tbody.innerHTML = '<tr><td colspan="4" class="mood-table-empty">No submissions yet.</td></tr>';
       return;
     }
 
+    const MONTH = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     let rows = '';
-    allDocs.forEach((d, idx) => {
+    snap.forEach(doc => {
+      const d = doc.data();
       const dateObj = d.date ? new Date(d.date + 'T12:00:00') : null;
-      const dateStr = dateObj
-        ? MONTH[dateObj.getMonth()] + ' ' + dateObj.getDate() + ', ' + dateObj.getFullYear()
-        : '—';
+      const dateStr = dateObj ? MONTH[dateObj.getMonth()] + ' ' + dateObj.getDate() + ', ' + dateObj.getFullYear() : '—';
       const sev = severityFn(d.score || 0);
-      // We need the doc id for delete — re-iterate snap
-      let docId = '';
-      let i = 0;
-      snap.forEach(doc => { if (i++ === idx) docId = doc.id; });
       rows += '<tr>' +
         '<td>' + dateStr + '</td>' +
         '<td class="mood-score-cell"><span class="mood-score-pill" style="' + surveySeverityPillStyle(sev.cls) + '">' + d.score + '</span></td>' +
         '<td><span class="survey-severity-badge ' + sev.cls + '">' + sev.label + '</span></td>' +
-        '<td><button class="atr-delete-btn" aria-label="Delete submission" onclick="deleteSurvey(\'' + docId + '\', \'' + type + '\')">Delete</button></td>' +
+        '<td><button class="atr-delete-btn" aria-label="Delete submission" onclick="deleteSurvey(\'' + doc.id + '\', \'' + type + '\')">Delete</button></td>' +
         '</tr>';
     });
     tbody.innerHTML = rows;
@@ -479,19 +344,15 @@ function switchMoodSubTab(tab) {
 
 // ── Init ──────────────────────────────────────────────────────────
 
+// Guard flag: prevents duplicate auth listener if initSurveys() is called more than once
 let _surveysAuthListenerAttached = false;
 
 function initSurveys() {
-  const today = new Date().toISOString().split('T')[0];
-
-  const phq9Date = document.getElementById('phq9DateInput');
-  if (phq9Date && !phq9Date.value) phq9Date.value = today;
-  const gad7Date = document.getElementById('gad7DateInput');
-  if (gad7Date && !gad7Date.value) gad7Date.value = today;
-
+  // Build question lists (questions render into modal DOM)
   buildSurveyQuestions('phq9Questions', PHQ9_QUESTIONS, 'phq9', updatePhq9Score);
   buildSurveyQuestions('gad7Questions', GAD7_QUESTIONS, 'gad7', updateGad7Score);
 
+  // Selected-state visual feedback on Likert labels
   document.getElementById('phq9Questions') && document.getElementById('phq9Questions').addEventListener('change', e => {
     if (e.target.type === 'radio') {
       const name = e.target.name;
@@ -509,6 +370,7 @@ function initSurveys() {
     }
   });
 
+  // Save buttons
   const savePhq9Btn = document.getElementById('savePhq9Btn');
   if (savePhq9Btn) savePhq9Btn.addEventListener('click', () =>
     saveSurvey('phq9', 'phq9', PHQ9_QUESTIONS.length, 'phq9DateInput', calcSurveyScore, phq9Severity)
@@ -518,6 +380,15 @@ function initSurveys() {
     saveSurvey('gad7', 'gad7', GAD7_QUESTIONS.length, 'gad7DateInput', calcSurveyScore, gad7Severity)
   );
 
+  // Modal backdrop / Escape key close
+  _initSurveyModalBackdropClose();
+
+  // ── Race-condition fix ────────────────────────────────────────
+  // Do NOT call loadSurveyHistory() directly here — auth.currentUser may
+  // still be null at this point during Firebase's async auth resolution.
+  // Instead, attach a one-time onAuthStateChanged listener so history loads
+  // only after the auth state is confirmed. The guard flag prevents a second
+  // listener from being added if initSurveys() is called again.
   if (!_surveysAuthListenerAttached) {
     _surveysAuthListenerAttached = true;
     auth.onAuthStateChanged(user => {
@@ -527,6 +398,7 @@ function initSurveys() {
       }
     });
   } else if (auth.currentUser) {
+    // Auth already resolved (e.g. tab revisited) — load immediately
     loadSurveyHistory('phq9', 'phq9HistoryBody', 'phq9HistoryCount', phq9Severity);
     loadSurveyHistory('gad7', 'gad7HistoryBody', 'gad7HistoryCount', gad7Severity);
   }

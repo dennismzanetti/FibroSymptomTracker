@@ -138,33 +138,106 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* ── Stat strip (reuses mood-stat-strip base, small tweaks) ── */
-.survey-stat-strip {
-  margin-bottom: var(--space-4);
-}
+/* ── Survey Modal ────────────────────────────────────────────── */
 
-/* ── Chart legend swatches ── */
-.survey-chart-legend {
+.survey-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: oklch(0.1 0 0 / 0.55);
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2) var(--space-5);
-  margin-top: var(--space-3);
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--color-divider);
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+  overflow-y: auto;
+  opacity: 0;
+  transition: opacity 200ms ease;
 }
 
-.survey-legend-swatch {
-  width: 14px;
-  height: 14px;
-  border-radius: var(--radius-sm);
+.survey-modal-overlay.survey-modal-open {
+  opacity: 1;
+}
+
+/* Prevent body scroll while modal is open */
+body.survey-modal-active {
+  overflow: hidden;
+}
+
+.survey-modal {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(16px);
+  transition: transform 200ms ease;
+  margin-bottom: var(--space-6);
+}
+
+.survey-modal-overlay.survey-modal-open .survey-modal {
+  transform: translateY(0);
+}
+
+.survey-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-6) var(--space-4);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.survey-modal-header h3 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-1);
+}
+
+.survey-modal-close {
   flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-offset);
+  border: none;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 150ms ease, color 150ms ease;
 }
 
-/* Swatch colors match zone rgba but as solid fills at 60% opacity so they're legible */
-.survey-swatch-minimal  { background: var(--color-success); opacity: 0.55; }
-.survey-swatch-mild     { background: var(--color-gold);    opacity: 0.65; }
-.survey-swatch-moderate { background: var(--color-warning); opacity: 0.60; }
-.survey-swatch-severe   { background: var(--color-error);   opacity: 0.60; }
+.survey-modal-close:hover {
+  background: var(--color-surface-dynamic);
+  color: var(--color-text);
+}
+
+.survey-modal-body {
+  padding: var(--space-6);
+  overflow-y: auto;
+  max-height: 65vh;
+}
+
+.survey-modal-footer {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--color-divider);
+  flex-wrap: wrap;
+}
+
+/* Small button variant */
+.btn-sm {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  min-height: 32px;
+}
 
 /* Mobile: stack Likert buttons vertically on narrow screens */
 @media (max-width: 480px) {
@@ -175,7 +248,10 @@
     width: 100%;
     justify-content: flex-start;
   }
-  .survey-chart-legend {
-    gap: var(--space-2) var(--space-3);
+  .survey-modal-overlay {
+    padding: var(--space-3) var(--space-2);
+  }
+  .survey-modal-body {
+    max-height: 70vh;
   }
 }

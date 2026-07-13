@@ -16,15 +16,15 @@
         <!-- Stat strip -->
         <div class="mood-stat-strip">
           <div class="mood-stat-item">
-            <div class="mood-stat-value" id="moodAvgScore">—</div>
+            <div class="mood-stat-value" id="moodAvgScore">&#8212;</div>
             <div class="mood-stat-label">14-Day Avg</div>
           </div>
           <div class="mood-stat-item">
-            <div class="mood-stat-value mood-stat-best" id="moodHighScore">—</div>
+            <div class="mood-stat-value mood-stat-best" id="moodHighScore">&#8212;</div>
             <div class="mood-stat-label">Best Day</div>
           </div>
           <div class="mood-stat-item">
-            <div class="mood-stat-value mood-stat-hard" id="moodLowScore">—</div>
+            <div class="mood-stat-value mood-stat-hard" id="moodLowScore">&#8212;</div>
             <div class="mood-stat-label">Hardest Day</div>
           </div>
         </div>
@@ -114,46 +114,15 @@
 
     <!-- ── Sub-tab: PHQ-9 ── -->
     <div id="mood-subtab-phq9" role="tabpanel" aria-labelledby="mood-tab-btn-phq9" hidden>
-
-      <!-- Stat strip -->
-      <div class="mood-stat-strip survey-stat-strip">
-        <div class="mood-stat-item">
-          <div class="mood-stat-value" id="phq9StatLatest">—</div>
-          <div class="mood-stat-label">Latest Score</div>
-        </div>
-        <div class="mood-stat-item">
-          <div class="mood-stat-value" id="phq9StatAvg">—</div>
-          <div class="mood-stat-label">Average</div>
-        </div>
-        <div class="mood-stat-item">
-          <div class="mood-stat-value mood-stat-best" id="phq9StatBest">—</div>
-          <div class="mood-stat-label">Best (Lowest)</div>
-        </div>
-      </div>
-
-      <!-- Trend chart -->
-      <div class="card">
-        <div class="mood-card-header">
-          <h3>PHQ-9 Score Trend</h3>
-          <span class="mood-card-badge">All submissions</span>
-        </div>
-        <div class="mood-chart-wrap">
-          <canvas id="phq9TrendChart"></canvas>
-        </div>
-        <div class="survey-chart-legend">
-          <div class="mood-legend-item"><div class="survey-legend-swatch survey-swatch-minimal"></div>Minimal (0–4)</div>
-          <div class="mood-legend-item"><div class="survey-legend-swatch survey-swatch-mild"></div>Mild (5–9)</div>
-          <div class="mood-legend-item"><div class="survey-legend-swatch survey-swatch-moderate"></div>Moderate (10–14)</div>
-          <div class="mood-legend-item"><div class="survey-legend-swatch survey-swatch-severe"></div>Mod-Severe / Severe (15+)</div>
-        </div>
-      </div>
-
-      <!-- History table -->
       <div class="card">
         <div class="mood-card-header">
           <h3>PHQ-9 History</h3>
-          <span class="mood-card-badge" id="phq9HistoryCount"></span>
+          <div style="display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap;">
+            <span class="mood-card-badge" id="phq9HistoryCount"></span>
+            <button class="btn btn-primary btn-sm" onclick="openSurveyModal('phq9')">Open PHQ-9</button>
+          </div>
         </div>
+        <p class="survey-instructions">Depression screening &#8212; Patient Health Questionnaire (9 items, score 0&#8211;27)</p>
         <div class="survey-history-table-wrap">
           <table class="mood-notes-table" aria-label="PHQ-9 history">
             <thead><tr><th>Date</th><th>Score</th><th>Severity</th><th></th></tr></thead>
@@ -163,75 +132,19 @@
           </table>
         </div>
       </div>
-
-      <!-- Survey form -->
-      <div class="card">
-        <div class="mood-card-header">
-          <h3>PHQ-9 Depression Screening</h3>
-          <span class="mood-card-badge">Patient Health Questionnaire</span>
-        </div>
-        <p class="survey-instructions">Over the <strong>last 2 weeks</strong>, how often have you been bothered by any of the following problems?</p>
-
-        <div class="form-group">
-          <label for="phq9DateInput">Date</label>
-          <input type="date" id="phq9DateInput" />
-        </div>
-
-        <div class="survey-questions" id="phq9Questions"></div>
-
-        <div class="survey-score-display" id="phq9ScoreDisplay" aria-live="polite">
-          <span class="survey-score-number" id="phq9ScoreNum">0</span>
-          <span class="survey-score-label" id="phq9ScoreLabel">/27</span>
-          <span class="survey-severity-badge" id="phq9SeverityBadge">Minimal</span>
-        </div>
-
-        <button id="savePhq9Btn" class="btn btn-primary" style="margin-top:var(--space-4);">Save PHQ-9</button>
-      </div>
-
     </div><!-- /mood-subtab-phq9 -->
 
     <!-- ── Sub-tab: GAD-7 ── -->
     <div id="mood-subtab-gad7" role="tabpanel" aria-labelledby="mood-tab-btn-gad7" hidden>
-
-      <!-- Stat strip -->
-      <div class="mood-stat-strip survey-stat-strip">
-        <div class="mood-stat-item">
-          <div class="mood-stat-value" id="gad7StatLatest">—</div>
-          <div class="mood-stat-label">Latest Score</div>
-        </div>
-        <div class="mood-stat-item">
-          <div class="mood-stat-value" id="gad7StatAvg">—</div>
-          <div class="mood-stat-label">Average</div>
-        </div>
-        <div class="mood-stat-item">
-          <div class="mood-stat-value mood-stat-best" id="gad7StatBest">—</div>
-          <div class="mood-stat-label">Best (Lowest)</div>
-        </div>
-      </div>
-
-      <!-- Trend chart -->
-      <div class="card">
-        <div class="mood-card-header">
-          <h3>GAD-7 Score Trend</h3>
-          <span class="mood-card-badge">All submissions</span>
-        </div>
-        <div class="mood-chart-wrap">
-          <canvas id="gad7TrendChart"></canvas>
-        </div>
-        <div class="survey-chart-legend">
-          <div class="mood-legend-item"><div class="survey-legend-swatch survey-swatch-minimal"></div>Minimal (0–4)</div>
-          <div class="mood-legend-item"><div class="survey-legend-swatch survey-swatch-mild"></div>Mild (5–9)</div>
-          <div class="mood-legend-item"><div class="survey-legend-swatch survey-swatch-moderate"></div>Moderate (10–14)</div>
-          <div class="mood-legend-item"><div class="survey-legend-swatch survey-swatch-severe"></div>Severe (15+)</div>
-        </div>
-      </div>
-
-      <!-- History table -->
       <div class="card">
         <div class="mood-card-header">
           <h3>GAD-7 History</h3>
-          <span class="mood-card-badge" id="gad7HistoryCount"></span>
+          <div style="display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap;">
+            <span class="mood-card-badge" id="gad7HistoryCount"></span>
+            <button class="btn btn-primary btn-sm" onclick="openSurveyModal('gad7')">Open GAD-7</button>
+          </div>
         </div>
+        <p class="survey-instructions">Anxiety screening &#8212; Generalized Anxiety Disorder (7 items, score 0&#8211;21)</p>
         <div class="survey-history-table-wrap">
           <table class="mood-notes-table" aria-label="GAD-7 history">
             <thead><tr><th>Date</th><th>Score</th><th>Severity</th><th></th></tr></thead>
@@ -241,31 +154,69 @@
           </table>
         </div>
       </div>
+    </div><!-- /mood-subtab-gad7 -->
 
-      <!-- Survey form -->
-      <div class="card">
-        <div class="mood-card-header">
-          <h3>GAD-7 Anxiety Screening</h3>
-          <span class="mood-card-badge">Generalized Anxiety Disorder</span>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════
+       SURVEY MODALS — PHQ-9 and GAD-7
+       Opened via openSurveyModal() in surveys.js
+  ═════════════════════════════════════════════════════════════ -->
+
+  <!-- PHQ-9 Modal -->
+  <div id="surveyModal-phq9" class="survey-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="surveyModalTitle-phq9" hidden>
+    <div class="survey-modal">
+      <div class="survey-modal-header">
+        <div>
+          <h3 id="surveyModalTitle-phq9">PHQ-9 Depression Screening</h3>
+          <p class="survey-instructions" style="margin:0;">Over the <strong>last 2 weeks</strong>, how often have you been bothered by any of the following problems?</p>
         </div>
-        <p class="survey-instructions">Over the <strong>last 2 weeks</strong>, how often have you been bothered by the following problems?</p>
+        <button class="survey-modal-close" aria-label="Close PHQ-9 form" onclick="closeSurveyModal('phq9')">&times;</button>
+      </div>
+      <div class="survey-modal-body">
+        <div class="form-group">
+          <label for="phq9DateInput">Date</label>
+          <input type="date" id="phq9DateInput" />
+        </div>
+        <div class="survey-questions" id="phq9Questions"></div>
+        <div class="survey-score-display" id="phq9ScoreDisplay" aria-live="polite">
+          <span class="survey-score-number" id="phq9ScoreNum">0</span>
+          <span class="survey-score-label">/27</span>
+          <span class="survey-severity-badge survey-sev-minimal" id="phq9SeverityBadge">Minimal</span>
+        </div>
+      </div>
+      <div class="survey-modal-footer">
+        <button class="btn btn-primary" id="savePhq9Btn">Save PHQ-9</button>
+        <button class="btn" style="background:var(--color-surface-offset);color:var(--color-text);" onclick="closeSurveyModal('phq9')">Cancel</button>
+      </div>
+    </div>
+  </div>
 
+  <!-- GAD-7 Modal -->
+  <div id="surveyModal-gad7" class="survey-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="surveyModalTitle-gad7" hidden>
+    <div class="survey-modal">
+      <div class="survey-modal-header">
+        <div>
+          <h3 id="surveyModalTitle-gad7">GAD-7 Anxiety Screening</h3>
+          <p class="survey-instructions" style="margin:0;">Over the <strong>last 2 weeks</strong>, how often have you been bothered by the following problems?</p>
+        </div>
+        <button class="survey-modal-close" aria-label="Close GAD-7 form" onclick="closeSurveyModal('gad7')">&times;</button>
+      </div>
+      <div class="survey-modal-body">
         <div class="form-group">
           <label for="gad7DateInput">Date</label>
           <input type="date" id="gad7DateInput" />
         </div>
-
         <div class="survey-questions" id="gad7Questions"></div>
-
         <div class="survey-score-display" id="gad7ScoreDisplay" aria-live="polite">
           <span class="survey-score-number" id="gad7ScoreNum">0</span>
-          <span class="survey-score-label" id="gad7ScoreLabel">/21</span>
-          <span class="survey-severity-badge" id="gad7SeverityBadge">Minimal</span>
+          <span class="survey-score-label">/21</span>
+          <span class="survey-severity-badge survey-sev-minimal" id="gad7SeverityBadge">Minimal</span>
         </div>
-
-        <button id="saveGad7Btn" class="btn btn-primary" style="margin-top:var(--space-4);">Save GAD-7</button>
       </div>
-
-    </div><!-- /mood-subtab-gad7 -->
-
-  </section>
+      <div class="survey-modal-footer">
+        <button class="btn btn-primary" id="saveGad7Btn">Save GAD-7</button>
+        <button class="btn" style="background:var(--color-surface-offset);color:var(--color-text);" onclick="closeSurveyModal('gad7')">Cancel</button>
+      </div>
+    </div>
+  </div>
