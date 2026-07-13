@@ -1,0 +1,150 @@
+/* ================================================================
+   SURVEYS.CSS — PHQ-9 and GAD-7 screening form styles
+   ================================================================ */
+
+/* Instructions blurb */
+.survey-instructions {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-5);
+  max-width: 60ch;
+}
+
+/* Question block */
+.survey-questions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin-bottom: var(--space-5);
+}
+
+.survey-question {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.survey-question-text {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-3);
+  line-height: 1.4;
+  display: block;
+}
+
+.survey-q-num {
+  color: var(--color-text-muted);
+  font-weight: 700;
+  margin-right: var(--space-1);
+}
+
+/* Likert button group */
+.survey-likert-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.survey-likert-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  min-height: 44px;
+  transition: background 150ms ease, color 150ms ease,
+              border-color 150ms ease, box-shadow 150ms ease;
+  user-select: none;
+}
+
+.survey-likert-btn input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.survey-likert-btn:hover {
+  background: var(--color-primary-highlight);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.survey-likert-btn.selected,
+.survey-likert-btn:has(input:checked) {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+  font-weight: 600;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+.survey-likert-btn:active {
+  transform: scale(0.97);
+}
+
+/* Score display row */
+.survey-score-display {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface-offset);
+  border-radius: var(--radius-lg);
+  margin-top: var(--space-4);
+}
+
+.survey-score-number {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  min-width: 2.5rem;
+}
+
+.survey-score-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* Severity badge */
+.survey-severity-badge {
+  display: inline-block;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.survey-sev-minimal    { background: var(--color-success-highlight);     color: var(--color-success); }
+.survey-sev-mild       { background: var(--color-gold-highlight);         color: var(--color-gold); }
+.survey-sev-moderate   { background: var(--color-warning-highlight);      color: var(--color-warning); }
+.survey-sev-severe     { background: var(--color-error-highlight);        color: var(--color-error); }
+.survey-sev-verysevere { background: var(--color-notification-highlight); color: var(--color-notification); }
+
+/* History table wrapper */
+.survey-history-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile: stack Likert buttons vertically on narrow screens */
+@media (max-width: 480px) {
+  .survey-likert-group {
+    flex-direction: column;
+  }
+  .survey-likert-btn {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}

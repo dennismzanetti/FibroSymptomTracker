@@ -1,103 +1,205 @@
   <!-- Mood Tab -->
   <section id="mood-tab" class="tab">
     <h2>Mood</h2>
-    <div id="moodContent">
 
-      <!-- Stat strip -->
-      <div class="mood-stat-strip">
-        <div class="mood-stat-item">
-          <div class="mood-stat-value" id="moodAvgScore">—</div>
-          <div class="mood-stat-label">14-Day Avg</div>
+    <!-- Sub-tab nav -->
+    <div class="med-sub-tabs" role="tablist" aria-label="Mood sections">
+      <button class="ct-sub-tab-btn active" role="tab" aria-selected="true"  aria-controls="mood-subtab-tracker"  id="mood-tab-btn-tracker" onclick="switchMoodSubTab('tracker')">Mood Tracker</button>
+      <button class="ct-sub-tab-btn"        role="tab" aria-selected="false" aria-controls="mood-subtab-phq9"    id="mood-tab-btn-phq9"    onclick="switchMoodSubTab('phq9')">PHQ-9</button>
+      <button class="ct-sub-tab-btn"        role="tab" aria-selected="false" aria-controls="mood-subtab-gad7"    id="mood-tab-btn-gad7"    onclick="switchMoodSubTab('gad7')">GAD-7</button>
+    </div>
+
+    <!-- ── Sub-tab: Mood Tracker (existing content) ── -->
+    <div id="mood-subtab-tracker" role="tabpanel" aria-labelledby="mood-tab-btn-tracker">
+      <div id="moodContent">
+
+        <!-- Stat strip -->
+        <div class="mood-stat-strip">
+          <div class="mood-stat-item">
+            <div class="mood-stat-value" id="moodAvgScore">—</div>
+            <div class="mood-stat-label">14-Day Avg</div>
+          </div>
+          <div class="mood-stat-item">
+            <div class="mood-stat-value mood-stat-best" id="moodHighScore">—</div>
+            <div class="mood-stat-label">Best Day</div>
+          </div>
+          <div class="mood-stat-item">
+            <div class="mood-stat-value mood-stat-hard" id="moodLowScore">—</div>
+            <div class="mood-stat-label">Hardest Day</div>
+          </div>
         </div>
-        <div class="mood-stat-item">
-          <div class="mood-stat-value mood-stat-best" id="moodHighScore">—</div>
-          <div class="mood-stat-label">Best Day</div>
+
+        <!-- 14-Day Trend Chart -->
+        <div class="card">
+          <div class="mood-card-header">
+            <h3>14-Day Mood Trend</h3>
+            <span class="mood-card-badge">Last 14 days</span>
+          </div>
+          <div class="mood-chart-wrap">
+            <canvas id="moodTrendChart"></canvas>
+          </div>
+          <div class="mood-chart-legend">
+            <div class="mood-legend-item"><div class="mood-legend-dot mood-legend-dot-filled"></div>Score (hover for notes)</div>
+            <div class="mood-legend-item"><div class="mood-legend-dot mood-legend-dot-note"></div>Has notes</div>
+          </div>
         </div>
-        <div class="mood-stat-item">
-          <div class="mood-stat-value mood-stat-hard" id="moodLowScore">—</div>
-          <div class="mood-stat-label">Hardest Day</div>
+
+        <!-- 14-Day Notes Table -->
+        <div class="card">
+          <div class="mood-card-header">
+            <h3>Mood Notes</h3>
+            <span class="mood-card-badge" id="moodNotesCount"></span>
+          </div>
+          <div class="mood-notes-table-wrap">
+            <table class="mood-notes-table" aria-label="14-day mood notes">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Score</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody id="moodSummaryBody">
+                <tr><td colspan="3" class="mood-table-empty">Loading&#8230;</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
+
+        <!-- ATR Form -->
+        <div class="card">
+          <h3 id="atrFormTitle">New Automatic Thought Record</h3>
+          <div class="form-group">
+            <label for="atrDateInput">Date</label>
+            <input type="date" id="atrDateInput" />
+          </div>
+          <div class="form-group">
+            <label for="atrSituationInput">Situation</label>
+            <textarea id="atrSituationInput" rows="2" placeholder="What were you doing / what happened?"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="atrEmotionsInput">Emotions</label>
+            <input type="text" id="atrEmotionsInput" placeholder="e.g. anxious, sad, angry" />
+          </div>
+          <div class="form-group">
+            <label for="atrIntensityRange">Intensity (0&#8211;100)</label>
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <input type="range" id="atrIntensityRange" min="0" max="100" value="50" style="flex:1;" />
+              <span id="atrIntensityDisplay" style="min-width:2rem;text-align:right;">50</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="atrAutoThoughtInput">Automatic thought</label>
+            <textarea id="atrAutoThoughtInput" rows="2" placeholder="What went through your mind?"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="atrAltThoughtInput">Alternative / balanced thought</label>
+            <textarea id="atrAltThoughtInput" rows="2" placeholder="A more balanced way of seeing it (optional)"></textarea>
+          </div>
+          <input type="hidden" id="atrEditingId" />
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem;">
+            <button id="saveAtrBtn" class="btn btn-primary">Save Record</button>
+            <button id="cancelAtrEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Thought Records list -->
+        <div class="card">
+          <h3>Thought Records</h3>
+          <div id="atrList"><p class="atr-empty">No records yet.</p></div>
+        </div>
+
       </div>
+    </div><!-- /mood-subtab-tracker -->
 
-      <!-- 14-Day Trend Chart -->
+    <!-- ── Sub-tab: PHQ-9 ── -->
+    <div id="mood-subtab-phq9" role="tabpanel" aria-labelledby="mood-tab-btn-phq9" hidden>
+
       <div class="card">
         <div class="mood-card-header">
-          <h3>14-Day Mood Trend</h3>
-          <span class="mood-card-badge">Last 14 days</span>
+          <h3>PHQ-9 Depression Screening</h3>
+          <span class="mood-card-badge">Patient Health Questionnaire</span>
         </div>
-        <div class="mood-chart-wrap">
-          <canvas id="moodTrendChart"></canvas>
+        <p class="survey-instructions">Over the <strong>last 2 weeks</strong>, how often have you been bothered by any of the following problems?</p>
+
+        <div class="form-group">
+          <label for="phq9DateInput">Date</label>
+          <input type="date" id="phq9DateInput" />
         </div>
-        <div class="mood-chart-legend">
-          <div class="mood-legend-item"><div class="mood-legend-dot mood-legend-dot-filled"></div>Score (hover for notes)</div>
-          <div class="mood-legend-item"><div class="mood-legend-dot mood-legend-dot-note"></div>Has notes</div>
+
+        <div class="survey-questions" id="phq9Questions">
+          <!-- Questions rendered by surveys.js -->
         </div>
+
+        <div class="survey-score-display" id="phq9ScoreDisplay" aria-live="polite">
+          <span class="survey-score-number" id="phq9ScoreNum">0</span>
+          <span class="survey-score-label" id="phq9ScoreLabel">/27</span>
+          <span class="survey-severity-badge" id="phq9SeverityBadge">Minimal</span>
+        </div>
+
+        <button id="savePhq9Btn" class="btn btn-primary" style="margin-top:var(--space-4);">Save PHQ-9</button>
       </div>
 
-      <!-- 14-Day Notes Table -->
       <div class="card">
         <div class="mood-card-header">
-          <h3>Mood Notes</h3>
-          <span class="mood-card-badge" id="moodNotesCount"></span>
+          <h3>PHQ-9 History</h3>
+          <span class="mood-card-badge" id="phq9HistoryCount"></span>
         </div>
-        <div class="mood-notes-table-wrap">
-          <table class="mood-notes-table" aria-label="14-day mood notes">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Score</th>
-                <th>Notes</th>
-              </tr>
-            </thead>
-            <tbody id="moodSummaryBody">
-              <tr><td colspan="3" class="mood-table-empty">Loading&#8230;</td></tr>
+        <div class="survey-history-table-wrap">
+          <table class="mood-notes-table" aria-label="PHQ-9 history">
+            <thead><tr><th>Date</th><th>Score</th><th>Severity</th><th></th></tr></thead>
+            <tbody id="phq9HistoryBody">
+              <tr><td colspan="4" class="mood-table-empty">No submissions yet.</td></tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- ATR Form -->
+    </div><!-- /mood-subtab-phq9 -->
+
+    <!-- ── Sub-tab: GAD-7 ── -->
+    <div id="mood-subtab-gad7" role="tabpanel" aria-labelledby="mood-tab-btn-gad7" hidden>
+
       <div class="card">
-        <h3 id="atrFormTitle">New Automatic Thought Record</h3>
-        <div class="form-group">
-          <label for="atrDateInput">Date</label>
-          <input type="date" id="atrDateInput" />
+        <div class="mood-card-header">
+          <h3>GAD-7 Anxiety Screening</h3>
+          <span class="mood-card-badge">Generalized Anxiety Disorder</span>
         </div>
+        <p class="survey-instructions">Over the <strong>last 2 weeks</strong>, how often have you been bothered by the following problems?</p>
+
         <div class="form-group">
-          <label for="atrSituationInput">Situation</label>
-          <textarea id="atrSituationInput" rows="2" placeholder="What were you doing / what happened?"></textarea>
+          <label for="gad7DateInput">Date</label>
+          <input type="date" id="gad7DateInput" />
         </div>
-        <div class="form-group">
-          <label for="atrEmotionsInput">Emotions</label>
-          <input type="text" id="atrEmotionsInput" placeholder="e.g. anxious, sad, angry" />
+
+        <div class="survey-questions" id="gad7Questions">
+          <!-- Questions rendered by surveys.js -->
         </div>
-        <div class="form-group">
-          <label for="atrIntensityRange">Intensity (0&#8211;100)</label>
-          <div style="display:flex;align-items:center;gap:0.5rem;">
-            <input type="range" id="atrIntensityRange" min="0" max="100" value="50" style="flex:1;" />
-            <span id="atrIntensityDisplay" style="min-width:2rem;text-align:right;">50</span>
-          </div>
+
+        <div class="survey-score-display" id="gad7ScoreDisplay" aria-live="polite">
+          <span class="survey-score-number" id="gad7ScoreNum">0</span>
+          <span class="survey-score-label" id="gad7ScoreLabel">/21</span>
+          <span class="survey-severity-badge" id="gad7SeverityBadge">Minimal</span>
         </div>
-        <div class="form-group">
-          <label for="atrAutoThoughtInput">Automatic thought</label>
-          <textarea id="atrAutoThoughtInput" rows="2" placeholder="What went through your mind?"></textarea>
+
+        <button id="saveGad7Btn" class="btn btn-primary" style="margin-top:var(--space-4);">Save GAD-7</button>
+      </div>
+
+      <div class="card">
+        <div class="mood-card-header">
+          <h3>GAD-7 History</h3>
+          <span class="mood-card-badge" id="gad7HistoryCount"></span>
         </div>
-        <div class="form-group">
-          <label for="atrAltThoughtInput">Alternative / balanced thought</label>
-          <textarea id="atrAltThoughtInput" rows="2" placeholder="A more balanced way of seeing it (optional)"></textarea>
-        </div>
-        <input type="hidden" id="atrEditingId" />
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem;">
-          <button id="saveAtrBtn" class="btn btn-primary">Save Record</button>
-          <button id="cancelAtrEditBtn" class="save-btn" style="display:none;background:var(--color-surface-offset);color:var(--color-text);">Cancel</button>
+        <div class="survey-history-table-wrap">
+          <table class="mood-notes-table" aria-label="GAD-7 history">
+            <thead><tr><th>Date</th><th>Score</th><th>Severity</th><th></th></tr></thead>
+            <tbody id="gad7HistoryBody">
+              <tr><td colspan="4" class="mood-table-empty">No submissions yet.</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
-      <!-- Thought Records list -->
-      <div class="card">
-        <h3>Thought Records</h3>
-        <div id="atrList"><p class="atr-empty">No records yet.</p></div>
-      </div>
+    </div><!-- /mood-subtab-gad7 -->
 
-    </div>
   </section>
