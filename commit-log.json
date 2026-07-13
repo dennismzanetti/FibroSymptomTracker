@@ -1,5 +1,12 @@
 [
   {
+    "sha": "762327b7fdc8ca3cbddbe90fd3d127a5189158c3",
+    "short": "762327b",
+    "date": "2026-07-13T16:03:37-04:00",
+    "message": "fix: add pointer-events:none to survey modal overlay to stop blocking navigation",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/762327b7fdc8ca3cbddbe90fd3d127a5189158c3"
+  },
+  {
     "sha": "5f6c26d2495c3b52f6096d42eeef738a66c20368",
     "short": "5f6c26d",
     "date": "2026-07-13T15:55:30-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T14:35:31-04:00",
     "message": "feat: convert AI Insights and Ask AI into sub-tabs on Analysis tab",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/28a96d5dca2e450601f023a6d9ab0243a8be7a10"
-  },
-  {
-    "sha": "57d2572b76ce84d8a3b43502c5ae66b92633fc39",
-    "short": "57d2572",
-    "date": "2026-06-26T14:32:41-04:00",
-    "message": "Fix med-item-body: use spans so CSS grid columns apply",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/57d2572b76ce84d8a3b43502c5ae66b92633fc39"
   }
 ]
