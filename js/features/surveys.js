@@ -298,6 +298,62 @@ function updateGad7Score() {
   }
 }
 
+// ── Pre-populate helpers ──────────────────────────────────────────
+
+// Show/hide the "Updating existing entry" badge in the modal header
+function _setSurveyUpdateBadge(type, visible) {
+  const badge = document.getElementById(type + 'UpdateBadge');
+  if (!badge) return;
+  badge.hidden = !visible;
+}
+
+// Populate radio buttons from a saved answers array and refresh the live score
+function _populateSurveyAnswers(prefix, answers, count, updateScoreFn) {
+  for (let i = 1; i <= count; i++) {
+    const val = Array.isArray(answers) ? answers[i - 1] : undefined;
+    const inputs = document.querySelectorAll('input[name="' + prefix + '_q' + i + '"]');
+    inputs.forEach(inp => {
+      const checked = (val !== null && val !== undefined && parseInt(inp.value, 10) === val);
+      inp.checked = checked;
+      const lbl = inp.closest('label');
+      if (lbl) lbl.classList.toggle('selected', checked);
+    });
+  }
+  if (typeof updateScoreFn === 'function') updateScoreFn();
+}
+
+// Fetch Firestore for an existing entry on the given date; pre-populate if found
+async function _checkAndPrefillSurvey(type, dateVal) {
+  const uid = auth.currentUser && auth.currentUser.uid;
+  if (!uid || !dateVal) return;
+
+  const prefix      = type;
+  const count       = type === 'phq9' ? PHQ9_QUESTIONS.length : GAD7_QUESTIONS.length;
+  const updateFn    = type === 'phq9' ? updatePhq9Score : updateGad7Score;
+  const docId       = uid + '_' + type + '_' + dateVal;
+
+  try {
+    const snap = await db.collection('surveys').doc(docId).get();
+    if (snap.exists) {
+      const data = snap.data();
+      _populateSurveyAnswers(prefix, data.answers || [], count, updateFn);
+      _setSurveyUpdateBadge(type, true);
+    } else {
+      // No entry for this date — clear any pre-filled answers
+      const severityFn  = type === 'phq9' ? phq9Severity : gad7Severity;
+      const scoreNumId  = type + 'ScoreNum';
+      const badgeId     = type + 'SeverityBadge';
+      resetSurveyForm(prefix, count, type + 'DateInput', scoreNumId, severityFn, badgeId);
+      // Restore the date (resetSurveyForm sets it to today)
+      const dateEl = document.getElementById(type + 'DateInput');
+      if (dateEl) dateEl.value = dateVal;
+      _setSurveyUpdateBadge(type, false);
+    }
+  } catch (err) {
+    console.warn('Could not check for existing survey entry:', err);
+  }
+}
+
 // ── Reset form ────────────────────────────────────────────────────
 
 function resetSurveyForm(prefix, count, dateInputId, scoreNumId, severityFn, badgeId) {
@@ -321,21 +377,29 @@ function resetSurveyForm(prefix, count, dateInputId, scoreNumId, severityFn, bad
 
 // ── Modal open / close ────────────────────────────────────────────
 
-function openSurveyModal(type) {
+async function openSurveyModal(type) {
   const modal = document.getElementById('surveyModal-' + type);
   if (!modal) return;
-  // Reset form to a clean state before showing
+
+  // Reset to a clean state first
   if (type === 'phq9') {
     resetSurveyForm('phq9', PHQ9_QUESTIONS.length, 'phq9DateInput', 'phq9ScoreNum', phq9Severity, 'phq9SeverityBadge');
   } else {
     resetSurveyForm('gad7', GAD7_QUESTIONS.length, 'gad7DateInput', 'gad7ScoreNum', gad7Severity, 'gad7SeverityBadge');
   }
+  _setSurveyUpdateBadge(type, false);
+
   modal.hidden = false;
   modal.classList.add('survey-modal-open');
   document.body.classList.add('survey-modal-active');
+
   // Focus the date input for accessibility
   const dateInput = document.getElementById(type + 'DateInput');
   if (dateInput) setTimeout(() => dateInput.focus(), 50);
+
+  // Fetch existing entry for today's date (after reset so we start clean)
+  const today = new Date().toISOString().split('T')[0];
+  await _checkAndPrefillSurvey(type, today);
 }
 
 function closeSurveyModal(type) {
@@ -343,6 +407,7 @@ function closeSurveyModal(type) {
   if (!modal) return;
   modal.classList.remove('survey-modal-open');
   document.body.classList.remove('survey-modal-active');
+  _setSurveyUpdateBadge(type, false);
   // Small delay to allow CSS transition before hiding
   setTimeout(() => { modal.hidden = true; }, 200);
 }
@@ -367,6 +432,19 @@ function _initSurveyModalBackdropClose() {
   });
 }
 
+// ── Date-change re-fetch ──────────────────────────────────────────
+
+function _initSurveyDateChangeListeners() {
+  ['phq9', 'gad7'].forEach(type => {
+    const dateEl = document.getElementById(type + 'DateInput');
+    if (!dateEl) return;
+    dateEl.addEventListener('change', async () => {
+      const val = dateEl.value;
+      if (val) await _checkAndPrefillSurvey(type, val);
+    });
+  });
+}
+
 // ── Save to Firestore ─────────────────────────────────────────────
 
 async function saveSurvey(type, prefix, count, dateInputId, scoreFn, severityFn) {
@@ -379,11 +457,13 @@ async function saveSurvey(type, prefix, count, dateInputId, scoreFn, severityFn)
   const uid = auth.currentUser && auth.currentUser.uid;
   if (!uid) { alert('You must be signed in to save.'); return; }
 
-  const sev = severityFn(score);
-  const now = new Date().toISOString();
+  const sev   = severityFn(score);
+  const now   = new Date().toISOString();
+  const docId = uid + '_' + type + '_' + dateVal;
 
   try {
-    await db.collection('surveys').add({
+    // Upsert: one document per user / survey type / date
+    await db.collection('surveys').doc(docId).set({
       type,
       userId: uid,
       date: dateVal,
@@ -400,6 +480,7 @@ async function saveSurvey(type, prefix, count, dateInputId, scoreFn, severityFn)
       severityFn,
       type === 'phq9' ? 'phq9SeverityBadge' : 'gad7SeverityBadge'
     );
+    _setSurveyUpdateBadge(type, false);
     closeSurveyModal(type);
 
     // Reload history (and chart)
@@ -552,6 +633,9 @@ function initSurveys() {
 
   // Modal backdrop / Escape key close
   _initSurveyModalBackdropClose();
+
+  // Date-change re-fetch listeners
+  _initSurveyDateChangeListeners();
 
   // ── Race-condition fix ────────────────────────────────────────
   // Do NOT call loadSurveyHistory() directly here — auth.currentUser may
