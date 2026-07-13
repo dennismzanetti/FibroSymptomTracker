@@ -151,11 +151,13 @@
   padding: var(--space-6) var(--space-4);
   overflow-y: auto;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 200ms ease;
 }
 
 .survey-modal-overlay.survey-modal-open {
   opacity: 1;
+  pointer-events: auto;
 }
 
 /* Prevent body scroll while modal is open */
