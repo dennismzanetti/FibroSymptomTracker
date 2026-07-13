@@ -50,6 +50,166 @@ function gad7Severity(score) {
   return               { label: 'Severe',  cls: 'survey-sev-verysevere' };
 }
 
+// ── Trend chart ───────────────────────────────────────────────────
+
+// Severity colour for the bold total-score line
+function _surveySeverityColor(score, type) {
+  const sev = type === 'phq9' ? phq9Severity(score) : gad7Severity(score);
+  const map = {
+    'survey-sev-minimal':    '#437a22',
+    'survey-sev-mild':       '#d19900',
+    'survey-sev-moderate':   '#964219',
+    'survey-sev-severe':     '#a12c7b',
+    'survey-sev-verysevere': '#a13544'
+  };
+  return map[sev.cls] || '#01696f';
+}
+
+// Muted per-question palette (10 distinct hues, alpha-softened)
+const _Q_COLORS = [
+  'rgba(1,105,111,0.45)',   // teal
+  'rgba(100,100,200,0.45)', // blue-purple
+  'rgba(180,100,40,0.45)',  // brown
+  'rgba(60,150,80,0.45)',   // green
+  'rgba(200,80,130,0.45)',  // pink
+  'rgba(140,80,200,0.45)',  // purple
+  'rgba(220,140,40,0.45)',  // amber
+  'rgba(60,160,200,0.45)',  // sky blue
+  'rgba(200,60,60,0.45)',   // red
+];
+
+// Chart instances keyed by canvasId so we can destroy/rebuild on reload
+const _surveyCharts = {};
+
+function renderSurveyTrendChart(type, entries) {
+  // entries: array of {date, score, answers} sorted oldest→newest
+  const canvasId  = type + 'TrendChart';
+  const legendId  = type + 'TrendLegend';
+  const questions = type === 'phq9' ? PHQ9_QUESTIONS : GAD7_QUESTIONS;
+  const maxScore  = type === 'phq9' ? 27 : 21;
+
+  const canvas = document.getElementById(canvasId);
+  const legendEl = document.getElementById(legendId);
+  if (!canvas) return;
+
+  // Destroy existing chart before rebuilding
+  if (_surveyCharts[canvasId]) {
+    _surveyCharts[canvasId].destroy();
+    delete _surveyCharts[canvasId];
+  }
+
+  if (!entries || entries.length === 0) {
+    canvas.style.display = 'none';
+    if (legendEl) legendEl.innerHTML = '<p class="ai-insights-hint" style="font-size:var(--text-sm);color:var(--color-text-muted);">No submissions yet — submit a ' + type.toUpperCase() + ' to see trends.</p>';
+    return;
+  }
+
+  canvas.style.display = '';
+
+  const MONTH = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const labels = entries.map(e => {
+    const d = new Date(e.date + 'T12:00:00');
+    return MONTH[d.getMonth()] + ' ' + d.getDate();
+  });
+
+  // Per-question datasets (thin, muted)
+  const qDatasets = questions.map((qText, idx) => ({
+    label: 'Q' + (idx + 1) + ': ' + qText.substring(0, 40) + (qText.length > 40 ? '…' : ''),
+    data: entries.map(e => Array.isArray(e.answers) ? (e.answers[idx] ?? null) : null),
+    borderColor: _Q_COLORS[idx % _Q_COLORS.length],
+    backgroundColor: 'transparent',
+    borderWidth: 1.5,
+    pointRadius: 2,
+    pointHoverRadius: 4,
+    tension: 0.3,
+    spanGaps: true,
+  }));
+
+  // Derive a representative severity color for the total line based on the latest score
+  const latestScore = entries[entries.length - 1].score;
+  const totalColor  = _surveySeverityColor(latestScore, type);
+
+  // Bold total-score dataset
+  const totalDataset = {
+    label: 'Total Score',
+    data: entries.map(e => e.score),
+    borderColor: totalColor,
+    backgroundColor: totalColor.replace(')', ', 0.08)').replace('rgb', 'rgba'),
+    borderWidth: 3,
+    pointRadius: 4,
+    pointHoverRadius: 6,
+    pointBackgroundColor: totalColor,
+    tension: 0.3,
+    fill: true,
+    spanGaps: true,
+    order: 0, // draw on top
+  };
+
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+    (!document.documentElement.hasAttribute('data-theme') &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+  const gridColor  = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+  const tickColor  = isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)';
+
+  _surveyCharts[canvasId] = new Chart(canvas, {
+    type: 'line',
+    data: { labels, datasets: [...qDatasets, totalDataset] },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false }, // custom legend below
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              if (ctx.dataset.label === 'Total Score') {
+                const score = ctx.parsed.y;
+                const sev   = type === 'phq9' ? phq9Severity(score) : gad7Severity(score);
+                return ' Total: ' + score + ' (' + sev.label + ')';
+              }
+              return ' ' + ctx.dataset.label.split(':')[0] + ': ' + ctx.parsed.y;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: gridColor },
+          ticks: { color: tickColor, font: { size: 11 } }
+        },
+        y: {
+          min: 0,
+          max: maxScore,
+          grid: { color: gridColor },
+          ticks: { color: tickColor, font: { size: 11 }, stepSize: type === 'phq9' ? 9 : 7 },
+          title: { display: true, text: 'Score', color: tickColor, font: { size: 11 } }
+        }
+      }
+    }
+  });
+
+  // Build custom legend
+  if (legendEl) {
+    let html = '<div class="survey-trend-legend-inner">';
+    // Total score entry
+    html += '<span class="survey-legend-item survey-legend-item--total">' +
+      '<span class="survey-legend-swatch" style="background:' + totalColor + ';width:18px;height:4px;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:4px;"></span>' +
+      '<strong>Total Score</strong></span>';
+    // Per-question entries
+    questions.forEach((qText, idx) => {
+      const color = _Q_COLORS[idx % _Q_COLORS.length];
+      html += '<span class="survey-legend-item">' +
+        '<span class="survey-legend-swatch" style="background:' + color + ';width:14px;height:2px;border-radius:1px;display:inline-block;vertical-align:middle;margin-right:4px;"></span>' +
+        'Q' + (idx + 1) + ': ' + qText.substring(0, 35) + (qText.length > 35 ? '…' : '') +
+        '</span>';
+    });
+    html += '</div>';
+    legendEl.innerHTML = html;
+  }
+}
+
 // ── DOM builders ─────────────────────────────────────────────────
 
 function buildSurveyQuestions(containerId, questions, prefix, onChangeCallback) {
@@ -242,7 +402,7 @@ async function saveSurvey(type, prefix, count, dateInputId, scoreFn, severityFn)
     );
     closeSurveyModal(type);
 
-    // Reload history
+    // Reload history (and chart)
     if (type === 'phq9') await loadSurveyHistory('phq9', 'phq9HistoryBody', 'phq9HistoryCount', phq9Severity);
     if (type === 'gad7') await loadSurveyHistory('gad7', 'gad7HistoryBody', 'gad7HistoryCount', gad7Severity);
 
@@ -278,11 +438,14 @@ async function loadSurveyHistory(type, tbodyId, countBadgeId, severityFn) {
 
     if (snap.empty) {
       tbody.innerHTML = '<tr><td colspan="4" class="mood-table-empty">No submissions yet.</td></tr>';
+      renderSurveyTrendChart(type, []);
       return;
     }
 
     const MONTH = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     let rows = '';
+    const chartEntries = [];
+
     snap.forEach(doc => {
       const d = doc.data();
       const dateObj = d.date ? new Date(d.date + 'T12:00:00') : null;
@@ -294,8 +457,15 @@ async function loadSurveyHistory(type, tbodyId, countBadgeId, severityFn) {
         '<td><span class="survey-severity-badge ' + sev.cls + '">' + sev.label + '</span></td>' +
         '<td><button class="atr-delete-btn" aria-label="Delete submission" onclick="deleteSurvey(\'' + doc.id + '\', \'' + type + '\')">Delete</button></td>' +
         '</tr>';
+      // Collect for chart (push in ascending order after loop reversal)
+      chartEntries.push({ date: d.date, score: d.score || 0, answers: d.answers || [] });
     });
+
     tbody.innerHTML = rows;
+
+    // Firestore returned desc order — reverse for chronological chart display
+    chartEntries.reverse();
+    renderSurveyTrendChart(type, chartEntries);
 
   } catch (err) {
     console.error('Error loading survey history:', err);
