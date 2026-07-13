@@ -1,5 +1,12 @@
 [
   {
+    "sha": "5f6c26d2495c3b52f6096d42eeef738a66c20368",
+    "short": "5f6c26d",
+    "date": "2026-07-13T15:55:30-04:00",
+    "message": "feat: PHQ-9/GAD-7 sub-tabs show history + Open Survey modal button",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/5f6c26d2495c3b52f6096d42eeef738a66c20368"
+  },
+  {
     "sha": "b236a07fa0cf80b47f2a5eb17460fd8c3ea2e79d",
     "short": "b236a07",
     "date": "2026-07-13T15:28:49-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T14:32:41-04:00",
     "message": "Fix med-item-body: use spans so CSS grid columns apply",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/57d2572b76ce84d8a3b43502c5ae66b92633fc39"
-  },
-  {
-    "sha": "ed700b3ba36e5bf9b6d6760c72eeaecfac821f71",
-    "short": "ed700b3",
-    "date": "2026-06-26T14:19:19-04:00",
-    "message": "fix: wire AI Chat send button after panel is shown, not at page load",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/ed700b3ba36e5bf9b6d6760c72eeaecfac821f71"
   }
 ]
