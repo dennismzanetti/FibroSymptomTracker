@@ -114,6 +114,21 @@
 
     <!-- ── Sub-tab: PHQ-9 ── -->
     <div id="mood-subtab-phq9" role="tabpanel" aria-labelledby="mood-tab-btn-phq9" hidden>
+
+      <!-- PHQ-9 Trend Chart -->
+      <div class="card">
+        <div class="mood-card-header">
+          <h3>PHQ-9 Score Trends</h3>
+          <span class="mood-card-badge">All submissions</span>
+        </div>
+        <p class="survey-instructions" style="margin-bottom:var(--space-3);">Depression screening &#8212; Patient Health Questionnaire (9 items, score 0&#8211;27)</p>
+        <div class="mood-chart-wrap">
+          <canvas id="phq9TrendChart"></canvas>
+        </div>
+        <div class="survey-trend-legend" id="phq9TrendLegend"></div>
+      </div>
+
+      <!-- PHQ-9 History Table -->
       <div class="card">
         <div class="mood-card-header">
           <h3>PHQ-9 History</h3>
@@ -122,7 +137,6 @@
             <button class="btn btn-primary btn-sm" onclick="openSurveyModal('phq9')">Open PHQ-9</button>
           </div>
         </div>
-        <p class="survey-instructions">Depression screening &#8212; Patient Health Questionnaire (9 items, score 0&#8211;27)</p>
         <div class="survey-history-table-wrap">
           <table class="mood-notes-table" aria-label="PHQ-9 history">
             <thead><tr><th>Date</th><th>Score</th><th>Severity</th><th></th></tr></thead>
@@ -136,6 +150,21 @@
 
     <!-- ── Sub-tab: GAD-7 ── -->
     <div id="mood-subtab-gad7" role="tabpanel" aria-labelledby="mood-tab-btn-gad7" hidden>
+
+      <!-- GAD-7 Trend Chart -->
+      <div class="card">
+        <div class="mood-card-header">
+          <h3>GAD-7 Score Trends</h3>
+          <span class="mood-card-badge">All submissions</span>
+        </div>
+        <p class="survey-instructions" style="margin-bottom:var(--space-3);">Anxiety screening &#8212; Generalized Anxiety Disorder (7 items, score 0&#8211;21)</p>
+        <div class="mood-chart-wrap">
+          <canvas id="gad7TrendChart"></canvas>
+        </div>
+        <div class="survey-trend-legend" id="gad7TrendLegend"></div>
+      </div>
+
+      <!-- GAD-7 History Table -->
       <div class="card">
         <div class="mood-card-header">
           <h3>GAD-7 History</h3>
@@ -144,7 +173,6 @@
             <button class="btn btn-primary btn-sm" onclick="openSurveyModal('gad7')">Open GAD-7</button>
           </div>
         </div>
-        <p class="survey-instructions">Anxiety screening &#8212; Generalized Anxiety Disorder (7 items, score 0&#8211;21)</p>
         <div class="survey-history-table-wrap">
           <table class="mood-notes-table" aria-label="GAD-7 history">
             <thead><tr><th>Date</th><th>Score</th><th>Severity</th><th></th></tr></thead>
