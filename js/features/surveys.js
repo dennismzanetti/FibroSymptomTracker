@@ -296,6 +296,9 @@ function switchMoodSubTab(tab) {
 
 // ── Init ──────────────────────────────────────────────────────────
 
+// Guard flag: prevents duplicate auth listener if initSurveys() is called more than once
+let _surveysAuthListenerAttached = false;
+
 function initSurveys() {
   const today = new Date().toISOString().split('T')[0];
 
@@ -337,9 +340,25 @@ function initSurveys() {
     saveSurvey('gad7', 'gad7', GAD7_QUESTIONS.length, 'gad7DateInput', calcSurveyScore, gad7Severity)
   );
 
-  // Load history for both
-  loadSurveyHistory('phq9', 'phq9HistoryBody', 'phq9HistoryCount', phq9Severity);
-  loadSurveyHistory('gad7', 'gad7HistoryBody', 'gad7HistoryCount', gad7Severity);
+  // ── Race-condition fix ────────────────────────────────────────
+  // Do NOT call loadSurveyHistory() directly here — auth.currentUser may
+  // still be null at this point during Firebase's async auth resolution.
+  // Instead, attach a one-time onAuthStateChanged listener so history loads
+  // only after the auth state is confirmed. The guard flag prevents a second
+  // listener from being added if initSurveys() is called again.
+  if (!_surveysAuthListenerAttached) {
+    _surveysAuthListenerAttached = true;
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        loadSurveyHistory('phq9', 'phq9HistoryBody', 'phq9HistoryCount', phq9Severity);
+        loadSurveyHistory('gad7', 'gad7HistoryBody', 'gad7HistoryCount', gad7Severity);
+      }
+    });
+  } else if (auth.currentUser) {
+    // Auth already resolved (e.g. tab revisited) — load immediately
+    loadSurveyHistory('phq9', 'phq9HistoryBody', 'phq9HistoryCount', phq9Severity);
+    loadSurveyHistory('gad7', 'gad7HistoryBody', 'gad7HistoryCount', gad7Severity);
+  }
 }
 
 async function refreshSurveys() {
