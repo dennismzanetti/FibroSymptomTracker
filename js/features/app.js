@@ -41,6 +41,7 @@ document.addEventListener('partialsLoaded', () => {
         setupMedicationsTab();
         setupCareTeamTab();
         if (typeof setupConditionsTab === 'function') setupConditionsTab();
+        if (typeof initSurveys === 'function') initSurveys();
         runPostLoadSetup();
         // NOTE: refreshTrends is NOT called here on auth.
         // The Trends tab is hidden (display:none via CSS) at this point, so
@@ -335,7 +336,10 @@ function setupTabs() {
     if (target === 'history-tab') refreshHistory();
     if (target === 'journal-tab') renderJournal();
     if (target === 'trends-tab') window.refreshTrends();
-    if (target === 'mood-tab') refreshMoodTab();
+    if (target === 'mood-tab') {
+      refreshMoodTab();
+      if (typeof initSurveys === 'function') initSurveys();
+    }
     if (target === 'careteam-tab') {
       const defaultCTBtn = document.querySelector('.ct-sub-tab-btn[data-ct-view="ctProvidersView"]');
       if (defaultCTBtn) defaultCTBtn.click();
