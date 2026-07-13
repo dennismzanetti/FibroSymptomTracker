@@ -1,5 +1,12 @@
 [
   {
+    "sha": "2d16bf1f026a4d113781c43f9ecd7f7993af9450",
+    "short": "2d16bf1",
+    "date": "2026-07-13T14:14:38-04:00",
+    "message": "feat: Add PHQ-9 and GAD-7 sub-tabs to Mood tab",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2d16bf1f026a4d113781c43f9ecd7f7993af9450"
+  },
+  {
     "sha": "4cdd968e773a3848ebc4c0d4fb8d31ed9b21145f",
     "short": "4cdd968",
     "date": "2026-07-08T16:38:55-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T14:05:56-04:00",
     "message": "Widen notes column to 2fr, keep prescriber at 1fr",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/cb9948f64019a045e05fccff1e9b425d57060f3d"
-  },
-  {
-    "sha": "346508c5470b7f59f16d9d815bbf770623bc902c",
-    "short": "346508c",
-    "date": "2026-06-26T14:00:26-04:00",
-    "message": "feat: add AI Chat panel styles to Analysis tab",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/346508c5470b7f59f16d9d815bbf770623bc902c"
   }
 ]
