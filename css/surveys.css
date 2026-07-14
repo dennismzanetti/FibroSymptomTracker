@@ -138,7 +138,72 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* ── Survey Modal ────────────────────────────────────────────── */
+/* ── Chart + Legend side-by-side layout ───────────────────── */
+
+.survey-chart-with-legend {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.survey-chart-with-legend .mood-chart-wrap {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.survey-trend-legend {
+  flex: 0 0 200px;
+  width: 200px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: var(--space-3);
+  background: var(--color-surface-offset);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  align-self: stretch;
+}
+
+.survey-trend-legend-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.survey-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: 1.3;
+}
+
+.survey-legend-item--total {
+  font-size: var(--text-xs);
+  color: var(--color-text);
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-1);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.survey-legend-swatch {
+  flex-shrink: 0;
+}
+
+/* Mobile: stack legend below chart on narrow screens */
+@media (max-width: 640px) {
+  .survey-chart-with-legend {
+    flex-direction: column;
+  }
+  .survey-trend-legend {
+    flex: none;
+    width: 100%;
+    max-height: none;
+    align-self: auto;
+  }
+}
+
+/* ── Survey Modal ────────────────────────────────────────── */
 
 .survey-modal-overlay {
   position: fixed;
