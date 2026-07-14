@@ -84,7 +84,11 @@ Return exactly this JSON (no extra keys, keep strings under 20 words each):
         const err = new Error('RATE_LIMITED'); err.isRateLimit = true; err.retrySeconds = retrySeconds; throw err;
       }
       if (res.status === 503 && attempt < maxRetries) { await sleep(Math.pow(2, attempt) * 1000 + Math.random() * 500); continue; }
-      const err = new Error(`Gemini API error ${res.status}: ${errText}`); err.status = res.status; throw err;
+      const err = new Error(res.status === 503
+        ? 'Gemini service is temporarily unavailable. Please try again in a moment.'
+        : `Gemini API error ${res.status}: ${errText}`);
+      err.status = res.status;
+      throw err;
     }
   }
 
