@@ -729,7 +729,17 @@ async function exportAllData() {
   FibroDiag.info('App', 'Export started');
   FibroDiag.time('export-all');
   try {
-    const collections = ['days','medications','supplements','medicationHistory','careTeam','appointments','automaticThoughtRecords','conditions'];
+    const collections = [
+      'days',
+      'medications',
+      'supplements',
+      'medicationHistory',
+      'careTeam',
+      'appointments',
+      'automaticThoughtRecords',
+      'conditions',
+      'surveys'
+    ];
     const backup = { exportedAt: new Date().toISOString(), appVersion: 'FibroSymptomTracker', collections: {} };
     for (const col of collections) {
       const snap = await db.collection(col).get();
@@ -824,7 +834,7 @@ async function confirmImport() {
     FibroDiag.error('App', 'Import failed', err);
     statusEl.className = 'settings-status settings-status-error';
     statusEl.textContent = 'Import failed: ' + err.message;
-  } finally { confirmBtn.disabled = false; }
+  } finally { btn.disabled = false; }
 }
 
 function cancelImport() {
