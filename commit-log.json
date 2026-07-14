@@ -1,5 +1,12 @@
 [
   {
+    "sha": "31103cfb5537f6e47b793051ea36acb5161ee198",
+    "short": "31103cf",
+    "date": "2026-07-13T20:33:51-04:00",
+    "message": "feat: move PHQ-9 and GAD-7 chart legends to right side",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/31103cfb5537f6e47b793051ea36acb5161ee198"
+  },
+  {
     "sha": "67be8c513da23ba9bd809aaace7a933df75c3d87",
     "short": "67be8c5",
     "date": "2026-07-13T19:48:34-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T14:45:11-04:00",
     "message": "feat: move date controls inside AI Insights sub-tab; show sub-tabs immediately",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c84b2287a74dcf49f7ece8d0edddfef9b35ee981"
-  },
-  {
-    "sha": "7680e70a525f1aef9d3133560ce08453c3615971",
-    "short": "7680e70",
-    "date": "2026-06-26T14:42:00-04:00",
-    "message": "cleanup: remove analysis-subtabs.css and its link from index.html",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/7680e70a525f1aef9d3133560ce08453c3615971"
   }
 ]
