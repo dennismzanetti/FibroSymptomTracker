@@ -1,5 +1,12 @@
 [
   {
+    "sha": "be438df8e6b02f01568278fb111c31b3f4bee1a2",
+    "short": "be438df",
+    "date": "2026-07-14T10:46:49-04:00",
+    "message": "Add 'surveys' to export collections array",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/be438df8e6b02f01568278fb111c31b3f4bee1a2"
+  },
+  {
     "sha": "3db65ff18624fc550c9ce639aefb004c36db6edb",
     "short": "3db65ff",
     "date": "2026-07-14T10:41:37-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T15:09:19-04:00",
     "message": "fix: enforce AI Insights as default active sub-tab on init",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c724aeedd85929252666f4194a31ade3c633342b"
-  },
-  {
-    "sha": "d3de16577d32e295ed543cf7d7e7917e285191ac",
-    "short": "d3de165",
-    "date": "2026-06-26T15:08:40-04:00",
-    "message": "Restore pill shape on sub-tab buttons; remove border-bottom from tab strip",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d3de16577d32e295ed543cf7d7e7917e285191ac"
   }
 ]
