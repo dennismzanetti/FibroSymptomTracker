@@ -1,5 +1,12 @@
 [
   {
+    "sha": "aa36c080f1b2555bfc42efa46a78c2c78df49862",
+    "short": "aa36c08",
+    "date": "2026-07-14T10:35:07-04:00",
+    "message": "Use survey-severity-badge class on score pill for visual consistency",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/aa36c080f1b2555bfc42efa46a78c2c78df49862"
+  },
+  {
     "sha": "62eb5b3988c31f03015c0fb65e6bc11aa9f2816e",
     "short": "62eb5b3",
     "date": "2026-07-13T20:34:46-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T14:52:12-04:00",
     "message": "Remove oval border from sub-tab buttons (radius-full → radius-sm)",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b6b4b5d8094f5d3927360c70908d66e6b1e66ffb"
-  },
-  {
-    "sha": "d3ec7ede04ac66f43eae871d83da2ec5e424c797",
-    "short": "d3ec7ed",
-    "date": "2026-06-26T14:48:47-04:00",
-    "message": "Add Prescriber/Brand label prefix and .med-item-label CSS",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d3ec7ede04ac66f43eae871d83da2ec5e424c797"
   }
 ]
