@@ -534,7 +534,7 @@ async function loadSurveyHistory(type, tbodyId, countBadgeId, severityFn) {
       const sev = severityFn(d.score || 0);
       rows += '<tr>' +
         '<td>' + dateStr + '</td>' +
-        '<td class="mood-score-cell"><span class="mood-score-pill" style="' + surveySeverityPillStyle(sev.cls) + '">' + d.score + '</span></td>' +
+        '<td class="mood-score-cell"><span class="mood-score-pill survey-severity-badge ' + sev.cls + '">' + d.score + '</span></td>' +
         '<td><span class="survey-severity-badge ' + sev.cls + '">' + sev.label + '</span></td>' +
         '<td><button class="atr-delete-btn" aria-label="Delete submission" onclick="deleteSurvey(\'' + doc.id + '\', \'' + type + '\')">Delete</button></td>' +
         '</tr>';
