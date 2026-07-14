@@ -1,5 +1,12 @@
 [
   {
+    "sha": "3db65ff18624fc550c9ce639aefb004c36db6edb",
+    "short": "3db65ff",
+    "date": "2026-07-14T10:41:37-04:00",
+    "message": "Improve 503 error message in callModel for user-friendly feedback",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/3db65ff18624fc550c9ce639aefb004c36db6edb"
+  },
+  {
     "sha": "aa36c080f1b2555bfc42efa46a78c2c78df49862",
     "short": "aa36c08",
     "date": "2026-07-14T10:35:07-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-26T15:08:40-04:00",
     "message": "Restore pill shape on sub-tab buttons; remove border-bottom from tab strip",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/d3de16577d32e295ed543cf7d7e7917e285191ac"
-  },
-  {
-    "sha": "b6b4b5d8094f5d3927360c70908d66e6b1e66ffb",
-    "short": "b6b4b5d",
-    "date": "2026-06-26T14:52:12-04:00",
-    "message": "Remove oval border from sub-tab buttons (radius-full → radius-sm)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b6b4b5d8094f5d3927360c70908d66e6b1e66ffb"
   }
 ]
