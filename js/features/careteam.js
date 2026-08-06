@@ -47,7 +47,7 @@ function setupCareTeamTab() {
         view.style.display = view.id === targetViewId ? '' : 'none';
       });
       if (targetViewId === 'ctProvidersView') refreshProviderList();
-      if (targetViewId === 'ctAppointmentsView') {
+      if (targetViewId === 'ctApptsView') {
         populateProviderDropdown();
         refreshAppointmentList();
       }
@@ -381,7 +381,7 @@ async function refreshProviderList() {
         li.querySelector('.ct-edit-btn').addEventListener('click', () => startEditProvider(p.id, p));
         li.querySelector('.ct-delete-btn').addEventListener('click', () => deleteProvider(p.id, p.displayName));
         li.querySelector('.ct-appt-btn').addEventListener('click', () => {
-          document.querySelector('.ct-sub-tab-btn[data-ct-view="ctAppointmentsView"]')?.click();
+          document.querySelector('.ct-sub-tab-btn[data-ct-view="ctApptsView"]')?.click();
           populateProviderDropdown().then(() => {
             resetApptForm();
             const sel = document.getElementById('ctApptProvider');
