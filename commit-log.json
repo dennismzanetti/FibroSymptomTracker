@@ -1,5 +1,40 @@
 [
   {
+    "sha": "0f88fc45e4a9e861ad809f0dd921d83994ce9109",
+    "short": "0f88fc4",
+    "date": "2026-08-07T11:52:33-04:00",
+    "message": "chore: no-op commit to re-trigger CI workflow",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/0f88fc45e4a9e861ad809f0dd921d83994ce9109"
+  },
+  {
+    "sha": "3b5416fae0cc18358a04c6b99f69b06cc2b2fbd5",
+    "short": "3b5416f",
+    "date": "2026-08-06T16:54:01-04:00",
+    "message": "fix: add missing ctApptModal to care team tab",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/3b5416fae0cc18358a04c6b99f69b06cc2b2fbd5"
+  },
+  {
+    "sha": "35facb7c5fe2f6eafc6c086645df00256253b11c",
+    "short": "35facb7",
+    "date": "2026-08-06T16:45:53-04:00",
+    "message": "Fix: correct button IDs for Add Provider and Add Appointment modals (full file)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/35facb7c5fe2f6eafc6c086645df00256253b11c"
+  },
+  {
+    "sha": "3eafcc7f8f6c1b6eba8d432ac666307ff2aca438",
+    "short": "3eafcc7",
+    "date": "2026-08-06T15:44:51-04:00",
+    "message": "Fix: correct button IDs for Add Provider and Add Appointment modals",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/3eafcc7f8f6c1b6eba8d432ac666307ff2aca438"
+  },
+  {
+    "sha": "2cd6ff1c9ed18e607b9a33ccf212ede1c9f692b1",
+    "short": "2cd6ff1",
+    "date": "2026-08-06T15:39:37-04:00",
+    "message": "fixing an id mismatch on the appointments tab",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/2cd6ff1c9ed18e607b9a33ccf212ede1c9f692b1"
+  },
+  {
     "sha": "be438df8e6b02f01568278fb111c31b3f4bee1a2",
     "short": "be438df",
     "date": "2026-07-14T10:46:49-04:00",
@@ -138,40 +173,5 @@
     "date": "2026-06-26T15:46:02-04:00",
     "message": "Update README: correct JS folder structure, CSS files, and local-fibro.html path",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/1c74e8dba6189391b23fa072b9018b55e7a1e154"
-  },
-  {
-    "sha": "c8827faf857df01a637e91d3a5430751c72ae189",
-    "short": "c8827fa",
-    "date": "2026-06-26T15:23:10-04:00",
-    "message": "Add list gap classes to medList, suppList, and ctProviderList",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c8827faf857df01a637e91d3a5430751c72ae189"
-  },
-  {
-    "sha": "077babf3c529e9e7585980c96e1293d5dcbec38d",
-    "short": "077babf",
-    "date": "2026-06-26T15:18:08-04:00",
-    "message": "Add med-list class to conditionsList for consistent card spacing",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/077babf3c529e9e7585980c96e1293d5dcbec38d"
-  },
-  {
-    "sha": "5de1ef456bd04159368ab23e3db7881f8ee65b5a",
-    "short": "5de1ef4",
-    "date": "2026-06-26T15:15:20-04:00",
-    "message": "Remove border from .med-sub-tabs container (sub-tab pill group)",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/5de1ef456bd04159368ab23e3db7881f8ee65b5a"
-  },
-  {
-    "sha": "5836376cfb1bc0753a900611a28ff0a8298502f5",
-    "short": "5836376",
-    "date": "2026-06-26T15:15:04-04:00",
-    "message": "Add padding to .med-list so cards don't touch container walls",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/5836376cfb1bc0753a900611a28ff0a8298502f5"
-  },
-  {
-    "sha": "c724aeedd85929252666f4194a31ade3c633342b",
-    "short": "c724aee",
-    "date": "2026-06-26T15:09:19-04:00",
-    "message": "fix: enforce AI Insights as default active sub-tab on init",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/c724aeedd85929252666f4194a31ade3c633342b"
   }
 ]
