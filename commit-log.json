@@ -1,5 +1,12 @@
 [
   {
+    "sha": "72a702080ec8476a3ce404f0b203ede4b5b06bd6",
+    "short": "72a7020",
+    "date": "2026-10-06T13:09:24-04:00",
+    "message": "Fix Print Care Team button: bind click handler to correct ID (printCtBtn)",
+    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/72a702080ec8476a3ce404f0b203ede4b5b06bd6"
+  },
+  {
     "sha": "0f88fc45e4a9e861ad809f0dd921d83994ce9109",
     "short": "0f88fc4",
     "date": "2026-08-07T11:52:33-04:00",
@@ -166,12 +173,5 @@
     "date": "2026-06-29T22:01:43-04:00",
     "message": "feat: show full datetime (with seconds, 24h) and full SHA in About section",
     "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/b8533cefd596e15a77e5beca6e98944592dbf615"
-  },
-  {
-    "sha": "1c74e8dba6189391b23fa072b9018b55e7a1e154",
-    "short": "1c74e8d",
-    "date": "2026-06-26T15:46:02-04:00",
-    "message": "Update README: correct JS folder structure, CSS files, and local-fibro.html path",
-    "url": "https://github.com/dennismzanetti/FibroSymptomTracker/commit/1c74e8dba6189391b23fa072b9018b55e7a1e154"
   }
 ]
