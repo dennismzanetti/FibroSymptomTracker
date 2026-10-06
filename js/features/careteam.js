@@ -85,7 +85,7 @@ function setupCareTeamTab() {
   });
 
   // Print button
-  document.getElementById('printCareTeamBtn')?.addEventListener('click', printCareTeam);
+  document.getElementById('printCtBtn')?.addEventListener('click', printCareTeam);
 
   // Close modals on backdrop click
   ['ctApptModal', 'ctProviderModal', 'ctProviderAddModal'].forEach(id => {
